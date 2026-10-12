@@ -20,8 +20,9 @@ object-metadata rendering from source inspection or synthetic tests alone.
 
 Keep raw captures, access credentials, recordings, addresses, device
 serials and access keys out of Git. Public summaries use allowlisted fields.
-The owner explicitly authorized the recovered ASUS XML and matching INF in
-profiles/asus/gu605mz; retain their bytes, notices and provenance.
+The owner authorized directly available OEM inputs for the ASUS and equivalent
+ThinkPad work. Selected original sources live in profiles/asus/gu605mz and
+profiles/lenovo/x1-extreme-gen1; retain their bytes, notices and provenance.
 Use neutral host/operator names in committed material. Preserve rollback
 assets, stock amplifier firmware and protection. Inspection has no playback,
 recording, config activation or service-restart side effects. Coordinate live

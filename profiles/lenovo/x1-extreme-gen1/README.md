@@ -9,6 +9,14 @@ OEM inputs. [The manifest](manifest.json) records source URLs, hashes, original
 notices and limits; [the source receipt](../../../evidence/lenovo-audio-package-2026-10-12.json)
 records extraction and cleanup.
 
+The manifest and source receipt preserve the acquisition-time limits, before
+the Lenovo importer and successful WinRE inspection existed. Their historical
+access/importer statements are not the current capability status; use
+[Lenovo preparation](../../../docs/LENOVO_SPEAKER_PROFILE.md) and the
+[recovery receipt](../../../evidence/thinkpad-recovery-status-2026-10-12.json)
+for the later results. Keeping the source manifest stable preserves the hash
+already recorded in generated bundles.
+
 | File | Role |
 |---|---|
 | `HDAUDIO_DEV_0285_SUBSYS_17AA2276_PCI_SUBSYS_226717AA.xml` | DAX speaker source matching observed codec `10ec0285`/subsystem `17aa2276` and PCI subsystem `17aa2267` |
