@@ -33,6 +33,19 @@ ID = re.compile(r"[0-9a-f]{8}\Z")
 NAME = re.compile(r"[A-Za-z][A-Za-z0-9_-]{0,63}\Z")
 DIGEST = re.compile(r"[0-9a-f]{64}\Z")
 PIN = "430e3a501e21bf8fdb615b133d2e8130b17973c1"
+DEVICE_CONTRACTS = {
+    ("10ec0285", "10431c63"): {
+        "xml_name": "DEV_0285_SUBSYS_10431C63_PCI_SUBSYS_1C631043.xml",
+        "layout": "front-stereo",
+        "bundle_hardware": {"codec": "10ec0285", "subsystem": "10431c63",
+                            "amplifiers": "CS35L56", "count": 2, "speaker_id": 0}},
+    ("10ec0285", "17aa2276"): {
+        "xml_name": "HDAUDIO_DEV_0285_SUBSYS_17AA2276_PCI_SUBSYS_226717AA.xml",
+        "layout": "legacy-stereo",
+        "source_manifest": "profiles/lenovo/x1-extreme-gen1/manifest.json",
+        "bundle_hardware": {"codec": "10ec0285", "subsystem": "17aa2276",
+                            "machine_type": "20MF", "pci_subsystem": "17aa2267",
+                            "amplifier_identification": "unknown"}}}
 
 
 class ProfileError(Exception):
@@ -271,20 +284,38 @@ def inputs(args):
     xml, inf = read_file(args.xml), read_file(args.inf)
     inventory_bytes = read_file(args.inventory)
     inventory = json_load(inventory_bytes)
-    hardware, oem = inventory["hardware"], inventory["oem"]
-    codec, subsystem = hardware["codec_vendor_id"].lower(), hardware["subsystem_id"].lower()
+    hardware = inventory["hardware"]
+    source_hash = None
+    if isinstance(hardware.get("codec"), dict):
+        codec, subsystem = hardware["codec"]["vendor_id"], hardware["codec"]["subsystem_id"]
+    else:
+        codec, subsystem = hardware["codec_vendor_id"], hardware["subsystem_id"]
+    codec, subsystem = codec.lower().removeprefix("0x"), subsystem.lower().removeprefix("0x")
     require(ID.fullmatch(codec) and ID.fullmatch(subsystem), "invalid_hardware_id")
-    require(codec == "10ec0285" and subsystem == "10431c63", "unsupported_hardware", 3)
-    require(hardware["amplifiers"]["model"] == "Cirrus CS35L56" and
-            hardware["amplifiers"]["count"] == 2 and
-            hardware["amplifiers"]["speaker_id"] == 0, "unsupported_amplifier_identity", 3)
+    require((codec, subsystem) in DEVICE_CONTRACTS, "unsupported_hardware", 3)
+    contract = DEVICE_CONTRACTS[codec, subsystem]
+    if subsystem == "10431c63":
+        require(hardware["amplifiers"]["model"] == "Cirrus CS35L56" and
+                hardware["amplifiers"]["count"] == 2 and
+                hardware["amplifiers"]["speaker_id"] == 0, "unsupported_amplifier_identity", 3)
+        oem = inventory["oem"]
+    else:
+        require(hardware["manufacturer"].lower() == "lenovo" and
+                hardware["product_model"].startswith("20MF") and hardware["generation"] == 1,
+                "model_identity_mismatch")
+        require(any(p["vendor"].lower() == "0x8086" and p["device"].lower() == "0xa348" and
+                    p["subsystem_vendor"].lower() == "0x17aa" and
+                    p["subsystem_device"].lower() == "0x2267" for p in hardware["audio_pci"]),
+                "pci_identity_mismatch")
+        source_bytes = read_file(ROOT / contract["source_manifest"])
+        source_hash = digest(source_bytes)
+        oem = json_load(source_bytes)["oem"]
     require(Path(args.xml).name == oem["xml_name"], "xml_filename_mismatch")
     require(Path(args.inf).name == oem["inf_name"], "inf_filename_mismatch")
     require(digest(xml) == oem["xml_sha256"] and len(xml) == oem["xml_size_bytes"] and
             digest(inf) == oem["inf_sha256"] and len(inf) == oem["inf_size_bytes"],
             "inventory_hash_or_size_mismatch")
-    require(re.fullmatch(r"DEV_0285_SUBSYS_10431C63_PCI_SUBSYS_1C631043\.xml",
-                         oem["xml_name"], re.I), "xml_hardware_filename_mismatch")
+    require(oem["xml_name"].lower() == contract["xml_name"].lower(), "xml_hardware_filename_mismatch")
     root = parse_xml(xml)
     inf_association(inf, oem["xml_name"], codec, subsystem)
     duplicate = "not-verified"
@@ -292,11 +323,11 @@ def inputs(args):
         other = read_file(args.duplicate_xml)
         require(other == xml, "duplicate_xml_disagrees")
         duplicate = "byte-identical"
-    return root, xml, {"xml_sha256": digest(xml), "inf_sha256": digest(inf),
-                       "inventory_sha256": digest(inventory_bytes),
-                       "duplicate_xml": duplicate}, {"codec": codec, "subsystem": subsystem,
-                                                      "amplifiers": "CS35L56", "count": 2,
-                                                      "speaker_id": 0}
+    hashes = {"xml_sha256": digest(xml), "inf_sha256": digest(inf),
+              "inventory_sha256": digest(inventory_bytes), "duplicate_xml": duplicate}
+    if source_hash:
+        hashes["source_manifest_sha256"] = source_hash
+    return root, xml, hashes, dict(contract["bundle_hardware"])
 
 
 @contextlib.contextmanager
@@ -330,8 +361,8 @@ def converter(path):
 
 
 def select(root, args):
-    require(args.codec.lower() == "10ec0285" and args.subsystem.lower() == "10431c63",
-            "hardware_mismatch")
+    identity = (args.codec.lower(), args.subsystem.lower())
+    require(identity in DEVICE_CONTRACTS, "hardware_mismatch")
     require(args.endpoint == "internal_speaker" and args.mode == "normal",
             "unsupported_endpoint_or_mode", 3)
     require(NAME.fullmatch(args.profile), "invalid_profile_name")
@@ -339,10 +370,13 @@ def select(root, args):
            e.get("operating_mode") == args.mode]
     require(len(eps) == 1, "endpoint_match_not_unique")
     ep = eps[0]
-    require(ep.get("fs") == "48000" and ep.get("total_count") == "2" and
-            ep.get("front_count") == "2" and ep.get("side_count") == "0" and
-            ep.get("height_count") == "0" and ep.get("has_subwoofer") == "0",
-            "unsupported_rate_or_channel_layout", 3)
+    counts = {"total_count": "2", "front_count": "2", "side_count": "0",
+              "height_count": "0", "has_subwoofer": "0"}
+    if DEVICE_CONTRACTS[identity]["layout"] == "front-stereo":
+        layout_ok = all(ep.get(k) == v for k, v in counts.items())
+    else:
+        layout_ok = ep.get("ch_count") == "2" and all(ep.get(k, v) == v for k, v in counts.items())
+    require(ep.get("fs") == "48000" and layout_ok, "unsupported_rate_or_channel_layout", 3)
     profiles = [p for p in ep.findall("profile") if p.get("type") == args.profile]
     require(len(profiles) == 1, "profile_match_not_unique")
     return profiles[0]
@@ -510,11 +544,13 @@ def field_report(profile, root, stages, voicing="balanced"):
                 "OEM loudness gain, virtual bass and gain restoration suppressed.",
                 "Dynamics approximations bypassed pending reference and physical qualification.",
                 "Final limiter is a sample-peak stage, not amplifier thermal/excursion protection.",
-                "Stock CS35L56 firmware/calibration and controls are untouched."]}
+                "No amplifier firmware/calibration or controls are modified; protection is not qualified."]}
 
 
 def build(args):
     root, xml, hashes, hardware = inputs(args)
+    require(args.codec.lower() == hardware["codec"] and args.subsystem.lower() == hardware["subsystem"],
+            "hardware_mismatch")
     prof = select(root, args)
     validate_selected_profile(prof)
     # Never create the requested destination until parsing and DSP succeed.
@@ -648,14 +684,17 @@ def verify(bundle):
             manifest["converter_commit"] == PIN and manifest["sample_rate_hz"] == 48000 and
             manifest["channels"] == ["FL", "FR"], "invalid_bundle_contract")
     hardware = manifest["hardware"]
-    require(hardware == {"codec": "10ec0285", "subsystem": "10431c63", "amplifiers": "CS35L56",
-                         "count": 2, "speaker_id": 0}, "invalid_bundle_hardware")
+    identity = (hardware["codec"], hardware["subsystem"])
+    require(identity in DEVICE_CONTRACTS and hardware == DEVICE_CONTRACTS[identity]["bundle_hardware"],
+            "invalid_bundle_hardware")
     sel = manifest["selection"]
     require(sel["endpoint"] == "internal_speaker" and sel["mode"] == "normal" and
             NAME.fullmatch(sel["profile"]) and sel["voicing"] in ("balanced", "detailed", "warm"),
             "invalid_bundle_selection")
     for k in ("xml_sha256", "inf_sha256", "inventory_sha256"):
         require(DIGEST.fullmatch(manifest["inputs"][k]), "invalid_input_hash")
+    if identity[1] == "17aa2276":
+        require(DIGEST.fullmatch(manifest["inputs"]["source_manifest_sha256"]), "invalid_source_hash")
     require(manifest["inputs"]["duplicate_xml"] in ("not-verified", "byte-identical"),
             "invalid_duplicate_state")
     outputs = manifest["outputs"]

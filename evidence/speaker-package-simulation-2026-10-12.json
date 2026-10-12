@@ -1,0 +1,42 @@
+{
+  "apt_update_run": false,
+  "artifact_status": "historical-pre-review-fix-package",
+  "command": "apt-get --simulate --no-remove -o Debug::NoLocking=1 install CANDIDATE_DEB",
+  "date": "2026-10-12",
+  "evidence_kind": "live-read-only-package-simulation",
+  "hosts": [
+    {
+      "dpkg_audit_clean": true,
+      "host": "lab5",
+      "installed_packages_unchanged": true,
+      "package_sha256": "4a523cb2bf8369e82363f303c7fb492157b8ce160cb86d0437497b2ac4fea490",
+      "planned_packages": 135,
+      "planned_removals": [],
+      "planned_upgrades": [],
+      "receipt_sha256": "6100fe558a1cfa83e3d4cc0e8a9c0d75813ec2228ff067c0d0757526a6a52c0c",
+      "simulation_exit_code": 0,
+      "status": "cached-dependencies-resolved",
+      "temporary_package_removed": true
+    },
+    {
+      "dpkg_audit_clean": true,
+      "host": "lab6",
+      "installed_packages_unchanged": true,
+      "package_sha256": "4a523cb2bf8369e82363f303c7fb492157b8ce160cb86d0437497b2ac4fea490",
+      "planned_packages": 136,
+      "planned_removals": [],
+      "planned_upgrades": [],
+      "receipt_sha256": "4be55aebaa943cd732b9859bb829afff43bcbe0bf8eb68ed55a2ffb77ca6ce61",
+      "simulation_exit_code": 0,
+      "status": "cached-dependencies-resolved",
+      "temporary_package_removed": true
+    }
+  ],
+  "limits": [
+    "Existing package caches only; no download or installation acceptance",
+    "Repeat only if the candidate package or dependency expression changes"
+  ],
+  "packages_installed": false,
+  "schema_version": 1,
+  "superseded_by": "speaker-package-reviewed-simulation-2026-10-12.json"
+}

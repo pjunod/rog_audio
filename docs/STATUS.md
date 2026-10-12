@@ -1,45 +1,81 @@
 # Status — implementation and physical acceptance
 
-**Updated:** 2026-10-12 · **State:** first implementation batch reviewed and validated; live installation pending.
+**Updated:** 2026-10-12 · **State:** PR 2 accepted for merge; both laptops ready
+for coordinated installation with v0.2.0.
 
 | Work | State | Next evidence |
 |---|---|---|
-| Hardware inventory | Read-only inspection complete | Sanitized receipt and build contracts imported |
-| ASUS speaker tuning | Original XML and matching INF published | 48 tests and three OEM conversions passed; runtime/acoustics pending |
-| Diagnostics and latency | Reviewed; 42 tests and native rule checks passed | Physical comparison and coordinated activation |
-| Host Atmos | 15 tests passed; focused CI cleanup fix passed | Actual JOC reference media and physical qualification |
-| ASUS installation kit | Implementation underway; stock EasyEffects route transition issue identified | Target-aware routing, prompt headphone bypass and reversible install/remove |
-| ThinkPad X1 Extreme | First-generation inventory and exact-match Lenovo package found | Recovery access retry and separate model-specific importer |
+| Hardware inventory | Both laptops inspected read-only | Refresh during installation |
+| ASUS speaker tuning | Original XML/INF published; three bundles built | Physical listening and measurements |
+| ThinkPad speaker tuning | Exact Lenovo XML/INF published; three bundles built | Physical listening and measurements |
+| Laptop installation runtime | Reviewed package and per-device kits ready; 97 affected unit cases and both graph cases passed | Coordinated install and live routing qualification |
+| Diagnostics and latency | 42 tests and native rule checks passed in PR 1 | Physical comparison and coordinated activation |
+| Host Atmos | 15 tests and focused CI cleanup acceptance passed in PR 1 | Actual JOC reference media and physical qualification |
 | macOS comparison | Pending physical measurements | M4 Air primary, M3 Max secondary |
 | Sonos Arc/eARC | Deferred until internal audio work | TV route and actual received formats |
 
-The first batch combines all three implementation lanes and documentation.
-Independent adversarial review happens once the batch is ready to merge;
-findings are addressed before the required tests run. Failed or invalidated
-tests alone are repeated. Source capability, synthetic results, installation
-and measured performance remain separate claims.
-
-## Decisions made during implementation
-
-The repository is public, matching the display project. Original tool code
-uses MIT; vendor and third-party terms remain separate. The owner explicitly
-requested the recovered ASUS XML/INF be committed, overriding earlier private
-storage instructions. Raw observations and access credentials remain excluded.
-
-The first implementation PR combines the three lanes. Tests are explicitly
-selected after adversarial review; hosted CI is manual to avoid duplicate
-push-triggered runs. All agent workspaces are outside the owner's ~/code tree.
-No live audio deployment or physical measurement is implied by this batch.
+Companion to [installation](SPEAKER_INSTALL.md), [review](REVIEW.md) and
+[implementation](AUDIO_IMPLEMENTATION.md). Source capability, synthetic results,
+installation and measured performance remain separate claims.
 
 ## Installation readiness
 
-ASUS: not yet ready for live installation. The offline tuning importer and
-latency tooling have passed their reviewed checks, but the EasyEffects
-runtime, internal-speaker routing and reversible install/remove kit still
-need implementation and acceptance. Acoustic quality and physical latency
-remain later measurements.
+Both the ASUS ROG GU605MZ and ThinkPad X1 Extreme Gen 1 have an inactive,
+model-specific installation kit for the reviewed EasyEffects runtime. Each
+passed its real isolated loader/plugin/routing case with ten assertions.
+The kits are ready for coordinated installation on the inspected Ubuntu 26.10
+amd64 hosts; no package or profile has been installed or activated there.
 
-ThinkPad: first-generation model and codec are identified. An exact-match
-Lenovo package has been found. Recovery inspection and a model-specific
-importer remain in progress before an install candidate.
-The recovery search is read-only; ASUS coefficients are not a ThinkPad profile.
+The package preserves stock EasyEffects configuration and uses a separate
+application identity and data roots. Installation/removal has a durable file
+snapshot and conflict detection. Controlled quit restores owned stream targets;
+forced termination has no persistent original-target journal. Physical
+headphone hotplug, restart/resume, listening, calls, power and latency remain
+acceptance work. Stock amplifier firmware and protection remain in place.
+
+Read-only APT simulations resolved the exact final package from each host's
+cached metadata: 135 new packages on ASUS and 136 on ThinkPad, with zero
+upgrades/removals. Installed-package inventories were unchanged. This proves
+cached resolution, not successful download or installation. A fresh ASUS
+baseline and private rollback records are retained for the deployment window.
+
+## Review and acceptance
+
+The completed PR 2 batch received three independent adversarial reviews.
+All seven findings were fixed and cleared focused source re-review before
+unit execution. The Lenovo/shared speaker suite passed 55 cases, dependency
+inspection nine, source staging one, installation 12 and native routing 20:
+97 affected cases passed, with zero skips. The first native run encountered
+20 execution errors from a noexec container mount; only those failed cases
+were retried. Unchanged latency and Atmos passes from PR 1 were retained.
+
+The ASUS graph passed on attempt five; the ThinkPad graph passed on its first
+attempt. Three ASUS attempts failed on fixture export/module registration,
+and one timed out without retaining the precise observation stage. Reviewed
+fixture corrections and private writable session state preceded the final
+pass; the earlier state warning was not established as the timeout's cause.
+No graph assertion was relaxed and no passing graph case was repeated.
+Production package bytes and accepted unit source remained unchanged.
+
+[Unit receipts](../evidence/speaker-installation-unit-validation-2026-10-12.json),
+[shared/importer receipt](../evidence/speaker-importer-inspector-acceptance-2026-10-12.json)
+and [graph receipt](../evidence/speaker-runtime-graph-validation-2026-10-12.json)
+bind the accepted code, artifacts and results. The release includes exact
+corresponding runtime source and original notices.
+
+## Recovery and implementation decisions
+
+The original ASUS tuning came from recovery; the Lenovo tuning came from the
+matching official download. The ThinkPad WinRE index contained 25,538 paths,
+with no exact matching speaker XML/INF filename. Six Dolby-named DSP firmware
+paths were not extracted. A reader reference-count warning limits this to
+filename evidence; image authenticity was not established. The recovery
+partition was unmounted and the temporary reader removed.
+
+The repository is public. The owner requested original OEM profiles be
+published with their notices; raw captures, access credentials and private
+rollback records remain excluded. Original tools use MIT and third-party
+terms remain separate. Work uses owned clones outside the owner's code tree.
+Hosted CI is manual to avoid duplicating review-bound acceptance runs.
+Music/balanced speaker candidates are the delivery default; no Mac parity,
+Dolby certification or acoustic accuracy is claimed.

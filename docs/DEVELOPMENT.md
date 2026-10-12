@@ -42,14 +42,18 @@ python3 scripts/check_repository.py  # Final repository integrity check.
 ```
 
 This check validates documentation/JSON hygiene without network, hardware,
-profile activation or dependency installation. Lane documents give the
+profile activation or dependency installation. Every tracked profile manifest
+must name nonduplicate, tracked regular files whose sizes and SHA256 values
+match the published originals. This covers both ASUS and Lenovo inputs.
+Lane documents give the
 actual build and test commands; do not confuse a skipped compiler with a pass.
 
 ## Preserve evidence and dependency rights
 
 [Provenance](PROVENANCE.md) records migration and upstream ownership. Keep
 third-party code under its own licence. The OEM profile is an operator-owned
-input published at the owner’s request under profiles/asus/gu605mz. Private
+input published at the owner’s request under profiles/asus/gu605mz, with
+equivalent ThinkPad originals under profiles/lenovo/x1-extreme-gen1. Private
 media remains outside Git. Hashes identify an artifact, not authenticity or
 acoustic correctness.
 
@@ -70,3 +74,13 @@ have read-only GitHub permissions, no credentials persisted by checkout, and
 no automatic push/PR trigger. Runtime tests do not mount sound devices or
 session sockets. Synthetic logs can appear in job output; personal captures
 and credentials cannot enter that workflow.
+
+The installation lane runs file, source-staging and native routing tests through
+`python3 scripts/validate_speaker_install.py --stage all`. Select `install`, `inspector`,
+`source` or `routing`, optionally with repeated `--test-id` arguments, to retry
+only failed cases. Missing compiler/source prerequisites and skipped tests
+fail the lane. The manually dispatched job stages only pinned public source.
+Real EasyEffects graph acceptance has two separate selectors and uses the
+retained compiled image and source-built kits; see
+[speaker installation](SPEAKER_INSTALL.md). It is deliberately separate from
+the unit lane so a unit retry does not rebuild or rerun both runtime cases.

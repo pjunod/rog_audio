@@ -8,7 +8,10 @@ third-party dependencies.
 |---|---|
 | Original rog_audio tools/docs | MIT, rog_audio contributors |
 | Recovered ASUS XML and Dolby driver INF | Original vendor notices retained under profiles/asus/gu605mz; published at laptop owner's request, not relicensed as MIT |
+| Downloaded Lenovo speaker XML, Dolby extension INF and official README | Unmodified selected vendor files under profiles/lenovo/x1-extreme-gen1; original notices and source hashes retained, not relicensed as MIT |
 | speaker-tuning-to-easyeffects | MIT, Antoine Cellerier and contributors; fetched at the source manifest's exact revision |
+| EasyEffects and local runtime patch | GPL-3.0-or-later, Wellington Wallace/upstream contributors; local routing header uses the same terms; corresponding patched source travels with binary artifacts |
+| Ubuntu EasyEffects packaging compatibility patch | Original Sebastian Ramacher attribution retained; packaging CC0-1.0 terms and full notice in patches/easyeffects/ubuntu/COPYRIGHT |
 | Cavern | Bence Sgánetz (VoidX); upstream component-specific licence, retained with built artifacts; see pinned source and Atmos contract |
 | Dolby gst-home-audio | Upstream wrapper terms; proprietary runtime libraries are separate and are not supplied here |
 

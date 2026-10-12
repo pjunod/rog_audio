@@ -1,21 +1,55 @@
 {
   "admin_probe": {
-    "method": "sudo -n id -u",
-    "result": "authentication-failed"
+    "method": "fresh default-identity SSH as instructed account; sudo -n true",
+    "password_requested_or_entered": false,
+    "result": "passed-after-owner-policy-fix"
   },
   "audio_identity": {
     "codec": "Realtek ALC285",
     "codec_vendor_id": "10ec0285",
     "subsystem_id": "17aa2276"
   },
+  "cleanup": {
+    "full_wim_copy_created": false,
+    "raw_logs_and_index_retained_privately": true,
+    "recovery_payloads_extracted": 0,
+    "recovery_unmounted_verified": true,
+    "temporary_mount_and_reader_directories_removed": true,
+    "temporary_reader_and_plugin_removed_remote": true
+  },
   "date": "2026-10-12",
   "evidence_kind": "live-read-only",
+  "historical_access_failure": {
+    "admin_probe": {
+      "expected_user_confirmed": true,
+      "method": "sudo -n true; one fresh SSH -tt with effective-user verification",
+      "password_requested_or_entered": false,
+      "result": "interactive-authentication-required"
+    },
+    "mount_attempt": {
+      "cleanup_trap": "executed",
+      "later_attempt": "exited at sudo probe before mount/directory creation",
+      "method": "udisksctl --no-user-interaction",
+      "requested_options": [
+        "ro",
+        "nodev",
+        "nosuid",
+        "noexec"
+      ],
+      "result": "authorization-denied",
+      "unmounted_verified": true
+    },
+    "result": "blocked-pending-existing-administrator-route-or-accessible-image",
+    "scope": "historical attempts before owner fixed sudo group policy"
+  },
   "host": "lab6",
   "limits": [
-    "Recovery contents are unknown; no claim that matching audio files are absent.",
-    "No OS disk unlock/mount, installs, audio playback/recording/control or service changes.",
-    "Default SSH identity allowed read-only probes; supplied deploy key did not authenticate.",
-    "No ASUS profile reused or speaker preparation forced to match Lenovo."
+    "Negative findings apply only to indexed path patterns; INF/payload contents were not exhaustively searched.",
+    "WinRE index is not proof about every possible OEM asset, other partition or Windows OS directory.",
+    "Reference-count warning retained; hashing image bytes does not establish archive integrity or catalogue/vendor authenticity.",
+    "Dolby-named Intel DSP binaries are not matched speaker XML, a proven host Atmos renderer or Linux amplifier-protection evidence; none extracted/activated.",
+    "No OS disk unlock/mount, installs, playback/recording/control or audio/service/config changes.",
+    "Published Lenovo speaker source remains the separately hash-matched vendor download; no recovery provenance substituted."
   ],
   "model": {
     "family": "ThinkPad X1 Extreme first generation",
@@ -23,17 +57,43 @@
     "vendor": "LENOVO"
   },
   "mount_attempt": {
-    "cleanup_trap": "executed",
-    "method": "udisksctl --no-user-interaction",
-    "requested_options": [
+    "automatic_mount_type_attempt": "failed before mounting; explicit existing ntfs-3g succeeded",
+    "cleanup_trap": "executed on each successful inspection/hash mount",
+    "method": "sudo mount -t ntfs-3g",
+    "observed_filesystem": "fuseblk",
+    "observed_safety_options": [
       "ro",
       "nodev",
       "nosuid",
       "noexec"
     ],
-    "result": "authorization-denied",
+    "requested_options": [
+      "ro",
+      "nodev",
+      "nosuid",
+      "noexec",
+      "norecover"
+    ],
+    "result": "mounted-read-only",
     "unmounted_verified": true
   },
+  "partition_files": [
+    {
+      "path": "Recovery/WindowsRE/Winre.wim",
+      "sha256": "7fa392f916ae457edae83c6e63280006595339a8e7f57b5d57862733b7183a5a",
+      "size_bytes": 1058078880
+    },
+    {
+      "path": "Recovery/WindowsRE/boot.sdi",
+      "sha256": "cd2c00ce027687ce4a8bdc967f26a8ab82f651c9becd703658ba282ec49702bd",
+      "size_bytes": 3170304
+    },
+    {
+      "path": "Recovery/WindowsRE/ReAgent.xml",
+      "sha256": "632f1b896d2b41d91361fff28bb374e0557015d2cffc94afbd6044cc41f1e077",
+      "size_bytes": 1109
+    }
+  ],
   "raw_capture_hashes": {
     "accessible-recovery-search.raw": "f5c34611e33c53960897c85f19809e7f720e955dd7e82746e2e21e74c02fe5d5",
     "audio.raw": "946f33515f6cb6d4180ed61100f105dec7385f39d9910afd74e0662f1fdda375",
@@ -42,19 +102,67 @@
     "mounts.raw": "681ed50f0fc5fc391c6da5bd727746b08dc03b85365cb80502a7098285d98a84",
     "partition-type.raw": "14bc01df174c1a8f6a8e2d9fb8d903be3799d1246ede730f481f071f44c655a3",
     "permissions.raw": "56d0b63f067f98bfc107ed7838fcbc39a88ef764898aa5be4c283875b5715eec",
+    "recovery-file-hashes.raw": "fb3fe94042a3dcb2d43e05a9a2bff85b713c9eb828849ffd5852351fe1ce53ad",
     "recovery-listing.raw": "77718cfbf81f34b9e6c3e3e1000bb0fd72c538b4f9d408b5dd6c81a4397f1510",
     "sudo-probe.raw": "22ec28b719ddc7acd09a592c9aea4f348617380367a144e71fc120cc9bbb4f37",
+    "sudo-recovery-listing.raw": "bbc2f75abe082ec0e02e587cdfe2c552168bda73147ab7502c1ac19744e2da9c",
     "tools.raw": "22ec28b719ddc7acd09a592c9aea4f348617380367a144e71fc120cc9bbb4f37",
-    "unmount-verification.raw": "282a92e4928494d7166d878ef4d8760da3cd237341cd95b98e9337681068eedb"
+    "tty-sudo-probe.raw": "65c6be620e860fa3d6a71cdb6ad02e5ed7e486fc2b81893f041a7c7baefeee04",
+    "unmount-verification.raw": "282a92e4928494d7166d878ef4d8760da3cd237341cd95b98e9337681068eedb",
+    "winre-wim-index.raw": "848df2597e917d5ac850a44c9cdaf145e3e5a68c5a4805cc21b368995589eb46"
   },
   "recovery_candidate": {
-    "contents_inspected": false,
+    "contents_inspected": true,
     "dedicated_large_factory_partition_observed": false,
     "files_extracted": 0,
     "filesystem": "NTFS",
+    "image_copied": false,
     "partition_type": "de94bba4-06d1-4d40-a16a-bfd50179d6ac",
     "size_reported": "1.1GiB"
   },
-  "result": "blocked-pending-existing-administrator-route-or-accessible-image",
-  "schema_version": 1
+  "result": "read-only-winre-index-complete",
+  "schema_version": 1,
+  "wim_index": {
+    "build": "22621",
+    "catalogue_authentication_verified": false,
+    "comparison_with_vendor_download": "No corresponding exact-match XML/INF path found in inspected index; no recovery/download byte comparison possible.",
+    "compression": "LZX:15",
+    "dolby_named_dsp_firmware_paths": [
+      "Windows/System32/cAVS/ExtLibs/dsp_lib_dolby_ll_release.bin",
+      "Windows/System32/DriverStore/FileRepository/intcoed.inf_amd64_c6a88bf2188393fb/FW/dsp_lib_dolby_ll_release.bin",
+      "Windows/System32/cAVS/ExtLibs/dsp_lib_dolby_llv13_release.bin",
+      "Windows/System32/DriverStore/FileRepository/intcoed.inf_amd64_c6a88bf2188393fb/FW/dsp_lib_dolby_llv13_release.bin",
+      "Windows/System32/cAVS/ExtLibs/dsp_lib_dolby_release.bin",
+      "Windows/System32/DriverStore/FileRepository/intcoed.inf_amd64_c6a88bf2188393fb/FW/dsp_lib_dolby_release.bin"
+    ],
+    "edition": "WindowsPE",
+    "exit_code": 0,
+    "filename_searches": {
+      "codec_subsystem": {
+        "matching_path_count": 0,
+        "pattern": "17aa2276"
+      },
+      "dax_or_speaker_tuning": {
+        "matching_path_count": 0,
+        "pattern": "dax3|dolby.*\\.xml|oemxaudio|ext_realtek_lenovo|samsfpa|rtmicar"
+      },
+      "known_realtek_inf_names": {
+        "matching_path_count": 0,
+        "pattern": "hdxlv|hdx_lenovo|hdxlvsst"
+      }
+    },
+    "image_integrity_verified": false,
+    "image_name": "Microsoft Windows Recovery Environment (amd64)",
+    "images": 1,
+    "index_sha256": "848df2597e917d5ac850a44c9cdaf145e3e5a68c5a4805cc21b368995589eb46",
+    "installation_type": "WindowsPE",
+    "matched_speaker_source_files_extracted": 0,
+    "path_entries": 25538,
+    "reader": "7-Zip26.02x64",
+    "reader_binary_sha256": "228dd090796ad5d6aed4684f0073200b7bdab5b5965698c8211ee9e33460dccc",
+    "reader_origin": "temporary copy of existing lab5 reader; no package installed on lab6",
+    "reader_plugin_sha256": "55aad6bb66a7c9ada099c752087f69b97d17e4313219ed9bfdf5fa86d6edce73",
+    "reference_count_warning": "Some files have incorrect reference count",
+    "spbuild": "1"
+  }
 }

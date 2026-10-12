@@ -1,0 +1,29 @@
+{
+  "checksum_reason": "Post-review corrections release live ignored streams before proxy drop and scope delayed autoload by route profile-device index; exact changed bytes deliberately repinned",
+  "files": {
+    "0001-Scope-speaker-correction-to-device-route.patch": "e10f439698d353e52c58ec0190390107d68fd0ace4f429d89c996c4104d76ede",
+    "ubuntu/0001-Disable-echo-canceller.patch": "fc990509008860da01bc3b0719d2b7af173e16e6efd7aba26e3ad0f65282ba11",
+    "ubuntu/COPYRIGHT": "5ffb35e31945036cf81c7dd63b14c28af850213f4083279e9f3c2ef50e49e207"
+  },
+  "routing_contract": "exact-device-route-v1",
+  "routing_header_sha256": "e769b6bd2dfbe2f7b18543dc829f27dd3c344486aa7dec3d95159904878dff48",
+  "schema_version": 1,
+  "series": [
+    "ubuntu/0001-Disable-echo-canceller.patch",
+    "0001-Scope-speaker-correction-to-device-route.patch"
+  ],
+  "ubuntu": {
+    "notice": "ubuntu/COPYRIGHT",
+    "packaging_licence": "CC0-1.0",
+    "patch_author": "Sebastian Ramacher <sramacher@debian.org>",
+    "source_package": "easyeffects",
+    "version": "8.2.8+ds-1build1"
+  },
+  "upstream": {
+    "author": "Wellington Wallace and contributors",
+    "commit": "6d9b1220d3dcebb154ba759a05600662bc0af549",
+    "licence": "GPL-3.0-or-later",
+    "tag": "v8.2.8",
+    "url": "https://github.com/wwmm/easyeffects"
+  }
+}

@@ -1,0 +1,74 @@
+{
+  "codec_id": "10ec0285",
+  "device": "Lenovo ThinkPad X1 Extreme Gen 1",
+  "evidence_kind": "downloaded-vendor-package",
+  "files": [
+    {
+      "name": "dax3_ext_dolbyatmos.inf",
+      "package_path": "code$GetExtractPath$/Dolby/ext_realtek_lenovo_thinkpad/ext_p1(padome)_v455/dax3_ext_dolbyatmos.inf",
+      "role": "hardware association and source/copy lists",
+      "sha256": "64d8b74a111bfe07fcb760fbcefb7784cd499ada9f19fa55d98d4321fb27e388",
+      "size_bytes": 5198,
+      "unmodified": true
+    },
+    {
+      "name": "HDAUDIO_DEV_0285_SUBSYS_17AA2276_PCI_SUBSYS_226717AA.xml",
+      "package_path": "code$GetExtractPath$/Dolby/ext_realtek_lenovo_thinkpad/ext_p1(padome)_v455/HDAUDIO_DEV_0285_SUBSYS_17AA2276_PCI_SUBSYS_226717AA.xml",
+      "role": "primary observed HDA internal-speaker tuning",
+      "sha256": "6369d6f7743e9f936820206f232fe6d8f8a9a0194e17496d13fb0628d1156ced",
+      "size_bytes": 52987,
+      "unmodified": true
+    },
+    {
+      "download_url": "https://download.lenovo.com/pccbbs/mobiles/n2ea118w.txt",
+      "name": "n2ea118w.txt",
+      "role": "original official README/model support/version/trademark notices",
+      "sha256": "38597fc8d97bb8f3ca78b23450689d9283ce242f5bc09067e791cceaf8ddcfd6",
+      "size_bytes": 10518,
+      "unmodified": true
+    }
+  ],
+  "limits": [
+    "Vendor download is not factory recovery-image evidence; recovery contents remain inaccessible/unexamined and recovery partition unmounted.",
+    "No Linux conversion, source/fixture tests, Windows installer execution or live audio changes.",
+    "Existing wrapper is ASUS-specific; future Lenovo implementation must bind Lenovo identity directly and preserve its own hardware/protection evidence.",
+    "Generic headphone reference is not an exact personal headphone match.",
+    "No acoustic calibration, physical latency, amplifier protection or host Atmos rendering qualification."
+  ],
+  "machine_type": "20MF",
+  "notices": [
+    "Original Dolby INF Copyright(c)2018 Dolby Laboratories INC retained unchanged.",
+    "Original official README trademark/version notices retained unchanged.",
+    "Public vendor download and owner task authorization are not a new redistribution licence or Dolby certification."
+  ],
+  "oem": {
+    "driver_date": "2020-09-13",
+    "driver_version": "5.914.455.29",
+    "inf_name": "dax3_ext_dolbyatmos.inf",
+    "inf_sha256": "64d8b74a111bfe07fcb760fbcefb7784cd499ada9f19fa55d98d4321fb27e388",
+    "inf_size_bytes": 5198,
+    "xml_name": "HDAUDIO_DEV_0285_SUBSYS_17AA2276_PCI_SUBSYS_226717AA.xml",
+    "xml_sha256": "6369d6f7743e9f936820206f232fe6d8f8a9a0194e17496d13fb0628d1156ced",
+    "xml_size_bytes": 52987
+  },
+  "package": {
+    "advertised_date": "2022-06-17",
+    "download_url": "https://download.lenovo.com/pccbbs/mobiles/n2ea118w.exe",
+    "installer_executed": false,
+    "measured_sha256": "5362f7636e0a43d5f44014d7cf0ef2da2a450b40fb7fcc3cba878889d0fffe5f",
+    "name": "n2ea118w.exe",
+    "readme_supports_machine_types": [
+      "20MF",
+      "20MG"
+    ],
+    "size_bytes": 164420728,
+    "vendor_checksum_matches": true,
+    "vendor_sha256": "5362f7636e0a43d5f44014d7cf0ef2da2a450b40fb7fcc3cba878889d0fffe5f",
+    "version": "6.0.9354.1"
+  },
+  "pci_subsystem_id": "17aa2267",
+  "publication": "Laptop owner requested equivalent support and directly available OEM source files. Original bytes/notices retained.",
+  "schema_version": 1,
+  "subsystem_id": "17aa2276",
+  "vendor_page": "https://pcsupport.lenovo.com/us/en/products/laptops-and-netbooks/thinkpad-x-series-laptops/thinkpad-x1-extreme/downloads/ds504906"
+}

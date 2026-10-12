@@ -1,0 +1,4 @@
+# Preserve original vendor bytes and whitespace, including CRLF.
+*.xml -text whitespace=-trailing-space
+*.inf -text whitespace=-trailing-space
+n2ea118w.txt -text whitespace=-trailing-space

@@ -1,0 +1,107 @@
+From: Sebastian Ramacher <sramacher@debian.org>
+Date: Sat, 20 Dec 2025 00:42:50 +0100
+Subject: Disable echo canceller
+
+It requires webrts-audio-processing >= 2.
+---
+ CMakeLists.txt          | 1 -
+ src/CMakeLists.txt      | 4 ----
+ src/effects_base.cpp    | 7 -------
+ src/presets_manager.cpp | 4 ----
+ 4 files changed, 16 deletions(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 708a77f..81a48a3 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -93,7 +93,6 @@ pkg_check_modules(LIBRNNOISE rnnoise IMPORTED_TARGET)
+ pkg_check_modules(LIBSOUNDTOUCH soundtouch IMPORTED_TARGET REQUIRED)
+ pkg_check_modules(LIBPORTAL libportal IMPORTED_TARGET)
+ pkg_check_modules(LIBPORTALQT libportal-qt6 IMPORTED_TARGET)
+-pkg_check_modules(LIBWEBRTC webrtc-audio-processing-2 IMPORTED_TARGET REQUIRED)
+ 
+ file(GLOB KCFG_FILES ${PROJECT_SOURCE_DIR}/src/contents/kcfg/*.kcfg)
+ file(GLOB KCFGC_FILES ${PROJECT_SOURCE_DIR}/src/contents/kcfg/*.kcfgc)
+diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
+index cd6bffc..b3b79c6 100644
+--- a/src/CMakeLists.txt
++++ b/src/CMakeLists.txt
+@@ -89,7 +89,6 @@ qt_add_qml_module(easyeffects
+         contents/ui/DelegateModulesList.qml
+         contents/ui/DelegatePluginsList.qml
+         contents/ui/DelegateStreamsList.qml
+-        contents/ui/EchoCanceller.qml
+         contents/ui/EeCard.qml
+         contents/ui/EeChart.qml
+         contents/ui/EeAudioLevel.qml
+@@ -167,8 +166,6 @@ target_sources(easyeffects PRIVATE
+     deepfilternet_preset.cpp
+     deesser.cpp
+     deesser_preset.cpp
+-    echo_canceller.cpp
+-    echo_canceller_preset.cpp
+     effects_base.cpp
+     equalizer.cpp
+     equalizer_apo.cpp
+@@ -282,7 +279,6 @@ target_link_libraries(easyeffects PRIVATE
+     PkgConfig::LIBBS2B
+     PkgConfig::LIBSNDFILE
+     PkgConfig::LIBSOUNDTOUCH
+-    PkgConfig::LIBWEBRTC
+     PkgConfig::LIBMYSOFA
+     ${LIBZITACONVOLVER}
+ )
+diff --git a/src/effects_base.cpp b/src/effects_base.cpp
+index c717a6f..5a7e5e0 100644
+--- a/src/effects_base.cpp
++++ b/src/effects_base.cpp
+@@ -52,7 +52,6 @@
+ #include "deepfilternet.hpp"
+ #include "deesser.hpp"
+ #include "delay.hpp"
+-#include "echo_canceller.hpp"
+ #include "equalizer.hpp"
+ #include "exciter.hpp"
+ #include "expander.hpp"
+@@ -192,9 +191,6 @@ void EffectsBase::create_filters_if_necessary() {
+     } else if (name.startsWith(tags::plugin_name::BaseName::delay)) {
+       filter = std::make_unique<Delay>(log_tag, pm, pipeline_type, instance_id);
+ 
+-    } else if (name.startsWith(tags::plugin_name::BaseName::echoCanceller)) {
+-      filter = std::make_unique<EchoCanceller>(log_tag, pm, pipeline_type, instance_id);
+-
+     } else if (name.startsWith(tags::plugin_name::BaseName::exciter)) {
+       filter = std::make_unique<Exciter>(log_tag, pm, pipeline_type, instance_id);
+ 
+@@ -358,9 +354,6 @@ QVariant EffectsBase::getPluginInstance(const QString& pluginName) {
+   } else if (pluginName.startsWith(tags::plugin_name::BaseName::deesser)) {
+     return QVariant::fromValue(dynamic_cast<Deesser*>(p.get()));
+ 
+-  } else if (pluginName.startsWith(tags::plugin_name::BaseName::echoCanceller)) {
+-    return QVariant::fromValue(dynamic_cast<EchoCanceller*>(p.get()));
+-
+   } else if (pluginName.startsWith(tags::plugin_name::BaseName::equalizer)) {
+     return QVariant::fromValue(dynamic_cast<Equalizer*>(p.get()));
+ 
+diff --git a/src/presets_manager.cpp b/src/presets_manager.cpp
+index d41215b..dbfa25c 100644
+--- a/src/presets_manager.cpp
++++ b/src/presets_manager.cpp
+@@ -62,7 +62,6 @@
+ #include "easyeffects_db.h"
+ #include "easyeffects_db_streaminputs.h"
+ #include "easyeffects_db_streamoutputs.h"
+-#include "echo_canceller_preset.hpp"
+ #include "equalizer_preset.hpp"
+ #include "exciter_preset.hpp"
+ #include "expander_preset.hpp"
+@@ -890,9 +889,6 @@ auto Manager::create_wrapper(const PipelineType& pipeline_type, const QString& f
+   } else if (filter_name.startsWith(tags::plugin_name::BaseName::deepfilternet)) {
+     return std::make_unique<DeepFilterNetPreset>(pipeline_type, filter_name.toStdString());
+ 
+-  } else if (filter_name.startsWith(tags::plugin_name::BaseName::echoCanceller)) {
+-    return std::make_unique<EchoCancellerPreset>(pipeline_type, filter_name.toStdString());
+-
+   } else if (filter_name.startsWith(tags::plugin_name::BaseName::equalizer)) {
+     return std::make_unique<EqualizerPreset>(pipeline_type, filter_name.toStdString());
+ 

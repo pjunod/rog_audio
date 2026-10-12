@@ -1,7 +1,7 @@
 # ThinkPad audio — first-generation X1 Extreme evidence and build contract
 
-**Inspected:** 2026-10-12 · **State:** read-only inventory complete; recovery
-contents and model-specific tuning unverified.
+**Inspected:** 2026-10-12 · **State:** read-only inventory and bounded WinRE
+index complete; reviewed kit and runtime ready for coordinated installation.
 
 Companion to [ASUS hardware](AUDIO_HARDWARE.md),
 [implementation](AUDIO_IMPLEMENTATION.md) and [status](STATUS.md). The
@@ -57,18 +57,32 @@ changing this control would erase useful baseline evidence.
 
 The [recovery receipt](../evidence/thinkpad-recovery-status-2026-10-12.json)
 records an unmounted 1.1 GiB NTFS partition with the
-Microsoft recovery partition type. Its contents have not been read: existing
-passwordless sudo and noninteractive UDisks mount authorization were denied.
-The attempted operation requested `ro,nodev,nosuid,noexec`; the recovery
-worker verified it remained unmounted. No larger dedicated factory-image
-partition was identified. Partition size/type alone cannot establish whether
-it contains a factory image, Windows recovery tools, or OEM audio tuning.
+Microsoft recovery partition type. Earlier sudo/UDisks authorization failures
+are retained as historical evidence. After the owner fixed sudo policy, the
+existing NTFS helper mounted the partition with verified
+`ro,nodev,nosuid,noexec` options. The partition was unmounted after inspection;
+the Windows OS partition was not unlocked or mounted.
 
-Administrator access or an already accessible image is needed for the recovery
-search. Independently, the
+The partition contains `Winre.wim`, `boot.sdi` and `ReAgent.xml`, with byte
+hashes in the receipt. A temporary copy of an existing 7-Zip reader indexed
+one Windows Recovery Environment image (WindowsPE, build 22621) with 25,538
+path entries. No exact `17aa2276` or known Lenovo/Dolby speaker XML/INF path
+matched the bounded filename search. Six Dolby-named Intel DSP firmware paths
+were listed but not extracted; their names do not establish speaker tuning,
+Atmos object rendering or amplifier protection. The reader reported an
+incorrect-reference-count warning; image integrity and catalogue authenticity
+were not verified.
+
+No full WIM copy or recovery payload extraction was made. The temporary reader
+and mount directories were removed. No larger dedicated factory-image
+partition was identified in the layout, but this search does not establish
+the absence of OEM assets elsewhere or in unsearched payload contents.
+
+The
 [official Lenovo audio package](https://pcsupport.lenovo.com/us/en/products/laptops-and-netbooks/thinkpad-x-series-laptops/thinkpad-x1-extreme/downloads/ds504906)
-can be inspected offline. Downloaded package evidence must stay distinct from
-files recovered from this laptop. Never run the Windows installer for extraction.
+supplies the separately inspected speaker source. No matching recovery file
+was available for a byte comparison. Downloaded package evidence stays
+distinct from recovery observations; no Windows installer ran for extraction.
 
 ## Model-specific implementation and acceptance
 
@@ -87,5 +101,7 @@ files recovered from this laptop. Never run the Windows installer for extraction
    Keep stock protection intact; measure response, distortion, latency,
    power, hotplug and resume before claiming improvement.
 
-The ThinkPad is not installation-ready. Generic read-only diagnostics work;
-its tuning, protection model and runtime qualification remain open.
+The ThinkPad kit is ready for coordinated installation. The shared units and
+its isolated runtime case passed; see [installation](SPEAKER_INSTALL.md). Live
+hotplug/resume, acoustic quality, protection behaviour and latency still need
+physical qualification.
