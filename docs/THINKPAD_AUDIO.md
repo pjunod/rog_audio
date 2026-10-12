@@ -1,0 +1,90 @@
+# ThinkPad audio — first-generation X1 Extreme evidence and build contract
+
+**Inspected:** 2026-10-12 · **State:** read-only inventory complete; recovery
+contents and model-specific tuning unverified.
+
+Companion to [ASUS hardware](AUDIO_HARDWARE.md),
+[implementation](AUDIO_IMPLEMENTATION.md) and [status](STATUS.md). The
+[ThinkPad receipt](../evidence/thinkpad-audio-inventory-2026-10-12.json)
+records observed hardware and separates vendor specifications from Linux
+observations. `lab6` is a neutral evidence label, not an SSH alias.
+
+## Hardware requires a separate speaker profile
+
+| Item | Observed state |
+|---|---|
+| Model | Lenovo `20MF000DUS`, ThinkPad X1 Extreme |
+| Generation | First generation, from Lenovo's type `20MF` mapping |
+| Kernel | `7.3.0-9-generic` |
+| Linux codec | Realtek ALC285, vendor `10ec0285`, subsystem `17aa2276` |
+| Intel audio PCI | `8086:a348`, subsystem `17aa:2267` |
+| HDMI audio | NVIDIA `10de:0fb9`; separate from the speaker path |
+| Amplifiers | No matching CS35/TAS/MAX98 driver identified in bounded logs/bus inspection; physical design unknown |
+| Mixer | Speaker switches on, headphone switches off, Auto-Mute Disabled |
+| Route | ACP analog stereo with internal microphone; `analog-output-speaker` |
+
+[Lenovo's product page](https://pcsupport.lenovo.com/us/en/products/laptops-and-netbooks/thinkpad-x-series-laptops/thinkpad-x1-extreme/20mf/downloads)
+identifies the generation. Its
+[specification](https://psref.lenovo.com/syspool/Sys/PDF/ThinkPad/ThinkPad_X1_Extreme/ThinkPad_X1_Extreme_Spec.PDF)
+names ALC3286, two 2 W speakers, Dolby Audio Premium and Dolby Atmos headphone.
+Those are manufacturer claims. The Linux codec name is an observation;
+ALC3286 and ALC285 are not asserted equivalent without matching driver evidence.
+Headphone Atmos branding does not establish Linux object rendering or tuned
+internal-speaker playback.
+
+The ASUS and Lenovo codec vendor IDs match, but subsystem and acoustic design
+differ. Do not reuse ASUS EQ, amplifier assumptions or speaker protection claims.
+An absent driver name in a bounded capture does not prove absent hardware.
+
+## The idle graph matches the ASUS software baseline
+
+PipeWire is `1.6.8-1ubuntu4` and WirePlumber `0.5.17-1ubuntu1`. The default
+rate is 48 kHz and quantum 1024 frames, with limits 32–2048 and no forced
+rate/quantum. Four data loops report SCHED_RR priority 20. The 21.333 ms graph
+period is not measured physical latency.
+
+The sink and source were suspended, with no active stream or Audio/Filter
+nodes. No user or `/etc` PipeWire/WirePlumber overrides were found in the
+inspected scope. `pactl` was unavailable; `pw-dump`, `wpctl` and ALSA supplied
+the observations. The ACP property is true; an explicit UCM enable property
+was absent. No packages, mixer controls, routing or services changed.
+
+Preserve Auto-Mute Disabled as the observed baseline. Headphone bypass needs
+separate validation during the coordinated activation window; silently
+changing this control would erase useful baseline evidence.
+
+## Recovery access and official-driver fallback
+
+Partition inspection found an unmounted 1.1 GiB NTFS partition with the
+Microsoft recovery partition type. Its contents have not been read: existing
+passwordless sudo and noninteractive UDisks mount authorization were denied.
+The attempted operation requested `ro,nodev,nosuid,noexec`; the recovery
+worker verified it remained unmounted. No larger dedicated factory-image
+partition was identified. Partition size/type alone cannot establish whether
+it contains a factory image, Windows recovery tools, or OEM audio tuning.
+
+Administrator access or an already accessible image is needed for the recovery
+search. Independently, the
+[official Lenovo audio package](https://pcsupport.lenovo.com/us/en/products/laptops-and-netbooks/thinkpad-x-series-laptops/thinkpad-x1-extreme/downloads/ds504906)
+can be inspected offline. Downloaded package evidence must stay distinct from
+files recovered from this laptop. Never run the Windows installer for extraction.
+
+## Model-specific implementation and acceptance
+
+1. Locate an INF binding `VEN_10EC&DEV_0285&SUBSYS_17AA2276` to the actual
+   speaker APO/profile. Preserve original bytes, notices and package hashes;
+   distinguish speaker endpoints from headphone processing.
+2. Trace the selected profile's units and enabled stages. Extend the importer
+   only if the Lenovo format and hardware contract are supported; a shared
+   codec name does not satisfy that contract.
+3. Build an inactive candidate with exact model binding and documented
+   unsupported fields. Review the completed changes adversarially, fix them,
+   then run each relevant test once; retry only failed/invalidated tests.
+4. Validate the isolated runtime and install/remove behavior, including
+   headphone/HDMI bypass and preservation of the prior routing/mixer state.
+5. Coordinate live activation and compare sound/latency separately from ASUS.
+   Keep stock protection intact; measure response, distortion, latency,
+   power, hotplug and resume before claiming improvement.
+
+The ThinkPad is not installation-ready. Generic read-only diagnostics work;
+its tuning, protection model and runtime qualification remain open.

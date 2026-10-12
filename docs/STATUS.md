@@ -9,7 +9,7 @@
 | Diagnostics and latency | Reviewed; 42 tests and native rule checks passed | Physical comparison and coordinated activation |
 | Host Atmos | Review fixes source-checked | Final isolated Linux acceptance running |
 | ASUS installation kit | Implementation started | EasyEffects runtime, scoped routing and reversible install/remove |
-| ThinkPad X1 Extreme | Read-only inventory and recovery search running | Exact model, codec, speaker hardware and matching OEM files |
+| ThinkPad X1 Extreme | First-generation inventory complete; recovery mount needs admin access | Official Lenovo driver search and exact-match tuning |
 | macOS comparison | Pending physical measurements | M4 Air primary, M3 Max secondary |
 | Sonos Arc/eARC | Deferred until internal audio work | TV route and actual received formats |
 
@@ -39,6 +39,6 @@ runtime, internal-speaker routing and reversible install/remove kit still
 need implementation and acceptance. Acoustic quality and physical latency
 remain later measurements.
 
-ThinkPad: readiness is tracked independently. Inspection must establish its
-exact generation, codec and OEM tuning before any model-specific candidate.
+ThinkPad: first-generation model and codec are identified. Recovery access
+and exact-match OEM tuning remain pending before a model-specific candidate.
 The recovery search is read-only; ASUS coefficients are not a ThinkPad profile.

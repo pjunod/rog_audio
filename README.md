@@ -1,7 +1,8 @@
 # rog_audio — Linux speaker quality, latency and spatial audio
 
 Linux audio engineering for the ASUS ROG Zephyrus G16 GU605MZ, with reusable
-diagnostics and offline tooling. Built-in speakers and everyday media come
+diagnostics and offline tooling, extended to the first-generation ThinkPad X1
+Extreme. Built-in speakers and everyday media come
 first, measured latency against the M4 Air/M3 Max follows, and Sonos Arc/eARC
 Atmos is last.
 
@@ -16,6 +17,7 @@ Display work remains in [rog_hdr_dv](https://github.com/pjunod/rog_hdr_dv).
 
 - [Audio quality](docs/AUDIO_QUALITY.md) — goals, source research and comparison methods.
 - [Hardware](docs/AUDIO_HARDWARE.md) — actual codec, amps and OEM findings.
+- [ThinkPad](docs/THINKPAD_AUDIO.md) — independent inventory, recovery status and tuning contract.
 - [Implementation](docs/AUDIO_IMPLEMENTATION.md) — build order and deliverables.
 - [Speaker build](docs/AUDIO_SPEAKER_BUILD.md) — exact-match tuning conversion.
 - [Latency build](docs/AUDIO_LATENCY_BUILD.md) — inspection, measurements and candidates.
