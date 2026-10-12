@@ -11,7 +11,7 @@ if [ -n "${XDG_RUNTIME_DIR:-}" ] && [ -e "$XDG_RUNTIME_DIR/pipewire-0" ]; then
 fi
 stage=${AUDIO_STAGE:-all}
 case "$stage" in
-  all|unit|unit-inspector|unit-analyser|unit-candidate|config|compile|native-match|native-other-app|native-other-target) ;;
+  all|unit|unit-inspector|unit-analyser|unit-candidate|unit-validator|config|compile|native-match|native-other-app|native-other-target) ;;
   *) echo 'unknown audio validation stage' >&2; exit 2 ;;
 esac
 export DEBIAN_FRONTEND=noninteractive
@@ -42,9 +42,10 @@ stage = os.environ.get('AUDIO_STAGE', 'all')
 ids = json.loads(os.environ.get('AUDIO_TEST_IDS', '[]'))
 modules = {'unit-inspector': 'test_inspect_audio',
            'unit-analyser': 'test_analyse_audio_latency',
-           'unit-candidate': 'test_prepare_audio_latency'}
+           'unit-candidate': 'test_prepare_audio_latency',
+           'unit-validator': 'test_validate_audio_linux'}
 module = modules.get(stage)
-pattern = (re.escape(module) if module else r'(?:test_inspect_audio|test_analyse_audio_latency|test_prepare_audio_latency)') + r'\.[A-Za-z][A-Za-z0-9_]*\.test_[A-Za-z0-9_]+'
+pattern = (re.escape(module) if module else r'(?:test_inspect_audio|test_analyse_audio_latency|test_prepare_audio_latency|test_validate_audio_linux)') + r'\.[A-Za-z][A-Za-z0-9_]*\.test_[A-Za-z0-9_]+'
 if not isinstance(ids, list) or len(ids) > 128 or any(not isinstance(x, str) or not re.fullmatch(pattern, x) for x in ids) or len(ids) != len(set(ids)) or (stage == 'all' and ids):
     sys.exit('invalid method selection')
 loader = unittest.TestLoader()

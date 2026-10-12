@@ -102,6 +102,26 @@ def correction_models(values):
     return sorted(values, key=lambda value: value["model_id"])
 
 
+def model_number_identity(value):
+    """Validated model scalars are within 1e9: integer conversion is exact.
+
+    Use one JSON number spelling for equal int/float values and signed zero.
+    Trial rows keep their original model declarations.
+    """
+    return 0.0 if value == 0 else float(value)
+
+
+def model_group_identity(clock, corrections):
+    clock = dict(clock)
+    for name in ('offset_ms', 'uncertainty_ms'):
+        if name in clock:
+            clock[name] = model_number_identity(clock[name])
+    corrections = [dict(model, delay_ms=model_number_identity(model['delay_ms']),
+                         uncertainty_ms=model_number_identity(model['uncertainty_ms']))
+                   for model in corrections]
+    return clock, corrections
+
+
 def validate_trial(value, setup_ids):
     fields(value, {"trial_id", "setup_id", "configuration_id", "kind", "delay",
                    "unit", "sample_rate_hz", "method", "route", "clock",
@@ -155,7 +175,8 @@ def validate_trial(value, setup_ids):
         reasons.add("negative-corrected-delay")
     group = {name: value[name] for name in ("setup_id", "configuration_id", "kind",
              "method", "route", "sample_rate_hz", "power_state", "load_state", "dsp_state")}
-    group.update({"clock_model": value["clock"], "corrections": corrections, "graph": graph})
+    clock_identity, correction_identity = model_group_identity(value["clock"], corrections)
+    group.update({"clock_model": clock_identity, "corrections": correction_identity, "graph": graph})
     row = {"trial_id": value["trial_id"], "raw_delay": value["delay"],
            "raw_unit": value["unit"], "raw_delay_ms": raw,
            "corrected_delay_ms": corrected if relationship != "unsynchronised" else None,

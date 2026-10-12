@@ -325,7 +325,8 @@ For `synchronised`, supply exactly `relationship`, `model_id`, `offset_ms`,
 is inflated by clock offset; corrected delay subtracts it. Offsets may be
 signed. The nonnegative uncertainty must include residual calibration error
 and drift over the capture interval. A common wall-clock name is insufficient.
-Different offsets or uncertainty/calibration IDs form distinct groups; use a
+Different numeric offsets or uncertainty/calibration IDs form distinct groups;
+equivalent integer/float spellings and signed zero share one group. Use a
 shared measurement clock for repeated-trial comparisons where possible.
 
 A correction object contains exactly `model_id`, `kind`, `delay_ms`,
@@ -353,7 +354,9 @@ audio early. Round-trip is never halved into inferred one-way latency.
 Grouping uses setup, configuration, kind, method, route, measurement rate,
 power/load/DSP states, the full clock model, full correction models and full
 graph declaration. Input units may differ within a group because they are
-converted to ms. Corrections are sorted by model ID; input order does not
+converted to ms. Model grouping normalises accepted numeric scalars to floats
+and zero to positive zero; original trial clock/correction declarations retain
+their input numeric types and signs. Corrections are sorted by model ID; input order does not
 alter a report. Trial order is sorted by ID. Graph period is separate:
 `graph_period_ms = quantum_frames * 1000 / rate_hz`, or null when unknown.
 
@@ -436,13 +439,19 @@ python3 scripts/validate_audio_linux.py --output private/linux-validation.json
 The parent should run this after the integration review; it includes the
 focused unit suite once plus compiler and native-rule checks. For remote
 Docker, append the explicitly authorised `--ssh-target` and `--identity-file`
-arguments. There are no host sound/config/runtime mounts. An interrupted run
-attempts removal of only its own uniquely named container.
+arguments. There are no host sound/config/runtime mounts. Every dispatched run attempts removal of only its own uniquely named container
+in a `finally` block, including normal completion, failures, SSH disconnect,
+timeout, KeyboardInterrupt and handled SIGINT/SIGTERM. Interruptions write a
+private result with the signal and cleanup outcome, close the exclusive output
+descriptor and restore signal handlers. Repeated signals are ignored during
+bounded cleanup and receipt persistence. A lost Docker/SSH connection can
+prevent removal; the receipt records the attempted cleanup return code or
+unavailability. SIGKILL and host power loss cannot run process cleanup.
 
 ### Select one stage or failed method without repeating passing tests
 
 The Linux CLI accepts `--stage all` (default), `unit`, `unit-inspector`,
-`unit-analyser`, `unit-candidate`, `config`, `compile`, `native-match`,
+`unit-analyser`, `unit-candidate`, `unit-validator`, `config`, `compile`, `native-match`,
 `native-other-app` or `native-other-target`. `--check` is an alias for
 `--stage`. Each explicit invocation creates a new disposable container.
 Dependency setup may repeat; passing test cases do not need to repeat.
@@ -467,14 +476,14 @@ python3 scripts/validate_audio_linux.py --stage native-other-app \
 ```
 
 Repeat `--test-id` for multiple failed methods. IDs must belong to the selected
-suite (or any of the three lane modules for `unit`); duplicates, arbitrary
+suite (or any of the four lane modules for `unit`); duplicates, arbitrary
 commands and cross-suite IDs are refused. A suite stage with no IDs executes
 that suite only. Native stages compile their prerequisite program and start
 only an isolated daemon; they run no unit suite or standalone config check.
 
 For later hosted CI, use `workflow_dispatch` after review with Docker on an
 Ubuntu hosted runner. Pull the pinned image explicitly before using the
-wrapper's `--pull=never`. Either one `all` job or separate jobs for the three
+wrapper's `--pull=never`. Either one `all` job or separate jobs for the four
 unit suites/config/native checks can be authoritative; do not also run those
 same tests locally or remotely. A failed individual method in a suite job
 needs a fresh dispatch selecting only its reported ID. GitHub's whole-job
@@ -482,3 +491,10 @@ rerun repeats passed methods and retains the old SHA; corrected code needs a
 new dispatch on the corrected reviewed SHA. The workflow definition must first
 land on the default branch. This harness change has not been executed before
 the combined review, as requested by the owner.
+
+The combined source review found that raw JSON numeric spellings split model
+groups and that non-timeout interruption skipped container cleanup. Both are
+corrected in source, with a 100-trial numeric-equivalence regression and mocked
+cleanup/interrupt tests. `unit-validator` covers the packaging lifecycle without
+starting Docker/SSH. No tests have been run on these review fixes before the
+combined re-review; final integrated Linux validation remains pending.

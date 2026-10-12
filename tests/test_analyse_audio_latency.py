@@ -6,6 +6,7 @@ import hashlib
 import importlib.util
 import io
 import json
+import math
 import os
 from pathlib import Path
 import stat
@@ -241,6 +242,36 @@ class AnalysisTests(unittest.TestCase):
         self.assertEqual(actual, expected)
         self.assertEqual(actual["evidence_class"], "synthetic")
         self.assertEqual(actual["groups"][0]["statistics"]["corrected_ms"]["p95"], 19)
+
+    def test_equal_integer_float_models_and_signed_zero_share_count_group(self):
+        integer_clock = {'relationship':'synchronised', 'model_id':'clock-a',
+                         'offset_ms':0, 'uncertainty_ms':1}
+        float_clock = dict(integer_clock, offset_ms=-0.0, uncertainty_ms=1.0)
+        integer_correction = [{'model_id':'adc-a', 'kind':'converter',
+                               'delay_ms':2, 'uncertainty_ms':0}]
+        float_correction = [dict(integer_correction[0], delay_ms=2.0, uncertainty_ms=-0.0)]
+        values = [trial(index, clock=integer_clock if index%2 else float_clock,
+                        corrections=integer_correction if index%2 else float_correction)
+                  for index in range(1,101)]
+        source = document(values, evidence='physical-measurement')
+        before = copy.deepcopy(source)
+        result = latency.analyse(source)
+        self.assertEqual(source, before)
+        self.assertEqual(len(result['groups']),1)
+        g = result['groups'][0]
+        self.assertEqual(g['statistics']['included_count'],100)
+        self.assertEqual(g['onset_trial_count_gate']['status'],'count-met')
+        self.assertEqual(g['statistics']['corrected_ms']['median'],8)
+        rows = {row['trial_id']:row for row in g['trials']}
+        self.assertIs(type(rows['trial-1']['clock']['offset_ms']),int)
+        self.assertIs(type(rows['trial-2']['clock']['offset_ms']),float)
+        self.assertIs(type(rows['trial-1']['corrections'][0]['delay_ms']),int)
+        self.assertIs(type(rows['trial-2']['corrections'][0]['delay_ms']),float)
+        self.assertEqual(math.copysign(1,rows['trial-2']['clock']['offset_ms']),-1)
+        changed = copy.deepcopy(values[1])
+        changed['clock']['offset_ms'] = 0.000001
+        changed['trial_id'] = 'trial-different'
+        self.assertEqual(len(latency.analyse(document([values[0], changed]))['groups']),2)
 
     def test_distinct_clock_calibrations_are_separate_and_quotes_do_not_count_depth(self):
         clock = {"relationship": "synchronised", "model_id": "clock-a",
