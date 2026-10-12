@@ -7,11 +7,11 @@
   "log_sha256": "2d735c9729b55a55564409421f9e3a8e59af7fa48e2a536c08fc00d4b254ec16",
   "size_bytes": 86807,
   "sha256": "d6728635859309e0fecf2bdc32844ac15a32f67261e5aae8ae2e91ab01580149",
-  "matches_installed_copy": true,
   "evidence_class": "recovery-source-comparison",
   "limits": [
     "Both copies were extracted from the same recovery image with the same 7-Zip 26.02 reader; not an independent-reader or vendor-signature validation.",
     "The reference-count warning remains; byte identity does not prove acoustic accuracy."
   ],
-  "recovery_mount": "temporary read-only,nodev,nosuid,noexec mount; unmounted in finally"
+  "recovery_mount": "temporary read-only,nodev,nosuid,noexec mount; unmounted in finally",
+  "matches_published_driverstore_xml": true
 }
