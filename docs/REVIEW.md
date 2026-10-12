@@ -57,3 +57,23 @@ unified patches; a narrowly scoped Git attribute preserves those bytes and
 the focused retry passed. The final documentation/evidence delta receives
 its own integrity/privacy check; passing audio suites are retained by source
 hash and are not repeated.
+
+## Second implementation batch — acceptance preparation
+
+PR 2 combines model-specific Lenovo preparation, original source publication,
+bounded recovery findings and the speaker runtime/installation work. The
+completed batch must receive independent adversarial review before its tests.
+The runtime builder has compiled and packaged the candidate and prepared an
+inactive kit for each laptop. Review and test results are not yet recorded.
+
+The required coverage includes shared ASUS/Lenovo preparation regressions,
+file installation and removal, pinned source staging, native target ownership
+and route transitions, and a real isolated EasyEffects graph for each emitted
+speaker preset. Those graph tests use generated audio and private session
+services, without sound devices or the owner's desktop sockets. Source hashes
+will bind inherited receipts and new results to the merge candidate. Unchanged
+latency and Atmos suites retain their first-batch acceptance and are not rerun.
+
+The package and both kits remain inactive. Physical headphone transitions,
+resume, listening, power and latency measurements require the coordinated
+laptop window after delivery.
