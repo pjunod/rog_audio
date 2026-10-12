@@ -6,7 +6,8 @@ Companion to [development](DEVELOPMENT.md) and [status](STATUS.md).
 
 Three independent GPT-6.1 Sol agents reviewed the completed batch at
 `b3c92bfdc1be252def1f4b66301f11d7cf8519d2` without running tests. Speaker and latency findings are fixed and source-checked with no remaining
-issues in those changes. Atmos fixes precede the final Linux acceptance pass.
+issues in those changes. Atmos fixes at `42642b2` were independently
+source-checked with all six findings resolved; final Linux acceptance follows.
 
 | Lane | Finding | Disposition |
 |---|---|---|
@@ -36,4 +37,4 @@ hashes bind the accepted code despite later documentation commits.
 
 The [speaker receipt](../evidence/audio-speaker-validation-2026-10-12.json) and
 [latency receipt](../evidence/audio-latency-validation-2026-10-12.json) record
-source, dependency, command and cleanup evidence. Atmos remains in final fixes.
+source, dependency, command and cleanup evidence. Atmos fixes have cleared source re-review; its final tests are running.

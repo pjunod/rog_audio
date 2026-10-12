@@ -4,13 +4,15 @@
 body{font:16px/1.55 system-ui,sans-serif;margin:3rem auto;padding:0 1.5rem;max-width:1050px;background:#101823;color:#edf2f7}
 h1{font-size:2rem}h2{color:#91d7ee}a{color:#91d7ee}table{border-collapse:collapse;width:100%;margin:2rem 0}td{border-bottom:1px solid #3b4b60;padding:.8rem;vertical-align:top}tr:first-child{font-weight:700;background:#1e3047}p{margin:.5rem 0}
 </style><main><h1>Status — implementation and physical acceptance</h1>
-<p>**Updated:** 2026-10-12 · **State:** offline tools assembled; review findings being fixed; final acceptance tests pending.</p>
+<p>**Updated:** 2026-10-12 · **State:** speaker and latency acceptance passed; Atmos fixes reviewed, final tests running.</p>
 <table>
 <tr><td>Work</td><td>State</td><td>Next evidence</td></tr>
 <tr><td>Hardware inventory</td><td>Read-only inspection complete</td><td>Sanitized receipt and build contracts imported</td></tr>
 <tr><td>ASUS speaker tuning</td><td>Original XML and matching INF published</td><td>48 tests and three OEM conversions passed; runtime/acoustics pending</td></tr>
 <tr><td>Diagnostics and latency</td><td>Reviewed; 42 tests and native rule checks passed</td><td>Physical comparison and coordinated activation</td></tr>
-<tr><td>Host Atmos</td><td>Pinned Linux build and offline CLI implemented</td><td>Offline harness, synthetic renderer and capability receipt</td></tr>
+<tr><td>Host Atmos</td><td>Review fixes source-checked</td><td>Final isolated Linux acceptance running</td></tr>
+<tr><td>ASUS installation kit</td><td>Implementation started</td><td>EasyEffects runtime, scoped routing and reversible install/remove</td></tr>
+<tr><td>ThinkPad X1 Extreme</td><td>Read-only inventory and recovery search running</td><td>Exact model, codec, speaker hardware and matching OEM files</td></tr>
 <tr><td>macOS comparison</td><td>Pending physical measurements</td><td>M4 Air primary, M3 Max secondary</td></tr>
 <tr><td>Sonos Arc/eARC</td><td>Deferred until internal audio work</td><td>TV route and actual received formats</td></tr>
 </table>
@@ -27,4 +29,13 @@ h1{font-size:2rem}h2{color:#91d7ee}a{color:#91d7ee}table{border-collapse:collaps
 <p>The first implementation PR combines the three lanes. Tests are explicitly</p>
 <p>selected after adversarial review; hosted CI is manual to avoid duplicate</p>
 <p>push-triggered runs. All agent workspaces are outside the owner&#x27;s ~/code tree.</p>
-<p>No live audio deployment or physical measurement is implied by this batch.</p><p><a href="https://github.com/pjunod/rog_audio/blob/main/docs/STATUS.md">GitHub progress ledger</a></p></main></html>
+<p>No live audio deployment or physical measurement is implied by this batch.</p>
+<h2>Installation readiness</h2>
+<p>ASUS: not yet ready for live installation. The offline tuning importer and</p>
+<p>latency tooling have passed their reviewed checks, but the EasyEffects</p>
+<p>runtime, internal-speaker routing and reversible install/remove kit still</p>
+<p>need implementation and acceptance. Acoustic quality and physical latency</p>
+<p>remain later measurements.</p>
+<p>ThinkPad: readiness is tracked independently. Inspection must establish its</p>
+<p>exact generation, codec and OEM tuning before any model-specific candidate.</p>
+<p>The recovery search is read-only; ASUS coefficients are not a ThinkPad profile.</p><p><a href="https://github.com/pjunod/rog_audio/blob/main/docs/STATUS.md">GitHub progress ledger</a></p></main></html>
