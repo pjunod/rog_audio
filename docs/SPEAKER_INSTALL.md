@@ -4,6 +4,14 @@
 **Updated:** 2026-10-12 · **Executes:** internal-speaker installation from
 [status](STATUS.md).
 
+The ROG now runs the authorized v0.2.0 candidate; its live preset, IR, plugins
+and physical output checks are recorded in
+[the deployment receipt](../evidence/rog-speaker-deployment-2026-10-12.json).
+It uses a transient user service with no reboot autostart. Initial volume is
+20%, and the prior volume, private snapshot and versioned recovery tools are
+retained. Owner listening and physical hotplug/measurement acceptance are
+pending. The ThinkPad has not been installed.
+
 Read [speaker preparation](AUDIO_SPEAKER_BUILD.md) before using
 [the installation tool](../scripts/speaker_install.py). The input is an
 integrity-checked offline tuning bundle and a fresh read-only inventory.
@@ -193,7 +201,7 @@ The following commands are for the later coordinated installation window.
 Use the delivered per-device kit and a new private snapshot directory.
 
 ```bash
-# Coordinated package/dependency installation; none has been run on a laptop.
+# Coordinated package/dependency installation on the selected laptop.
 sudo apt install ./RUNTIME_ARTIFACT/rog-audio-easyeffects_8.2.8+rog1_amd64.deb
 mkdir -p "${XDG_STATE_HOME:-$HOME/.local/state}/rog-audio/snapshots"
 python3 scripts/speaker_install.py install \

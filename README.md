@@ -8,10 +8,11 @@ Atmos is last.
 
 Read [status](docs/STATUS.md) for progress and evidence boundaries.
 The speaker runtime and separate ASUS/ThinkPad kits have passed review, unit
-tests and isolated runtime acceptance. They are ready for coordinated
-installation on the inspected Ubuntu 26.10 amd64 laptops. No live audio
-settings have changed, and macOS-equivalent performance or Atmos fidelity
-has not been measured.
+tests and isolated runtime acceptance. The ROG now runs the v0.2.0 internal
+speaker candidate with its preset, IR, plugins and hardware output checked;
+the ThinkPad remains ready for coordinated installation. Physical listening,
+hotplug and measurements remain pending. macOS-equivalent performance or
+Atmos fidelity has not been measured.
 
 Display work remains in [rog_hdr_dv](https://github.com/pjunod/rog_hdr_dv).
 
@@ -41,6 +42,11 @@ package dependencies, the ASUS or ThinkPad kit, a private rollback snapshot
 and explicit start/stop commands. The package does not activate itself.
 Use a coordinated listening window for the first activation; physical hotplug,
 resume, acoustic quality and latency still need measurement.
+
+The [ROG deployment receipt](evidence/rog-speaker-deployment-2026-10-12.json)
+records the authorized installation and live operational checks. Its initial
+volume is 20%, with the original volume and private rollback snapshot retained.
+The current runtime is a transient user service; reboot autostart is not enabled.
 
 ## Install and use the diagnostics
 
