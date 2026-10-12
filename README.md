@@ -26,10 +26,32 @@ Display work remains in [rog_hdr_dv](https://github.com/pjunod/rog_hdr_dv).
 - [Review](docs/REVIEW.md) — findings, fixes and final validation.
 - [Visual status](docs/STATUS.html) — current workboard.
 
+## Install and use the diagnostics
+
+The diagnostics and latency tools use Python 3 with its standard library.
+Linux collection requires the relevant ALSA/PipeWire commands; absent probes
+are reported explicitly. Speaker and Atmos builds have separate pinned
+container dependencies in their build documents.
+
+```bash
+git clone https://github.com/pjunod/rog_audio.git /tmp/rog-audio-work
+cd /tmp/rog-audio-work
+python3 scripts/inspect_audio.py --output /tmp/audio-inventory.json
+python3 scripts/analyse_audio_latency.py --input tests/audio/synthetic-trials.json --output /tmp/audio-analysis.json
+```
+
+Use new output paths; existing files are not overwritten. The example analysis
+uses synthetic trials, not a measurement of your machine. Collection is
+read-only and never starts playback or recording. See the lane documents
+for speaker conversion, client latency requests and the offline Atmos CLI.
+
 ## Recovered ASUS files
 
 The [original tuning XML and matching INF](profiles/asus/gu605mz/README.md)
 are included with hashes and vendor notices, as requested by the laptop owner.
+
+[Licensing and attribution](LICENSES.md) distinguishes original tools from
+recovered vendor files and separately fetched dependencies.
 
 ## Layout
 
