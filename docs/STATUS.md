@@ -1,14 +1,14 @@
 # Status — implementation and physical acceptance
 
-**Updated:** 2026-10-12 · **State:** PR 2 accepted for merge; both laptops ready
-for coordinated installation with v0.2.0.
+**Updated:** 2026-10-12 · **State:** ROG v0.2.0 installed and running, ready for
+owner listening; ThinkPad installation pending.
 
 | Work | State | Next evidence |
 |---|---|---|
 | Hardware inventory | Both laptops inspected read-only | Refresh during installation |
-| ASUS speaker tuning | Original XML/INF published; three bundles built | Physical listening and measurements |
+| ASUS speaker tuning | Music/balanced candidate installed; live preset, IR, plugins and hardware output verified | Owner listening, physical hotplug and measurements |
 | ThinkPad speaker tuning | Exact Lenovo XML/INF published; three bundles built | Physical listening and measurements |
-| Laptop installation runtime | Reviewed package and per-device kits ready; 97 affected unit cases and both graph cases passed | Coordinated install and live routing qualification |
+| Laptop installation runtime | ROG active with private rollback; ThinkPad kit ready; inherited 97 unit cases and both isolated graph cases passed | ThinkPad coordinated install and physical qualification |
 | Diagnostics and latency | 42 tests and native rule checks passed in PR 1 | Physical comparison and coordinated activation |
 | Host Atmos | 15 tests and focused CI cleanup acceptance passed in PR 1 | Actual JOC reference media and physical qualification |
 | macOS comparison | Pending physical measurements | M4 Air primary, M3 Max secondary |
@@ -20,11 +20,10 @@ installation and measured performance remain separate claims.
 
 ## Installation readiness
 
-Both the ASUS ROG GU605MZ and ThinkPad X1 Extreme Gen 1 have an inactive,
-model-specific installation kit for the reviewed EasyEffects runtime. Each
-passed its real isolated loader/plugin/routing case with ten assertions.
-The kits are ready for coordinated installation on the inspected Ubuntu 26.10
-amd64 hosts; no package or profile has been installed or activated there.
+Both model-specific kits passed their isolated loader/plugin/routing case
+with ten assertions. The ASUS ROG GU605MZ is now installed and active on
+Ubuntu 26.10 amd64. The ThinkPad X1 Extreme Gen 1 remains ready for a separately
+coordinated installation; no package or profile has been activated there.
 
 The package preserves stock EasyEffects configuration and uses a separate
 application identity and data roots. Installation/removal has a durable file
@@ -37,7 +36,37 @@ Read-only APT simulations resolved the exact final package from each host's
 cached metadata: 135 new packages on ASUS and 136 on ThinkPad, with zero
 upgrades/removals. Installed-package inventories were unchanged. This proves
 cached resolution, not successful download or installation. A fresh ASUS
-baseline and private rollback records are retained for the deployment window.
+baseline and private rollback records are retained. These simulations remain
+historical preparation receipts, distinct from the completed ROG installation.
+
+## ROG live deployment
+
+The owner authorized the ROG installation and activation. The exact v0.2.0
+package installed with 135 new packages and no existing-package upgrades or
+removals. The installed binary hash matches the reviewed artifact, and the
+runtime prerequisite inspector now reports compatible. Five managed candidate
+files were installed with a durable private snapshot before activation.
+
+The active candidate selected the ASUS music/balanced preset. Its actual IR
+loader confirmed the kernel, all expected plugin nodes appeared, an existing
+application stream entered the candidate and the effects output linked to the
+physical speakers. The internal speaker route and physical default were
+preserved. The initial speaker volume was reduced from 76% to 20%; its prior
+value is retained. No deployment-generated playback or recording occurred.
+
+Stock PipeWire/WirePlumber process IDs, amplifier controls and Cirrus firmware
+hashes were unchanged. The candidate runs as a transient user service without
+reboot autostart. Versioned recovery tools, corresponding source, logs and the
+rollback snapshot are retained privately outside temporary storage. Immediate
+bypass uses controlled quit; removal restores managed files and retains the
+post-install state. Newly installed dependencies are retained on candidate
+removal; no automatic dependency cleanup is part of rollback.
+
+[The deployment receipt](../evidence/rog-speaker-deployment-2026-10-12.json)
+records live operational checks. The inherited unit and isolated graph passes
+were not repeated. Listening preference, headphone/HDMI hotplug, resume, calls,
+power, calibrated response/distortion and physical latency remain unmeasured.
+ThinkPad and Sonos were not changed in this window.
 
 ## Review and acceptance
 

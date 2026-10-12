@@ -1,0 +1,82 @@
+{
+  "agent_generated_playback": false,
+  "agent_recording_performed": false,
+  "binary_sha256": "e5061dcc1e0b925933eceeacffb576536d24f609307166b97d0e159c0f1772d1",
+  "candidate": {
+    "initial_volume": 0.2,
+    "managed_files": 5,
+    "preset_name": "rog-speaker-f4e1d0d45ec0f259",
+    "prior_volume": 0.76,
+    "profile": "music",
+    "reboot_autostart_enabled": false,
+    "service": "rog-audio-speaker-v020.service",
+    "service_kind": "transient-user-service",
+    "voicing": "balanced"
+  },
+  "date": "2026-10-12",
+  "evidence_kind": "authorized-live-installation-and-operational-checks",
+  "existing_application_stream_observed_in_candidate": true,
+  "host": "lab5",
+  "inherited_acceptance": "97 affected unit cases and both isolated graph cases passed before release; not rerun for this deployment",
+  "kind": "rog-speaker-deployment",
+  "limits": [
+    "Live software state and graph links are not acoustic accuracy or physical latency measurements.",
+    "Physical driver protection is not independently measured; stock amplifier controls and firmware bytes were preserved.",
+    "Existing application audio was observed; deployment did not generate test playback."
+  ],
+  "live_checks": {
+    "amplifier_controls_unchanged": true,
+    "firmware_hashes_unchanged": true,
+    "ir_loader_confirmed": true,
+    "physical_default_preserved": true,
+    "physical_output_connected": true,
+    "physical_route_verified": true,
+    "preset_loaded": true,
+    "service_active": true,
+    "stock_audio_service_pids_unchanged": true
+  },
+  "package_sha256": "089ae964c8e1b75281d589a6cd52a3a25d358f9443112162fea616b69b5904d7",
+  "package_transaction": {
+    "dependencies_satisfied": true,
+    "existing_package_removals": 0,
+    "existing_package_upgrades": 0,
+    "new_packages": 135
+  },
+  "physical_measurements": {
+    "acoustic_quality": false,
+    "calls": false,
+    "headphone_hdmi_hotplug": false,
+    "physical_latency": false,
+    "power": false,
+    "resume": false
+  },
+  "plugin_nodes": [
+    "convolver",
+    "limiter",
+    "multiband_compressor"
+  ],
+  "private_receipt_sha256": {
+    "compatibility-installed.json": "279751194102ad1ccb6d76378cc993941d1181a33791f2ad05bb8411637ff3a9",
+    "config-result.json": "a06f0affa1f3816f26169410a705081417854861fe754544b729c1c2f8eed67a",
+    "deployment-final.json": "e7cb33d55ce56477e587c6138348b492c0fe9b70da8a247d382a11b21f6d3eed",
+    "live-inventory.json": "0b9759fd02f71b77a717abc36924232224d7a36eae9f34dffdfd3271601f6c1a",
+    "package-result.json": "a84e3b5e35f4445bd614ffdf8744dfa72421ec1a0f0cc8deedaa9cf46cf50a90",
+    "runtime-journal.json": "92f96ba4e9c618856d1b6141d5041d5856e8d79d9a62f2b7a07f697125ff56ac"
+  },
+  "release": "v0.2.0",
+  "rollback": {
+    "candidate_package_removal_command": "sudo apt remove rog-audio-easyeffects",
+    "controlled_quit_command": "rog-speaker-effects --quit",
+    "durable_private_snapshot_retained": true,
+    "durable_versioned_recovery_tools_retained": true,
+    "live_removal_exercised": false,
+    "local_private_copy_retained": true,
+    "managed_files_verified_after_activation": true,
+    "new_dependencies_removed_automatically": false
+  },
+  "schema_version": 1,
+  "sonos_state": "deferred",
+  "source_commit": "15a8da33d156a7e3e2253c807546ad21b881525a",
+  "status": "ready-for-owner-listening",
+  "thinkpad_changed": false
+}

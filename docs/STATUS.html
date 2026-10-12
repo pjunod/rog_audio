@@ -4,14 +4,14 @@
 body{font:16px/1.55 system-ui,sans-serif;margin:3rem auto;padding:0 1.5rem;max-width:1050px;background:#101823;color:#edf2f7}
 h1{font-size:2rem}h2{color:#91d7ee}a{color:#91d7ee}table{border-collapse:collapse;width:100%;margin:2rem 0}td{border-bottom:1px solid #3b4b60;padding:.8rem;vertical-align:top}tr:first-child{font-weight:700;background:#1e3047}p{margin:.5rem 0}
 </style><main><h1>Status — implementation and physical acceptance</h1>
-<p>**Updated:** 2026-10-12 · **State:** PR 2 accepted for merge; both laptops ready</p>
-<p>for coordinated installation with v0.2.0.</p>
+<p>**Updated:** 2026-10-12 · **State:** ROG v0.2.0 installed and running, ready for</p>
+<p>owner listening; ThinkPad installation pending.</p>
 <table>
 <tr><td>Work</td><td>State</td><td>Next evidence</td></tr>
 <tr><td>Hardware inventory</td><td>Both laptops inspected read-only</td><td>Refresh during installation</td></tr>
-<tr><td>ASUS speaker tuning</td><td>Original XML/INF published; three bundles built</td><td>Physical listening and measurements</td></tr>
+<tr><td>ASUS speaker tuning</td><td>Music/balanced candidate installed; live preset, IR, plugins and hardware output verified</td><td>Owner listening, physical hotplug and measurements</td></tr>
 <tr><td>ThinkPad speaker tuning</td><td>Exact Lenovo XML/INF published; three bundles built</td><td>Physical listening and measurements</td></tr>
-<tr><td>Laptop installation runtime</td><td>Reviewed package and per-device kits ready; 97 affected unit cases and both graph cases passed</td><td>Coordinated install and live routing qualification</td></tr>
+<tr><td>Laptop installation runtime</td><td>ROG active with private rollback; ThinkPad kit ready; inherited 97 unit cases and both isolated graph cases passed</td><td>ThinkPad coordinated install and physical qualification</td></tr>
 <tr><td>Diagnostics and latency</td><td>42 tests and native rule checks passed in PR 1</td><td>Physical comparison and coordinated activation</td></tr>
 <tr><td>Host Atmos</td><td>15 tests and focused CI cleanup acceptance passed in PR 1</td><td>Actual JOC reference media and physical qualification</td></tr>
 <tr><td>macOS comparison</td><td>Pending physical measurements</td><td>M4 Air primary, M3 Max secondary</td></tr>
@@ -21,11 +21,10 @@ h1{font-size:2rem}h2{color:#91d7ee}a{color:#91d7ee}table{border-collapse:collaps
 <p>[implementation](AUDIO_IMPLEMENTATION.md). Source capability, synthetic results,</p>
 <p>installation and measured performance remain separate claims.</p>
 <h2>Installation readiness</h2>
-<p>Both the ASUS ROG GU605MZ and ThinkPad X1 Extreme Gen 1 have an inactive,</p>
-<p>model-specific installation kit for the reviewed EasyEffects runtime. Each</p>
-<p>passed its real isolated loader/plugin/routing case with ten assertions.</p>
-<p>The kits are ready for coordinated installation on the inspected Ubuntu 26.10</p>
-<p>amd64 hosts; no package or profile has been installed or activated there.</p>
+<p>Both model-specific kits passed their isolated loader/plugin/routing case</p>
+<p>with ten assertions. The ASUS ROG GU605MZ is now installed and active on</p>
+<p>Ubuntu 26.10 amd64. The ThinkPad X1 Extreme Gen 1 remains ready for a separately</p>
+<p>coordinated installation; no package or profile has been activated there.</p>
 <p>The package preserves stock EasyEffects configuration and uses a separate</p>
 <p>application identity and data roots. Installation/removal has a durable file</p>
 <p>snapshot and conflict detection. Controlled quit restores owned stream targets;</p>
@@ -36,7 +35,32 @@ h1{font-size:2rem}h2{color:#91d7ee}a{color:#91d7ee}table{border-collapse:collaps
 <p>cached metadata: 135 new packages on ASUS and 136 on ThinkPad, with zero</p>
 <p>upgrades/removals. Installed-package inventories were unchanged. This proves</p>
 <p>cached resolution, not successful download or installation. A fresh ASUS</p>
-<p>baseline and private rollback records are retained for the deployment window.</p>
+<p>baseline and private rollback records are retained. These simulations remain</p>
+<p>historical preparation receipts, distinct from the completed ROG installation.</p>
+<h2>ROG live deployment</h2>
+<p>The owner authorized the ROG installation and activation. The exact v0.2.0</p>
+<p>package installed with 135 new packages and no existing-package upgrades or</p>
+<p>removals. The installed binary hash matches the reviewed artifact, and the</p>
+<p>runtime prerequisite inspector now reports compatible. Five managed candidate</p>
+<p>files were installed with a durable private snapshot before activation.</p>
+<p>The active candidate selected the ASUS music/balanced preset. Its actual IR</p>
+<p>loader confirmed the kernel, all expected plugin nodes appeared, an existing</p>
+<p>application stream entered the candidate and the effects output linked to the</p>
+<p>physical speakers. The internal speaker route and physical default were</p>
+<p>preserved. The initial speaker volume was reduced from 76% to 20%; its prior</p>
+<p>value is retained. No deployment-generated playback or recording occurred.</p>
+<p>Stock PipeWire/WirePlumber process IDs, amplifier controls and Cirrus firmware</p>
+<p>hashes were unchanged. The candidate runs as a transient user service without</p>
+<p>reboot autostart. Versioned recovery tools, corresponding source, logs and the</p>
+<p>rollback snapshot are retained privately outside temporary storage. Immediate</p>
+<p>bypass uses controlled quit; removal restores managed files and retains the</p>
+<p>post-install state. Newly installed dependencies are retained on candidate</p>
+<p>removal; no automatic dependency cleanup is part of rollback.</p>
+<p>[The deployment receipt](../evidence/rog-speaker-deployment-2026-10-12.json)</p>
+<p>records live operational checks. The inherited unit and isolated graph passes</p>
+<p>were not repeated. Listening preference, headphone/HDMI hotplug, resume, calls,</p>
+<p>power, calibrated response/distortion and physical latency remain unmeasured.</p>
+<p>ThinkPad and Sonos were not changed in this window.</p>
 <h2>Review and acceptance</h2>
 <p>The completed PR 2 batch received three independent adversarial reviews.</p>
 <p>All seven findings were fixed and cleared focused source re-review before</p>
