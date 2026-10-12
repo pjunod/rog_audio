@@ -1,6 +1,6 @@
 # Speaker installation — exact route, reversible files
 
-**Status:** review fixes complete; matching runtime rebuild/tests pending ·
+**Status:** reviewed compiler and33 unit cases passed; real graph acceptance pending ·
 **Updated:** 2026-10-12 · **Executes:** internal-speaker installation from
 [status](STATUS.md).
 
@@ -187,8 +187,13 @@ preserved. No display or session restart belongs to this procedure.
 
 ## 6. Review-bound isolated acceptance
 
-Defer these tests until the completed PR has independent adversarial review
-and findings are fixed. Each selector can be retried independently if it fails.
+Run these tests only after independent adversarial review and fixes.
+[The unit receipt](../evidence/speaker-installation-unit-validation-2026-10-12.json)
+records source1, installer12 and native routing20 passing against integrated
+`155d003`, with zero skips. The initial20 native launches failed on a noexec
+Docker temporary mount; only those20 failed cases were retried with an
+executable private mount. Source/installer passes were retained. Real graph
+acceptance remains separate. Each selector can be retried independently.
 
 ```bash
 # Prepare actual patched source for native policy compilation.

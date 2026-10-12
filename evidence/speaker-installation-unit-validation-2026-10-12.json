@@ -1,0 +1,134 @@
+{
+  "accepted_stages": [
+    {
+      "command": [
+        "python3",
+        "scripts/validate_speaker_install.py",
+        "--stage",
+        "source"
+      ],
+      "returncode": 0,
+      "skipped": false,
+      "stage": "source",
+      "summary": "OK",
+      "tests_run": 1
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/validate_speaker_install.py",
+        "--stage",
+        "install"
+      ],
+      "returncode": 0,
+      "skipped": false,
+      "stage": "install",
+      "summary": "OK",
+      "tests_run": 12
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/validate_speaker_install.py",
+        "--stage",
+        "routing"
+      ],
+      "returncode": 0,
+      "skipped": false,
+      "stage": "routing",
+      "summary": "OK",
+      "tests_run": 20
+    }
+  ],
+  "attempts": {
+    "environment_correction": "--tmpfs /tmp:rw,nosuid,nodev,exec,size=256m",
+    "initial": [
+      {
+        "command": [
+          "python3",
+          "scripts/validate_speaker_install.py",
+          "--stage",
+          "source"
+        ],
+        "returncode": 0,
+        "skipped": false,
+        "stage": "source",
+        "summary": "OK",
+        "tests_run": 1
+      },
+      {
+        "command": [
+          "python3",
+          "scripts/validate_speaker_install.py",
+          "--stage",
+          "install"
+        ],
+        "returncode": 0,
+        "skipped": false,
+        "stage": "install",
+        "summary": "OK",
+        "tests_run": 12
+      },
+      {
+        "command": [
+          "python3",
+          "scripts/validate_speaker_install.py",
+          "--stage",
+          "routing"
+        ],
+        "returncode": 1,
+        "skipped": false,
+        "stage": "routing",
+        "summary": "FAILED (errors=20)",
+        "tests_run": 20
+      }
+    ],
+    "initial_routing_error": "All20 compiled helper launches raised PermissionError because Docker tmpfs was noexec; no routing case body ran",
+    "passing_source_and_install_tests_repeated": false,
+    "routing_failed_only_retry": [
+      {
+        "command": [
+          "python3",
+          "scripts/validate_speaker_install.py",
+          "--stage",
+          "routing"
+        ],
+        "returncode": 0,
+        "skipped": false,
+        "stage": "routing",
+        "summary": "OK",
+        "tests_run": 20
+      }
+    ]
+  },
+  "evidence_kind": "reviewed-isolated-unit-acceptance",
+  "failed_tests_remaining": 0,
+  "host_audio_or_session_access": false,
+  "integrated_commit": "155d003d5912e75bfc521676b2903e6d08edb199",
+  "linux_environment": {
+    "base_image": "ubuntu@sha256:ee126c2fa0249079a7e24ae3a3d29b04783ef93ab33c868751c9a1289d3fffff",
+    "compiler": "GNU15.3.0",
+    "compiler_image": "rog-audio-ee-artifact:165ae90705e6"
+  },
+  "passed_tests": 33,
+  "raw_log_sha256": {
+    "install": "db7b503fe7256b8d9229e1bd65cb5938c28002b228e58de2b4d7240c4d7066a0",
+    "routing_initial_errors": "ab2bab568993f8aeea7db98239b6270d25c87feef5f8ce1b52fcfdc4738fd270",
+    "routing_retry": "e4109adcb21cdf7e8a85f83cd4eb4499d364fe81ee50c468e568f368497738f0",
+    "source": "08b44bde9abfb6d1dced54ac2d16157a705b50dc68760117fc8b25069ff77079"
+  },
+  "runtime_graph_acceptance": "separate; not implied by these unit results",
+  "schema_version": 1,
+  "skipped_tests": 0,
+  "source_files_sha256": {
+    "patches/easyeffects/0001-Scope-speaker-correction-to-device-route.patch": "e10f439698d353e52c58ec0190390107d68fd0ace4f429d89c996c4104d76ede",
+    "patches/easyeffects/source.json": "165c78291ff1bec9f327edf3ae3f61671399d8ada71b92c40bc53b3b53bdf674",
+    "probes/speaker/routing_cases.cpp": "e73f22fbcc2978ce3f72bd2cd054e8f9cbaa5cf39371141f5ef04acc22169cc5",
+    "scripts/build_easyeffects_runtime.py": "b6b2ce623174facda65ffde80a47777031917e58d69d72c2840de9975d4f58bd",
+    "scripts/speaker_install.py": "fef0094ca0b2624526e20717bebfd4638a98771e6233dc299a8e04c62d4009e0",
+    "scripts/validate_speaker_install.py": "bfc473c4c6f198fb1518132b962ee86b6688cd68d591bb477ca53d45693f9a11",
+    "tests/test_easyeffects_runtime.py": "1bce5ffde9f0b025c943276c9888de19f26c960d9d929cf27fdf512110c69758",
+    "tests/test_speaker_install.py": "276c9a3b0c29f0dd7c8b288812910f229cd85932cbe08c1d778597b48c791181",
+    "tests/test_speaker_routing.py": "17166f01e99e8925173a418af1fdeabb882dfbc619e50178055da21eea73a256"
+  }
+}

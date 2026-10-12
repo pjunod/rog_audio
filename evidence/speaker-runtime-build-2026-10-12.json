@@ -1,5 +1,5 @@
 {
-  "binary_sha256": "01b608025f5efa28501949a3149033e88edaddd797e36c88e19ec955607e9c58",
+  "binary_sha256": "e5061dcc1e0b925933eceeacffb576536d24f609307166b97d0e159c0f1772d1",
   "compiler": {
     "compiler_flags": [
       "-O3",
@@ -14,7 +14,7 @@
     "source_files": {
       "CMakeLists.txt": "d907aa89f2e1800e8e2830a606d372da5808a5e36c33deafa5a8e22370088c90",
       "src/autostart.cpp": "5295c8df4ded8ed1fb54a5f0ea5283a15475ffa74cc11ae52c81a582eb89e8d7",
-      "src/contents/CMakeLists.txt": "105d9682efe44766c598e0442a78ce101416c94fd24f8ac81e99b9d18fc0d5c4",
+      "src/contents/CMakeLists.txt": "5012ddf9c297208685f2571b5d568e10b4aae7fb1e4f10f73c98235572756dc3",
       "src/contents/com.github.wwmm.easyeffects.desktop.in": "c0177718cd3c37936e3d00bee9ef87232b5f33bef0f293cf3d6f73b24a331bcd",
       "src/contents/kcfg/easyeffects_db_streamoutputs.kcfg": "0ac05a00a0f19d2954e05e55ab75266d25544f81c045887ef24219cc19c0ab8e",
       "src/main.cpp": "fbea4eaf7e642c17777aeb76d630767a99c7be7ec9b4e5aead567c11a42162f6",
@@ -22,14 +22,14 @@
       "src/plugin_base.hpp": "98b168c92543b74b8837b812b910d5b16d26f190d3738b5525d3beae1acdadb2",
       "src/pw_device_manager.cpp": "9ca35814a403fa4c39ad33d240df88ab0fd4db67c9647546160bdcff42ead2fb",
       "src/pw_device_manager.hpp": "5a749f3ac1125bfc44cdeb155b5223ecbf2043afaaa18b39d9179cf0b4b2ad52",
-      "src/pw_manager.cpp": "d27b636cc186649320e13d298d8c689c708970814cdc467658cab6044ac3553d",
+      "src/pw_manager.cpp": "b0d50dd6b0905850d4703e3c6590435f90cebdaea5da71e5a8b3284821c0155a",
       "src/pw_manager.hpp": "8b7d33a619a563cf6063dd971a9512462745a7dc49512d3196f23ab4e7ee60e7",
       "src/pw_metadata_manager.cpp": "807d10e46fe45904421260177350bdef5de553b33ea0d2694f52f75b1709440c",
       "src/pw_metadata_manager.hpp": "2b238edeb76809ef59f0eb336337dd37365d659682902bf69220fbfc4c9902b2",
-      "src/pw_node_manager.cpp": "6f5df79e140bca66da4493e0bb2764e79b7fa55cb5c277e46cdb49f151a31710",
-      "src/pw_node_manager.hpp": "88e1a4b85cd884e23d26cc07afcf236c0c940e6fd7f256078122cb599036b233",
+      "src/pw_node_manager.cpp": "c7ddf67d296b58e011f9f519d70d0cba2888d8812e7ad89b881503cb0a40b5cc",
+      "src/pw_node_manager.hpp": "71ee82727e1324dabdf8bdef2974f1ba681d137349d44ff207cbc4d54549cec5",
       "src/pw_objects.hpp": "cae294f993933375fe144d558dbd6809cdc42bb453b80d51c32a03bd21e27b87",
-      "src/speaker_routing.hpp": "5f974d41cd39a9582bb33fe85565a3243474bd916739941a9d1b2c43ab67a292",
+      "src/speaker_routing.hpp": "e769b6bd2dfbe2f7b18543dc829f27dd3c344486aa7dec3d95159904878dff48",
       "src/tags_app.hpp": "4e075d4fb0944edcf383caa3751a38168523361bfb38270c54533689b2c440b6",
       "src/tags_local_server.hpp": "0dd7de4fdae6a88952bb9528ccf03acf46b80e8d9d44e9c4b104c79bf4d084e1",
       "src/tags_pipewire.hpp": "fb405c607bdf310f1c7d3c7dd00cc1480f94f184f4d8bd85447a388ea65332dd",
@@ -52,21 +52,20 @@
   "host_settings_or_services_changed": false,
   "image_base": "ubuntu@sha256:ee126c2fa0249079a7e24ae3a3d29b04783ef93ab33c868751c9a1289d3fffff",
   "package": "rog-audio-easyeffects_8.2.8+rog1_amd64.deb",
-  "package_sha256": "4a523cb2bf8369e82363f303c7fb492157b8ce160cb86d0437497b2ac4fea490",
+  "package_sha256": "089ae964c8e1b75281d589a6cd52a3a25d358f9443112162fea616b69b5904d7",
   "patches_sha256": {
-    "0001-Scope-speaker-correction-to-device-route.patch": "3e07b594973916288ce748df9484d1bd2ebcc752d5fbb74b58bbdd4452c185c3",
+    "0001-Scope-speaker-correction-to-device-route.patch": "e10f439698d353e52c58ec0190390107d68fd0ace4f429d89c996c4104d76ede",
     "ubuntu/0001-Disable-echo-canceller.patch": "fc990509008860da01bc3b0719d2b7af173e16e6efd7aba26e3ad0f65282ba11",
     "ubuntu/COPYRIGHT": "5ffb35e31945036cf81c7dd63b14c28af850213f4083279e9f3c2ef50e49e207"
   },
   "per_device_kits": {
-    "asus": "4676c616807f576b1dc146a360bb4caf96a247ffbf575cac291d51c149f7a58d",
-    "thinkpad": "0187b59ec4d7696614b9eec85f4fce3ee6c8a69247d52a63ef1996daaf8ec851"
+    "asus": "626c314c3c776af5ef7ad34a1a8d2e3291b0542f8e59772496df829db3ed8459",
+    "thinkpad": "0b431577b22dbe014ec8185717e779673fc2f93825a9b8c9d835e3561f7c8a64"
   },
   "platform": "Linux amd64",
   "runtime_graph_acceptance": "pending combined review",
   "schema_version": 1,
   "source_commit": "6d9b1220d3dcebb154ba759a05600662bc0af549",
-  "source_manifest_sha256": "9419f0b3438fb14219243091100ce8c661083e60b7d93e518d243022d222c841",
-  "source_series_state": "superseded compiler receipt; reviewed routing fixes require matching rebuild",
+  "source_manifest_sha256": "165c78291ff1bec9f327edf3ae3f61671399d8ada71b92c40bc53b3b53bdf674",
   "unit_tests_run": 0
 }
