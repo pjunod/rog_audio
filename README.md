@@ -26,11 +26,17 @@ Display work remains in [rog_hdr_dv](https://github.com/pjunod/rog_hdr_dv).
 - [Review](docs/REVIEW.md) — findings, fixes and final validation.
 - [Visual status](docs/STATUS.html) — current workboard.
 
+## Recovered ASUS files
+
+The [original tuning XML and matching INF](profiles/asus/gu605mz/README.md)
+are included with hashes and vendor notices, as requested by the laptop owner.
+
 ## Layout
 
 - `scripts/` — offline tooling and repository validation.
 - `probes/atmos/` — isolated spatial-audio build and CLI.
 - `tests/` — generated, redistributable regression cases.
+- `profiles/` — recovered ASUS tuning and matching hardware mapping.
 - `evidence/` — sanitized source and build receipts.
 - `docs/` — maintained contracts and acceptance ledger.
 

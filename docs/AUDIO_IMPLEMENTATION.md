@@ -28,7 +28,7 @@ report the exact remaining test. Do not invent a pass or stop at a plan.
 
 | Lane | Build contract | Initial deliverable |
 |---|---|---|
-| Speaker | [Speaker build](AUDIO_SPEAKER_BUILD.md) | Exact-match private OEM importer, offline preset bundle, mapping report and deterministic synthetic checks |
+| Speaker | [Speaker build](AUDIO_SPEAKER_BUILD.md) | Exact-match OEM importer, offline preset bundle, mapping report and deterministic synthetic checks |
 | Diagnostics/latency | [Latency build](AUDIO_LATENCY_BUILD.md) | Read-only inspector, physical-measurement analyser and non-activating candidate configs |
 | Host Atmos | [Atmos build](AUDIO_ATMOS_BUILD.md) | Pinned Linux compiler receipt, offline decode/render harness and honest capability matrix |
 | Integration | This document | One reviewed implementation PR, merged docs/status, evidence and explicit deployment procedure |
@@ -67,9 +67,10 @@ not round-trip delay. A format badge is not object-rendering evidence.
 
 Public JSON uses a schema version, tool/source pins, commands with neutral
 paths, result/limitations and hashes. Raw data, device serials, host addresses,
-usernames, OEM paths containing private identities, generated OEM-derived
-filters and recordings remain private. Test fixtures must be generated or
-redistributable. Never make CI discover local OEM files automatically.
+usernames and raw recordings remain private. The owner authorized publishing
+the recovered ASUS XML and matching INF under profiles/asus/gu605mz. Keep
+original notices and provenance. CI may use those explicit repository inputs;
+it must never discover personal files automatically.
 
 ## 5. Review and merge each complete batch
 

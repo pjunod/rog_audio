@@ -99,7 +99,7 @@ claims of matching Windows and adding zero latency require independent
 verification here. Conversion of EQ/dynamics does not implement Atmos object
 decoding or establish amplifier protection.
 
-Inspect the matching ASUS recovery/driver package privately for audio tuning
+Inspect the matching ASUS recovery/driver package for audio tuning
 XML, device IDs and processing endpoints, as was done for display profiles.
 Do not reuse another ASUS model's coefficients. Pin and inspect converter
 code before execution: its documented workflows can autoload presets or
@@ -273,8 +273,9 @@ Dolby MAT output are separate future integrations from file playback.
 For each receipt record date, source/configuration hashes, package/firmware
 versions, hardware/route, tools, commands, measurement method and uncertainty,
 results and failures. Do not import old HDR test passes as audio evidence.
-Keep binaries, OEM profiles, generated OEM-derived filters and raw captures in
-private storage; commit only reviewed summaries and reproducible tooling.
+The owner authorized the recovered ASUS tuning XML and matching INF in
+profiles/asus/gu605mz. Keep their original notices and provenance. Raw
+captures, credentials and personal recordings stay outside version control.
 
 **Non-goals for the first implementation:** no universal EQ preset, amplifier
 gain/protection bypass, unmeasured macOS-parity claim, automatic audio-service

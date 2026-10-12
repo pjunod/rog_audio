@@ -44,8 +44,9 @@ actual build and test commands; do not confuse a skipped compiler with a pass.
 
 [Provenance](PROVENANCE.md) records migration and upstream ownership. Keep
 third-party code under its own licence. The OEM profile is an operator-owned
-private input; the repository never distributes recovered tuning or rendered
-media. Hashes identify an artifact, not authenticity or acoustic correctness.
+input published at the owner’s request under profiles/asus/gu605mz. Private
+media remains outside Git. Hashes identify an artifact, not authenticity or
+acoustic correctness.
 
 No current test demonstrates macOS-level latency, speaker quality, Dolby
 certification or complete Atmos format support. Physical comparison needs

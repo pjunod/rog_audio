@@ -18,8 +18,10 @@ in the final validation phase. Preserve authorship and dependency licences.
 Do not claim certification, measured sound quality, physical latency or
 object-metadata rendering from source inspection or synthetic tests alone.
 
-Keep private captures, OEM profiles/binaries, recordings, addresses, device
+Keep raw captures, access credentials, recordings, addresses, device
 serials and access keys out of Git. Public summaries use allowlisted fields.
+The owner explicitly authorized the recovered ASUS XML and matching INF in
+profiles/asus/gu605mz; retain their bytes, notices and provenance.
 Use neutral host/operator names in committed material. Preserve rollback
 assets, stock amplifier firmware and protection. Inspection has no playback,
 recording, config activation or service-restart side effects. Coordinate live

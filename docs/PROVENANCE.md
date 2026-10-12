@@ -10,7 +10,9 @@ in [rog_hdr_dv PR 18](https://github.com/pjunod/rog_hdr_dv/pull/18), merged as
 `69dcec96fd72a4f1ee7c529555dd1250cbd799d6` on 2026-10-12. The owner then requested
 a separate GitHub repository. This repository imports only audio documents
 and evidence, with implementation built independently by GPT-6.1 Sol agents.
-Display patches, unrelated history and private payloads were not imported.
+Display patches and unrelated history were not imported. Raw diagnostic
+captures remain private; the recovered ASUS XML and INF are published at the
+owner’s explicit request in profiles/asus/gu605mz.
 
 ## Source claims and measurements have different meanings
 
@@ -28,5 +30,6 @@ contributors; source remains separately pinned with retained attribution.
 Cavern has its own licence and restrictions; consult the exact copied licence
 and source manifest in the Atmos lane before redistribution or commercial use.
 Dolby public wrappers do not supply proprietary runtime libraries. This repo
-claims no Dolby certification or redistribution rights over ASUS recovery
-files. No blanket project licence overrides third-party terms.
+claims no Dolby certification. Recovered ASUS XML/INF retain their original
+notices and are published at the owner’s request. No blanket project licence
+overrides third-party terms.

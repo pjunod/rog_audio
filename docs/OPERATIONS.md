@@ -9,7 +9,8 @@ are [speaker](AUDIO_SPEAKER_BUILD.md), [latency](AUDIO_LATENCY_BUILD.md) and
 
 The initial laptop inspection used read-only commands. It did not play or
 record sound, alter mixer controls, restart services or install profiles.
-Private raw captures and recovered files are operator inputs, outside Git.
+Raw captures stay outside Git. Recovered ASUS XML/INF are available in
+[profiles/asus/gu605mz](../profiles/asus/gu605mz/README.md).
 The stock CS35L56 firmware and protection remain installed. Preserve exact
 current routing and config snapshots before any later activation.
 

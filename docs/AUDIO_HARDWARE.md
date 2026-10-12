@@ -80,7 +80,7 @@ The XML parses as `device_data`, with endpoint `internal_speaker`, mode
 `normal`, and profiles dynamic · movie · music · game · voice ·
 voice_onlinecourse · personalize_user1/2/3 · off. Exact matching establishes
 which OEM input to investigate; it does not establish a faithful Linux
-translation or permission to redistribute the payload.
+translation. The owner subsequently requested publishing the XML and INF.
 
 7-Zip 26.02 exited successfully for the selected extraction but warned
 `Some files have incorrect reference count`. The warning is retained, not
@@ -89,9 +89,7 @@ integrity and signed authenticity were not newly verified. Re-extract through
 an independent WIM reader or compare the duplicate eSupport copy before
 relying on coefficients for physical acceptance.
 
-Private assets remain under `~/.local/state/audio-quality/2026-10-12/` on the
-laptop, including `oem-manifest.json`, index, extraction log and the two OEM
-files. Local raw diagnostics and a private copy are outside the public tree.
-Future workers receive those locations privately. No tuning coefficient,
-OEM payload, raw graph, journal, hostname, address or user identifier belongs
-in public evidence. No audio service or setting changed in this inspection.
+The recovered XML and matching INF are now available in
+[profiles/asus/gu605mz](../profiles/asus/gu605mz/README.md), at the owner’s
+explicit request. The manifest preserves hashes and the extraction warning.
+Raw diagnostics, the recovery index and access configuration stay outside Git.
