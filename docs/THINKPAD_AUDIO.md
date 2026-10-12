@@ -55,7 +55,8 @@ changing this control would erase useful baseline evidence.
 
 ## Recovery access and official-driver fallback
 
-Partition inspection found an unmounted 1.1 GiB NTFS partition with the
+The [recovery receipt](../evidence/thinkpad-recovery-status-2026-10-12.json)
+records an unmounted 1.1 GiB NTFS partition with the
 Microsoft recovery partition type. Its contents have not been read: existing
 passwordless sudo and noninteractive UDisks mount authorization were denied.
 The attempted operation requested `ro,nodev,nosuid,noexec`; the recovery
