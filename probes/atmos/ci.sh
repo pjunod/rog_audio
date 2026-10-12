@@ -23,7 +23,11 @@ git -C "$scratch/Cavern" checkout --detach -q FETCH_HEAD
 docker build --platform linux/amd64 --target ci -t "$tag" "$probe"
 code=0
 docker run --rm --name "rog-atmos-$(basename "$scratch")" --network none \
-    --memory 1g --pids-limit 128 -v "$scratch:/work" -w /work "$tag" \
+    --memory 1g --pids-limit 128 --user "$(id -u):$(id -g)" \
+    -e DOTNET_CLI_HOME=/tmp/atmos-cli -e NUGET_PACKAGES=/tmp/atmos-nuget \
+    -e NUGET_HTTP_CACHE_PATH=/tmp/atmos-nuget-http \
+    -e XDG_CACHE_HOME=/tmp/atmos-xdg-cache -e XDG_CONFIG_HOME=/tmp/atmos-xdg-config \
+    -v "$scratch:/work" -w /work "$tag" \
     sh -c 'set -eu
         sh probe/build.sh --source /work/Cavern --output build
         ffmpeg -hide_banner -loglevel error -f lavfi -i sine=frequency=997:sample_rate=48000:duration=0.16 -c:a eac3 -b:a 768k -ac 6 -f eac3 /work/bed.eac3

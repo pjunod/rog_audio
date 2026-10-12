@@ -203,7 +203,9 @@ There is no always-running service or physical-device output in this batch.
 The [CI recipe](ci.sh) needs a Linux host with Git and Docker. It fetches only
 Cavern's exact commit, builds the pinned `ci` image, generates both codec
 fixtures with Debian FFmpeg `7:5.1.9-0+deb12u1`, then compiles/runs without
-network, devices or session sockets. The image/fixtures are disposable.
+network, devices or session sockets. The image/fixtures are disposable. The runtime uses the caller UID/GID so
+build outputs remain removable by the host; .NET, NuGet and XDG cache/config
+paths use container-local `/tmp` directories without overriding `HOME`.
 Run the full suite once after the batch's adversarial review, for example
 from a manually dispatched GitHub job on `ubuntu-24.04`:
 
