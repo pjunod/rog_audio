@@ -28,7 +28,10 @@ microphone/capture endpoints; they are not substituted as speaker correction.
 The original vendor terms remain separate from repository-owned code. A
 matching file is not a licence grant, Dolby certification, an Atmos renderer,
 amplifier protection implementation or acoustic calibration. This source is a
-vendor download, not a recovered factory-image receipt. The ThinkPad recovery
-partition remains unexamined because administrator access is unresolved.
+vendor download, not a recovered factory-image receipt. The separate
+[WinRE inspection](../../../evidence/thinkpad-recovery-status-2026-10-12.json)
+found no exact matching speaker XML/INF path in its bounded filename search;
+no recovery/download byte comparison was possible. The recovery partition is
+unmounted, and no recovery payloads were extracted.
 Use [Lenovo preparation](../../../docs/LENOVO_SPEAKER_PROFILE.md) for the offline
 contract and its remaining physical limits.

@@ -43,14 +43,19 @@ Lenovo DS504906 supplies `n2ea118w.exe`, advertised Realtek 6.0.9354.1 for
 unpacked it in a disposable Linux container; no Windows installer ran.
 The included Dolby extension has its own version, 5.914.455.29, dated
 2020-09-13. These versions describe the downloaded package, not installed Linux
-software or the inaccessible factory recovery image.
+software or this laptop's WinRE contents.
 
-Recovery remains a separate investigation: a 1.1 GiB NTFS recovery partition
-was identified but mount authorization was denied. A later noninteractive
-sudo probe, including one fresh allocated-TTY SSH session, still required
-interactive authentication. No recovery contents have been inspected or
-extracted. The partition was verified unmounted. Matching downloaded source
-files do not establish that the local recovery contains identical bytes.
+The [recovery receipt](../evidence/thinkpad-recovery-status-2026-10-12.json)
+records a separate, bounded read-only inspection after the owner fixed sudo
+policy. Its 1.1 GiB NTFS partition contains a single WinRE image. The image's
+25,538 indexed path entries had no exact `17aa2276` or known speaker XML/INF
+filename match. Six Dolby-named Intel DSP firmware paths were not extracted
+and do not establish speaker tuning or protection. The reader reported an
+incorrect-reference-count warning; integrity/authenticity remain unverified.
+No full image copy or payload extraction was made; the partition was verified
+unmounted and the temporary reader removed. Filename findings do not cover
+every payload's contents or other partitions. No corresponding recovery
+source was found for a byte comparison with the downloaded XML/INF.
 
 ## Run the unchanged explicit preparation interface
 
