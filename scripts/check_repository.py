@@ -29,20 +29,29 @@ def main():
                 target = unquote(target.split('#')[0])
                 if target and not (path.parent / target).exists():
                     errors.append(f'{name}: missing link {target}')
-    manifest_path = ROOT / 'profiles/asus/gu605mz/manifest.json'
-    if manifest_path.exists():
+    manifests = [ROOT / name for name in files
+                 if name.startswith('profiles/') and name.endswith('/manifest.json')]
+    for manifest_path in manifests:
         try:
             manifest = json.loads(manifest_path.read_text())
+            if not isinstance(manifest['files'], list) or not manifest['files']:
+                raise ValueError('empty file inventory')
+            seen = set()
             for record in manifest['files']:
-                path = manifest_path.parent / record['path']
-                if path.parent != manifest_path.parent or not path.is_file():
-                    errors.append('invalid ASUS manifest path')
+                name = record.get('path', record.get('name'))
+                if not isinstance(name, str) or name != Path(name).name or name in seen:
+                    raise ValueError('invalid or duplicate file name')
+                seen.add(name)
+                path = manifest_path.parent / name
+                if (path.is_symlink() or not path.is_file()
+                        or str(path.relative_to(ROOT)) not in files):
+                    errors.append(f'invalid profile manifest path: {path.relative_to(ROOT)}')
                     continue
                 data = path.read_bytes()
                 if len(data) != record['size_bytes'] or hashlib.sha256(data).hexdigest() != record['sha256']:
-                    errors.append(f'ASUS artifact hash/size mismatch: {path.name}')
-        except (OSError, ValueError, KeyError, TypeError):
-            errors.append('invalid ASUS provenance manifest')
+                    errors.append(f'profile artifact hash/size mismatch: {path.relative_to(ROOT)}')
+        except (OSError, ValueError, KeyError, TypeError, AttributeError):
+            errors.append(f'invalid provenance manifest: {manifest_path.relative_to(ROOT)}')
     for error in errors:
         print(error)
     if errors:
