@@ -1,6 +1,6 @@
 # Status — implementation and physical acceptance
 
-**Updated:** 2026-10-12 · **State:** first batch merged; Lenovo candidates built; installation/routing batch in progress.
+**Updated:** 2026-10-12 · **State:** first batch merged; both inactive installation kits built; final batch preparation in progress.
 
 | Work | State | Next evidence |
 |---|---|---|
@@ -8,7 +8,7 @@
 | ASUS speaker tuning | Original XML and matching INF published | 48 tests and three OEM conversions passed; runtime/acoustics pending |
 | Diagnostics and latency | Reviewed; 42 tests and native rule checks passed | Physical comparison and coordinated activation |
 | Host Atmos | 15 tests passed; focused CI cleanup fix passed | Actual JOC reference media and physical qualification |
-| ASUS installation kit | Implementation underway; stock EasyEffects route transition issue identified | Target-aware routing, prompt headphone bypass and reversible install/remove |
+| Laptop installation runtime | Patched EasyEffects compiled and packaged; both inactive kits prepared | Complete batch review, focused tests and isolated graph acceptance |
 | ThinkPad X1 Extreme | Downloaded exact-match sources and three inactive bundles built; WinRE index inspected | Combined batch review/tests and installation runtime |
 | macOS comparison | Pending physical measurements | M4 Air primary, M3 Max secondary |
 | Sonos Arc/eARC | Deferred until internal audio work | TV route and actual received formats |
@@ -33,18 +33,23 @@ No live audio deployment or physical measurement is implied by this batch.
 
 ## Installation readiness
 
-ASUS: not yet ready for live installation. The offline tuning importer and
-latency tooling have passed their reviewed checks, but the EasyEffects
-runtime, internal-speaker routing and reversible install/remove kit still
-need implementation and acceptance. Acoustic quality and physical latency
-remain later measurements.
+ASUS: not yet ready for live installation. The patched runtime package and
+inactive installation kit are built. Independent review, focused tests and
+isolated runtime acceptance remain before delivery. A fresh read-only baseline
+and private rollback records are retained. Acoustic quality and physical
+latency remain later measurements.
 
 ThinkPad: first-generation model and codec are identified. An exact-match
 Lenovo package is published in the candidate branch and its model-specific
-importer has built three inactive bundles. Final review/unit tests and runtime routing remain open before installation
+importer has built three inactive bundles and an installation kit. Final review,
+focused tests and runtime routing acceptance remain before installation
 readiness. The recovery WIM index did not reveal matching speaker-profile
 paths; the downloaded Lenovo source remains distinct.
 The recovery search is read-only; ASUS coefficients are not a ThinkPad profile.
+
+Both laptops have 34 missing prerequisite groups out of the runtime package’s
+47 declared groups. Read-only reports are retained; package installation and
+APT dependency resolution have not been performed on either laptop.
 
 ## Second implementation batch
 

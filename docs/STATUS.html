@@ -4,14 +4,14 @@
 body{font:16px/1.55 system-ui,sans-serif;margin:3rem auto;padding:0 1.5rem;max-width:1050px;background:#101823;color:#edf2f7}
 h1{font-size:2rem}h2{color:#91d7ee}a{color:#91d7ee}table{border-collapse:collapse;width:100%;margin:2rem 0}td{border-bottom:1px solid #3b4b60;padding:.8rem;vertical-align:top}tr:first-child{font-weight:700;background:#1e3047}p{margin:.5rem 0}
 </style><main><h1>Status — implementation and physical acceptance</h1>
-<p>**Updated:** 2026-10-12 · **State:** first batch merged; Lenovo candidates built; installation/routing batch in progress.</p>
+<p>**Updated:** 2026-10-12 · **State:** first batch merged; both inactive installation kits built; final batch preparation in progress.</p>
 <table>
 <tr><td>Work</td><td>State</td><td>Next evidence</td></tr>
 <tr><td>Hardware inventory</td><td>Read-only inspection complete</td><td>Sanitized receipt and build contracts imported</td></tr>
 <tr><td>ASUS speaker tuning</td><td>Original XML and matching INF published</td><td>48 tests and three OEM conversions passed; runtime/acoustics pending</td></tr>
 <tr><td>Diagnostics and latency</td><td>Reviewed; 42 tests and native rule checks passed</td><td>Physical comparison and coordinated activation</td></tr>
 <tr><td>Host Atmos</td><td>15 tests passed; focused CI cleanup fix passed</td><td>Actual JOC reference media and physical qualification</td></tr>
-<tr><td>ASUS installation kit</td><td>Implementation underway; stock EasyEffects route transition issue identified</td><td>Target-aware routing, prompt headphone bypass and reversible install/remove</td></tr>
+<tr><td>Laptop installation runtime</td><td>Patched EasyEffects compiled and packaged; both inactive kits prepared</td><td>Complete batch review, focused tests and isolated graph acceptance</td></tr>
 <tr><td>ThinkPad X1 Extreme</td><td>Downloaded exact-match sources and three inactive bundles built; WinRE index inspected</td><td>Combined batch review/tests and installation runtime</td></tr>
 <tr><td>macOS comparison</td><td>Pending physical measurements</td><td>M4 Air primary, M3 Max secondary</td></tr>
 <tr><td>Sonos Arc/eARC</td><td>Deferred until internal audio work</td><td>TV route and actual received formats</td></tr>
@@ -31,17 +31,21 @@ h1{font-size:2rem}h2{color:#91d7ee}a{color:#91d7ee}table{border-collapse:collaps
 <p>push-triggered runs. All agent workspaces are outside the owner&#x27;s ~/code tree.</p>
 <p>No live audio deployment or physical measurement is implied by this batch.</p>
 <h2>Installation readiness</h2>
-<p>ASUS: not yet ready for live installation. The offline tuning importer and</p>
-<p>latency tooling have passed their reviewed checks, but the EasyEffects</p>
-<p>runtime, internal-speaker routing and reversible install/remove kit still</p>
-<p>need implementation and acceptance. Acoustic quality and physical latency</p>
-<p>remain later measurements.</p>
+<p>ASUS: not yet ready for live installation. The patched runtime package and</p>
+<p>inactive installation kit are built. Independent review, focused tests and</p>
+<p>isolated runtime acceptance remain before delivery. A fresh read-only baseline</p>
+<p>and private rollback records are retained. Acoustic quality and physical</p>
+<p>latency remain later measurements.</p>
 <p>ThinkPad: first-generation model and codec are identified. An exact-match</p>
 <p>Lenovo package is published in the candidate branch and its model-specific</p>
-<p>importer has built three inactive bundles. Final review/unit tests and runtime routing remain open before installation</p>
+<p>importer has built three inactive bundles and an installation kit. Final review,</p>
+<p>focused tests and runtime routing acceptance remain before installation</p>
 <p>readiness. The recovery WIM index did not reveal matching speaker-profile</p>
 <p>paths; the downloaded Lenovo source remains distinct.</p>
 <p>The recovery search is read-only; ASUS coefficients are not a ThinkPad profile.</p>
+<p>Both laptops have 34 missing prerequisite groups out of the runtime package’s</p>
+<p>47 declared groups. Read-only reports are retained; package installation and</p>
+<p>APT dependency resolution have not been performed on either laptop.</p>
 <h2>Second implementation batch</h2>
 <p>The first audio batch merged as PR 1. The next batch combines the Lenovo</p>
 <p>importer and original source files with the reversible EasyEffects install kit</p>

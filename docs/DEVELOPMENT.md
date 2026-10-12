@@ -52,7 +52,8 @@ actual build and test commands; do not confuse a skipped compiler with a pass.
 
 [Provenance](PROVENANCE.md) records migration and upstream ownership. Keep
 third-party code under its own licence. The OEM profile is an operator-owned
-input published at the owner’s request under profiles/asus/gu605mz. Private
+input published at the owner’s request under profiles/asus/gu605mz, with
+equivalent ThinkPad originals under profiles/lenovo/x1-extreme-gen1. Private
 media remains outside Git. Hashes identify an artifact, not authenticity or
 acoustic correctness.
 
