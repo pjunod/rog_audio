@@ -2,7 +2,7 @@
 // Synthetic PipeWire Device with a real Route parameter; no ALSA/device access.
 #include <pipewire/pipewire.h>
 #include <spa/monitor/device.h>
-#include <pipewire/module.h>
+#include <pipewire/impl.h>
 #include <spa/param/route.h>
 #include <spa/pod/builder.h>
 #include <spa/utils/hook.h>
