@@ -1,3 +1,5 @@
 # Preserve recovered vendor bytes, including CRLF and original whitespace.
 profiles/asus/**/*.xml -text whitespace=-trailing-space
 profiles/asus/**/*.inf -text whitespace=-trailing-space
+# Unified-diff blank context lines contain a required leading space.
+probes/atmos/patches/*.patch -text whitespace=-blank-at-eol
