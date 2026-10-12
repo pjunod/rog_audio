@@ -1,0 +1,594 @@
+{
+  "evidence_class": "synthetic",
+  "schema_version": 1,
+  "setups": [
+    {
+      "interface": "built-in",
+      "os": "linux-test",
+      "setup_id": "rig-a",
+      "system": "lab5-gu605mz"
+    }
+  ],
+  "trials": [
+    {
+      "clock": {
+        "relationship": "same-clock"
+      },
+      "configuration_id": "baseline",
+      "corrections": [],
+      "delay": 1,
+      "dsp_state": "stock",
+      "flags": [],
+      "graph": {
+        "quantum_frames": 1024,
+        "rate_hz": 48000
+      },
+      "kind": "idle-onset",
+      "load_state": "idle",
+      "method": "cross-correlation",
+      "power_state": "ac",
+      "rejection_reason": null,
+      "route": "internal-speakers",
+      "sample_rate_hz": 48000,
+      "setup_id": "rig-a",
+      "trial_id": "trial-1",
+      "uncertainty": {
+        "bound": 0.25,
+        "unit": "ms"
+      },
+      "unit": "ms",
+      "valid": true
+    },
+    {
+      "clock": {
+        "relationship": "same-clock"
+      },
+      "configuration_id": "baseline",
+      "corrections": [],
+      "delay": 2,
+      "dsp_state": "stock",
+      "flags": [],
+      "graph": {
+        "quantum_frames": 1024,
+        "rate_hz": 48000
+      },
+      "kind": "idle-onset",
+      "load_state": "idle",
+      "method": "cross-correlation",
+      "power_state": "ac",
+      "rejection_reason": null,
+      "route": "internal-speakers",
+      "sample_rate_hz": 48000,
+      "setup_id": "rig-a",
+      "trial_id": "trial-2",
+      "uncertainty": {
+        "bound": 0.25,
+        "unit": "ms"
+      },
+      "unit": "ms",
+      "valid": true
+    },
+    {
+      "clock": {
+        "relationship": "same-clock"
+      },
+      "configuration_id": "baseline",
+      "corrections": [],
+      "delay": 3,
+      "dsp_state": "stock",
+      "flags": [],
+      "graph": {
+        "quantum_frames": 1024,
+        "rate_hz": 48000
+      },
+      "kind": "idle-onset",
+      "load_state": "idle",
+      "method": "cross-correlation",
+      "power_state": "ac",
+      "rejection_reason": null,
+      "route": "internal-speakers",
+      "sample_rate_hz": 48000,
+      "setup_id": "rig-a",
+      "trial_id": "trial-3",
+      "uncertainty": {
+        "bound": 0.25,
+        "unit": "ms"
+      },
+      "unit": "ms",
+      "valid": true
+    },
+    {
+      "clock": {
+        "relationship": "same-clock"
+      },
+      "configuration_id": "baseline",
+      "corrections": [],
+      "delay": 4,
+      "dsp_state": "stock",
+      "flags": [],
+      "graph": {
+        "quantum_frames": 1024,
+        "rate_hz": 48000
+      },
+      "kind": "idle-onset",
+      "load_state": "idle",
+      "method": "cross-correlation",
+      "power_state": "ac",
+      "rejection_reason": null,
+      "route": "internal-speakers",
+      "sample_rate_hz": 48000,
+      "setup_id": "rig-a",
+      "trial_id": "trial-4",
+      "uncertainty": {
+        "bound": 0.25,
+        "unit": "ms"
+      },
+      "unit": "ms",
+      "valid": true
+    },
+    {
+      "clock": {
+        "relationship": "same-clock"
+      },
+      "configuration_id": "baseline",
+      "corrections": [],
+      "delay": 5,
+      "dsp_state": "stock",
+      "flags": [],
+      "graph": {
+        "quantum_frames": 1024,
+        "rate_hz": 48000
+      },
+      "kind": "idle-onset",
+      "load_state": "idle",
+      "method": "cross-correlation",
+      "power_state": "ac",
+      "rejection_reason": null,
+      "route": "internal-speakers",
+      "sample_rate_hz": 48000,
+      "setup_id": "rig-a",
+      "trial_id": "trial-5",
+      "uncertainty": {
+        "bound": 0.25,
+        "unit": "ms"
+      },
+      "unit": "ms",
+      "valid": true
+    },
+    {
+      "clock": {
+        "relationship": "same-clock"
+      },
+      "configuration_id": "baseline",
+      "corrections": [],
+      "delay": 6,
+      "dsp_state": "stock",
+      "flags": [],
+      "graph": {
+        "quantum_frames": 1024,
+        "rate_hz": 48000
+      },
+      "kind": "idle-onset",
+      "load_state": "idle",
+      "method": "cross-correlation",
+      "power_state": "ac",
+      "rejection_reason": null,
+      "route": "internal-speakers",
+      "sample_rate_hz": 48000,
+      "setup_id": "rig-a",
+      "trial_id": "trial-6",
+      "uncertainty": {
+        "bound": 0.25,
+        "unit": "ms"
+      },
+      "unit": "ms",
+      "valid": true
+    },
+    {
+      "clock": {
+        "relationship": "same-clock"
+      },
+      "configuration_id": "baseline",
+      "corrections": [],
+      "delay": 7,
+      "dsp_state": "stock",
+      "flags": [],
+      "graph": {
+        "quantum_frames": 1024,
+        "rate_hz": 48000
+      },
+      "kind": "idle-onset",
+      "load_state": "idle",
+      "method": "cross-correlation",
+      "power_state": "ac",
+      "rejection_reason": null,
+      "route": "internal-speakers",
+      "sample_rate_hz": 48000,
+      "setup_id": "rig-a",
+      "trial_id": "trial-7",
+      "uncertainty": {
+        "bound": 0.25,
+        "unit": "ms"
+      },
+      "unit": "ms",
+      "valid": true
+    },
+    {
+      "clock": {
+        "relationship": "same-clock"
+      },
+      "configuration_id": "baseline",
+      "corrections": [],
+      "delay": 8,
+      "dsp_state": "stock",
+      "flags": [],
+      "graph": {
+        "quantum_frames": 1024,
+        "rate_hz": 48000
+      },
+      "kind": "idle-onset",
+      "load_state": "idle",
+      "method": "cross-correlation",
+      "power_state": "ac",
+      "rejection_reason": null,
+      "route": "internal-speakers",
+      "sample_rate_hz": 48000,
+      "setup_id": "rig-a",
+      "trial_id": "trial-8",
+      "uncertainty": {
+        "bound": 0.25,
+        "unit": "ms"
+      },
+      "unit": "ms",
+      "valid": true
+    },
+    {
+      "clock": {
+        "relationship": "same-clock"
+      },
+      "configuration_id": "baseline",
+      "corrections": [],
+      "delay": 9,
+      "dsp_state": "stock",
+      "flags": [],
+      "graph": {
+        "quantum_frames": 1024,
+        "rate_hz": 48000
+      },
+      "kind": "idle-onset",
+      "load_state": "idle",
+      "method": "cross-correlation",
+      "power_state": "ac",
+      "rejection_reason": null,
+      "route": "internal-speakers",
+      "sample_rate_hz": 48000,
+      "setup_id": "rig-a",
+      "trial_id": "trial-9",
+      "uncertainty": {
+        "bound": 0.25,
+        "unit": "ms"
+      },
+      "unit": "ms",
+      "valid": true
+    },
+    {
+      "clock": {
+        "relationship": "same-clock"
+      },
+      "configuration_id": "baseline",
+      "corrections": [],
+      "delay": 10,
+      "dsp_state": "stock",
+      "flags": [],
+      "graph": {
+        "quantum_frames": 1024,
+        "rate_hz": 48000
+      },
+      "kind": "idle-onset",
+      "load_state": "idle",
+      "method": "cross-correlation",
+      "power_state": "ac",
+      "rejection_reason": null,
+      "route": "internal-speakers",
+      "sample_rate_hz": 48000,
+      "setup_id": "rig-a",
+      "trial_id": "trial-10",
+      "uncertainty": {
+        "bound": 0.25,
+        "unit": "ms"
+      },
+      "unit": "ms",
+      "valid": true
+    },
+    {
+      "clock": {
+        "relationship": "same-clock"
+      },
+      "configuration_id": "baseline",
+      "corrections": [],
+      "delay": 11,
+      "dsp_state": "stock",
+      "flags": [],
+      "graph": {
+        "quantum_frames": 1024,
+        "rate_hz": 48000
+      },
+      "kind": "idle-onset",
+      "load_state": "idle",
+      "method": "cross-correlation",
+      "power_state": "ac",
+      "rejection_reason": null,
+      "route": "internal-speakers",
+      "sample_rate_hz": 48000,
+      "setup_id": "rig-a",
+      "trial_id": "trial-11",
+      "uncertainty": {
+        "bound": 0.25,
+        "unit": "ms"
+      },
+      "unit": "ms",
+      "valid": true
+    },
+    {
+      "clock": {
+        "relationship": "same-clock"
+      },
+      "configuration_id": "baseline",
+      "corrections": [],
+      "delay": 12,
+      "dsp_state": "stock",
+      "flags": [],
+      "graph": {
+        "quantum_frames": 1024,
+        "rate_hz": 48000
+      },
+      "kind": "idle-onset",
+      "load_state": "idle",
+      "method": "cross-correlation",
+      "power_state": "ac",
+      "rejection_reason": null,
+      "route": "internal-speakers",
+      "sample_rate_hz": 48000,
+      "setup_id": "rig-a",
+      "trial_id": "trial-12",
+      "uncertainty": {
+        "bound": 0.25,
+        "unit": "ms"
+      },
+      "unit": "ms",
+      "valid": true
+    },
+    {
+      "clock": {
+        "relationship": "same-clock"
+      },
+      "configuration_id": "baseline",
+      "corrections": [],
+      "delay": 13,
+      "dsp_state": "stock",
+      "flags": [],
+      "graph": {
+        "quantum_frames": 1024,
+        "rate_hz": 48000
+      },
+      "kind": "idle-onset",
+      "load_state": "idle",
+      "method": "cross-correlation",
+      "power_state": "ac",
+      "rejection_reason": null,
+      "route": "internal-speakers",
+      "sample_rate_hz": 48000,
+      "setup_id": "rig-a",
+      "trial_id": "trial-13",
+      "uncertainty": {
+        "bound": 0.25,
+        "unit": "ms"
+      },
+      "unit": "ms",
+      "valid": true
+    },
+    {
+      "clock": {
+        "relationship": "same-clock"
+      },
+      "configuration_id": "baseline",
+      "corrections": [],
+      "delay": 14,
+      "dsp_state": "stock",
+      "flags": [],
+      "graph": {
+        "quantum_frames": 1024,
+        "rate_hz": 48000
+      },
+      "kind": "idle-onset",
+      "load_state": "idle",
+      "method": "cross-correlation",
+      "power_state": "ac",
+      "rejection_reason": null,
+      "route": "internal-speakers",
+      "sample_rate_hz": 48000,
+      "setup_id": "rig-a",
+      "trial_id": "trial-14",
+      "uncertainty": {
+        "bound": 0.25,
+        "unit": "ms"
+      },
+      "unit": "ms",
+      "valid": true
+    },
+    {
+      "clock": {
+        "relationship": "same-clock"
+      },
+      "configuration_id": "baseline",
+      "corrections": [],
+      "delay": 15,
+      "dsp_state": "stock",
+      "flags": [],
+      "graph": {
+        "quantum_frames": 1024,
+        "rate_hz": 48000
+      },
+      "kind": "idle-onset",
+      "load_state": "idle",
+      "method": "cross-correlation",
+      "power_state": "ac",
+      "rejection_reason": null,
+      "route": "internal-speakers",
+      "sample_rate_hz": 48000,
+      "setup_id": "rig-a",
+      "trial_id": "trial-15",
+      "uncertainty": {
+        "bound": 0.25,
+        "unit": "ms"
+      },
+      "unit": "ms",
+      "valid": true
+    },
+    {
+      "clock": {
+        "relationship": "same-clock"
+      },
+      "configuration_id": "baseline",
+      "corrections": [],
+      "delay": 16,
+      "dsp_state": "stock",
+      "flags": [],
+      "graph": {
+        "quantum_frames": 1024,
+        "rate_hz": 48000
+      },
+      "kind": "idle-onset",
+      "load_state": "idle",
+      "method": "cross-correlation",
+      "power_state": "ac",
+      "rejection_reason": null,
+      "route": "internal-speakers",
+      "sample_rate_hz": 48000,
+      "setup_id": "rig-a",
+      "trial_id": "trial-16",
+      "uncertainty": {
+        "bound": 0.25,
+        "unit": "ms"
+      },
+      "unit": "ms",
+      "valid": true
+    },
+    {
+      "clock": {
+        "relationship": "same-clock"
+      },
+      "configuration_id": "baseline",
+      "corrections": [],
+      "delay": 17,
+      "dsp_state": "stock",
+      "flags": [],
+      "graph": {
+        "quantum_frames": 1024,
+        "rate_hz": 48000
+      },
+      "kind": "idle-onset",
+      "load_state": "idle",
+      "method": "cross-correlation",
+      "power_state": "ac",
+      "rejection_reason": null,
+      "route": "internal-speakers",
+      "sample_rate_hz": 48000,
+      "setup_id": "rig-a",
+      "trial_id": "trial-17",
+      "uncertainty": {
+        "bound": 0.25,
+        "unit": "ms"
+      },
+      "unit": "ms",
+      "valid": true
+    },
+    {
+      "clock": {
+        "relationship": "same-clock"
+      },
+      "configuration_id": "baseline",
+      "corrections": [],
+      "delay": 18,
+      "dsp_state": "stock",
+      "flags": [],
+      "graph": {
+        "quantum_frames": 1024,
+        "rate_hz": 48000
+      },
+      "kind": "idle-onset",
+      "load_state": "idle",
+      "method": "cross-correlation",
+      "power_state": "ac",
+      "rejection_reason": null,
+      "route": "internal-speakers",
+      "sample_rate_hz": 48000,
+      "setup_id": "rig-a",
+      "trial_id": "trial-18",
+      "uncertainty": {
+        "bound": 0.25,
+        "unit": "ms"
+      },
+      "unit": "ms",
+      "valid": true
+    },
+    {
+      "clock": {
+        "relationship": "same-clock"
+      },
+      "configuration_id": "baseline",
+      "corrections": [],
+      "delay": 19,
+      "dsp_state": "stock",
+      "flags": [],
+      "graph": {
+        "quantum_frames": 1024,
+        "rate_hz": 48000
+      },
+      "kind": "idle-onset",
+      "load_state": "idle",
+      "method": "cross-correlation",
+      "power_state": "ac",
+      "rejection_reason": null,
+      "route": "internal-speakers",
+      "sample_rate_hz": 48000,
+      "setup_id": "rig-a",
+      "trial_id": "trial-19",
+      "uncertainty": {
+        "bound": 0.25,
+        "unit": "ms"
+      },
+      "unit": "ms",
+      "valid": true
+    },
+    {
+      "clock": {
+        "relationship": "same-clock"
+      },
+      "configuration_id": "baseline",
+      "corrections": [],
+      "delay": 20,
+      "dsp_state": "stock",
+      "flags": [],
+      "graph": {
+        "quantum_frames": 1024,
+        "rate_hz": 48000
+      },
+      "kind": "idle-onset",
+      "load_state": "idle",
+      "method": "cross-correlation",
+      "power_state": "ac",
+      "rejection_reason": null,
+      "route": "internal-speakers",
+      "sample_rate_hz": 48000,
+      "setup_id": "rig-a",
+      "trial_id": "trial-20",
+      "uncertainty": {
+        "bound": 0.25,
+        "unit": "ms"
+      },
+      "unit": "ms",
+      "valid": true
+    }
+  ]
+}

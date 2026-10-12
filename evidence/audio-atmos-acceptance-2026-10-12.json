@@ -1,0 +1,211 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-12",
+  "evidence_class": "synthetic-test",
+  "repository": "https://github.com/pjunod/rog_audio",
+  "tested_revision": "42642b287868069239f17dbc8cc57e69af455927",
+  "source_sha256": {
+    "probes/atmos/.dockerignore": "3c83d1a1984386bed078c6e3febd24bb26393bdce29b132b700b4ef2900dd703",
+    "probes/atmos/.gitignore": "ae3cdcba05adb85b917de1f193d46b94cd73cec20b546cd70ce079d115b73477",
+    "probes/atmos/AtmosProbe.csproj": "fdc3271ce7751c5238e512f595228555a1f3ddace3ae6916a1f9e6c745774556",
+    "probes/atmos/Dockerfile": "1f50ec384b1a943b082a35f282ccf3c481bee7d02d0d4379b2ad25a7a300a5f0",
+    "probes/atmos/ObjectFrameGuard.cs": "33c1ac428914deab3430f20b3fdf6df530e53beea649970368dfd63a85847315",
+    "probes/atmos/Program.cs": "3f3deacee00c70b0f2baa2e3fd2b6cc67bcfc9fb9f471cab705ce882f95373af",
+    "probes/atmos/README.md": "199c08074c0aebe336c79e0e8ae10a10dbdde30de7ce7593b4aa07429bb7f8f6",
+    "probes/atmos/SHA256SUMS": "8e5917cd357e6343c258de5dd8e9fe11310ccca4ab219874cdb7f0e916c03098",
+    "probes/atmos/atmos-probe": "3ecf01526c1b9cffecaafa602c0176079f1b8336fae6be40cb7762a65e155f43",
+    "probes/atmos/build.sh": "08d3149f5d9d552a1f5b27602673054323a972316f78fe1d3467c8ba1b07f9f6",
+    "probes/atmos/ci.sh": "128d502b3cad1f2510e221166cba73511d6c5a5f9a84f1369ce69e6c4b37ec1a",
+    "probes/atmos/generate_scene.py": "92b517f5349a9e77d9f99c892101e59fff823583d499744796953147a3fe580b",
+    "probes/atmos/global.json": "20d69b2f203f974ab645a50ee80fdaf2284a1d6f81c15d9ff052038157d40e79",
+    "probes/atmos/patches/0001-block-buffer-exact-read.patch": "600e941247b4f18db8cddfeb7b16b537e4ba78f74cd384b794b3ae1c8f552f05",
+    "probes/atmos/patches/0002-joc-timeslot-frame-boundary.patch": "4e2beb50f9093a993af9cba3353c0cb615391a6ff212bb925b415a79c35a79be",
+    "probes/atmos/patches/0003-emdf-oamd-presence.patch": "19d9cb1cddd6613ef5c7bd41947034de48571c9cde2767045d23b948a52b3b5b",
+    "probes/atmos/regressions/BlockBufferRegression.csproj": "ef455a98ea5a043b1b4e6d2cbbfa11aeee6674acba77ade28aefa9f21f6093d3",
+    "probes/atmos/regressions/Program.cs": "b1af3f01e0cb8b69a0b72227773b02f1ba510eac8d308d9fb248112ca0f7bc8d",
+    "probes/atmos/source_manifest.json": "a1805e6570a6ea6170307ced9fb2d653101588a81ed507b1129bf65e379eeb1e",
+    "probes/atmos/test_probe.py": "1fe5f6d9c7619ffddc36da9a2d3d6b5b4a25bc02d817e607a4556741c329e745"
+  },
+  "command": "sh probes/atmos/ci.sh --report /tmp/atmos-acceptance/atmos-regression.json",
+  "source_transfer": "git archive of exact reviewed revision, probes/atmos only",
+  "review": "parent reported independent source re-review passed for exact tested revision",
+  "compiler_and_runtime": {
+    "os": "Debian 12",
+    "architecture": "Linux x86_64",
+    "sdk": "8.0.414",
+    "msbuild": "17.11.41+18f1ecf82",
+    "runtime": "8.0.20",
+    "python": "3.11.2",
+    "python_debian_package": "3.11.2-1+b1",
+    "python311_debian_package": "3.11.2-6+deb12u9",
+    "fixture_encoder": "FFmpeg 5.1.9-0+deb12u1",
+    "ffmpeg_debian_package": "7:5.1.9-0+deb12u1",
+    "base_image_digest": "sha256:ff8311847c54c04d1a14c488362807997d59b61372da5095a95f89cbcda7f9b7",
+    "ci_image_manifest_list": "sha256:d8b5a9619de44cebe180ad8abdc21f06cd0a5c49b276a51dcb937b88bddcc857",
+    "ci_image_config": "sha256:5e5a1effe1c2bd62b356d50282c6f5a7b331274e48dd97ce7fdca6a602fe7829",
+    "runtime_audit": "separate image rebuilt from same pinned Dockerfile; config hash identical, attestation/manifest-list hash differs",
+    "runtime_audit_manifest_list": "sha256:f2c6f1983be3a44834b753595ff704162f347112491e8cfb97d24c27d6f8c552"
+  },
+  "isolation": {
+    "network_during_build_tests": "none",
+    "memory_limit_bytes": 1073741824,
+    "pids_limit": 128,
+    "sound_devices_mounted": false,
+    "desktop_socket_mounted": false,
+    "host_config_mounted": false,
+    "input": "generated sine scenes and plain E-AC-3; no JOC or copyrighted media"
+  },
+  "unit_outcomes": {
+    "tests_run": 15,
+    "failures": 0,
+    "errors": 0,
+    "skips": 0,
+    "elapsed_seconds": 4.115,
+    "method_ids": [
+      "test_block_buffer_metadata_boundary",
+      "test_channel_order_and_height",
+      "test_collision_and_symlink",
+      "test_generated_eac3_bed",
+      "test_invalid_scene_and_limits",
+      "test_joc_timeslot_frame_boundary",
+      "test_late_sparse_detection",
+      "test_moving_object_and_repeatability",
+      "test_oamd_freshness_and_stable_configuration",
+      "test_publication_racer_preserved",
+      "test_scene_inspect",
+      "test_silence",
+      "test_stereo_and_exact_partial_block",
+      "test_unsupported_and_truncated",
+      "test_unsupported_stereo_eac3"
+    ],
+    "method_status": "all passed",
+    "runs_per_method": 1,
+    "passing_methods_repeated": false,
+    "speaker_latency_suites_run": false
+  },
+  "regression_report": {
+    "schema_version": 1,
+    "evidence_class": "synthetic-test",
+    "tests_run": 15,
+    "failures": 0,
+    "errors": 0,
+    "skips": 0,
+    "results": [
+      {
+        "generated_eac3_sha256": "aa3578047e3723b45d37ab470d0d34310a5f7cd4cefbffa69f36462bdcf0f588",
+        "bed_report": {
+          "schema_version": 1,
+          "tool_version": "0.1.0",
+          "cavern_source": "7d85d1880666ca5ea323848cff47ce7f50b29f7d",
+          "modified_upstream_source": true,
+          "cavern_patches": [
+            "0001-block-buffer-exact-read",
+            "0002-joc-timeslot-frame-boundary",
+            "0003-emdf-oamd-presence"
+          ],
+          "status": "bed-fallback-rendered",
+          "evidence_class": "private-offline",
+          "container": "raw-eac3",
+          "codec": "E-AC-3",
+          "atmos_signalling": null,
+          "decoder": "Cavern.Format.EnhancedAC3Decoder",
+          "object_metadata_consumed": false,
+          "renderer": "Cavern.Listener/BalanceBasedRenderer",
+          "output": {
+            "layout": "stereo-speakers",
+            "sample_rate": 48000,
+            "channels": [
+              "FL",
+              "FR"
+            ],
+            "samples_per_channel": 7680,
+            "peak": 0.08837722,
+            "rms": [
+              0.061422859671039644,
+              0.061422859671039644
+            ],
+            "format": "WAVE-extensible-float32",
+            "gain": "unity listener; normalizer disabled; E-AC-3 object renderer upstream gain 0.707"
+          },
+          "warnings": [
+            "Explicit conventional-channel fallback; not Atmos rendering."
+          ],
+          "delay": {
+            "block_samples": 256,
+            "decoder_delay_samples": null,
+            "renderer_delay_samples": null,
+            "compensation_samples": 0,
+            "note": "No delay compensation or tail flush; physical latency unmeasured."
+          },
+          "input_sha256": "aa3578047e3723b45d37ab470d0d34310a5f7cd4cefbffa69f36462bdcf0f588",
+          "input_samples": 7680,
+          "processing": {
+            "elapsed_ms": 18.6114,
+            "allocated_bytes": 446280,
+            "block_samples": 256,
+            "evidence": "single offline run, includes WAV I/O and startup; not realtime qualification"
+          },
+          "decoded_frames": 5,
+          "object_frames": 0,
+          "oamd_fresh_object_frames": 0,
+          "oamd_reused_object_frames": 0
+        }
+      },
+      {
+        "moving_scene_wav_sha256": "d5c60c089e7292db30e0eebfd8d06aad829ee4661039b2a80dd596fe17a708cf"
+      }
+    ]
+  },
+  "raw_log_sha256": "ec8b07436981244eaa8660c0be6e903ef5ee8b9906bf630f01122c1e019f5cfb",
+  "raw_log_storage": "private retained log, excluded from Git",
+  "regression_report_sha256": "175af2ee1ea5cc357778b539d4263274b85f19b40c1f48f9e18a5b4ad9bbe2be",
+  "ci_process_exit_code": 1,
+  "ci_exit_reason": "cleanup failed after passing tests: default root container left root-owned compiler output directories",
+  "cleanup_fix": {
+    "status": "pass: source reviewed, focused compile/ownership/report-copy/cleanup verified",
+    "change": "runtime caller UID/GID plus container-local .NET/NuGet/XDG paths; no HOME override",
+    "test_invalidation": "unit/decoder/renderer sources unchanged; passing tests are retained, retry build/cleanup only",
+    "earlier_dispatch_note": "A compile/ownership retry was already dispatched before the parent requested another source review. It passed compilation and found no wrong-owned files but used a superseded HOME override. It did not execute any unit test and does not qualify the final cleanup fix.",
+    "source_review": "parent conveyed independent approval of exact narrow UID/GID and .NET/NuGet/XDG environment delta",
+    "ci_script_sha256": "852b71812db39200e9810b32820ef2569baa14156a4fc6c86db7c05e08eb4a48",
+    "focused_retry": {
+      "result": "pass",
+      "unit_tests_executed": 0,
+      "libraries_cli_regressions_compiled": true,
+      "wrong_owned_files": 0,
+      "report_copy": "pass; explicit new output",
+      "host_scratch_removal": "pass",
+      "home_override": false,
+      "environment": {
+        "DOTNET_CLI_HOME": "/tmp/atmos-cli",
+        "NUGET_PACKAGES": "/tmp/atmos-nuget",
+        "NUGET_HTTP_CACHE_PATH": "/tmp/atmos-nuget-http",
+        "XDG_CACHE_HOME": "/tmp/atmos-xdg-cache",
+        "XDG_CONFIG_HOME": "/tmp/atmos-xdg-config"
+      },
+      "artifact_sha256": {
+        "AtmosProbe.dll": "366e9dc4d9413bb3cacbe8f5e290de9d247d94e99c2b026c93a89150a83878f6",
+        "Cavern.dll": "dacf85b757a80fe8cedef36296fa2cb3d61428d9cc0b40678046a14b85d0838d",
+        "Cavern.Format.dll": "66ff995f0ea589499f42c330891b123ef04f6fb45ba421ff972155b06bfe92ff",
+        "BlockBufferRegression.dll": "d0d75441135cbe963d78d26e632573aab132356f675ff6df118f6f32e8e49e97"
+      },
+      "raw_log_sha256": "d606972b15905a3da5dd3122fb2fba99482e121526da9f576fb0a32ea024a14d"
+    }
+  },
+  "owned_remote_cleanup": {
+    "result": "pass",
+    "owned_transient_directories_removed": 6,
+    "owned_tagged_images_removed": 2,
+    "owned_containers_remaining": 0,
+    "shared_base_images_or_other_containers_removed": false,
+    "shared_build_cache_pruned": false,
+    "cleanup_log_sha256": "8616128a0b51b1319cec5506a95bcc1359639723bacd7492e6344ebcb3c9abe6",
+    "local_cleanup": "obsolete original relocated clone removed after retaining historical private logs; audio-only validation clone retained for parent import"
+  },
+  "limits": [
+    "No lawful JOC bitstream reference comparison; source-level synthetic JOC state regressions are not codec fidelity qualification.",
+    "No physical measurements, realtime acceptance, binaural HRTF qualification or live audio changes.",
+    "Short-frame JOC bug can read stale reserved slots; fixed frameSize/64 wrap is validated for 256/512/768/1536-sample frames."
+  ],
+  "acceptance_summary": "15 reviewed-source Atmos tests passed once; CI root-ownership cleanup failure fixed and its focused path passed; no passing tests repeated."
+}

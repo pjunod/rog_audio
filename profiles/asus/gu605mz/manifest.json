@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "device": "ASUS ROG Zephyrus G16 GU605MZ",
+  "codec_id": "10ec0285",
+  "subsystem_id": "10431c63",
+  "driver_version": "9.117.611.44",
+  "driver_date": "2024-01-16",
+  "recovered": "2026-10-12",
+  "source": "ASUS recovery image /Recovery/RecoveryImage/ASUS.swm, Windows/System32/DriverStore/FileRepository/dax3_ext_rtk.inf_amd64_2ec7ecbd3581f10a",
+  "publication": "Laptop owner explicitly requested publication of these recovered files on 2026-10-12. Original bytes and notices retained.",
+  "extraction_note": "7-Zip 26.02 returned success with warning: Some files have incorrect reference count. Selected XML parses; whole-image integrity and catalogue authentication are not established.",
+  "files": [
+    {
+      "path": "DEV_0285_SUBSYS_10431C63_PCI_SUBSYS_1C631043.xml",
+      "size_bytes": 86807,
+      "sha256": "d6728635859309e0fecf2bdc32844ac15a32f67261e5aae8ae2e91ab01580149"
+    },
+    {
+      "path": "dax3_ext_rtk.inf",
+      "size_bytes": 23633,
+      "sha256": "4d0ed7ca9905f3eb5ec4ff0bdf4fdaa55c8c5c6233cdbbdc4a240ed01cc820f9"
+    }
+  ],
+  "duplicate_comparison": {
+    "receipt": "../../../evidence/asus-tuning-duplicate-2026-10-12.json",
+    "eSupport_xml_matches": true,
+    "independent_reader": false
+  }
+}

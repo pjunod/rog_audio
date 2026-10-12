@@ -1,0 +1,15 @@
+# Cavern exact-read metadata boundary correction
+# Local change by Codex Agent; original code: Bence Sgánetz (VoidX).
+# Base: 7d85d1880666ca5ea323848cff47ce7f50b29f7d. Upstream licence retained.
+# Defer next-frame fetch until the next Read so metadata stays with returned PCM.
+--- a/Cavern.Format/Utilities/BlockBuffer.cs
++++ b/Cavern.Format/Utilities/BlockBuffer.cs
+@@ -157,7 +157,7 @@
+ 
+                 pointer += next;
+                 lastFetchPosition += next;
+-                if (lastFetchPosition == LastFetch.Length) {
++                if (lastFetchPosition == LastFetch.Length && pointer < elements) {
+                     LastFetch = Fetcher();
+                     if (LastFetch == null || LastFetch.Length == 0) {
+                         Array.Clear(result, pointer, result.Length - pointer);

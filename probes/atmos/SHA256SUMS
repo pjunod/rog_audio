@@ -1,0 +1,3 @@
+600e941247b4f18db8cddfeb7b16b537e4ba78f74cd384b794b3ae1c8f552f05  patches/0001-block-buffer-exact-read.patch
+4e2beb50f9093a993af9cba3353c0cb615391a6ff212bb925b415a79c35a79be  patches/0002-joc-timeslot-frame-boundary.patch
+19d9cb1cddd6613ef5c7bd41947034de48571c9cde2767045d23b948a52b3b5b  patches/0003-emdf-oamd-presence.patch

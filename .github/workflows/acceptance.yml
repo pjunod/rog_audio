@@ -1,0 +1,83 @@
+name: Reviewed audio acceptance
+on:
+  workflow_dispatch:
+    inputs:
+      lane:
+        description: 'Reviewed lane to run; do not repeat already passing lanes'
+        required: true
+        type: choice
+        options: [all, repository, speaker, latency, atmos]
+        default: all
+      selection:
+        description: 'all, or a single speaker/latency stage; use unit with test_ids'
+        required: true
+        default: all
+      test_ids:
+        description: 'Space-separated failed unittest IDs (Atmos accepts method names)'
+        default: ''
+permissions:
+  contents: read
+concurrency:
+  group: audio-acceptance-${{ github.ref }}-${{ inputs.lane }}
+  cancel-in-progress: false
+jobs:
+  repository:
+    if: inputs.lane == 'all' || inputs.lane == 'repository'
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - run: python3 scripts/check_repository.py
+  speaker:
+    if: inputs.lane == 'all' || inputs.lane == 'speaker'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env:
+      SELECTION: ${{ inputs.selection }}
+      TEST_IDS: ${{ inputs.test_ids }}
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - run: bash scripts/ci_speaker.sh "$SELECTION" "$TEST_IDS"
+  latency:
+    if: inputs.lane == 'all' || inputs.lane == 'latency'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env:
+      SELECTION: ${{ inputs.selection }}
+      TEST_IDS: ${{ inputs.test_ids }}
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - run: docker pull ubuntu@sha256:ee126c2fa0249079a7e24ae3a3d29b04783ef93ab33c868751c9a1289d3fffff
+      - shell: bash
+        run: |
+          mkdir -p build
+          read -r -a ids <<< "$TEST_IDS"
+          args=()
+          for id in "${ids[@]}"; do args+=(--test-id "$id"); done
+          python3 scripts/validate_audio_linux.py --stage "$SELECTION" "${args[@]}" --output build/latency-result.json
+      - if: always()
+        run: if test -f build/latency-result.json; then cat build/latency-result.json; fi
+  atmos:
+    if: inputs.lane == 'all' || inputs.lane == 'atmos'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env:
+      TEST_IDS: ${{ inputs.test_ids }}
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - shell: bash
+        run: |
+          mkdir -p build
+          read -r -a ids <<< "$TEST_IDS"
+          args=()
+          for id in "${ids[@]}"; do args+=(--test "$id"); done
+          bash probes/atmos/ci.sh --report build/atmos-result.json "${args[@]}"
+      - if: always()
+        run: if test -f build/atmos-result.json; then cat build/atmos-result.json; fi

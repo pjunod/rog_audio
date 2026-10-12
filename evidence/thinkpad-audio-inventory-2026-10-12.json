@@ -1,0 +1,203 @@
+{
+  "actions": {
+    "configuration_change": false,
+    "package_install": false,
+    "playback": false,
+    "recording": false,
+    "recovery_mount": false,
+    "service_restart": false
+  },
+  "data_loop_scheduling": [
+    {
+      "class": "RR",
+      "rt_priority": 20
+    },
+    {
+      "class": "RR",
+      "rt_priority": 20
+    },
+    {
+      "class": "RR",
+      "rt_priority": 20
+    },
+    {
+      "class": "RR",
+      "rt_priority": 20
+    }
+  ],
+  "endpoints": [
+    {
+      "channels": 2,
+      "device_api": "alsa",
+      "media_class": "Audio/Sink",
+      "state": "suspended"
+    },
+    {
+      "channels": 2,
+      "device_api": "alsa",
+      "media_class": "Audio/Source",
+      "state": "suspended"
+    }
+  ],
+  "evidence_class": "live-read-only",
+  "evidence_kind": "live-read-only",
+  "followup": [
+    "Speaker worker exclusively inspects recovery and matches INF/APO profile to codec10ec0285/subsystem17aa2276 and machine20MF; never apply ASUS10431c63 preset.",
+    "Clarify ALC3286 marketing name versus observed ALC285 using exact Lenovo INF identity; preserve model-specific speaker/headphone contracts.",
+    "Preserve observed Auto-Mute Disabled and routing as baseline; assess headphone bypass during later coordinated test, do not change now.",
+    "Same PW/WP versions allow reuse of validated runtime tooling, but proposed latency and DSP require separate same-clock physical qualification.",
+    "Notify owner when model-specific inactive install candidates exist; this inventory is not activation authorization."
+  ],
+  "graph_default": {
+    "graph_period_ms": 21.333333333333332,
+    "quantum_frames": 1024,
+    "rate_hz": 48000
+  },
+  "graph_settings": {
+    "force_quantum": 0,
+    "force_rate": 0,
+    "max_quantum": 2048,
+    "min_quantum": 32,
+    "quantum": 1024,
+    "rate": 48000
+  },
+  "hardware": {
+    "amplifier_identification": "no CS35/TAS/MAX98 driver identified in bounded bus/module/log snapshot; physical amplifier design remains unknown",
+    "audio_pci": [
+      {
+        "device": "0xa348",
+        "subsystem_device": "0x2267",
+        "subsystem_vendor": "0x17aa",
+        "vendor": "0x8086"
+      },
+      {
+        "device": "0x0fb9",
+        "subsystem_device": "0x0000",
+        "subsystem_vendor": "0x0000",
+        "vendor": "0x10de"
+      }
+    ],
+    "bios_date": "2022-12-20",
+    "bios_version": "N2EET61W (1.43 )",
+    "codec": {
+      "linux_name": "Realtek ALC285",
+      "subsystem_id": "0x17aa2276",
+      "vendor_id": "0x10ec0285"
+    },
+    "family": "ThinkPad X1 Extreme",
+    "generation": 1,
+    "generation_basis": "observed machine type 20MF; Lenovo official type mapping",
+    "kernel": "7.3.0-9-generic",
+    "manufacturer": "Lenovo",
+    "product_model": "20MF000DUS"
+  },
+  "host_alias": "lab6",
+  "kind": "audio-public-summary",
+  "limits": [
+    "snapshot may span hotplug or state transitions",
+    "graph period is not physical latency",
+    "no audio playback, recording, or configuration activation",
+    "No measured latency or sound-quality result",
+    "No recovery image inspected by this lane",
+    "No smart-amp/calibration/protection inference from absence in bounded logs",
+    "pactl unavailable; use pw-dump/wpctl inventory"
+  ],
+  "observed_date": "2026-10-12",
+  "official_sources": {
+    "generation": "https://pcsupport.lenovo.com/us/en/products/laptops-and-netbooks/thinkpad-x-series-laptops/thinkpad-x1-extreme/20mf/downloads",
+    "realtek_audio_reference": "https://pcsupport.lenovo.com/us/en/products/laptops-and-netbooks/thinkpad-x-series-laptops/thinkpad-x1-extreme/downloads/ds504906",
+    "specification": "https://psref.lenovo.com/syspool/Sys/PDF/ThinkPad/ThinkPad_X1_Extreme/ThinkPad_X1_Extreme_Spec.PDF"
+  },
+  "packages": {
+    "alsa-ucm-conf": "1.2.16.1-1ubuntu1",
+    "alsa-utils": "1.2.15.2-1ubuntu2",
+    "linux-firmware": "20260915.git1522c78a.1ubuntu",
+    "pipewire": "1.6.8-1ubuntu4",
+    "pipewire-pulse": "1.6.8-1ubuntu4",
+    "rtkit": "0.14-1ubuntu1",
+    "wireplumber": "0.5.17-1ubuntu1"
+  },
+  "physical_latency_ms": null,
+  "probes": {
+    "audio_log": "ok",
+    "capture": "ok",
+    "graph": "ok",
+    "kernel": "ok",
+    "packages": "ok",
+    "pipewire_version": "ok",
+    "playback": "ok",
+    "settings": "ok",
+    "threads": "ok",
+    "wireplumber_version": "ok"
+  },
+  "provenance": {
+    "evidence_class": "live-read-only",
+    "host_alias": "lab6",
+    "raw_sha256": {
+      "inventory": "fb127ccc185ece7800901da4882468ec665918b537613593d0c8db43524210b0",
+      "supplement": "d6b0ef8e30169ad874738970ca6ef6df2dfea9e6e00f4b6063f4fc78fb2fb0e7"
+    },
+    "tool_revision": "dc714656f1902532245c00850247fc5ac5af0be1",
+    "tool_sha256": {
+      "audio_common.py": "14a70e97a92a961a28df64d27af9cecf5a7044c3e6d97a8901ce6ed3fc7564ea",
+      "inspect_audio.py": "60008887f538c161cd4581f1805b7fc8286bf0d0929d7f70edaa006e5f4e42bc"
+    }
+  },
+  "raw_sha256": {
+    "extra.json": "402ac2054458e5aacd4fcc82d177e6ef9be448a1447ee9953eca5a0a39183bdb",
+    "inventory.json": "fb127ccc185ece7800901da4882468ec665918b537613593d0c8db43524210b0",
+    "supplement.json": "d6b0ef8e30169ad874738970ca6ef6df2dfea9e6e00f4b6063f4fc78fb2fb0e7"
+  },
+  "routing": {
+    "active_audio_stream_nodes": 0,
+    "active_input_route": "analog-input-internal-mic",
+    "active_output_route": "analog-output-speaker",
+    "active_profile": "output:analog-stereo+input:analog-stereo",
+    "alsa_acp": true,
+    "alsa_ucm_enable_property": "not declared in captured device props",
+    "audio_filter_class_nodes": 0,
+    "auto_mute_mode": "Disabled",
+    "headphone_switches": [
+      "off",
+      "off"
+    ],
+    "speaker_switches": [
+      "on",
+      "on"
+    ]
+  },
+  "schema_version": 1,
+  "source_claims": {
+    "lenovo_psref_codec_name": "ALC3286",
+    "limits": "manufacturer claims; do not infer Linux object rendering or map ALC3286 to ALC285 without exact-match driver evidence",
+    "marketing_formats": [
+      "Dolby Audio Premium",
+      "Dolby Atmos headphone"
+    ],
+    "speaker_rating": "stereo 2 W x 2"
+  },
+  "source_sha256": "fb127ccc185ece7800901da4882468ec665918b537613593d0c8db43524210b0",
+  "supplement_probe_status": {
+    "alsa_mixer": "ok",
+    "kernel": "ok",
+    "kernel_audio": "ok",
+    "packages": "ok",
+    "pactl_cards": "unavailable",
+    "pactl_sinks": "unavailable",
+    "sessions": "ok",
+    "wpctl_status": "ok"
+  },
+  "system_config": {
+    "override_file_count": 0,
+    "status": "ok"
+  },
+  "user_config": {
+    "file_count": 0,
+    "sha256": [],
+    "status": "ok"
+  },
+  "versions": {
+    "pipewire": "1.6.8",
+    "wireplumber": "0.5.17"
+  }
+}

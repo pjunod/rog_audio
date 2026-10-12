@@ -1,0 +1,31 @@
+# Cavern local correction by Codex Agent; original code: Bence Sgánetz (VoidX).
+# Base: 7d85d1880666ca5ea323848cff47ce7f50b29f7d. Upstream licence retained.
+# Expose current-frame OAMD presence; retained object counts are not payload freshness.
+--- a/Cavern.Format/Decoders/EnhancedAC3/ExtensibleMetadataDecoder.cs
++++ b/Cavern.Format/Decoders/EnhancedAC3/ExtensibleMetadataDecoder.cs
+@@ -9,6 +9,9 @@
+         /// The last EBML frame contained object data.
+         /// </summary>
+         public bool HasObjects { get; private set; }
++
++        /// <summary>OAMD was decoded from the current EMDF frame.</summary>
++        public bool HasOAMD { get; private set; }
+ 
+         /// <summary>
+         /// The Joint Object Coding data in this frame.
+@@ -27,6 +30,7 @@
+         /// </summary>
+         public void Decode(BitExtractor extractor) {
+             HasObjects = false;
++            HasOAMD = false;
+             int syncword = 0;
+             while (extractor.Position < extractor.BackPosition - 32) {
+                 syncword = ((syncword << 8) & 0xFFFF) + extractor.Read(8); // Syncwords are byte-padded
+@@ -106,6 +110,7 @@
+                     HasObjects = true;
+                 } else if (payloadID == oamdPayloadID) {
+                     OAMD.Decode(extractor, sampleOffset);
++                    HasOAMD = true;
+                 }
+                 extractor.Position = payloadEnd;
+             }

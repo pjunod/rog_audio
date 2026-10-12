@@ -1,13 +1,15 @@
 # Status — implementation and physical acceptance
 
-**Updated:** 2026-10-12 · **State:** initial implementation in progress.
+**Updated:** 2026-10-12 · **State:** first implementation batch reviewed and validated; live installation pending.
 
 | Work | State | Next evidence |
 |---|---|---|
-| Hardware inventory | Read-only inspection complete | Sanitized receipt migrating with build docs |
-| ASUS speaker tuning | Exact matching OEM XML recovered privately | Offline converter and synthetic validation |
-| Diagnostics and latency | GPT-6.1 Sol implementation in progress | Reviewed inspector, analyser and candidate generator |
-| Host Atmos | GPT-6.1 Sol isolated Linux build in progress | Offline harness, synthetic renderer and capability receipt |
+| Hardware inventory | Read-only inspection complete | Sanitized receipt and build contracts imported |
+| ASUS speaker tuning | Original XML and matching INF published | 48 tests and three OEM conversions passed; runtime/acoustics pending |
+| Diagnostics and latency | Reviewed; 42 tests and native rule checks passed | Physical comparison and coordinated activation |
+| Host Atmos | 15 tests passed; focused CI cleanup fix passed | Actual JOC reference media and physical qualification |
+| ASUS installation kit | Implementation underway; stock EasyEffects route transition issue identified | Target-aware routing, prompt headphone bypass and reversible install/remove |
+| ThinkPad X1 Extreme | First-generation inventory and exact-match Lenovo package found | Recovery access retry and separate model-specific importer |
 | macOS comparison | Pending physical measurements | M4 Air primary, M3 Max secondary |
 | Sonos Arc/eARC | Deferred until internal audio work | TV route and actual received formats |
 
@@ -16,3 +18,28 @@ Independent adversarial review happens once the batch is ready to merge;
 findings are addressed before the required tests run. Failed or invalidated
 tests alone are repeated. Source capability, synthetic results, installation
 and measured performance remain separate claims.
+
+## Decisions made during implementation
+
+The repository is public, matching the display project. Original tool code
+uses MIT; vendor and third-party terms remain separate. The owner explicitly
+requested the recovered ASUS XML/INF be committed, overriding earlier private
+storage instructions. Raw observations and access credentials remain excluded.
+
+The first implementation PR combines the three lanes. Tests are explicitly
+selected after adversarial review; hosted CI is manual to avoid duplicate
+push-triggered runs. All agent workspaces are outside the owner's ~/code tree.
+No live audio deployment or physical measurement is implied by this batch.
+
+## Installation readiness
+
+ASUS: not yet ready for live installation. The offline tuning importer and
+latency tooling have passed their reviewed checks, but the EasyEffects
+runtime, internal-speaker routing and reversible install/remove kit still
+need implementation and acceptance. Acoustic quality and physical latency
+remain later measurements.
+
+ThinkPad: first-generation model and codec are identified. An exact-match
+Lenovo package has been found. Recovery inspection and a model-specific
+importer remain in progress before an install candidate.
+The recovery search is read-only; ASUS coefficients are not a ThinkPad profile.

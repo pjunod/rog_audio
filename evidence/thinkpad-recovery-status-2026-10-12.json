@@ -1,0 +1,60 @@
+{
+  "admin_probe": {
+    "method": "sudo -n id -u",
+    "result": "authentication-failed"
+  },
+  "audio_identity": {
+    "codec": "Realtek ALC285",
+    "codec_vendor_id": "10ec0285",
+    "subsystem_id": "17aa2276"
+  },
+  "date": "2026-10-12",
+  "evidence_kind": "live-read-only",
+  "host": "lab6",
+  "limits": [
+    "Recovery contents are unknown; no claim that matching audio files are absent.",
+    "No OS disk unlock/mount, installs, audio playback/recording/control or service changes.",
+    "Default SSH identity allowed read-only probes; supplied deploy key did not authenticate.",
+    "No ASUS profile reused or speaker preparation forced to match Lenovo."
+  ],
+  "model": {
+    "family": "ThinkPad X1 Extreme first generation",
+    "machine_type_model": "20MF000DUS",
+    "vendor": "LENOVO"
+  },
+  "mount_attempt": {
+    "cleanup_trap": "executed",
+    "method": "udisksctl --no-user-interaction",
+    "requested_options": [
+      "ro",
+      "nodev",
+      "nosuid",
+      "noexec"
+    ],
+    "result": "authorization-denied",
+    "unmounted_verified": true
+  },
+  "raw_capture_hashes": {
+    "accessible-recovery-search.raw": "f5c34611e33c53960897c85f19809e7f720e955dd7e82746e2e21e74c02fe5d5",
+    "audio.raw": "946f33515f6cb6d4180ed61100f105dec7385f39d9910afd74e0662f1fdda375",
+    "layout.raw": "03df59f6015b74977fe6acb20b7ac44f4ee4fdc599f779a0853b1d9ed66b4a9d",
+    "model.raw": "311f9fd4341ddca790ba0cb0bb6f85a8f0185ec3ae25b3b7f707cbe03e821f5b",
+    "mounts.raw": "681ed50f0fc5fc391c6da5bd727746b08dc03b85365cb80502a7098285d98a84",
+    "partition-type.raw": "14bc01df174c1a8f6a8e2d9fb8d903be3799d1246ede730f481f071f44c655a3",
+    "permissions.raw": "56d0b63f067f98bfc107ed7838fcbc39a88ef764898aa5be4c283875b5715eec",
+    "recovery-listing.raw": "77718cfbf81f34b9e6c3e3e1000bb0fd72c538b4f9d408b5dd6c81a4397f1510",
+    "sudo-probe.raw": "22ec28b719ddc7acd09a592c9aea4f348617380367a144e71fc120cc9bbb4f37",
+    "tools.raw": "22ec28b719ddc7acd09a592c9aea4f348617380367a144e71fc120cc9bbb4f37",
+    "unmount-verification.raw": "282a92e4928494d7166d878ef4d8760da3cd237341cd95b98e9337681068eedb"
+  },
+  "recovery_candidate": {
+    "contents_inspected": false,
+    "dedicated_large_factory_partition_observed": false,
+    "files_extracted": 0,
+    "filesystem": "NTFS",
+    "partition_type": "de94bba4-06d1-4d40-a16a-bfd50179d6ac",
+    "size_reported": "1.1GiB"
+  },
+  "result": "blocked-pending-existing-administrator-route-or-accessible-image",
+  "schema_version": 1
+}

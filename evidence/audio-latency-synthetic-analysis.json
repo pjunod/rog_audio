@@ -1,0 +1,457 @@
+{
+  "av_offset_sign": "audio-minus-video; positive means audio late",
+  "evidence_class": "synthetic",
+  "groups": [
+    {
+      "dimensions": {
+        "clock_model": {
+          "relationship": "same-clock"
+        },
+        "configuration_id": "baseline",
+        "corrections": [],
+        "dsp_state": "stock",
+        "graph": {
+          "quantum_frames": 1024,
+          "rate_hz": 48000
+        },
+        "kind": "idle-onset",
+        "load_state": "idle",
+        "method": "cross-correlation",
+        "power_state": "ac",
+        "route": "internal-speakers",
+        "sample_rate_hz": 48000,
+        "setup_id": "rig-a"
+      },
+      "graph_period_ms": 21.333333333333332,
+      "onset_trial_count_gate": {
+        "required_count": 100,
+        "status": "synthetic-only"
+      },
+      "statistics": {
+        "corrected_ms": {
+          "max": 20,
+          "median": 10.5,
+          "min": 1,
+          "p95": 19
+        },
+        "excluded_count": 0,
+        "exclusion_reason_counts": {},
+        "included_count": 20,
+        "raw_ms": {
+          "max": 20,
+          "median": 10.5,
+          "min": 1,
+          "p95": 19
+        },
+        "total_count": 20,
+        "uncertainty": {
+          "corrected_statistic_bounds_ms": {
+            "max": [
+              19.75,
+              20.25
+            ],
+            "median": [
+              10.25,
+              10.75
+            ],
+            "min": [
+              0.75,
+              1.25
+            ],
+            "p95": [
+              18.75,
+              19.25
+            ]
+          },
+          "max_trial_bound_ms": 0.25,
+          "method": "additive-conservative-bound",
+          "sampling_confidence_interval": "not-estimated"
+        }
+      },
+      "trials": [
+        {
+          "clock": {
+            "relationship": "same-clock"
+          },
+          "combined_uncertainty_bound_ms": 0.25,
+          "corrected_delay_ms": 1,
+          "corrections": [],
+          "exclusion_reasons": [],
+          "included": true,
+          "input_flags": [],
+          "input_rejection_reason": null,
+          "input_valid": true,
+          "measurement_uncertainty_bound_ms": 0.25,
+          "raw_delay": 1,
+          "raw_delay_ms": 1,
+          "raw_unit": "ms",
+          "trial_id": "trial-1"
+        },
+        {
+          "clock": {
+            "relationship": "same-clock"
+          },
+          "combined_uncertainty_bound_ms": 0.25,
+          "corrected_delay_ms": 10,
+          "corrections": [],
+          "exclusion_reasons": [],
+          "included": true,
+          "input_flags": [],
+          "input_rejection_reason": null,
+          "input_valid": true,
+          "measurement_uncertainty_bound_ms": 0.25,
+          "raw_delay": 10,
+          "raw_delay_ms": 10,
+          "raw_unit": "ms",
+          "trial_id": "trial-10"
+        },
+        {
+          "clock": {
+            "relationship": "same-clock"
+          },
+          "combined_uncertainty_bound_ms": 0.25,
+          "corrected_delay_ms": 11,
+          "corrections": [],
+          "exclusion_reasons": [],
+          "included": true,
+          "input_flags": [],
+          "input_rejection_reason": null,
+          "input_valid": true,
+          "measurement_uncertainty_bound_ms": 0.25,
+          "raw_delay": 11,
+          "raw_delay_ms": 11,
+          "raw_unit": "ms",
+          "trial_id": "trial-11"
+        },
+        {
+          "clock": {
+            "relationship": "same-clock"
+          },
+          "combined_uncertainty_bound_ms": 0.25,
+          "corrected_delay_ms": 12,
+          "corrections": [],
+          "exclusion_reasons": [],
+          "included": true,
+          "input_flags": [],
+          "input_rejection_reason": null,
+          "input_valid": true,
+          "measurement_uncertainty_bound_ms": 0.25,
+          "raw_delay": 12,
+          "raw_delay_ms": 12,
+          "raw_unit": "ms",
+          "trial_id": "trial-12"
+        },
+        {
+          "clock": {
+            "relationship": "same-clock"
+          },
+          "combined_uncertainty_bound_ms": 0.25,
+          "corrected_delay_ms": 13,
+          "corrections": [],
+          "exclusion_reasons": [],
+          "included": true,
+          "input_flags": [],
+          "input_rejection_reason": null,
+          "input_valid": true,
+          "measurement_uncertainty_bound_ms": 0.25,
+          "raw_delay": 13,
+          "raw_delay_ms": 13,
+          "raw_unit": "ms",
+          "trial_id": "trial-13"
+        },
+        {
+          "clock": {
+            "relationship": "same-clock"
+          },
+          "combined_uncertainty_bound_ms": 0.25,
+          "corrected_delay_ms": 14,
+          "corrections": [],
+          "exclusion_reasons": [],
+          "included": true,
+          "input_flags": [],
+          "input_rejection_reason": null,
+          "input_valid": true,
+          "measurement_uncertainty_bound_ms": 0.25,
+          "raw_delay": 14,
+          "raw_delay_ms": 14,
+          "raw_unit": "ms",
+          "trial_id": "trial-14"
+        },
+        {
+          "clock": {
+            "relationship": "same-clock"
+          },
+          "combined_uncertainty_bound_ms": 0.25,
+          "corrected_delay_ms": 15,
+          "corrections": [],
+          "exclusion_reasons": [],
+          "included": true,
+          "input_flags": [],
+          "input_rejection_reason": null,
+          "input_valid": true,
+          "measurement_uncertainty_bound_ms": 0.25,
+          "raw_delay": 15,
+          "raw_delay_ms": 15,
+          "raw_unit": "ms",
+          "trial_id": "trial-15"
+        },
+        {
+          "clock": {
+            "relationship": "same-clock"
+          },
+          "combined_uncertainty_bound_ms": 0.25,
+          "corrected_delay_ms": 16,
+          "corrections": [],
+          "exclusion_reasons": [],
+          "included": true,
+          "input_flags": [],
+          "input_rejection_reason": null,
+          "input_valid": true,
+          "measurement_uncertainty_bound_ms": 0.25,
+          "raw_delay": 16,
+          "raw_delay_ms": 16,
+          "raw_unit": "ms",
+          "trial_id": "trial-16"
+        },
+        {
+          "clock": {
+            "relationship": "same-clock"
+          },
+          "combined_uncertainty_bound_ms": 0.25,
+          "corrected_delay_ms": 17,
+          "corrections": [],
+          "exclusion_reasons": [],
+          "included": true,
+          "input_flags": [],
+          "input_rejection_reason": null,
+          "input_valid": true,
+          "measurement_uncertainty_bound_ms": 0.25,
+          "raw_delay": 17,
+          "raw_delay_ms": 17,
+          "raw_unit": "ms",
+          "trial_id": "trial-17"
+        },
+        {
+          "clock": {
+            "relationship": "same-clock"
+          },
+          "combined_uncertainty_bound_ms": 0.25,
+          "corrected_delay_ms": 18,
+          "corrections": [],
+          "exclusion_reasons": [],
+          "included": true,
+          "input_flags": [],
+          "input_rejection_reason": null,
+          "input_valid": true,
+          "measurement_uncertainty_bound_ms": 0.25,
+          "raw_delay": 18,
+          "raw_delay_ms": 18,
+          "raw_unit": "ms",
+          "trial_id": "trial-18"
+        },
+        {
+          "clock": {
+            "relationship": "same-clock"
+          },
+          "combined_uncertainty_bound_ms": 0.25,
+          "corrected_delay_ms": 19,
+          "corrections": [],
+          "exclusion_reasons": [],
+          "included": true,
+          "input_flags": [],
+          "input_rejection_reason": null,
+          "input_valid": true,
+          "measurement_uncertainty_bound_ms": 0.25,
+          "raw_delay": 19,
+          "raw_delay_ms": 19,
+          "raw_unit": "ms",
+          "trial_id": "trial-19"
+        },
+        {
+          "clock": {
+            "relationship": "same-clock"
+          },
+          "combined_uncertainty_bound_ms": 0.25,
+          "corrected_delay_ms": 2,
+          "corrections": [],
+          "exclusion_reasons": [],
+          "included": true,
+          "input_flags": [],
+          "input_rejection_reason": null,
+          "input_valid": true,
+          "measurement_uncertainty_bound_ms": 0.25,
+          "raw_delay": 2,
+          "raw_delay_ms": 2,
+          "raw_unit": "ms",
+          "trial_id": "trial-2"
+        },
+        {
+          "clock": {
+            "relationship": "same-clock"
+          },
+          "combined_uncertainty_bound_ms": 0.25,
+          "corrected_delay_ms": 20,
+          "corrections": [],
+          "exclusion_reasons": [],
+          "included": true,
+          "input_flags": [],
+          "input_rejection_reason": null,
+          "input_valid": true,
+          "measurement_uncertainty_bound_ms": 0.25,
+          "raw_delay": 20,
+          "raw_delay_ms": 20,
+          "raw_unit": "ms",
+          "trial_id": "trial-20"
+        },
+        {
+          "clock": {
+            "relationship": "same-clock"
+          },
+          "combined_uncertainty_bound_ms": 0.25,
+          "corrected_delay_ms": 3,
+          "corrections": [],
+          "exclusion_reasons": [],
+          "included": true,
+          "input_flags": [],
+          "input_rejection_reason": null,
+          "input_valid": true,
+          "measurement_uncertainty_bound_ms": 0.25,
+          "raw_delay": 3,
+          "raw_delay_ms": 3,
+          "raw_unit": "ms",
+          "trial_id": "trial-3"
+        },
+        {
+          "clock": {
+            "relationship": "same-clock"
+          },
+          "combined_uncertainty_bound_ms": 0.25,
+          "corrected_delay_ms": 4,
+          "corrections": [],
+          "exclusion_reasons": [],
+          "included": true,
+          "input_flags": [],
+          "input_rejection_reason": null,
+          "input_valid": true,
+          "measurement_uncertainty_bound_ms": 0.25,
+          "raw_delay": 4,
+          "raw_delay_ms": 4,
+          "raw_unit": "ms",
+          "trial_id": "trial-4"
+        },
+        {
+          "clock": {
+            "relationship": "same-clock"
+          },
+          "combined_uncertainty_bound_ms": 0.25,
+          "corrected_delay_ms": 5,
+          "corrections": [],
+          "exclusion_reasons": [],
+          "included": true,
+          "input_flags": [],
+          "input_rejection_reason": null,
+          "input_valid": true,
+          "measurement_uncertainty_bound_ms": 0.25,
+          "raw_delay": 5,
+          "raw_delay_ms": 5,
+          "raw_unit": "ms",
+          "trial_id": "trial-5"
+        },
+        {
+          "clock": {
+            "relationship": "same-clock"
+          },
+          "combined_uncertainty_bound_ms": 0.25,
+          "corrected_delay_ms": 6,
+          "corrections": [],
+          "exclusion_reasons": [],
+          "included": true,
+          "input_flags": [],
+          "input_rejection_reason": null,
+          "input_valid": true,
+          "measurement_uncertainty_bound_ms": 0.25,
+          "raw_delay": 6,
+          "raw_delay_ms": 6,
+          "raw_unit": "ms",
+          "trial_id": "trial-6"
+        },
+        {
+          "clock": {
+            "relationship": "same-clock"
+          },
+          "combined_uncertainty_bound_ms": 0.25,
+          "corrected_delay_ms": 7,
+          "corrections": [],
+          "exclusion_reasons": [],
+          "included": true,
+          "input_flags": [],
+          "input_rejection_reason": null,
+          "input_valid": true,
+          "measurement_uncertainty_bound_ms": 0.25,
+          "raw_delay": 7,
+          "raw_delay_ms": 7,
+          "raw_unit": "ms",
+          "trial_id": "trial-7"
+        },
+        {
+          "clock": {
+            "relationship": "same-clock"
+          },
+          "combined_uncertainty_bound_ms": 0.25,
+          "corrected_delay_ms": 8,
+          "corrections": [],
+          "exclusion_reasons": [],
+          "included": true,
+          "input_flags": [],
+          "input_rejection_reason": null,
+          "input_valid": true,
+          "measurement_uncertainty_bound_ms": 0.25,
+          "raw_delay": 8,
+          "raw_delay_ms": 8,
+          "raw_unit": "ms",
+          "trial_id": "trial-8"
+        },
+        {
+          "clock": {
+            "relationship": "same-clock"
+          },
+          "combined_uncertainty_bound_ms": 0.25,
+          "corrected_delay_ms": 9,
+          "corrections": [],
+          "exclusion_reasons": [],
+          "included": true,
+          "input_flags": [],
+          "input_rejection_reason": null,
+          "input_valid": true,
+          "measurement_uncertainty_bound_ms": 0.25,
+          "raw_delay": 9,
+          "raw_delay_ms": 9,
+          "raw_unit": "ms",
+          "trial_id": "trial-9"
+        }
+      ]
+    }
+  ],
+  "input_sha256": "7a3122145a54111b9dba8e67c05c5b1de19fa3be4381e7992042243b4d01b1ac",
+  "limitations": [
+    "Input evidence and uncertainty bounds are operator declarations.",
+    "Graph period is not physical latency.",
+    "No one-way delay is inferred from round-trip delay.",
+    "No load-run, audible-gap or same-path Mac gate is evaluated.",
+    "Reports are private until aliases and results are reviewed."
+  ],
+  "p95_estimator": "nearest-rank: sorted[ceil(0.95*n)-1]",
+  "qualification": "not-established",
+  "schema_version": 1,
+  "setups": [
+    {
+      "interface": "built-in",
+      "os": "linux-test",
+      "setup_id": "rig-a",
+      "system": "lab5-gu605mz"
+    }
+  ],
+  "tool": "analyse_audio_latency",
+  "tool_version": 1,
+  "total_count": 20
+}
