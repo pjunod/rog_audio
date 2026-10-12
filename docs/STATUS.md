@@ -1,6 +1,6 @@
 # Status — implementation and physical acceptance
 
-**Updated:** 2026-10-12 · **State:** offline tools assembled; ready for adversarial review; final acceptance tests pending.
+**Updated:** 2026-10-12 · **State:** offline tools assembled; review findings being fixed; final acceptance tests pending.
 
 | Work | State | Next evidence |
 |---|---|---|

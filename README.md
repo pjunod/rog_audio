@@ -17,7 +17,7 @@ Display work remains in [rog_hdr_dv](https://github.com/pjunod/rog_hdr_dv).
 - [Audio quality](docs/AUDIO_QUALITY.md) — goals, source research and comparison methods.
 - [Hardware](docs/AUDIO_HARDWARE.md) — actual codec, amps and OEM findings.
 - [Implementation](docs/AUDIO_IMPLEMENTATION.md) — build order and deliverables.
-- [Speaker build](docs/AUDIO_SPEAKER_BUILD.md) — exact-match private tuning conversion.
+- [Speaker build](docs/AUDIO_SPEAKER_BUILD.md) — exact-match tuning conversion.
 - [Latency build](docs/AUDIO_LATENCY_BUILD.md) — inspection, measurements and candidates.
 - [Atmos build](docs/AUDIO_ATMOS_BUILD.md) — offline object rendering and format limits.
 - [Development](docs/DEVELOPMENT.md) — review, CI and selective test policy.
