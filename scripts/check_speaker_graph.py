@@ -105,8 +105,9 @@ def acceptance(kit_path,case,output,binary,mock,player):
     settings=kit.settings(b'',manifest).replace(b'presetsAutoloadInterval=0',b'presetsAutoloadInterval=1000')
     target=locations['config']/'db/easyeffectsrc';kit.mkdir(target.parent);kit.replace(target,settings)
     conf=state/'config/pipewire/pipewire.conf.d/99-private.conf';kit.mkdir(conf.parent)
-    conf.write_text('context.properties = { core.name = "'+environment['PIPEWIRE_REMOTE']+'" }\n'
-                    'context.modules = [ { name = libpipewire-module-client-device } ]\n')
+    # The pinned server config already loads client-device. Adding it again
+    # registers the same SPA export type twice and aborts PipeWire startup.
+    conf.write_text('context.properties = { core.name = "'+environment['PIPEWIRE_REMOTE']+'" }\n')
     graph=Graph(output,environment);node_name=manifest['binding']['node_name'];observations=[]
     try:
         graph.start('pipewire',['pipewire']);graph.until(lambda _:True)
