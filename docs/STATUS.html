@@ -12,7 +12,7 @@ h1{font-size:2rem}h2{color:#91d7ee}a{color:#91d7ee}table{border-collapse:collaps
 <tr><td>Diagnostics and latency</td><td>Reviewed; 42 tests and native rule checks passed</td><td>Physical comparison and coordinated activation</td></tr>
 <tr><td>Host Atmos</td><td>15 tests passed; focused CI cleanup fix passed</td><td>Actual JOC reference media and physical qualification</td></tr>
 <tr><td>ASUS installation kit</td><td>Implementation underway; stock EasyEffects route transition issue identified</td><td>Target-aware routing, prompt headphone bypass and reversible install/remove</td></tr>
-<tr><td>ThinkPad X1 Extreme</td><td>Exact-match sources published in candidate branch; music/dynamic/off bundles built</td><td>Combined batch review/tests and recovery inspection</td></tr>
+<tr><td>ThinkPad X1 Extreme</td><td>Downloaded exact-match sources and three inactive bundles built; WinRE index inspected</td><td>Combined batch review/tests and installation runtime</td></tr>
 <tr><td>macOS comparison</td><td>Pending physical measurements</td><td>M4 Air primary, M3 Max secondary</td></tr>
 <tr><td>Sonos Arc/eARC</td><td>Deferred until internal audio work</td><td>TV route and actual received formats</td></tr>
 </table>
@@ -38,14 +38,19 @@ h1{font-size:2rem}h2{color:#91d7ee}a{color:#91d7ee}table{border-collapse:collaps
 <p>remain later measurements.</p>
 <p>ThinkPad: first-generation model and codec are identified. An exact-match</p>
 <p>Lenovo package is published in the candidate branch and its model-specific</p>
-<p>importer has built three inactive bundles. Final review/unit tests, recovery</p>
-<p>inspection and runtime routing remain open before installation readiness.</p>
+<p>importer has built three inactive bundles. Final review/unit tests and runtime routing remain open before installation</p>
+<p>readiness. The recovery WIM index did not reveal matching speaker-profile</p>
+<p>paths; the downloaded Lenovo source remains distinct.</p>
 <p>The recovery search is read-only; ASUS coefficients are not a ThinkPad profile.</p>
 <h2>Second implementation batch</h2>
 <p>The first audio batch merged as PR 1. The next batch combines the Lenovo</p>
 <p>importer and original source files with the reversible EasyEffects install kit</p>
 <p>and routing corrections. Lenovo conversion/build evidence exists; unit tests</p>
 <p>are deferred until the combined batch is complete and adversarially reviewed.</p>
-<p>The owner has corrected and tested ThinkPad passwordless sudo. A fresh</p>
-<p>read-only recovery inspection is underway; earlier access failures remain</p>
-<p>historical evidence until the new result is recorded.</p><p><a href="https://github.com/pjunod/rog_audio/blob/main/docs/STATUS.md">GitHub progress ledger</a></p></main></html>
+<p>The corrected ThinkPad sudo policy allowed read-only recovery inspection.</p>
+<p>One Windows Recovery Environment image was indexed (25,538 path entries).</p>
+<p>No exact subsystem or known speaker XML/INF path matched the bounded search.</p>
+<p>Dolby-named DSP firmware paths are present but were not extracted. The reader</p>
+<p>reported an incorrect-reference-count warning, so this is a filename-index</p>
+<p>observation, not image-integrity verification. Recovery was unmounted and</p>
+<p>the temporary reader removed. Earlier access failures are historical.</p><p><a href="https://github.com/pjunod/rog_audio/blob/main/docs/STATUS.md">GitHub progress ledger</a></p></main></html>

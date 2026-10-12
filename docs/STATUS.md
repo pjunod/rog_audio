@@ -9,7 +9,7 @@
 | Diagnostics and latency | Reviewed; 42 tests and native rule checks passed | Physical comparison and coordinated activation |
 | Host Atmos | 15 tests passed; focused CI cleanup fix passed | Actual JOC reference media and physical qualification |
 | ASUS installation kit | Implementation underway; stock EasyEffects route transition issue identified | Target-aware routing, prompt headphone bypass and reversible install/remove |
-| ThinkPad X1 Extreme | Exact-match sources published in candidate branch; music/dynamic/off bundles built | Combined batch review/tests and recovery inspection |
+| ThinkPad X1 Extreme | Downloaded exact-match sources and three inactive bundles built; WinRE index inspected | Combined batch review/tests and installation runtime |
 | macOS comparison | Pending physical measurements | M4 Air primary, M3 Max secondary |
 | Sonos Arc/eARC | Deferred until internal audio work | TV route and actual received formats |
 
@@ -41,8 +41,9 @@ remain later measurements.
 
 ThinkPad: first-generation model and codec are identified. An exact-match
 Lenovo package is published in the candidate branch and its model-specific
-importer has built three inactive bundles. Final review/unit tests, recovery
-inspection and runtime routing remain open before installation readiness.
+importer has built three inactive bundles. Final review/unit tests and runtime routing remain open before installation
+readiness. The recovery WIM index did not reveal matching speaker-profile
+paths; the downloaded Lenovo source remains distinct.
 The recovery search is read-only; ASUS coefficients are not a ThinkPad profile.
 
 ## Second implementation batch
@@ -52,6 +53,10 @@ importer and original source files with the reversible EasyEffects install kit
 and routing corrections. Lenovo conversion/build evidence exists; unit tests
 are deferred until the combined batch is complete and adversarially reviewed.
 
-The owner has corrected and tested ThinkPad passwordless sudo. A fresh
-read-only recovery inspection is underway; earlier access failures remain
-historical evidence until the new result is recorded.
+The corrected ThinkPad sudo policy allowed read-only recovery inspection.
+One Windows Recovery Environment image was indexed (25,538 path entries).
+No exact subsystem or known speaker XML/INF path matched the bounded search.
+Dolby-named DSP firmware paths are present but were not extracted. The reader
+reported an incorrect-reference-count warning, so this is a filename-index
+observation, not image-integrity verification. Recovery was unmounted and
+the temporary reader removed. Earlier access failures are historical.
