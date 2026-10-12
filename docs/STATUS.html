@@ -11,7 +11,7 @@ h1{font-size:2rem}h2{color:#91d7ee}a{color:#91d7ee}table{border-collapse:collaps
 <tr><td>ASUS speaker tuning</td><td>Original XML and matching INF published</td><td>48 tests and three OEM conversions passed; runtime/acoustics pending</td></tr>
 <tr><td>Diagnostics and latency</td><td>Reviewed; 42 tests and native rule checks passed</td><td>Physical comparison and coordinated activation</td></tr>
 <tr><td>Host Atmos</td><td>15 tests passed; focused CI cleanup fix passed</td><td>Actual JOC reference media and physical qualification</td></tr>
-<tr><td>Laptop installation runtime</td><td>Patched EasyEffects compiled and packaged; both inactive kits prepared</td><td>All source fixes re-reviewed; selective unit and per-device runtime acceptance running</td></tr>
+<tr><td>Laptop installation runtime</td><td>Patched EasyEffects compiled and packaged; both inactive kits prepared</td><td>97 affected unit cases passed; per-device real runtime acceptance pending</td></tr>
 <tr><td>ThinkPad X1 Extreme</td><td>Downloaded exact-match sources and three inactive bundles built; WinRE index inspected</td><td>Combined batch review/tests and installation runtime</td></tr>
 <tr><td>macOS comparison</td><td>Pending physical measurements</td><td>M4 Air primary, M3 Max secondary</td></tr>
 <tr><td>Sonos Arc/eARC</td><td>Deferred until internal audio work</td><td>TV route and actual received formats</td></tr>
@@ -71,14 +71,20 @@ h1{font-size:2rem}h2{color:#91d7ee}a{color:#91d7ee}table{border-collapse:collaps
 <p>`155d003`. Selective unit and runtime acceptance is authorized on those source</p>
 <p>bytes. The dependency-inspector lane adds nine regression cases; installation</p>
 <p>adds four cases and native routing adds three. Final results are pending.</p>
-<p>The current APT simulations bind the pre-fix package. Native fixes require a</p>
-<p>new package and a focused repeat of its dependency simulation. Earlier results</p>
-<p>remain historical receipts and will not be presented as acceptance of new bytes.</p>
+<p>The replacement package passed a focused APT simulation on both hosts, again</p>
+<p>with zero upgrades/removals and unchanged installed-package inventories. The</p>
+<p>reviewed-package receipt binds its new checksum; pre-fix results remain</p>
+<p>separate historical receipts.</p>
 <h2>Acceptance progress</h2>
 <p>The shared speaker/importer suite passed 55 cases and dependency inspection</p>
 <p>passed nine cases, each once with zero failures/skips. Source staging passed</p>
 <p>one case and reversible installation passed 12. The first native routing run</p>
 <p>hit 20 execution errors because its isolated Docker temporary mount was</p>
-<p>`noexec`; compilation succeeded. Only those 20 failed cases are being retried</p>
-<p>with an executable temporary mount. Source and installation passes are retained.</p>
-<p>Real runtime acceptance for each laptop remains pending.</p><p><a href="https://github.com/pjunod/rog_audio/blob/main/docs/STATUS.md">GitHub progress ledger</a></p></main></html>
+<p>`noexec`; compilation succeeded. Only those 20 failed cases were retried</p>
+<p>with an executable temporary mount, and all passed. Source and installation</p>
+<p>passes were retained. All 97 affected unit cases are now green.</p>
+<p>The first ASUS real-runtime attempt stopped before app/preset/audio execution:</p>
+<p>the synthetic device exporter used the wrong PipeWire interface. Its fixture</p>
+<p>correction will receive focused review before retry. The ThinkPad selector has</p>
+<p>not been run against this broken fixture. Production package and unit passes</p>
+<p>are unchanged; real runtime acceptance for each laptop remains pending.</p><p><a href="https://github.com/pjunod/rog_audio/blob/main/docs/STATUS.md">GitHub progress ledger</a></p></main></html>

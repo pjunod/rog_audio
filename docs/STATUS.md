@@ -8,7 +8,7 @@
 | ASUS speaker tuning | Original XML and matching INF published | 48 tests and three OEM conversions passed; runtime/acoustics pending |
 | Diagnostics and latency | Reviewed; 42 tests and native rule checks passed | Physical comparison and coordinated activation |
 | Host Atmos | 15 tests passed; focused CI cleanup fix passed | Actual JOC reference media and physical qualification |
-| Laptop installation runtime | Patched EasyEffects compiled and packaged; both inactive kits prepared | All source fixes re-reviewed; selective unit and per-device runtime acceptance running |
+| Laptop installation runtime | Patched EasyEffects compiled and packaged; both inactive kits prepared | 97 affected unit cases passed; per-device real runtime acceptance pending |
 | ThinkPad X1 Extreme | Downloaded exact-match sources and three inactive bundles built; WinRE index inspected | Combined batch review/tests and installation runtime |
 | macOS comparison | Pending physical measurements | M4 Air primary, M3 Max secondary |
 | Sonos Arc/eARC | Deferred until internal audio work | TV route and actual received formats |
@@ -82,9 +82,10 @@ inspection and lifecycle-state validation issues. All seven findings are fixed a
 bytes. The dependency-inspector lane adds nine regression cases; installation
 adds four cases and native routing adds three. Final results are pending.
 
-The current APT simulations bind the pre-fix package. Native fixes require a
-new package and a focused repeat of its dependency simulation. Earlier results
-remain historical receipts and will not be presented as acceptance of new bytes.
+The replacement package passed a focused APT simulation on both hosts, again
+with zero upgrades/removals and unchanged installed-package inventories. The
+reviewed-package receipt binds its new checksum; pre-fix results remain
+separate historical receipts.
 
 
 ## Acceptance progress
@@ -93,6 +94,11 @@ The shared speaker/importer suite passed 55 cases and dependency inspection
 passed nine cases, each once with zero failures/skips. Source staging passed
 one case and reversible installation passed 12. The first native routing run
 hit 20 execution errors because its isolated Docker temporary mount was
-`noexec`; compilation succeeded. Only those 20 failed cases are being retried
-with an executable temporary mount. Source and installation passes are retained.
-Real runtime acceptance for each laptop remains pending.
+`noexec`; compilation succeeded. Only those 20 failed cases were retried
+with an executable temporary mount, and all passed. Source and installation
+passes were retained. All 97 affected unit cases are now green.
+The first ASUS real-runtime attempt stopped before app/preset/audio execution:
+the synthetic device exporter used the wrong PipeWire interface. Its fixture
+correction will receive focused review before retry. The ThinkPad selector has
+not been run against this broken fixture. Production package and unit passes
+are unchanged; real runtime acceptance for each laptop remains pending.
