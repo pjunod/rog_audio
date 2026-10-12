@@ -20,6 +20,7 @@ Display work remains in [rog_hdr_dv](https://github.com/pjunod/rog_hdr_dv).
 - [ThinkPad](docs/THINKPAD_AUDIO.md) — independent inventory, recovery status and tuning contract.
 - [Implementation](docs/AUDIO_IMPLEMENTATION.md) — build order and deliverables.
 - [Speaker build](docs/AUDIO_SPEAKER_BUILD.md) — exact-match tuning conversion.
+- [Lenovo speaker preparation](docs/LENOVO_SPEAKER_PROFILE.md) — exact first-generation X1 Extreme source, identity and offline candidates.
 - [Latency build](docs/AUDIO_LATENCY_BUILD.md) — inspection, measurements and candidates.
 - [Atmos build](docs/AUDIO_ATMOS_BUILD.md) — offline object rendering and format limits.
 - [Development](docs/DEVELOPMENT.md) — review, CI and selective test policy.

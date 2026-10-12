@@ -21,6 +21,12 @@ is trusted input, not a fresh hardware probe. By default the tool uses
 `--inventory` can supply another receipt, including synthetic tests; it still
 must declare the supported identity. No owner-authorization switch is needed.
 
+The additional [Lenovo contract](LENOVO_SPEAKER_PROFILE.md) accepts the observed
+first-generation `20MF` with codec subsystem `17aa2276` and PCI subsystem
+`17aa2267`, using its explicit inventory and original source manifest. It has
+the legacy stereo schema and an unknown amplifier identity; ASUS firmware and
+protection assumptions do not carry over.
+
 The XML/INF names, sizes and SHA256 hashes must match that receipt. The INF
 must contain the exact HDAUDIO/INTELAUDIO ID in a DeviceExtensions section,
 including the optional `FUNC_01` prefix. Its selected install section must

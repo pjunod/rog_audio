@@ -1,0 +1,268 @@
+{
+  "base_revision": "f8f72206cd96fbc6f60c6db524d23c0ee399ed07",
+  "candidates": [
+    {
+      "activation_state": "not-installed",
+      "complete_equivalence": false,
+      "dependencies": {
+        "numpy": "2.2.6",
+        "python": "3.12.15",
+        "scipy": "1.15.3"
+      },
+      "exit_code": 0,
+      "field_status_counts": {
+        "approximation-bypassed": 6,
+        "disabled": 2,
+        "mapped-static-approximation": 7,
+        "not-selected": 2,
+        "unsupported": 73
+      },
+      "hardware": {
+        "amplifier_identification": "unknown",
+        "codec": "10ec0285",
+        "machine_type": "20MF",
+        "pci_subsystem": "17aa2267",
+        "subsystem": "17aa2276"
+      },
+      "input_hashes": {
+        "duplicate_xml": "not-verified",
+        "inf_sha256": "64d8b74a111bfe07fcb760fbcefb7784cd499ada9f19fa55d98d4321fb27e388",
+        "inventory_sha256": "266d8487ab3f594266ecc201f32a429abdbea0476d0fe2000bc5a76c469f8890",
+        "source_manifest_sha256": "afab282564eaab7543feee5c3f8f98845dc99539fc50ca49e3ce839f25769511",
+        "xml_sha256": "6369d6f7743e9f936820206f232fe6d8f8a9a0194e17496d13fb0628d1156ced"
+      },
+      "manifest_sha256": "d4db50b23c56310df1b4c5a2153da51d84486799b06dcc10d22d2df7b472af08",
+      "output_hashes": {
+        "field-mapping.json": "01cd025ce220103393e966f4c19605dca603d27a935e7f7af5bde2b55e269d82",
+        "irs/speaker-3614d6c2ef5fae7c.irs": "2040c08e3d19489331ace93d2503431ea1a63425d99fb8ad6a80977e2ad8b058",
+        "preset.json": "b765f964beb72310451daa428f2acdf9919b78bcd431c240d7bc05e2ef1887f8"
+      },
+      "profile": "music",
+      "qualification": "offline-candidate-unqualified",
+      "result": "built-and-verified",
+      "selection": {
+        "endpoint": "internal_speaker",
+        "mode": "normal",
+        "profile": "music",
+        "voicing": "balanced"
+      },
+      "stages": [
+        {
+          "bypassed": false,
+          "name": "convolver#0"
+        },
+        {
+          "bypassed": true,
+          "name": "autogain#0"
+        },
+        {
+          "bypassed": true,
+          "name": "multiband_compressor#1"
+        },
+        {
+          "bypassed": false,
+          "name": "limiter#0"
+        }
+      ]
+    },
+    {
+      "activation_state": "not-installed",
+      "complete_equivalence": false,
+      "dependencies": {
+        "numpy": "2.2.6",
+        "python": "3.12.15",
+        "scipy": "1.15.3"
+      },
+      "exit_code": 0,
+      "field_status_counts": {
+        "approximation-bypassed": 8,
+        "mapped-static-approximation": 7,
+        "not-selected": 2,
+        "unsupported": 73
+      },
+      "hardware": {
+        "amplifier_identification": "unknown",
+        "codec": "10ec0285",
+        "machine_type": "20MF",
+        "pci_subsystem": "17aa2267",
+        "subsystem": "17aa2276"
+      },
+      "input_hashes": {
+        "duplicate_xml": "not-verified",
+        "inf_sha256": "64d8b74a111bfe07fcb760fbcefb7784cd499ada9f19fa55d98d4321fb27e388",
+        "inventory_sha256": "266d8487ab3f594266ecc201f32a429abdbea0476d0fe2000bc5a76c469f8890",
+        "source_manifest_sha256": "afab282564eaab7543feee5c3f8f98845dc99539fc50ca49e3ce839f25769511",
+        "xml_sha256": "6369d6f7743e9f936820206f232fe6d8f8a9a0194e17496d13fb0628d1156ced"
+      },
+      "manifest_sha256": "56be4199ddae8358992970122e1ab7d2d4d84f32b5a0b8674776df5ad1cdd0a3",
+      "output_hashes": {
+        "field-mapping.json": "196bfe26bb4f21db3103b1024ec28063a510207769d08d5274d95369acd2f52a",
+        "irs/speaker-3614d6c2ef5fae7c.irs": "2040c08e3d19489331ace93d2503431ea1a63425d99fb8ad6a80977e2ad8b058",
+        "preset.json": "e91c1ef792cc434fddb691dd4290a7a9a1a2c758be29c11fbd85ac3cf3568fda"
+      },
+      "profile": "dynamic",
+      "qualification": "offline-candidate-unqualified",
+      "result": "built-and-verified",
+      "selection": {
+        "endpoint": "internal_speaker",
+        "mode": "normal",
+        "profile": "dynamic",
+        "voicing": "balanced"
+      },
+      "stages": [
+        {
+          "bypassed": false,
+          "name": "convolver#0"
+        },
+        {
+          "bypassed": true,
+          "name": "equalizer#1"
+        },
+        {
+          "bypassed": true,
+          "name": "autogain#0"
+        },
+        {
+          "bypassed": true,
+          "name": "multiband_compressor#1"
+        },
+        {
+          "bypassed": false,
+          "name": "limiter#0"
+        }
+      ]
+    },
+    {
+      "activation_state": "not-installed",
+      "complete_equivalence": false,
+      "dependencies": {
+        "numpy": "2.2.6",
+        "python": "3.12.15",
+        "scipy": "1.15.3"
+      },
+      "exit_code": 0,
+      "field_status_counts": {
+        "disabled": 8,
+        "mapped-static-approximation": 7,
+        "not-selected": 2,
+        "unsupported": 73
+      },
+      "hardware": {
+        "amplifier_identification": "unknown",
+        "codec": "10ec0285",
+        "machine_type": "20MF",
+        "pci_subsystem": "17aa2267",
+        "subsystem": "17aa2276"
+      },
+      "input_hashes": {
+        "duplicate_xml": "not-verified",
+        "inf_sha256": "64d8b74a111bfe07fcb760fbcefb7784cd499ada9f19fa55d98d4321fb27e388",
+        "inventory_sha256": "266d8487ab3f594266ecc201f32a429abdbea0476d0fe2000bc5a76c469f8890",
+        "source_manifest_sha256": "afab282564eaab7543feee5c3f8f98845dc99539fc50ca49e3ce839f25769511",
+        "xml_sha256": "6369d6f7743e9f936820206f232fe6d8f8a9a0194e17496d13fb0628d1156ced"
+      },
+      "manifest_sha256": "a8631cd4a13f64d973dfc5210cc20af695677a4e522a559d0d8857c9f5478e23",
+      "output_hashes": {
+        "field-mapping.json": "c1588a77f07c3a93dcd2fa19d9935b46e14f70f305e38f3ded815d94e508963b",
+        "irs/speaker-bc1028cbea482521.irs": "c0614d1875f757b1217473b2a828b5c29e8473dd4b1e1fc5236a259b3a64e6cd",
+        "preset.json": "80d6d2cfc75da225adb005d81507ce93d47cd6e4ed18c4a163c6aa836cd7e4ed"
+      },
+      "profile": "off",
+      "qualification": "offline-candidate-unqualified",
+      "result": "built-and-verified",
+      "selection": {
+        "endpoint": "internal_speaker",
+        "mode": "normal",
+        "profile": "off",
+        "voicing": "balanced"
+      },
+      "stages": [
+        {
+          "bypassed": false,
+          "name": "convolver#0"
+        },
+        {
+          "bypassed": false,
+          "name": "limiter#0"
+        }
+      ]
+    }
+  ],
+  "cleanup": {
+    "container": "already-absent",
+    "docker_prune_used": false,
+    "image": "removed",
+    "only_owned_resources": true,
+    "owned_converter_checkout": "removed after retaining exact pin and built bundle artifacts",
+    "remote_directory": "removed",
+    "remote_directory_absent": true
+  },
+  "conversion_command_template": "python scripts/prepare_speaker_profile.py build --xml profiles/lenovo/x1-extreme-gen1/HDAUDIO_DEV_0285_SUBSYS_17AA2276_PCI_SUBSYS_226717AA.xml --inf profiles/lenovo/x1-extreme-gen1/dax3_ext_dolbyatmos.inf --inventory evidence/thinkpad-audio-inventory-2026-10-12.json --codec 10ec0285 --subsystem 17aa2276 --endpoint internal_speaker --mode normal --profile PROFILE --converter /converter --output /output/PROFILE",
+  "converter_commit": "430e3a501e21bf8fdb615b133d2e8130b17973c1",
+  "date": "2026-10-12",
+  "evidence_kinds": [
+    "source-review",
+    "offline-source-conversion",
+    "syntax-compilation"
+  ],
+  "initial_environment_failure": {
+    "cause": "Shared converter checkout had been removed; runtime mount had no pinned library.",
+    "exit_code": 2,
+    "profiles": [
+      "music",
+      "dynamic",
+      "off"
+    ],
+    "reason": "input_read_failed",
+    "resolution": "Owned fresh checkout at unchanged pinned commit; retried only failed conversions.",
+    "source_or_dsp_workaround": false
+  },
+  "isolation": {
+    "all_capabilities_dropped": true,
+    "desktop_sockets_mounted": false,
+    "filesystem": "read-only except tmpfs and output",
+    "network": "none during compiler/conversion runtime",
+    "no_new_privileges": true,
+    "owner_configuration_mounted": false,
+    "sound_devices_mounted": false
+  },
+  "limits": [
+    "New wrapper unit tests and batch adversarial review are pending; no latest unit-test pass claimed.",
+    "No Linux audio installation/activation, runtime plugin execution, playback, recording or route/service changes.",
+    "Static preparation does not reproduce all OEM media/volume-dependent processing or host Atmos.",
+    "Lenovo amplifier identity/protection and physical sound quality/latency are unqualified.",
+    "Public vendor download source is distinct from inaccessible local recovery image."
+  ],
+  "private_log_hashes": {
+    "compile.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "dynamic-retry.log": "44051095ecb3ae60a361b9f49b28dc4f1c7703364e550869a9c88668e8bf16a5",
+    "dynamic.log": "9284225df947fd1e823061e5ba44065ffda1117d910550cee258e8cea548baf1",
+    "image-build.log": "bc1d1296955be43e27d5aaeaea1e65f450ff7a434a72fa3c3ad7ee02700bf8ec",
+    "music-retry.log": "b393e172538f7b2c89a164ff8454b010d9d17a3b893f36f47727e1473717cfb7",
+    "music.log": "9284225df947fd1e823061e5ba44065ffda1117d910550cee258e8cea548baf1",
+    "off-retry.log": "ec35c599f448a1932ab10dd7bda7d941658917daf572e216ae62a7e92284045e",
+    "off.log": "9284225df947fd1e823061e5ba44065ffda1117d910550cee258e8cea548baf1",
+    "read-debug.log": "0eebfd4c7224f8346d46e3dd1da8289b906020ef9f3175bf4127990686da0cea"
+  },
+  "runtime": {
+    "architecture": "amd64",
+    "base_image_digest": "sha256:a6e34c598f2467ed0e9a8d349809fcd8b5c603269512df273a0bb1784edc11b1",
+    "image_id": "sha256:81158b97fc99b134b3ddf657919afc12e75df2d5ee9ce795364ec412adef2995",
+    "numpy": "2.2.6",
+    "os": "linux",
+    "python": "3.12.15",
+    "scipy": "1.15.3"
+  },
+  "schema_version": 1,
+  "source_hashes": {
+    "evidence/thinkpad-audio-inventory-2026-10-12.json": "266d8487ab3f594266ecc201f32a429abdbea0476d0fe2000bc5a76c469f8890",
+    "profiles/lenovo/x1-extreme-gen1/manifest.json": "afab282564eaab7543feee5c3f8f98845dc99539fc50ca49e3ce839f25769511",
+    "scripts/prepare_speaker_profile.py": "40038cab415aa8af712ad773532438b5dea7d678d318ae99c3a9f471ef32d466",
+    "tests/test_prepare_speaker_profile.py": "3fef366eab294fa9bef7b1c8da58bba89b62aba7a77e05f610a82a96fe272b2a"
+  },
+  "syntax_compile": {
+    "command": "PYTHONPYCACHEPREFIX=/tmp/compile python -m py_compile scripts/prepare_speaker_profile.py tests/test_prepare_speaker_profile.py",
+    "exit_code": 0,
+    "unit_tests_executed": false
+  }
+}

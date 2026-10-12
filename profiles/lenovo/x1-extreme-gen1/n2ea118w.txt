@@ -1,0 +1,275 @@
+                                                                   Revision : 01
+--------------------------------------------------------------------------------
+Software name      Realtek Audio Driver for Windows
+
+Support models     ThinkPad P1 Gen 1         (Machine types: 20MD, 20ME)
+                   ThinkPad X1 Extreme Gen 1 (Machine types: 20MF, 20MG)
+
+Operating System   Microsoft Windows 10  64-bit (1709 or later)
+                   Microsoft Windows 11 (21H2 or later)
+
+                   Refer to marketing materials to find out what computer models
+                   support which Operating Systems.
+
+Versions           6.0.9354.1   (Realtek Audio)
+                   10.23.0.3672 (Intel Smart Sound Technology)
+
+Support device     Realtek Audio
+
+
+--------------------------------------------------------------------------------
+WHAT THIS PACKAGE DOES
+
+
+  This package installs the software (Realtek audio driver) to enable the
+  following device.
+
+  Device name                     Device name in the Device Manager
+  ----------------------------    ---------------------------------
+  High Definition Audio Device    Realtek(R) Audio
+
+  Refer to marketing materials to find out what computer models support which
+  devices.
+
+  If this package has been installed, updating (overwrite-installing) this
+  package will fix problems, add new functions, or expand functions as noted
+  below.
+
+  This program is language independent and can be used with any language system.
+
+
+--------------------------------------------------------------------------------
+CHANGES IN THIS RELEASE
+  Versions  6.0.9354.1   (Realtek Audio)
+            10.23.0.3672 (Intel Smart Sound Technology)
+
+[Important updates]
+ - Addressed security vulnerability issues CVE-2021-32537.
+
+[New functions or enhancements]
+ Nothing.
+
+[Problem fixes]
+ Nothing.
+
+
+--------------------------------------------------------------------------------
+DETERMINING WHICH VERSION IS INSTALLED
+
+
+  1. Right-click Windows logo on taskbar.
+  2. Select Device Manager.
+  3. Double-click Sound, video, and game controllers.
+  4. Double-click each of the following:
+     - Realtek(R) Audio
+     - Intel(R) Smart Sound Technology (Intel(R) SST)
+  5. Select Driver tab.
+  6. Check Driver version.
+
+
+--------------------------------------------------------------------------------
+NOTES
+
+
+  - This driver does not work with Windows 10 Creators Update (Version 1703).
+    PLEASE USE DRIVER PACKAGE "N2EA501W" OR LATER INSTEAD.
+
+
+--------------------------------------------------------------------------------
+DETERMINING WINDOWS VERSION
+
+
+  1. Hold down the Windows logo key and press R to open the "Run" dialog box.
+  2. Type in "winver" and press Enter to open the "About Windows" dialog box.
+     Windows Version information will be indicated in this dialog box.
+
+
+--------------------------------------------------------------------------------
+INSTALLATION INSTRUCTIONS
+
+
+Notes:
+- If your computer runs satisfactorily now, it may not be necessary to update
+  the software. To determine if you should update the software, refer to the
+  Version Information section.
+- IMPORTANT: Make sure to restart the computer after installation.
+
+Manual Install
+
+  This section assumes to use Internet Explorer and Windows Explorer.
+
+  Downloading file
+  1. Select the underlined file name. Once this is done, some pop-up windows
+     will appear.
+  2. Follow the instructions on the screen.
+  3. In the window to choose Run or Save, select Save.
+  4. Once the download has completed, there may or may not be a message stating
+     that the download completed successfully.
+
+  Extracting files
+  5. Make sure to be logged on with an administrator account.
+  6. Locate the folder where the file was downloaded.
+  7. Locate the file that was downloaded and double-click it.
+  8. Follow the instructions on the screen.
+  9. In Extract or Install? window, select "Install", click Next, and move to
+     step 13 to continue installation.
+     Or, select "Extract only" and click Next to extract and keep files on the
+     specified folder.
+  10. In the Select Destination Location window, click Extract. If you would like
+      to select a different folder, select Browse.
+  11. All the necessary files will be extracted to the folder selected in step 10.
+  12. Click Finish.
+
+  Installing files
+  13. In the Ready to Install window, click Install. All the necessary files will be
+      extracted to the temporary folder. The extracted files will be automatically
+      deleted after installation.
+  14. Click Finish.
+  15. Follow the instructions on the screen to complete installation and restart
+     the computer.
+     IMPORTANT: Make sure to restart the computer after installation.
+
+Unattended Install
+
+  This is for system administrator's use only.
+
+  1. Refer to the Manual Install section to download the file.
+  2. At the command line, execute n2ea1**w.exe with the /verysilent option.
+     Example:
+     [Path where the file was downloaded]\n2ea1**w.exe /verysilent
+  3. When installation is completed, restart the computer.
+
+
+--------------------------------------------------------------------------------
+UNINSTALLATION INSTRUCTIONS
+
+
+  1. Start Windows and logon with an administrator account.
+  2. Right-click Windows logo on taskbar.
+  3. Select Device Manager.
+  4. Select on the software component
+  5. Double-click below devices.
+        - DolbyAPO Software Device (HSA)
+        - DolbyAPO SWC Device
+        - Fortemedia SAMSoft Effects Component
+        - Realtek Audio Effects Component
+        - Realtek Audio Universal Service
+        - Realtek Hardware Support Application
+  6. Select 'Driver' tab.
+  7. Select 'Uninstall Device'.
+  8. Check 'Delete the driver software for this device' and select OK.
+  9. Double-click 'Sound, video and game controllers' category.
+ 10. Double-click Realtek Audio.
+ 11. Select 'Details' tab.
+ 12. Select 'Extended Infs' from the dropdown.
+ 13. Take note of the INFs listed.
+ 14. Select 'Driver' tab.
+ 15. Select 'Uninstall Device'.
+ 16. Check 'Delete the driver software for this device' and select OK.
+ 17. Do not reboot nor refresh Device Manager.
+ 18. At the command line, execute 'pnputil /delete-driver oemXX.INF /uninstall /force'
+     for every INF listed in Step 13.
+ 19. Double-click Intel(R) Smart Sound Technology (Intel(R) SST) OED.
+ 20. Select 'Driver' tab.
+ 21. Select 'Uninstall Device'.
+ 22. Check 'Delete the driver software for this device' and select OK.
+ 23. Double-click Intel Smart Sound Technology (Intel SST) Audio Controller.
+ 24. Select 'Driver' tab.
+ 25. Select 'Uninstall Device'.
+ 26. Check 'Delete the driver software for this device' and select OK.
+ 27. After uninstall, please reboot the system.
+
+
+--------------------------------------------------------------------------------
+VERSION INFORMATION
+
+  The following versions have been released to date.
+
+  Realtek Audio   Intel SST       Build ID    Rev.  Issue Date
+  --------------  --------------  --------    ----  ----------
+  6.0.9354.1      10.23.0.3672    N2EA118W    01    2022/06/16
+  6.0.8781.1      10.23.0.3672    N2EA117W    02    2021/11/17
+  6.0.8781.1      10.23.0.3672    N2EA117W    01    2020/11/02
+  6.0.8781.1      10.23.0.3672    N2EA116W    01    2020/05/22
+  6.0.8781.1      10.23.0.2672    N2EA115W    01    2019/10/04
+  6.0.8738.1      10.23.0.2618    N2EA114W    01    2019/08/07
+  6.0.1.8648      10.23.0.2618    N2EA113W    01    2019/06/10
+  6.0.1.8606      10.23.0.2427    N2EA112W    01    2019/04/08
+  6.0.1.8606                      N2EA110W    01    2019/01/15
+  6.0.1.8519                      N2EA108W    01    2018/09/10
+  6.0.1.8480                      N2EA107W    01    2018/08/22
+
+  Note: Revision number (Rev.) is for administrative purpose of this README
+        document and is not related to software version. There is no need to
+        upgrade this software when the revision number changes.
+
+  To check the version of software, refer to the Determining which version is
+  installed section.
+
+  Summary of Changes
+
+  Where: <   >        Version number
+         [Important]  Important update
+         (New)        New function or enhancement
+         (Fix)        Correction to existing function
+
+<6.0.9354.1 / 10.23.0.3672> (N2EA118W)
+-[Important] Addressed security vulnerability issue CVE-2021-32537.
+
+<6.0.8781.1 / 10.23.0.3672> (N2EA117W)
+-(New) Added support for Microsoft Windows 11 OS.
+
+<6.0.8781.1 / 10.23.0.3672> (N2EA117W)
+-(New) Improved driver stability.
+
+<6.0.8781.1 / 10.23.0.3672> (N2EA116W)
+-(New) Addressed security vulnerability issues CVE-2019-6173, CVE-2019-6196 and CVE-2020-0583.
+
+<6.0.8781.1 / 10.23.0.2672> (N2EA115W)
+-(New) Improved driver stability.
+
+<6.0.8738.1 / 10.23.0.2618> (N2EA114W)
+-(Fix) Fixed an issue where there is noise when recording audio files or
+       power cyclings.
+
+<6.0.1.8648 / 10.23.0.2618> (N2EA113W)
+-(New) Added support for Amazon Alexa.
+
+<6.0.1.8606 / 10.23.0.2427> (N2EA112W)
+-(Fix) Fixed an issue where external mic cannot be detected after combo jack
+       headphone is plugged in.
+
+<6.0.1.8606> (N2EA110W)
+-(Fix) Fixed an issue where there is noise heard when using headphones and
+       volume is set to 10-30.
+
+<6.0.1.8519> (N2EA108W)
+-(Fix) Fixed an issue where audio function had a delay after resuming from
+       system idle or reboot.
+
+<6.0.1.8480> (N2EA107W)
+-(New) Initial release for following products.
+                   ThinkPad P1 Gen 1         (Machine types: 20MD, 20ME)
+                   ThinkPad X1 Extreme Gen 1 (Machine types: 20MF, 20MG)
+
+
+--------------------------------------------------------------------------------
+LIMITATIONS
+
+
+  Nothing.
+
+
+--------------------------------------------------------------------------------
+TRADEMARKS
+
+* Lenovo and ThinkPad are registered trademarks of Lenovo.
+
+* Dolby is a registered trademark of Dolby Laboratories.
+* Fortemedia is a registered trademark of Fortemedia Inc.
+* Intel is a registered trademark of Intel Corporation.
+* Microsoft and Windows are registered trademarks of Microsoft Corporation.
+* Realtek is a registered trademark of Realtek Semiconductor Corp.
+
+Other company, product, and service names may be registered trademarks,
+trademarks or service marks of others.

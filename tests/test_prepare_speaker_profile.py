@@ -521,5 +521,116 @@ class DSPPreparationTest(unittest.TestCase):
         self.assertFalse((self.path / "bundle").exists())
 
 
+class LenovoPreparationTest(unittest.TestCase):
+    """Generated legacy DAX schema and inventory; no ASUS coefficients reused."""
+    def setUp(self):
+        PreparationTest.setUp(self)
+        self.xml = self.path / "HDAUDIO_DEV_0285_SUBSYS_17AA2276_PCI_SUBSYS_226717AA.xml"
+        self.inf = self.path / "dax3_ext_dolbyatmos.inf"
+        self.inf.write_text("""[DeviceExtensions.NTamd64]
+%Device%=SpeakerInstall,HDAUDIO\\FUNC_01&VEN_10EC&DEV_0285&SUBSYS_17AA2276
+[SpeakerInstall.NT]
+CopyFiles=SpeakerTuning
+[SpeakerTuning]
+HDAUDIO_DEV_0285_SUBSYS_17AA2276_PCI_SUBSYS_226717AA.xml
+[SourceDisksFiles]
+HDAUDIO_DEV_0285_SUBSYS_17AA2276_PCI_SUBSYS_226717AA.xml=1
+""")
+        ep = self.root.find("endpoint")
+        ep.attrib = {"type": "internal_speaker", "operating_mode": "normal", "fs": "48000", "ch_count": "2"}
+        for prof in ep.findall("profile"):
+            bands = prof.find("tuning-vlldp/audio-optimizer-bands")
+            bands.find("ch_00").tag = "gain_l"
+            bands.find("ch_01").tag = "gain_r"
+        self.manifest = self.path / "profiles/lenovo/x1-extreme-gen1/manifest.json"
+        self.manifest.parent.mkdir(parents=True)
+        self.patch = mock.patch.object(speaker, "ROOT", self.path)
+        self.patch.start()
+        self.addCleanup(self.patch.stop)
+        self.write_fixture()
+
+    def write_fixture(self, data=None):
+        self.xml.write_bytes(ET.tostring(self.root) if data is None else data)
+        inv = {"hardware": {"manufacturer": "Lenovo", "product_model": "20MF000DUS", "generation": 1,
+            "codec": {"vendor_id": "0x10ec0285", "subsystem_id": "0x17aa2276"},
+            "audio_pci": [{"vendor": "0x8086", "device": "0xa348", "subsystem_vendor": "0x17aa",
+                           "subsystem_device": "0x2267"}]}}
+        self.inventory.write_bytes(speaker.json_bytes(inv))
+        if hasattr(self, "manifest"):
+            self.manifest.write_bytes(speaker.json_bytes({"oem": {"xml_name": self.xml.name,
+                "inf_name": self.inf.name, "xml_sha256": speaker.digest(self.xml.read_bytes()),
+                "xml_size_bytes": self.xml.stat().st_size, "inf_sha256": speaker.digest(self.inf.read_bytes()),
+                "inf_size_bytes": self.inf.stat().st_size}}))
+
+    def arguments(self, command="inspect", **changes):
+        values = {"xml": self.xml, "inf": self.inf, "inventory": self.inventory,
+            "duplicate_xml": None, "codec": "10ec0285", "subsystem": "17aa2276",
+            "endpoint": "internal_speaker", "mode": "normal", "profile": "music", "voicing": "balanced",
+            "converter": Path(os.environ.get("ROG_SPEAKER_CONVERTER", "/missing")),
+            "output": self.path / "bundle", "report": self.path / "report.json", "command": command}
+        values.update(changes)
+        return type("Args", (), values)()
+
+    def test_exact_model_codec_and_pci_binding(self):
+        root, _, hashes, hw = speaker.inputs(self.arguments())
+        speaker.select(root, self.arguments())
+        self.assertEqual(hw["machine_type"], "20MF")
+        self.assertEqual(hw["pci_subsystem"], "17aa2267")
+        self.assertEqual(hw["amplifier_identification"], "unknown")
+        self.assertEqual(hashes["source_manifest_sha256"], speaker.digest(self.manifest.read_bytes()))
+
+    def test_wrong_pci_is_not_an_exact_match(self):
+        inv = json.loads(self.inventory.read_text())
+        inv["hardware"]["audio_pci"][0]["subsystem_device"] = "0x2276"
+        self.inventory.write_bytes(speaker.json_bytes(inv))
+        with self.assertRaises(speaker.ProfileError) as cm:
+            speaker.inputs(self.arguments())
+        self.assertEqual(cm.exception.reason, "pci_identity_mismatch")
+
+    def test_wrong_generation_is_rejected(self):
+        inv = json.loads(self.inventory.read_text())
+        inv["hardware"]["generation"] = 2
+        self.inventory.write_bytes(speaker.json_bytes(inv))
+        with self.assertRaises(speaker.ProfileError) as cm:
+            speaker.inputs(self.arguments())
+        self.assertEqual(cm.exception.reason, "model_identity_mismatch")
+
+    def test_source_bytes_remain_hash_pinned(self):
+        self.xml.write_bytes(self.xml.read_bytes() + b" ")
+        with self.assertRaises(speaker.ProfileError) as cm:
+            speaker.inputs(self.arguments())
+        self.assertEqual(cm.exception.reason, "inventory_hash_or_size_mismatch")
+
+    def test_conflicting_legacy_channel_declarations_rejected(self):
+        self.root.find("endpoint").set("height_count", "2")
+        with self.assertRaises(speaker.ProfileError) as cm:
+            speaker.select(self.root, self.arguments())
+        self.assertEqual(cm.exception.reason, "unsupported_rate_or_channel_layout")
+
+
+@unittest.skipUnless(os.environ.get("ROG_SPEAKER_CONVERTER"), "explicit pinned converter dependency required")
+class LenovoDSPTest(unittest.TestCase):
+    setUp = LenovoPreparationTest.setUp
+    write_fixture = LenovoPreparationTest.write_fixture
+    arguments = LenovoPreparationTest.arguments
+
+    def test_legacy_gain_units_stereo_and_verify(self):
+        speaker.build(self.arguments("build"))
+        speaker.verify(self.path / "bundle")
+        from scipy.io import wavfile
+        m = json.loads((self.path / "bundle/manifest.json").read_text())
+        rate, taps = wavfile.read(self.path / "bundle" / m["impulse"])
+        self.assertEqual(rate, 48000)
+        self.assertEqual(taps.shape, (4096, 2))
+        self.assertAlmostEqual(float(taps[:, 0].sum()), 1, places=6)
+        self.assertAlmostEqual(float(taps[:, 1].sum()), 10 ** (-2/20), places=6)
+
+    def test_asus_ids_cannot_label_lenovo_input(self):
+        with self.assertRaises(speaker.ProfileError) as cm:
+            speaker.build(self.arguments("build", subsystem="10431c63"))
+        self.assertEqual(cm.exception.reason, "hardware_mismatch")
+        self.assertFalse((self.path / "bundle").exists())
+
+
 if __name__ == "__main__":
     unittest.main()
