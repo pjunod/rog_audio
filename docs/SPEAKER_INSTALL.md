@@ -1,6 +1,6 @@
 # Speaker installation — exact route, reversible files
 
-**Status:** reviewed compiler and33 unit cases passed; real graph acceptance pending ·
+**Status:** reviewed compiler, 33 lane unit cases and both device graph cases passed ·
 **Updated:** 2026-10-12 · **Executes:** internal-speaker installation from
 [status](STATUS.md).
 
@@ -33,9 +33,9 @@ not external authentication or acoustic acceptance.
 
 ## 2. Prepare an inactive kit
 
-Use new output paths. Runtime artifacts are built in isolation; graph validation awaits the
-completed batch review. The commands below describe the implemented interface; final runtime
-acceptance has not yet passed.
+Use new output paths. Runtime artifacts are built in isolation. The reviewed
+ASUS and ThinkPad graph cases passed separately with their own tuning bytes;
+coordinated installation and physical acceptance remain pending.
 
 ```bash
 # Read-only graph, codec and route inventory.
@@ -189,11 +189,18 @@ preserved. No display or session restart belongs to this procedure.
 
 Run these tests only after independent adversarial review and fixes.
 [The unit receipt](../evidence/speaker-installation-unit-validation-2026-10-12.json)
-records source1, installer12 and native routing20 passing against integrated
-`155d003`, with zero skips. The initial20 native launches failed on a noexec
-Docker temporary mount; only those20 failed cases were retried with an
-executable private mount. Source/installer passes were retained. Real graph
-acceptance remains separate. Each selector can be retried independently.
+records one source, 12 installer and 20 native routing cases passing against
+integrated `155d003`, with zero skips. The initial 20 native launches failed
+on a noexec Docker temporary mount; only those failed cases were retried with
+an executable private mount. Source/installer passes were retained.
+[The graph receipt](../evidence/speaker-runtime-graph-validation-2026-10-12.json)
+records both device cases passing all 10 assertions against integrated
+`ca0e755`, with their separate verified tuning bundles. Only the failed ASUS
+case was retried after focused fixture review; the ThinkPad case passed on its
+first run. The graph helper was rebuilt separately, and both image IDs and
+helper hashes are recorded. The production package remained
+`089ae964c8e1b75281d589a6cd52a3a25d358f9443112162fea616b69b5904d7`.
+Each selector can be retried independently.
 
 ```bash
 # Prepare actual patched source for native policy compilation.

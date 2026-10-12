@@ -1,0 +1,201 @@
+{
+  "acoustic_or_physical_latency_measurement": false,
+  "cases": [
+    {
+      "assertion_count": 10,
+      "attempt": 5,
+      "case": "asus-loader-route",
+      "kit_manifest_sha256": "626c314c3c776af5ef7ad34a1a8d2e3291b0542f8e59772496df829db3ed8459",
+      "raw_receipt_sha256": {
+        "exit-code.txt": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+        "output/case/capture-bypass.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "output/case/capture-corrected.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "output/case/default-player.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "output/case/direct-effects-player.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "output/case/easyeffects.log": "abd38b0f047344ea88d5f46efb09f6159df0ac9dccec33bdc0086b82c7b5d584",
+        "output/case/explicit-speaker.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "output/case/mock-device.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "output/case/pipewire.log": "4a9ec3031ae28ae8fa5929d0b2a96cb3837dbefe98f61474b41061e66d36f764",
+        "output/case/receipt.json": "ac9d2af4958e90132dbceedf92b86f6b9dbb63493520946460b412dc7602715d",
+        "output/case/rog-hdmi-player.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "output/case/rog-usb-player.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "output/case/stock-easyeffects.log": "ae7c3fa78ea4e7d7cb622ddf70c22084ea981618a2094bf22020f85148452a0f",
+        "output/case/wireplumber.log": "ec3c410a82fc4c28f25cea0b47d11ffc334b6628280552eecec54d7b1ad71a5a",
+        "runner.log": "a28a144320ee1550ce17367a044075e7d1d9e4bdf41ad315b3174233899a42cc"
+      },
+      "receipt": {
+        "acoustic_or_physical_latency_measurement": false,
+        "assertions": [
+          "automatic preset selected; unrelated route index preserved it",
+          "ordinary app processed",
+          "explicit HDMI preserved",
+          "explicit USB preserved",
+          "actual preset/IR/plugins loaded",
+          "default change preserved",
+          "route-event DSP bypass before 1000 ms autoload",
+          "stock startup/config/control isolated",
+          "graceful quit restored exact typed metadata pair",
+          "physical default remains USB"
+        ],
+        "binary_sha256": "e5061dcc1e0b925933eceeacffb576536d24f609307166b97d0e159c0f1772d1",
+        "bypass_rms": 0.07071066146918883,
+        "case": "asus-loader-route",
+        "corrected_rms": 0.054058605591247456,
+        "evidence_kind": "isolated-synthetic-runtime",
+        "hardware": {
+          "amplifiers": "CS35L56",
+          "codec": "10ec0285",
+          "count": 2,
+          "speaker_id": 0,
+          "subsystem": "10431c63"
+        },
+        "physical_device_or_session_access": false,
+        "schema_version": 1,
+        "speaker_bundle_manifest_sha256": "9859c31d7e262268da6a062eb140fe29cbb299467c972ffd6df5dc9783f56ca7",
+        "status": "passed"
+      },
+      "status": "passed"
+    },
+    {
+      "assertion_count": 10,
+      "attempt": 1,
+      "case": "lenovo-loader-route",
+      "kit_manifest_sha256": "0b431577b22dbe014ec8185717e779673fc2f93825a9b8c9d835e3561f7c8a64",
+      "raw_receipt_sha256": {
+        "exit-code.txt": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+        "output/case/capture-bypass.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "output/case/capture-corrected.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "output/case/default-player.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "output/case/direct-effects-player.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "output/case/easyeffects.log": "ea7e1219b58c06d021af571758eb4821e97675a60f82fb74f043ac9696364be0",
+        "output/case/explicit-speaker.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "output/case/mock-device.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "output/case/pipewire.log": "cab30a9a080266cb38825809891c2ce0c81a4726695609edc95a9f3cca92600c",
+        "output/case/receipt.json": "f849fd6ad19d16d496afee6ce9e053f97c45016cf2c7ffb96fc3e89aa22ee730",
+        "output/case/rog-hdmi-player.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "output/case/rog-usb-player.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "output/case/stock-easyeffects.log": "24ae915dd6385bc9fc4d26bb4b697adf085f54d208b16468eed8aedfbb69c229",
+        "output/case/wireplumber.log": "9326e4aafe1f71464c868054757ed0141de65c1ed2d75ced5aa3d4668543964a",
+        "runner.log": "601b82ad3efa4a4eee770438c126f0342df9c762c123c8731518ea32aceb3629"
+      },
+      "receipt": {
+        "acoustic_or_physical_latency_measurement": false,
+        "assertions": [
+          "automatic preset selected; unrelated route index preserved it",
+          "ordinary app processed",
+          "explicit HDMI preserved",
+          "explicit USB preserved",
+          "actual preset/IR/plugins loaded",
+          "default change preserved",
+          "route-event DSP bypass before 1000 ms autoload",
+          "stock startup/config/control isolated",
+          "graceful quit restored exact typed metadata pair",
+          "physical default remains USB"
+        ],
+        "binary_sha256": "e5061dcc1e0b925933eceeacffb576536d24f609307166b97d0e159c0f1772d1",
+        "bypass_rms": 0.07071068335469562,
+        "case": "lenovo-loader-route",
+        "corrected_rms": 0.026224819613431715,
+        "evidence_kind": "isolated-synthetic-runtime",
+        "hardware": {
+          "amplifier_identification": "unknown",
+          "codec": "10ec0285",
+          "machine_type": "20MF",
+          "pci_subsystem": "17aa2267",
+          "subsystem": "17aa2276"
+        },
+        "physical_device_or_session_access": false,
+        "schema_version": 1,
+        "speaker_bundle_manifest_sha256": "d4db50b23c56310df1b4c5a2153da51d84486799b06dcc10d22d2df7b472af08",
+        "status": "passed"
+      },
+      "status": "passed"
+    }
+  ],
+  "date": "2026-10-12",
+  "evidence_kind": "isolated-synthetic-runtime",
+  "failed_attempts": [
+    {
+      "case": "asus-loader-route",
+      "raw_receipt_sha256": {
+        "exit-code.txt": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+        "output/case/failure.json": "6be4e08fabf92bf119cf4fea4b913e64bcdff5697dc09f37c4365456190b529f",
+        "output/case/mock-device.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "output/case/pipewire.log": "85601ed88e53aa41380878c8c5e1c6706833efd36dec6a1ef9dba79d421dba0d",
+        "output/case/wireplumber.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "runner.log": "911e2d3b3979abd38f480a9342dc17acd3d2e8f6d23a64454b611911e5a0e020"
+      },
+      "reason": "incorrect synthetic device export interface",
+      "source_commit": "155d003",
+      "status": "failed"
+    },
+    {
+      "case": "asus-loader-route",
+      "raw_receipt_sha256": {
+        "exit-code.txt": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+        "output/case/failure.json": "fddc7fde0eb4dbb85a197ecd8e111c98571006334cf5b481dafa37d014885679",
+        "output/case/pipewire.log": "475f44ad01b87210be8078749dbdb9eacc2e1476a4434bd7fdfe150c22e185dc",
+        "runner.log": "911e2d3b3979abd38f480a9342dc17acd3d2e8f6d23a64454b611911e5a0e020"
+      },
+      "reason": "duplicate server module registration",
+      "source_commit": "47c4989",
+      "status": "failed"
+    },
+    {
+      "case": "asus-loader-route",
+      "raw_receipt_sha256": {
+        "exit-code.txt": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+        "output/case/failure.json": "ff2155dba9610a2098efeb7be7d2e72b61d3641badc98d7f3f724d4b611c2cba",
+        "output/case/mock-device.log": "92c4d31ee58eaf42f71650ec86b8b9eb768e7154b52fcad6d369b364ee890b3f",
+        "output/case/pipewire.log": "82655657234fc123bdf7b325b8c4ea746b9a380b3b5f8ab92b5e368b86269863",
+        "output/case/wireplumber.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "runner.log": "911e2d3b3979abd38f480a9342dc17acd3d2e8f6d23a64454b611911e5a0e020"
+      },
+      "reason": "duplicate client module registration",
+      "source_commit": "dc6791c",
+      "status": "failed"
+    },
+    {
+      "case": "asus-loader-route",
+      "raw_receipt_sha256": {
+        "exit-code.txt": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+        "output/case/default-player.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "output/case/easyeffects.log": "e03c26e5c872a4f778b78fad20789ad489a8c0129f0568d793cc50a8828ca336",
+        "output/case/failure.json": "3899a09f771c6d71abce92886332978bfa7e39cc2032f4dbd24dd8581d2ff51b",
+        "output/case/mock-device.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "output/case/pipewire.log": "45d04ba92fdc4b2eeda71f456c84d5fb28b37f062d834249454871634607c38d",
+        "output/case/rog-hdmi-player.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "output/case/rog-usb-player.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "output/case/wireplumber.log": "d596b70ebf58805cda2e9715164afd850f753cce120b97b254aac4cb78caeff1",
+        "runner.log": "911e2d3b3979abd38f480a9342dc17acd3d2e8f6d23a64454b611911e5a0e020"
+      },
+      "reason": "observation timed out; precise stage was not retained",
+      "source_commit": "8899993",
+      "status": "failed"
+    }
+  ],
+  "graph_helper": {
+    "binary_sha256": "e0e37830308fbf7b1db609e9c4c9db6acb6da26c62e8369e303f1e01e85df523",
+    "image_id": "sha256:e1fbf7c7598afc44a03f584651ece773b78587ccc8f265bba5d05326c55e4c0a",
+    "production_runtime_unchanged": true,
+    "source_sha256": "b22d7c36e0d87f27b9e50800de5a3349929929cb3d0b1ea22893907f05621f6d"
+  },
+  "passing_cases_repeated": false,
+  "physical_device_or_session_access": false,
+  "production_runtime": {
+    "binary_sha256": "e5061dcc1e0b925933eceeacffb576536d24f609307166b97d0e159c0f1772d1",
+    "image_id": "sha256:7f41f4ca1523af6ac90f3c48beb5b52f89bba0876ebcc2b7c046836da637ffcc",
+    "package_sha256": "089ae964c8e1b75281d589a6cd52a3a25d358f9443112162fea616b69b5904d7",
+    "source_manifest_sha256": "165c78291ff1bec9f327edf3ae3f61671399d8ada71b92c40bc53b3b53bdf674"
+  },
+  "retry_note": "Only the failed ASUS selector was retried after focused review of fixture fixes. Private session state and stage diagnostics were added for the final retry; the earlier state warning was not established as the cause. The ThinkPad selector passed on its first run. Production package and existing unit passes were retained.",
+  "schema_version": 1,
+  "source_commit": "ca0e7556ce9d3928ea24a28577d5e9d1ccc98642",
+  "source_files_sha256": {
+    "probes/speaker/mock_device.cpp": "b22d7c36e0d87f27b9e50800de5a3349929929cb3d0b1ea22893907f05621f6d",
+    "probes/speaker/synthetic_player.c": "083997351b61931d45cbcae90952e83597a745add2bf8826f9cd0d9c06bd41f5",
+    "scripts/build_easyeffects_runtime.py": "b6b2ce623174facda65ffde80a47777031917e58d69d72c2840de9975d4f58bd",
+    "scripts/check_speaker_graph.py": "2355da9b21bdfb29af9b740b5e5e3d0e47400694abd4095fc5d47108339d2f83",
+    "scripts/speaker_install.py": "fef0094ca0b2624526e20717bebfd4638a98771e6233dc299a8e04c62d4009e0"
+  }
+}
