@@ -1,6 +1,6 @@
 # Status — implementation and physical acceptance
 
-**Updated:** 2026-10-12 · **State:** first batch merged; both inactive installation kits built; final batch preparation in progress.
+**Updated:** 2026-10-12 · **State:** first batch merged; both inactive installation kits built; independent adversarial review in progress.
 
 | Work | State | Next evidence |
 |---|---|---|
@@ -8,7 +8,7 @@
 | ASUS speaker tuning | Original XML and matching INF published | 48 tests and three OEM conversions passed; runtime/acoustics pending |
 | Diagnostics and latency | Reviewed; 42 tests and native rule checks passed | Physical comparison and coordinated activation |
 | Host Atmos | 15 tests passed; focused CI cleanup fix passed | Actual JOC reference media and physical qualification |
-| Laptop installation runtime | Patched EasyEffects compiled and packaged; both inactive kits prepared | Complete batch review, focused tests and isolated graph acceptance |
+| Laptop installation runtime | Patched EasyEffects compiled and packaged; both inactive kits prepared | Independent review in progress; focused tests and isolated graph acceptance follow |
 | ThinkPad X1 Extreme | Downloaded exact-match sources and three inactive bundles built; WinRE index inspected | Combined batch review/tests and installation runtime |
 | macOS comparison | Pending physical measurements | M4 Air primary, M3 Max secondary |
 | Sonos Arc/eARC | Deferred until internal audio work | TV route and actual received formats |
@@ -49,7 +49,10 @@ The recovery search is read-only; ASUS coefficients are not a ThinkPad profile.
 
 Both laptops have 34 missing prerequisite groups out of the runtime package’s
 47 declared groups. Read-only reports are retained; package installation and
-APT dependency resolution have not been performed on either laptop.
+runtime activation have not been performed on either laptop. Read-only APT
+simulations resolved the exact candidate package using each host’s current
+cache: 135 new packages on ASUS and 136 on ThinkPad, with zero upgrades or
+removals. Installed-package inventories were unchanged after simulation.
 
 ## Second implementation batch
 
