@@ -4,14 +4,14 @@
 body{font:16px/1.55 system-ui,sans-serif;margin:3rem auto;padding:0 1.5rem;max-width:1050px;background:#101823;color:#edf2f7}
 h1{font-size:2rem}h2{color:#91d7ee}a{color:#91d7ee}table{border-collapse:collapse;width:100%;margin:2rem 0}td{border-bottom:1px solid #3b4b60;padding:.8rem;vertical-align:top}tr:first-child{font-weight:700;background:#1e3047}p{margin:.5rem 0}
 </style><main><h1>Status — implementation and physical acceptance</h1>
-<p>**Updated:** 2026-10-12 · **State:** first batch merged; both inactive installation kits built; independent adversarial review in progress.</p>
+<p>**Updated:** 2026-10-12 · **State:** first batch merged; both inactive installation kits built; adversarial review complete in source/routing lanes; review fixes in progress.</p>
 <table>
 <tr><td>Work</td><td>State</td><td>Next evidence</td></tr>
 <tr><td>Hardware inventory</td><td>Read-only inspection complete</td><td>Sanitized receipt and build contracts imported</td></tr>
 <tr><td>ASUS speaker tuning</td><td>Original XML and matching INF published</td><td>48 tests and three OEM conversions passed; runtime/acoustics pending</td></tr>
 <tr><td>Diagnostics and latency</td><td>Reviewed; 42 tests and native rule checks passed</td><td>Physical comparison and coordinated activation</td></tr>
 <tr><td>Host Atmos</td><td>15 tests passed; focused CI cleanup fix passed</td><td>Actual JOC reference media and physical qualification</td></tr>
-<tr><td>Laptop installation runtime</td><td>Patched EasyEffects compiled and packaged; both inactive kits prepared</td><td>Independent review in progress; focused tests and isolated graph acceptance follow</td></tr>
+<tr><td>Laptop installation runtime</td><td>Patched EasyEffects compiled and packaged; both inactive kits prepared</td><td>Fix route selection/metadata ownership and snapshot recovery findings; then focused acceptance</td></tr>
 <tr><td>ThinkPad X1 Extreme</td><td>Downloaded exact-match sources and three inactive bundles built; WinRE index inspected</td><td>Combined batch review/tests and installation runtime</td></tr>
 <tr><td>macOS comparison</td><td>Pending physical measurements</td><td>M4 Air primary, M3 Max secondary</td></tr>
 <tr><td>Sonos Arc/eARC</td><td>Deferred until internal audio work</td><td>TV route and actual received formats</td></tr>
@@ -60,4 +60,15 @@ h1{font-size:2rem}h2{color:#91d7ee}a{color:#91d7ee}table{border-collapse:collaps
 <p>Dolby-named DSP firmware paths are present but were not extracted. The reader</p>
 <p>reported an incorrect-reference-count warning, so this is a filename-index</p>
 <p>observation, not image-integrity verification. Recovery was unmounted and</p>
-<p>the temporary reader removed. Earlier access failures are historical.</p><p><a href="https://github.com/pjunod/rog_audio/blob/main/docs/STATUS.md">GitHub progress ledger</a></p></main></html>
+<p>the temporary reader removed. Earlier access failures are historical.</p>
+<h2>Second-batch review findings</h2>
+<p>The Lenovo importer/source-provenance review found no actionable defects.</p>
+<p>Native review requires route-index filtering for automatic preset selection,</p>
+<p>restoration when a still-live stream becomes ignored, and an exact typed-target</p>
+<p>restoration assertion in the real graph test. Installer review identified</p>
+<p>backup durability, settings preimage consistency, architecture-aware package</p>
+<p>inspection and lifecycle-state validation issues. Fixes are in progress; no</p>
+<p>second-batch unit or graph acceptance tests have run.</p>
+<p>The current APT simulations bind the pre-fix package. Native fixes require a</p>
+<p>new package and a focused repeat of its dependency simulation. Earlier results</p>
+<p>remain historical receipts and will not be presented as acceptance of new bytes.</p><p><a href="https://github.com/pjunod/rog_audio/blob/main/docs/STATUS.md">GitHub progress ledger</a></p></main></html>

@@ -1,6 +1,6 @@
 # Status — implementation and physical acceptance
 
-**Updated:** 2026-10-12 · **State:** first batch merged; both inactive installation kits built; independent adversarial review in progress.
+**Updated:** 2026-10-12 · **State:** first batch merged; both inactive installation kits built; adversarial review complete in source/routing lanes; review fixes in progress.
 
 | Work | State | Next evidence |
 |---|---|---|
@@ -8,7 +8,7 @@
 | ASUS speaker tuning | Original XML and matching INF published | 48 tests and three OEM conversions passed; runtime/acoustics pending |
 | Diagnostics and latency | Reviewed; 42 tests and native rule checks passed | Physical comparison and coordinated activation |
 | Host Atmos | 15 tests passed; focused CI cleanup fix passed | Actual JOC reference media and physical qualification |
-| Laptop installation runtime | Patched EasyEffects compiled and packaged; both inactive kits prepared | Independent review in progress; focused tests and isolated graph acceptance follow |
+| Laptop installation runtime | Patched EasyEffects compiled and packaged; both inactive kits prepared | Fix route selection/metadata ownership and snapshot recovery findings; then focused acceptance |
 | ThinkPad X1 Extreme | Downloaded exact-match sources and three inactive bundles built; WinRE index inspected | Combined batch review/tests and installation runtime |
 | macOS comparison | Pending physical measurements | M4 Air primary, M3 Max secondary |
 | Sonos Arc/eARC | Deferred until internal audio work | TV route and actual received formats |
@@ -68,3 +68,18 @@ Dolby-named DSP firmware paths are present but were not extracted. The reader
 reported an incorrect-reference-count warning, so this is a filename-index
 observation, not image-integrity verification. Recovery was unmounted and
 the temporary reader removed. Earlier access failures are historical.
+
+
+## Second-batch review findings
+
+The Lenovo importer/source-provenance review found no actionable defects.
+Native review requires route-index filtering for automatic preset selection,
+restoration when a still-live stream becomes ignored, and an exact typed-target
+restoration assertion in the real graph test. Installer review identified
+backup durability, settings preimage consistency, architecture-aware package
+inspection and lifecycle-state validation issues. Fixes are in progress; no
+second-batch unit or graph acceptance tests have run.
+
+The current APT simulations bind the pre-fix package. Native fixes require a
+new package and a focused repeat of its dependency simulation. Earlier results
+remain historical receipts and will not be presented as acceptance of new bytes.
