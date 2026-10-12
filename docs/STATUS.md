@@ -78,7 +78,9 @@ restoration when a still-live stream becomes ignored, and an exact typed-target
 restoration assertion in the real graph test. Installer review identified
 backup durability, settings preimage consistency, architecture-aware package
 inspection and lifecycle-state validation issues. Fixes are in progress; no
-second-batch unit or graph acceptance tests have run.
+second-batch unit or graph acceptance tests have run. The architecture/provider
+inspection correction has cleared focused source re-review, with nine new
+regression cases queued for the acceptance pass.
 
 The current APT simulations bind the pre-fix package. Native fixes require a
 new package and a focused repeat of its dependency simulation. Earlier results

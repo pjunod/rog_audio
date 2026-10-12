@@ -90,7 +90,7 @@ defects. The other two lanes requested these fixes before acceptance:
 | Runtime acceptance | Relinking after quit does not prove exact typed metadata restoration | Add pre-interception metadata and exact post-quit comparison |
 | File recovery | Backup files/directories are not durable before the journal allows replacement | Flush complete snapshot and archive before mutations |
 | File installation | Settings payload can precede a newer snapshot preimage | Derive settings from verified backup bytes |
-| Dependency inspection | Package names collapse architecture and multiple providers | Preserve architecture-aware candidate lists |
+| Dependency inspection | Package names collapse architecture and multiple providers | Fixed in `dbb1dba`; source re-review passed, nine regression cases pending execution |
 | Public status | Snapshot lifecycle state is returned without enum validation | Reject unknown state before public output |
 
 Native fixes require a replacement binary/package. The earlier compiler and
