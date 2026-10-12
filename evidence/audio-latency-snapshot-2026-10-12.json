@@ -1,0 +1,79 @@
+{
+  "data_loop_scheduling": [
+    {
+      "class": "RR",
+      "rt_priority": 20
+    },
+    {
+      "class": "RR",
+      "rt_priority": 20
+    },
+    {
+      "class": "RR",
+      "rt_priority": 20
+    },
+    {
+      "class": "RR",
+      "rt_priority": 20
+    }
+  ],
+  "endpoints": [
+    {
+      "channels": 2,
+      "device_api": "alsa",
+      "media_class": "Audio/Sink",
+      "state": "suspended"
+    },
+    {
+      "channels": 2,
+      "device_api": "alsa",
+      "media_class": "Audio/Source",
+      "state": "suspended"
+    }
+  ],
+  "evidence_kind": "private-offline",
+  "graph_default": {
+    "graph_period_ms": 21.333333333333332,
+    "quantum_frames": 1024,
+    "rate_hz": 48000
+  },
+  "graph_settings": {
+    "force_quantum": 0,
+    "force_rate": 0,
+    "max_quantum": 2048,
+    "min_quantum": 32,
+    "quantum": 1024,
+    "rate": 48000
+  },
+  "host_alias": "lab5",
+  "kind": "audio-public-summary",
+  "limits": [
+    "snapshot may span hotplug or state transitions",
+    "graph period is not physical latency",
+    "no audio playback, recording, or configuration activation"
+  ],
+  "observed_date": "2026-10-12",
+  "physical_latency_ms": null,
+  "probes": {
+    "capture": "ok",
+    "graph": "ok",
+    "packages": "ok",
+    "pipewire_version": "ok",
+    "playback": "ok",
+    "settings": "ok",
+    "threads": "ok",
+    "wireplumber_version": "ok"
+  },
+  "schema_version": 1,
+  "source_sha256": "f1f0fa554ea9bc2f50b95c5997bce42dd39e8a6faa5ebb07d074cdc89df2911e",
+  "tool_snapshot_scope": "development inspector snapshot; capture provenance is bound by source_sha256",
+  "user_config": {
+    "file_count": 0,
+    "sha256": [],
+    "status": "ok"
+  },
+  "versions": {
+    "pipewire": "1.6.8",
+    "wireplumber": "0.5.17"
+  }
+}

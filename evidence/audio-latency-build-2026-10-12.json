@@ -1,0 +1,80 @@
+{
+  "candidate_state": "not-installed; private actual-endpoint 256-frame bundle generated from read-only snapshot",
+  "date": "2026-10-12",
+  "destination": "https://github.com/pjunod/rog_audio",
+  "evidence_kinds": [
+    "private-offline",
+    "synthetic-test",
+    "live-read-only"
+  ],
+  "final_source_validation": "pending parent integration review and merge-code test batch",
+  "limits": [
+    "No playback, microphone recording, live config/service/mixer/routing/metadata changes performed.",
+    "Graph default 1024/48000 is a 21.333 ms period, not physical latency.",
+    "No acoustic quality, calibrated protection, latency improvement or Atmos qualification.",
+    "Sonos Arc/eARC is deferred.",
+    "Source hashes identify handoff bytes; earlier working-tree receipts do not qualify these final bytes."
+  ],
+  "linux_environment": {
+    "architecture": "amd64",
+    "compiler": "cc (Ubuntu 15.3.0-4ubuntu1) 15.3.0",
+    "image": "ubuntu@sha256:ee126c2fa0249079a7e24ae3a3d29b04783ef93ab33c868751c9a1289d3fffff",
+    "isolation": "uniquely named disposable container, no host mounts, no sound hardware",
+    "libpipewire_dev": "1.6.8-1ubuntu4",
+    "pipewire": "1.6.8-1ubuntu4",
+    "python": "3.14.8",
+    "wireplumber": "0.5.17-1ubuntu1"
+  },
+  "prior_development_receipts": [
+    {
+      "focused_tests_passed": 36,
+      "kind": "synthetic-test",
+      "platform": "Darwin",
+      "source_scope": "earlier uncommitted working tree; not the final source hash set"
+    },
+    {
+      "kind": "synthetic-test",
+      "native_config_merge": "passed",
+      "native_stream_validation": "not completed",
+      "platform": "Linux amd64",
+      "source_scope": "synthetic 256/48000 application/endpoint rule on PipeWire 1.6.8"
+    },
+    {
+      "last_container_run": "failed before native config/compiler stage because synthetic analysis result was omitted from packaged files",
+      "platform": "Linux amd64",
+      "resolution": "packaging now includes evidence/audio-latency-synthetic-analysis.json; rerun deferred by owner workflow change"
+    }
+  ],
+  "remaining": [
+    "final source adversarial review and one unit/compiler/native-rule batch in rog_audio",
+    "physical onset/round-trip/AV capture with documented clocks and uncertainty",
+    "100 physical onset trials per state, 60-minute xrun/gap run and same-path M4 Air comparison",
+    "coordinated activation and rollback checks"
+  ],
+  "reproduction": "python3 scripts/validate_audio_linux.py --output private/linux-validation.json",
+  "review_findings_addressed_in_source": [
+    "nested inventory shape errors",
+    "bounded config discovery and final encoded capture budget",
+    "client.conf version family restricted to PipeWire 1.4-1.6",
+    "container preflight before package operations",
+    "device/route identifiers require exact integers"
+  ],
+  "schema_version": 1,
+  "snapshot_summary": "audio-latency-snapshot-2026-10-12.json",
+  "source_files_sha256": {
+    "evidence/audio-latency-synthetic-analysis.json": "17e2907fcd50aceb80b369697249c103073b8cc3718ee9140518103bba8fde63",
+    "scripts/analyse_audio_latency.py": "6df840f5b608ef0b817c6690e877bbb395d29e253dcf0b4d7ef83f77fdb97252",
+    "scripts/audio_common.py": "14a70e97a92a961a28df64d27af9cecf5a7044c3e6d97a8901ce6ed3fc7564ea",
+    "scripts/inspect_audio.py": "60008887f538c161cd4581f1805b7fc8286bf0d0929d7f70edaa006e5f4e42bc",
+    "scripts/prepare_audio_latency.py": "2db2f6be2ce5189e8a36b282ed18b4a06ff299816c5fbc52598f80b8b9df4219",
+    "scripts/validate_audio_linux.py": "fead017fc00919305f506492c9b47b7812a309c80e722287642ef7ea2bb2a1aa",
+    "tests/audio/linux-validation.sh": "fe1b3f3a23283e11095f8dceb45e6345e94b1ff10ceb2bf0a941d14294c43f1c",
+    "tests/audio/synthetic-candidate.conf": "aa645a990795fedea181557d49e1954a1bf7f92b70f98a23ab05fd4354f0831f",
+    "tests/audio/synthetic-trials.json": "7a3122145a54111b9dba8e67c05c5b1de19fa3be4381e7992042243b4d01b1ac",
+    "tests/audio/validate_client.c": "903ff7dee8c84707186dbe02b156e7793f6a2dbf0398e77202d74fde5161138a",
+    "tests/test_analyse_audio_latency.py": "10675fd76b09505ffc9804b0621b19abaebd1bf24fd385918dec6badaab741e8",
+    "tests/test_inspect_audio.py": "dbef0de4f5153cf4b64620c11ffb70f099953b43668082fa89d97b860d739a22",
+    "tests/test_prepare_audio_latency.py": "e36762701d12e91ed126610d92339dc1d1ae6e7000c06588982b93f4d1959b0c"
+  },
+  "topic": "audio diagnostics and latency"
+}
