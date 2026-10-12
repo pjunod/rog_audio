@@ -7,6 +7,7 @@ import struct
 import sys
 import tempfile
 import unittest
+from unittest import mock
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'scripts'))
 import speaker_install as kit
 
@@ -141,5 +142,58 @@ class InstallationTests(unittest.TestCase):
         manifest['hardware']['subsystem']='17aa2276';manifest['binding']['subsystem']='17aa2276'
         path.write_bytes(kit.encoded(manifest))
         with self.assertRaises(kit.InstallError):kit.load_kit(self.destination)
+
+
+    def test_settings_payload_uses_the_snapshot_preimage(self):
+        path=self.locations['config']/'db/easyeffectsrc';path.parent.mkdir(parents=True)
+        path.write_bytes(b'[Window]\npreference=old\n')
+        fresh=b'[Window]\npreference=latest\n'
+        original=kit.snapshot
+        def edit_before_snapshot(*args):
+            path.write_bytes(fresh)
+            return original(*args)
+        with mock.patch.object(kit,'snapshot',side_effect=edit_before_snapshot):
+            kit.install(self.destination,self.snapshot,self.runtime,self.inv,self.locations)
+        self.assertIn(b'preference=latest',path.read_bytes())
+        self.assertEqual((self.snapshot/'before/config/db/easyeffectsrc').read_bytes(),fresh)
+
+    def test_settings_edit_after_snapshot_aborts_without_overwriting_it(self):
+        path=self.locations['config']/'db/easyeffectsrc';path.parent.mkdir(parents=True)
+        path.write_bytes(b'[Window]\npreference=old\n')
+        fresh=b'[Window]\npreference=latest\n'
+        original=kit.snapshot
+        def edit_after_snapshot(*args):
+            result=original(*args);path.write_bytes(fresh);return result
+        with mock.patch.object(kit,'snapshot',side_effect=edit_after_snapshot):
+            with self.assertRaises(kit.InstallError) as error:
+                kit.install(self.destination,self.snapshot,self.runtime,self.inv,self.locations)
+        self.assertEqual(error.exception.reason,'concurrent_target_change')
+        self.assertEqual(path.read_bytes(),fresh)
+        self.assertEqual(json.loads((self.snapshot/'snapshot.json').read_text())['state'],'install-incomplete')
+
+    def test_backup_sync_failure_prevents_install_and_restore_mutations(self):
+        path=self.locations['config']/'db/easyeffectsrc';path.parent.mkdir(parents=True)
+        before=b'[Window]\npreference=retain\n';path.write_bytes(before)
+        real_sync=kit.os.fsync
+        def fail_file_sync(fd):
+            if stat.S_ISREG(kit.os.fstat(fd).st_mode):raise OSError('injected backup sync failure')
+            return real_sync(fd)
+        with mock.patch.object(kit.os,'fsync',side_effect=fail_file_sync):
+            with self.assertRaises(OSError):kit.install(self.destination,self.snapshot,self.runtime,self.inv,self.locations)
+        self.assertEqual(path.read_bytes(),before);self.assertFalse(self.locations['data'].exists())
+        kit.install(self.destination,self.snapshot,self.runtime,self.inv,self.locations)
+        installed={key:kit.tree(root) for key,root in self.locations.items()}
+        with mock.patch.object(kit.os,'fsync',side_effect=fail_file_sync):
+            with self.assertRaises(OSError):kit.remove(self.snapshot,self.root/'failed-archive',self.inv,self.locations)
+        self.assertEqual({key:kit.tree(root) for key,root in self.locations.items()},installed)
+
+    def test_invalid_snapshot_lifecycle_is_never_returned_by_status(self):
+        kit.install(self.destination,self.snapshot,self.runtime,self.inv,self.locations)
+        path=self.snapshot/'snapshot.json';original=json.loads(path.read_text())
+        for value in ('/private/operator/diagnostics',{'private':'nested detail'}):
+            with self.subTest(state=value):
+                state=copy.deepcopy(original);state['state']=value;path.write_bytes(kit.encoded(state))
+                with self.assertRaises(kit.InstallError) as error:kit.status(self.snapshot,self.locations)
+                self.assertEqual(error.exception.reason,'invalid_snapshot_state')
 
 if __name__=='__main__':unittest.main()

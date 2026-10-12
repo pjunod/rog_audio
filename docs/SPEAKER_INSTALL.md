@@ -1,6 +1,6 @@
 # Speaker installation — exact route, reversible files
 
-**Status:** compiled runtime and inactive kits prepared; review/tests pending ·
+**Status:** review fixes complete; matching runtime rebuild/tests pending ·
 **Updated:** 2026-10-12 · **Executes:** internal-speaker installation from
 [status](STATUS.md).
 
@@ -86,6 +86,12 @@ hardware collection. Each root has at most 1,024 entries, each file at most
 4 MiB, and both roots together at most 64 MiB. Symlinks and special files fail.
 A durable planned-write journal precedes installation; an interrupted write
 can therefore be restored even if its completion journal entry was not saved.
+Copied backup files, each new backup directory and publication parents are
+synced before managed bytes can be replaced. Removal uses the same durable
+archive path before restoring anything. Settings are derived from the verified
+snapshot backup, so an edit before snapshotting is retained and an edit after
+snapshotting causes a preimage conflict. Snapshot states are a fixed lifecycle
+enum; arbitrary corrupt diagnostics never become public status values.
 Snapshots cannot overlap the target XDG trees.
 
 Settings select only the exact physical output for EasyEffects, keep automatic
@@ -237,8 +243,11 @@ docker run --rm --network none --read-only --cap-drop ALL \
 The real EasyEffects loader and plugins process generated audio through an
 exported synthetic Device Route and null sinks. Each laptop's emitted preset/IR
 gets a separate receipt. The runner observes ordinary app interception,
-HDMI/USB choices, default changes, route bypass before delayed autoload,
-stock/candidate isolation and graceful target restoration. Its RMS comparison
+HDMI/USB choices, automatic loading with two route profile-device indices,
+default changes, route bypass before delayed autoload,
+stock/candidate isolation and exact typed target restoration. The latter sets
+real metadata before interception, observes the owned effects pair, then
+requires the original types and values after controlled quit. Its RMS comparison
 is a synthetic signal check, not an acoustic or physical latency measurement.
 Remove the exact owned Docker image only after receipts and deliverables are
 retained; do not prune shared images or caches.

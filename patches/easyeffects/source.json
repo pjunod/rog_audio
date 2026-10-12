@@ -1,12 +1,12 @@
 {
-  "checksum_reason": "Local routing series now includes private candidate XDG/app/node namespace, preventing stock EasyEffects from consuming candidate routing settings",
+  "checksum_reason": "Post-review corrections release live ignored streams before proxy drop and scope delayed autoload by route profile-device index; exact changed bytes deliberately repinned",
   "files": {
-    "0001-Scope-speaker-correction-to-device-route.patch": "3e07b594973916288ce748df9484d1bd2ebcc752d5fbb74b58bbdd4452c185c3",
+    "0001-Scope-speaker-correction-to-device-route.patch": "e10f439698d353e52c58ec0190390107d68fd0ace4f429d89c996c4104d76ede",
     "ubuntu/0001-Disable-echo-canceller.patch": "fc990509008860da01bc3b0719d2b7af173e16e6efd7aba26e3ad0f65282ba11",
     "ubuntu/COPYRIGHT": "5ffb35e31945036cf81c7dd63b14c28af850213f4083279e9f3c2ef50e49e207"
   },
   "routing_contract": "exact-device-route-v1",
-  "routing_header_sha256": "5f974d41cd39a9582bb33fe85565a3243474bd916739941a9d1b2c43ab67a292",
+  "routing_header_sha256": "e769b6bd2dfbe2f7b18543dc829f27dd3c344486aa7dec3d95159904878dff48",
   "schema_version": 1,
   "series": [
     "ubuntu/0001-Disable-echo-canceller.patch",

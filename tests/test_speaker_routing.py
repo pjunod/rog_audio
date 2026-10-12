@@ -13,7 +13,8 @@ CASES = ('ordinary-speaker','explicit-hdmi-usb','metadata-target-race',
          'explicit-speaker-other-default','external-target-wins','typed-target-restoration','application-target-change',
          'owned-acknowledgments','stream-id-reuse','sink-removal-resume',
          'selected-device-and-input','blocklist-and-process-all','startup-barrier',
-         'partial-scope-and-stock')
+         'partial-scope-and-stock','live-ignored-restores','true-removal-no-restore-write',
+         'two-route-profile-indices')
 
 class SpeakerRoutingTests(unittest.TestCase):
     @classmethod

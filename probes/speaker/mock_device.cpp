@@ -16,6 +16,7 @@ struct Device {
   spa_param_info parameter{SPA_PARAM_Route,SPA_PARAM_INFO_READ | SPA_PARAM_INFO_WRITE};
   pw_device_info info{};
   std::string route="analog-output-speaker",description="Speakers";
+  std::string other_route="hdmi-output-0",other_description="HDMI";
   pw_main_loop* loop=nullptr;
   static int add(void* object,spa_hook* hook,const pw_device_events* events,void* data) {
     auto* d=static_cast<Device*>(object);
@@ -26,21 +27,24 @@ struct Device {
   static int subscribe(void*,uint32_t*,uint32_t) {return 0;}
   static int enumerate(void* object,int seq,uint32_t id,uint32_t start,uint32_t count,const spa_pod*) {
     auto* d=static_cast<Device*>(object);
-    if(id!=SPA_PARAM_Route || start!=0 || count==0)return 0;
-    uint8_t buffer[1024];spa_pod_builder builder=SPA_POD_BUILDER_INIT(buffer,sizeof(buffer));
-    auto* pod=static_cast<spa_pod*>(spa_pod_builder_add_object(&builder,
-      SPA_TYPE_OBJECT_ParamRoute,SPA_PARAM_Route,
-      SPA_PARAM_ROUTE_index,SPA_POD_Int(0),SPA_PARAM_ROUTE_device,SPA_POD_Int(0),
-      SPA_PARAM_ROUTE_direction,SPA_POD_Id(SPA_DIRECTION_OUTPUT),
-      SPA_PARAM_ROUTE_name,SPA_POD_String(d->route.c_str()),
-      SPA_PARAM_ROUTE_description,SPA_POD_String(d->description.c_str()),
-      SPA_PARAM_ROUTE_available,SPA_POD_Id(SPA_PARAM_AVAILABILITY_yes)));
-    spa_hook_list_call(&d->listeners,pw_device_events,param,0,seq,id,0,1,pod);
+    if(id!=SPA_PARAM_Route || start>=2 || count==0)return 0;
+    for(uint32_t index=start; index<2 && index-start<count; ++index) {
+      uint8_t buffer[1024];spa_pod_builder builder=SPA_POD_BUILDER_INIT(buffer,sizeof(buffer));
+      auto* pod=static_cast<spa_pod*>(spa_pod_builder_add_object(&builder,
+        SPA_TYPE_OBJECT_ParamRoute,SPA_PARAM_Route,
+        SPA_PARAM_ROUTE_index,SPA_POD_Int(index),SPA_PARAM_ROUTE_device,SPA_POD_Int(index),
+        SPA_PARAM_ROUTE_direction,SPA_POD_Id(SPA_DIRECTION_OUTPUT),
+        SPA_PARAM_ROUTE_name,SPA_POD_String((index==0?d->route:d->other_route).c_str()),
+        SPA_PARAM_ROUTE_description,SPA_POD_String((index==0?d->description:d->other_description).c_str()),
+        SPA_PARAM_ROUTE_available,SPA_POD_Id(SPA_PARAM_AVAILABILITY_yes)));
+      spa_hook_list_call(&d->listeners,pw_device_events,param,0,seq,id,index,index+1,pod);
+    }
     return 0;
   }
   static int set(void*,uint32_t,uint32_t,const spa_pod*) {return -ENOTSUP;}
   void changed(const std::string& command) {
-    if(command=="speaker") {route="analog-output-speaker";description="Speakers";}
+    if(command=="other-route") {other_route="hdmi-output-1";other_description="Other HDMI";}
+    else if(command=="speaker") {route="analog-output-speaker";description="Speakers";}
     else if(command=="headphones") {route="analog-output-headphones";description="Headphones";}
     else {route="unknown-route";description="Unknown";}
     parameter.flags^=SPA_PARAM_INFO_SERIAL;

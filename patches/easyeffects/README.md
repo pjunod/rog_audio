@@ -1,6 +1,6 @@
 # EasyEffects runtime source series
 
-**Status:** final private runtime compiled/packaged; review and runtime acceptance pending ·
+**Status:** review fixes complete; matching rebuild and runtime acceptance pending ·
 **Updated:** 2026-10-12.
 
 [The source manifest](source.json) pins upstream v8.2.8 and each patch hash.

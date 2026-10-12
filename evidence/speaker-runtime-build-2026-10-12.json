@@ -67,5 +67,6 @@
   "schema_version": 1,
   "source_commit": "6d9b1220d3dcebb154ba759a05600662bc0af549",
   "source_manifest_sha256": "9419f0b3438fb14219243091100ce8c661083e60b7d93e518d243022d222c841",
+  "source_series_state": "superseded compiler receipt; reviewed routing fixes require matching rebuild",
   "unit_tests_run": 0
 }

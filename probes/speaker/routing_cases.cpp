@@ -64,6 +64,25 @@ int main(int argc,char** argv) {
   } else if(name=="owned-acknowledgments") {
     f.stream();f.link(10);f.p.routes.clear();f.p.refresh();f.acknowledge();
     assert(f.p.owned.empty());assert(!f.p.value(1,"target.object"));assert(f.p.bypass());
+  } else if(name=="live-ignored-restores") {
+    f.stream();Policy::Value original=Policy::Property{"Spa:String",f.p.device_name};
+    f.p.target_changed(1,"target.object",original);f.link(10);f.acknowledge();
+    f.p.node_ignored(1);
+    assert(f.p.owned.empty());assert(!f.p.nodes.contains(1));
+    assert(f.writes.size()==2);
+    assert(std::get<1>(f.writes.back())=="target.object");
+    assert(std::get<2>(f.writes.back())==original);
+  } else if(name=="true-removal-no-restore-write") {
+    f.stream();f.link(10);f.acknowledge();f.p.node_removed(1);
+    assert(f.writes.empty());assert(f.p.owned.empty());
+  } else if(name=="two-route-profile-indices") {
+    assert(Policy::route_applies(5,0,5,0));
+    assert(!Policy::route_applies(5,0,5,1));
+    assert(Policy::route_applies(5,1,5,1));
+    assert(!Policy::route_applies(5,1,6,1));
+    assert(!Policy::route_applies(5,-1,5,-1));
+    f.stream();f.link(10);f.acknowledge();f.p.routes[{5,1}]="hdmi-output-0";f.p.refresh();
+    assert(!f.p.bypass());assert(f.p.owned.contains(1));
   } else if(name=="stream-id-reuse") {
     f.stream();f.link(10);f.p.node_removed(1);f.p.node_changed(1,Policy::Node{9999,"new player",true,false,UINT32_MAX,-1,"alsa_output.usb"});
     assert(f.p.owned.empty());assert(!f.p.value(1,"target.object"));

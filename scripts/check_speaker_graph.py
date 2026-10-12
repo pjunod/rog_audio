@@ -53,6 +53,18 @@ class Graph:
         if not a or not b:return False
         return any(x['type']=='PipeWire:Interface:Link' and x.get('info',{}).get('output-node-id')==a['id'] and
                    x.get('info',{}).get('input-node-id')==b['id'] and x.get('info',{}).get('state') in ('active','paused') for x in graph)
+    def targets(self,graph,subject):
+        result={}
+        for item in graph:
+            if item['type']!='PipeWire:Interface:Metadata' or item.get('props',{}).get('metadata.name')!='default':continue
+            for entry in item.get('metadata',[]):
+                if entry.get('subject')==subject and entry.get('key') in ('target.node','target.object'):
+                    value=entry.get('value')
+                    wire=value if isinstance(value,str) else json.dumps(value,separators=(',',':'))
+                    result[entry['key']]={'type':entry.get('type'),'value':wire}
+        return result
+    def preset(self,binary):
+        return self.call([binary,'--last-loaded-preset','output']).strip()
     def stop(self,child):
         if child.poll() is None:
             os.killpg(child.pid,signal.SIGTERM)
@@ -109,12 +121,24 @@ def acceptance(kit_path,case,output,binary,mock,player):
         for name in (node_name,'rog-hdmi','rog-usb'):
             properties={'factory.name':'support.null-audio-sink','node.name':name,'node.description':'Synthetic graph sink',
                         'media.class':'Audio/Sink','audio.position':['FL','FR'],'object.linger':True}
-            if name==node_name:properties.update({'device.id':device_id,'card.profile.device':0,'device.api':'alsa'})
+            if name in (node_name,'rog-hdmi'):
+                properties.update({'device.id':device_id,'card.profile.device':0 if name==node_name else 1,'device.api':'alsa'})
             graph.call(['pw-cli','create-node','adapter',json.dumps(properties)])
         physical=graph.until(lambda g:graph.node(g,node_name));graph.call(['wpctl','set-default',str(physical['id'])])
         graph.start('easyeffects',[binary,'--hide-window','--service-mode'])
         graph.until(lambda g:graph.node(g,'rog_audio_speaker_sink'))
-        graph.call([binary,'--load-preset',manifest['preset_name']])
+        graph.until(lambda _:graph.preset(binary)==manifest['preset_name'])
+        # Both sinks share one exported Device; only profile-device index1 changes.
+        device.stdin.write(b'other-route\n');device.stdin.flush()
+        graph.until(lambda g:any(x['type']=='PipeWire:Interface:Device' and x['id']==device_id and
+                                 any(r.get('device')==1 and r.get('name')=='hdmi-output-1'
+                                     for r in x.get('info',{}).get('params',{}).get('Route',[])) for x in g))
+        deadline=time.monotonic()+2.2
+        while time.monotonic()<deadline:
+            if graph.preset(binary)!=manifest['preset_name']:
+                raise GraphError('unrelated profile-device route changed automatic speaker preset')
+            time.sleep(.1)
+        observations.append('automatic preset selected; unrelated route index preserved it')
         for uri in ('http://lsp-plug.in/plugins/lv2/para_equalizer_x32_lr',
                     'http://lsp-plug.in/plugins/lv2/sc_limiter_stereo'):graph.call(['lv2info',uri])
         default=graph.start('default-player',[player,'rog-default'])
@@ -163,19 +187,34 @@ def acceptance(kit_path,case,output,binary,mock,player):
         if (stock_root/'data/easyeffects/output'/ (manifest['preset_name']+'.json')).exists():
             raise GraphError('stock consumed candidate preset')
         observations.append('stock startup/config/control isolated')
-        device.stdin.write(b'speaker\n');device.stdin.flush()
+        # The analog route is still headphones, so interception is inactive while
+        # the real default metadata receives a deliberately typed original pair.
         explicit=graph.start('explicit-speaker',[player,'rog-explicit-speaker',node_name])
-        graph.until(lambda g:graph.linked(g,'rog-explicit-speaker','rog_audio_speaker_sink'))
+        graph.until(lambda g:graph.linked(g,'rog-explicit-speaker',node_name))
+        current=graph.dump();stream_id=graph.node(current,'rog-explicit-speaker')['id']
+        physical_id=graph.node(current,node_name)['id']
+        original_targets={'target.node':{'type':'Spa:Id','value':str(physical_id)},
+                          'target.object':{'type':'Spa:String','value':node_name}}
+        for key,property in original_targets.items():
+            graph.call(['pw-metadata','-n','default',str(stream_id),key,property['value'],property['type']])
+        graph.until(lambda g:graph.targets(g,stream_id)==original_targets)
+        effects=graph.node(graph.dump(),'rog_audio_speaker_sink')
+        owned_targets={'target.node':{'type':'Spa:Id','value':str(effects['id'])},
+                       'target.object':{'type':'Spa:Id','value':str(effects['info']['props']['object.serial'])}}
+        device.stdin.write(b'speaker\n');device.stdin.flush()
+        graph.until(lambda g:graph.linked(g,'rog-explicit-speaker','rog_audio_speaker_sink') and
+                             graph.targets(g,stream_id)==owned_targets)
         graph.call([binary,'--quit'])
         # Stop watching primary lifetime once it is intentionally quitting.
         app=next(p for p in graph.processes if p.args[0]==binary)
         graph.processes.remove(app)
         try:app.wait(timeout=5)
         except subprocess.TimeoutExpired:graph.processes.append(app);raise GraphError('candidate did not quit')
-        graph.until(lambda g:graph.linked(g,'rog-explicit-speaker',node_name))
+        graph.until(lambda g:graph.linked(g,'rog-explicit-speaker',node_name) and
+                             graph.targets(g,stream_id)==original_targets)
         if 'rog-usb' not in graph.call(['pw-metadata','-n','default','0','default.audio.sink']):
             raise GraphError('runtime changed physical default')
-        observations.extend(['graceful quit restored owned target','physical default remains USB'])
+        observations.extend(['graceful quit restored exact typed metadata pair','physical default remains USB'])
         graph.stop(explicit)
         receipt={'schema_version':1,'case':case,'status':'passed','evidence_kind':'isolated-synthetic-runtime',
                  'hardware':manifest['hardware'],'binary_sha256':manifest['runtime']['binary_sha256'],

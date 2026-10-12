@@ -30,13 +30,13 @@ index 89b27ed..df09d2d 100644
      if (DbMain::enableServiceMode()) {
        ofs << " --service-mode\n";
 diff --git a/src/contents/CMakeLists.txt b/src/contents/CMakeLists.txt
-index 3aad436..a3c2eae 100644
+index 3aad436..18e99ea 100644
 --- a/src/contents/CMakeLists.txt
 +++ b/src/contents/CMakeLists.txt
 @@ -1,6 +1,7 @@
  install(FILES 
 -    icons/${APPLICATION_ID}.svg 
-+    icons/com.github.wwmm.easyeffects.svg 
++    icons/com.github.wwmm.easyeffects.svg
      DESTINATION ${KDE_INSTALL_FULL_DATADIR}/icons/hicolor/scalable/apps
 +    RENAME ${APPLICATION_ID}.svg
  )
@@ -210,7 +210,7 @@ index d9728ff..ec0bc3d 100644
   private:
    struct proxy_data {
 diff --git a/src/pw_manager.cpp b/src/pw_manager.cpp
-index 6c7be89..519d0cb 100644
+index 6c7be89..519eb38 100644
 --- a/src/pw_manager.cpp
 +++ b/src/pw_manager.cpp
 @@ -173,10 +173,21 @@ void on_core_info(void* data, const struct pw_core_info* info) {
@@ -236,7 +236,7 @@ index 6c7be89..519d0cb 100644
      pw_thread_loop_signal(pm->thread_loop, false);
    }
  }
-@@ -211,7 +222,70 @@ Manager::Manager(QObject* parent)
+@@ -211,7 +222,73 @@ Manager::Manager(QObject* parent)
        link_manager(LinkManager(core, thread_loop, model_nodes, list_links)),
        module_manager(ModuleManager(core, thread_loop, model_modules)),
        client_manager(ClientManager(core, thread_loop, model_clients)),
@@ -270,6 +270,9 @@ index 6c7be89..519d0cb 100644
 +      speaker_routing.default_output = name.toStdString(); speaker_routing.refresh();
 +    }, Qt::DirectConnection);
 +    connect(&node_manager, &NodeManager::nodeChanged, this, &Manager::refreshSpeakerNode, Qt::DirectConnection);
++    connect(&node_manager, &NodeManager::nodeIgnored, this, [this](NodeInfo node) {
++      speaker_routing.node_ignored(node.id);
++    }, Qt::DirectConnection);
 +    connect(&node_manager, &NodeManager::nodeRemoved, this, [this](NodeInfo node) {
 +      speaker_routing.node_removed(node.id);
 +    }, Qt::DirectConnection);
@@ -308,7 +311,20 @@ index 6c7be89..519d0cb 100644
    connect(&metadata_manager, &MetadataManager::defaultSourceChanged, [&](const QString& name) {
      defaultInputDeviceName = name;
  
-@@ -390,6 +464,16 @@ Manager::Manager(QObject* parent)
+@@ -276,8 +353,10 @@ Manager::Manager(QObject* parent)
+       }
+ 
+       for (auto& node : nodes) {
+-        if (node.media_class == tags::pipewire::media_class::sink ||
+-            node.media_class == tags::pipewire::media_class::virtual_sink) {
++        if (SpeakerRouting::route_applies(node.device_id, node.profile_device,
++                                          device.id, device.output_route_device) &&
++            (node.media_class == tags::pipewire::media_class::sink ||
++             node.media_class == tags::pipewire::media_class::virtual_sink)) {
+           if (node.device_route_name != device.output_route_name ||
+               node.device_route_description != device.output_route_description) {
+             node.device_route_name = device.output_route_name;
+@@ -390,6 +469,16 @@ Manager::Manager(QObject* parent)
     * available.
     */
  
@@ -325,7 +341,7 @@ index 6c7be89..519d0cb 100644
    for (const auto& node : model_nodes.get_list()) {
      if (node.media_class == tags::pipewire::media_class::output_stream) {
        if (DbMain::processAllOutputs() && !node.is_blocklisted) {
-@@ -408,6 +492,17 @@ Manager::~Manager() {
+@@ -408,6 +497,17 @@ Manager::~Manager() {
  
    lock();
  
@@ -343,7 +359,7 @@ index 6c7be89..519d0cb 100644
    spa_hook_remove(&registry_listener);
    spa_hook_remove(&core_listener);
    spa_hook_remove(&metadata_listener);
-@@ -435,7 +530,16 @@ Manager::~Manager() {
+@@ -435,7 +535,16 @@ Manager::~Manager() {
    pw_thread_loop_destroy(thread_loop);
  }
  
@@ -361,7 +377,7 @@ index 6c7be89..519d0cb 100644
    set_metadata_target_node(id, ee_sink_node.id, ee_sink_node.serial);
  }
  
-@@ -455,9 +559,15 @@ void Manager::set_metadata_target_node(const uint& origin_id,
+@@ -455,9 +564,15 @@ void Manager::set_metadata_target_node(const uint& origin_id,
    sync_wait_unlock();
  }
  
@@ -484,7 +500,7 @@ index 096114b..82e1384 100644
   private:
    pw_metadata* metadata = nullptr;
 diff --git a/src/pw_node_manager.cpp b/src/pw_node_manager.cpp
-index aa844d3..91da57f 100644
+index aa844d3..477bea5 100644
 --- a/src/pw_node_manager.cpp
 +++ b/src/pw_node_manager.cpp
 @@ -316,7 +316,8 @@ void NodeManager::onNodeInfo(void* object, const pw_node_info* info) {
@@ -501,7 +517,7 @@ index aa844d3..91da57f 100644
  
    if (ignore_node) {
      // Just in case the previous tests returned false in the first callback iteration
-+    Q_EMIT nm->nodeRemoved(*nd->nd_info);
++    Q_EMIT nm->nodeIgnored(*nd->nd_info);
      nm->model_nodes.remove_by_serial(nd->nd_info->serial);
  
      if (nd->proxy != nullptr) {
@@ -561,15 +577,16 @@ index aa844d3..91da57f 100644
    pw_properties_set(props_source, "audio.position", "FL,FR");
    pw_properties_set(props_source, "monitor.channel-volumes",
 diff --git a/src/pw_node_manager.hpp b/src/pw_node_manager.hpp
-index 85d726a..7598f5a 100644
+index 85d726a..0c10bd4 100644
 --- a/src/pw_node_manager.hpp
 +++ b/src/pw_node_manager.hpp
-@@ -79,6 +79,8 @@ class NodeManager : public QObject {
+@@ -79,6 +79,9 @@ class NodeManager : public QObject {
  
    void sourceAdded(NodeInfo node);
    void sinkAdded(NodeInfo node);
 +  void nodeChanged(NodeInfo node);
 +  void nodeRemoved(NodeInfo node);
++  void nodeIgnored(NodeInfo node);
  
   private:
    struct NodeData {
@@ -596,10 +613,10 @@ index 2d459bf..210c0b3 100644
  
 diff --git a/src/speaker_routing.hpp b/src/speaker_routing.hpp
 new file mode 100644
-index 0000000..7d98746
+index 0000000..09096f0
 --- /dev/null
 +++ b/src/speaker_routing.hpp
-@@ -0,0 +1,176 @@
+@@ -0,0 +1,189 @@
 +/**
 + * Copyright © 2026 rog_audio contributors
 + * SPDX-License-Identifier: GPL-3.0-or-later
@@ -715,6 +732,19 @@ index 0000000..7d98746
 +    auto it=nodes.find(id);
 +    if (it!=nodes.end() && it->second.serial!=node.serial) node_removed(id);
 +    nodes.insert_or_assign(id,std::move(node)); refresh();
++  }
++
++  void node_ignored(uint32_t id) {
++    // The stream is still live. Restore its owned target before dropping our
++    // local proxy; true destruction/id reuse must not write to a gone subject.
++    release(id);
++    node_removed(id);
++  }
++
++  static auto route_applies(uint32_t node_device, int node_profile,
++                            uint32_t route_device, int route_profile) -> bool {
++    return node_profile >= 0 && route_profile >= 0 &&
++           node_device == route_device && node_profile == route_profile;
 +  }
 +
 +  void node_removed(uint32_t id) {

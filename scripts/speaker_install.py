@@ -20,6 +20,7 @@ import prepare_speaker_profile as speaker
 from audio_common import PrivateArgumentParser
 
 SCHEMA = 1
+STATES = {"snapshot-complete", "installing", "installed", "install-incomplete", "removed"}
 MAX_FILES = 1024
 MAX_FILE = 4 * 1024 * 1024
 MAX_TOTAL = 64 * 1024 * 1024
@@ -82,19 +83,41 @@ def replace(path,data,mode=0o600):
             except FileNotFoundError:pass
 
 
+def durable_new_file(path,data):
+    path=safe(path)
+    with speaker.parent_fd(path) as (parent,name):
+        flags=os.O_WRONLY|os.O_CREAT|os.O_EXCL|getattr(os,'O_NOFOLLOW',0)
+        fd=os.open(name,flags,0o600,dir_fd=parent)
+        with os.fdopen(fd,'wb') as stream:
+            os.fchmod(stream.fileno(),0o600)
+            stream.write(data);stream.flush();os.fsync(stream.fileno())
+        os.fsync(parent)
+
+
+def sync_directory(parent,name):
+    fd=os.open(name,os.O_RDONLY|os.O_DIRECTORY|getattr(os,'O_NOFOLLOW',0),dir_fd=parent)
+    try:os.fsync(fd)
+    finally:os.close(fd)
+    os.fsync(parent)
+
+
 def mkdir(path):
     path=safe(path)
     if path.exists():
         require(path.is_dir(),'not_directory');return
     mkdir(path.parent)
     with speaker.parent_fd(path) as (parent,name):
-        try:os.mkdir(name,0o700,dir_fd=parent)
+        try:
+            os.mkdir(name,0o700,dir_fd=parent)
+            sync_directory(parent,name)
         except FileExistsError:require(path.is_dir() and not path.is_symlink(),'directory_race')
 
 
 def exclusive_directory(path):
     path=safe(path);require(path.parent.is_dir(),'output_parent_missing')
-    with speaker.parent_fd(path) as (parent,name):os.mkdir(name,0o700,dir_fd=parent)
+    with speaker.parent_fd(path) as (parent,name):
+        os.mkdir(name,0o700,dir_fd=parent)
+        sync_directory(parent,name)
     return path
 
 
@@ -319,12 +342,12 @@ def snapshot(directory,locations,inventory,kit):
         for key,view in views.items():
             for name,record in view['files'].items():
                 data=read(locations[key]/name);require(sha(data)==record['sha256'],'snapshot_source_changed')
-                target=directory/'before'/key/name;mkdir(target.parent);speaker.new_file(target,data)
+                target=directory/'before'/key/name;mkdir(target.parent);durable_new_file(target,data)
         data={'schema_version':1,'kind':'speaker-install-snapshot','state':'snapshot-complete',
               'uid':os.geteuid(),'roots':{k:str(v) for k,v in locations.items()},'before':views,'kit':kit,
               'inventory_sha256':sha(encoded(inventory)),'planned':{},'installed':[]}
-        speaker.new_file(directory/'snapshot.json',encoded(data))
-        speaker.new_file(directory/'inventory.json',encoded(inventory))
+        durable_new_file(directory/'snapshot.json',encoded(data))
+        durable_new_file(directory/'inventory.json',encoded(inventory))
     except BaseException:
         shutil.rmtree(directory);raise
     return directory,data
@@ -334,11 +357,13 @@ def install(kit_path,snapshot_path,runtime,inventory,locations):
     root,kit=load_kit(kit_path);idle(inventory)
     require(observed_route(inventory,kit['hardware'])==kit['binding'],'route_identity_changed',3)
     require(sha(speaker.read_file(Path(runtime),limit=64*1024*1024))==kit['runtime']['binary_sha256'],'runtime_binary_mismatch',3)
-    previous=file_record(locations['config']/'db/easyeffectsrc')
-    before=read(locations['config']/'db/easyeffectsrc') if previous['exists'] else b''
     payload={name:read(root/name) for name in kit['files']}
-    payload['config/db/easyeffectsrc']=settings(before,kit)
+    require({name:sha(data) for name,data in payload.items()}==kit['files'],'kit_payload_changed')
     directory,state=snapshot(snapshot_path,locations,inventory,kit)
+    prior=state['before']['config']['files'].get('db/easyeffectsrc')
+    before=read(directory/'before/config/db/easyeffectsrc') if prior else b''
+    require(not prior or sha(before)==prior['sha256'],'snapshot_backup_changed')
+    payload['config/db/easyeffectsrc']=settings(before,kit)
     state['planned']={name:sha(data) for name,data in payload.items()}
     state['state']='installing'
     replace(directory/'snapshot.json',encoded(state))
@@ -359,6 +384,7 @@ def install(kit_path,snapshot_path,runtime,inventory,locations):
 def load_snapshot(path,locations):
     directory=safe(path);state=document(directory/'snapshot.json')
     require(isinstance(state,dict) and state.get('schema_version')==1 and state.get('kind')=='speaker-install-snapshot','unsupported_snapshot')
+    require(isinstance(state.get('state'),str) and state['state'] in STATES,'invalid_snapshot_state')
     require(state.get('uid')==os.geteuid() and state.get('roots')=={k:str(v) for k,v in locations.items()},'snapshot_target_mismatch')
     require(isinstance(state.get('kit'),dict) and isinstance(state.get('before'),dict) and set(state['before'])==set(locations) and isinstance(state.get('planned'),dict) and isinstance(state.get('installed'),list),'invalid_snapshot')
     allowed=kit_scope(state['kit'])
