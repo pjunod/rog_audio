@@ -1,0 +1,842 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 8788d63..93a399a 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -24,11 +24,11 @@ option(ENABLE_SANITIZER "Enable the compiler's sanitizer" OFF)
+ 
+ if(ENABLE_DEVEL)
+     message(STATUS "Using development build mode with .Devel appended to the application ID.")
+-    set(APPLICATION_ID "com.github.wwmm.easyeffects.Devel")
++    set(APPLICATION_ID "org.rog_audio.SpeakerEffects.Devel")
+     set(APPLICATION_NAME "Easy Effects (Devel)")
+ else()
+     message(STATUS "Using stable build mode with the standard application ID")
+-    set(APPLICATION_ID "com.github.wwmm.easyeffects")
++    set(APPLICATION_ID "org.rog_audio.SpeakerEffects")
+     set(APPLICATION_NAME "Easy Effects")
+ endif()
+ 
+diff --git a/src/autostart.cpp b/src/autostart.cpp
+index 89b27ed..df09d2d 100644
+--- a/src/autostart.cpp
++++ b/src/autostart.cpp
+@@ -167,7 +167,7 @@ void Autostart::fallback_enable_autostart(const bool& state) {
+     ofs << "[Desktop Entry]\n";
+     ofs << "Name=" << APPLICATION_NAME << "\n";
+     ofs << "Comment=" << APPLICATION_NAME << " Service\n";
+-    ofs << "Exec=easyeffects --hide-window";
++    ofs << "Exec=rog-speaker-effects --hide-window";
+ 
+     if (DbMain::enableServiceMode()) {
+       ofs << " --service-mode\n";
+diff --git a/src/contents/CMakeLists.txt b/src/contents/CMakeLists.txt
+index 3aad436..a3c2eae 100644
+--- a/src/contents/CMakeLists.txt
++++ b/src/contents/CMakeLists.txt
+@@ -1,6 +1,7 @@
+ install(FILES 
+-    icons/${APPLICATION_ID}.svg 
++    icons/com.github.wwmm.easyeffects.svg 
+     DESTINATION ${KDE_INSTALL_FULL_DATADIR}/icons/hicolor/scalable/apps
++    RENAME ${APPLICATION_ID}.svg
+ )
+ 
+ install(FILES 
+diff --git a/src/contents/com.github.wwmm.easyeffects.desktop.in b/src/contents/com.github.wwmm.easyeffects.desktop.in
+index eb3b946..00e3e37 100644
+--- a/src/contents/com.github.wwmm.easyeffects.desktop.in
++++ b/src/contents/com.github.wwmm.easyeffects.desktop.in
+@@ -4,7 +4,7 @@ GenericName=Equalizer, Compressor and Other Audio Effects
+ Comment=Simple audio effects
+ Keywords=limiter;compressor;reverberation;equalizer;autovolume;
+ Categories=AudioVideo;Audio;
+-Exec=easyeffects
++Exec=rog-speaker-effects
+ Icon=@APPLICATION_ID@
+ StartupNotify=true
+ Terminal=false
+diff --git a/src/contents/kcfg/easyeffects_db_streamoutputs.kcfg b/src/contents/kcfg/easyeffects_db_streamoutputs.kcfg
+index d53d51c..3fe4736 100644
+--- a/src/contents/kcfg/easyeffects_db_streamoutputs.kcfg
++++ b/src/contents/kcfg/easyeffects_db_streamoutputs.kcfg
+@@ -4,6 +4,14 @@
+     xsi:schemaLocation="http://www.kde.org/standards/kcfg/1.0 http://www.kde.org/standards/kcfg/1.0/kcfg.xsd">
+     <kcfgfile name="easyeffects/db/easyeffectsrc" />
+     <group name="StreamOutputs">
++        <entry name="speakerCorrectionDevice" type="String">
++            <label>Exact physical output node for internal-speaker correction</label>
++            <default></default>
++        </entry>
++        <entry name="speakerCorrectionRoute" type="String">
++            <label>ALSA route name for internal-speaker correction</label>
++            <default></default>
++        </entry>
+         <entry name="plugins" type="StringList">
+             <label>List of Plugins in the Effects Pipeline</label>
+             <default></default>
+diff --git a/src/main.cpp b/src/main.cpp
+index e9d1ca8..f35057e 100644
+--- a/src/main.cpp
++++ b/src/main.cpp
+@@ -357,6 +357,15 @@ static int runSecondaryInstance(const QLockFile& lockFile,
+ }
+ 
+ int main(int argc, char* argv[]) {
++  // Candidate presets and routing settings never enter stock EasyEffects XDG
++  // trees, including when this binary is launched without the package wrapper.
++  const auto candidate_state = qEnvironmentVariable("ROG_AUDIO_STATE_DIR",
++      qEnvironmentVariable("XDG_STATE_HOME", QDir::homePath() + "/.local/state") + "/rog-audio/easyeffects");
++  if (!QDir::isAbsolutePath(candidate_state)) return EXIT_FAILURE;
++  qputenv("XDG_CONFIG_HOME", (candidate_state + "/config").toUtf8());
++  qputenv("XDG_DATA_HOME", (candidate_state + "/data").toUtf8());
++  qputenv("XDG_CACHE_HOME", (candidate_state + "/cache").toUtf8());
++
+   QCoreApplication::setAttribute(Qt::AA_ShareOpenGLContexts);
+   QLoggingCategory::setFilterRules("easyeffects.debug=false");
+ 
+diff --git a/src/plugin_base.cpp b/src/plugin_base.cpp
+index ed9eb03..5e3e264 100644
+--- a/src/plugin_base.cpp
++++ b/src/plugin_base.cpp
+@@ -181,6 +181,12 @@ void on_process(void* userdata, spa_io_position* position) {
+     right_out = d->pb->dummy_right;
+   }
+ 
++  if (d->pb->speakerCorrectionBypassed()) {
++    std::ranges::copy(left_in, left_out.begin());
++    std::ranges::copy(right_in, right_out.begin());
++    return;
++  }
++
+   if (!d->pb->enable_probe) {
+     if (DbMain::copyFilterInputBuffers()) {
+       auto copy_left_in = std::span(d->pb->copy_left_in);
+@@ -338,7 +344,7 @@ PluginBase::PluginBase(std::string tag,
+ 
+   pf_data.pb = this;
+ 
+-  const auto filter_name = "ee_" + log_tag.substr(0U, log_tag.size() - 2U) + "_" + name.toStdString();
++  const auto filter_name = "rog_audio_" + log_tag.substr(0U, log_tag.size() - 2U) + "_" + name.toStdString();
+ 
+   pm->lock();
+ 
+@@ -351,7 +357,7 @@ PluginBase::PluginBase(std::string tag,
+   pw_properties_set(props_filter, PW_KEY_MEDIA_TYPE, "Audio");
+   pw_properties_set(props_filter, PW_KEY_MEDIA_CATEGORY, "Duplex");
+   pw_properties_set(props_filter, PW_KEY_MEDIA_ROLE, "DSP");
+-  pw_properties_set(props_filter, PW_KEY_NODE_GROUP, log_tag == "soe: " ? "ee_sink_group" : "ee_source_group");
++  pw_properties_set(props_filter, PW_KEY_NODE_GROUP, log_tag == "soe: " ? "rog_audio_speaker_sink_group" : "rog_audio_speaker_source_group");
+   pw_properties_set(props_filter, PW_KEY_NODE_PASSIVE, log_tag == "soe: " ? "true" : "false");
+ 
+   filter = pw_filter_new(pm->core, filter_name.c_str(), props_filter);
+@@ -586,6 +592,10 @@ void PluginBase::disconnect_from_pw() {
+   util::debug(std::format("{}{} is disconnected", log_tag, name.toStdString()));
+ }
+ 
++auto PluginBase::speakerCorrectionBypassed() const -> bool {
++  return pipeline_type==PipelineType::output && pm->outputCorrectionBypassed();
++}
++
+ void PluginBase::clear_data() {}
+ 
+ void PluginBase::setup() {}
+diff --git a/src/plugin_base.hpp b/src/plugin_base.hpp
+index 843292f..6b9970f 100644
+--- a/src/plugin_base.hpp
++++ b/src/plugin_base.hpp
+@@ -85,6 +85,7 @@ class PluginBase : public QObject {
+   QString name, package, instance_id;
+ 
+   PipelineType pipeline_type{};
++  [[nodiscard]] auto speakerCorrectionBypassed() const -> bool;
+ 
+   pw_filter* filter = nullptr;
+ 
+diff --git a/src/pw_device_manager.cpp b/src/pw_device_manager.cpp
+index cdd0544..7a3a036 100644
+--- a/src/pw_device_manager.cpp
++++ b/src/pw_device_manager.cpp
+@@ -141,6 +141,7 @@ void DeviceManager::on_device_info(void* object, const struct pw_device_info* in
+         }
+ 
+         if (const auto id = param.id; id == SPA_PARAM_Route) {
++          Q_EMIT dd->dm->outputRoutesInvalidated(device.id);
+           pw_device_enum_params(reinterpret_cast<pw_device*>(dd->proxy), 0, id, 0, -1, nullptr);
+         }
+       }
+@@ -162,6 +163,7 @@ void DeviceManager::on_device_event_param(void* object,
+ 
+   auto* const dd = static_cast<proxy_data*>(object);
+ 
++  int route_device = -1;
+   const char* name = nullptr;
+   const char* description = nullptr;
+ 
+@@ -171,7 +173,7 @@ void DeviceManager::on_device_event_param(void* object,
+   if (spa_pod_parse_object(param, SPA_TYPE_OBJECT_ParamRoute, nullptr, SPA_PARAM_ROUTE_direction,
+                            SPA_POD_Id(&direction), SPA_PARAM_ROUTE_name, SPA_POD_String(&name),
+                            SPA_PARAM_ROUTE_description, SPA_POD_String(&description), SPA_PARAM_ROUTE_available,
+-                           SPA_POD_Id(&available)) < 0) {
++                           SPA_POD_Id(&available), SPA_PARAM_ROUTE_device, SPA_POD_OPT_Int(&route_device)) < 0) {
+     return;
+   }
+ 
+@@ -198,6 +200,7 @@ void DeviceManager::on_device_event_param(void* object,
+       util::debug(std::format("new {} input route: {}", device.description.toStdString(),
+                               device.input_route_description.toStdString()));
+     } else if (direction == SPA_DIRECTION_OUTPUT) {
++      device.output_route_device = route_device;
+       device.output_route_name = name;
+       device.output_route_description = description;
+       device.output_route_available = available;
+@@ -233,6 +236,7 @@ void DeviceManager::on_destroy_device_proxy(void* data) {
+   auto it = std::ranges::remove_if(dd->dm->list_devices, [=](const auto& n) { return n.serial == dd->serial; });
+ 
+   dd->dm->list_devices.erase(it.begin(), it.end());
++  Q_EMIT dd->dm->outputRoutesInvalidated(dd->id);
+ }
+ 
+ }  // namespace pw
+diff --git a/src/pw_device_manager.hpp b/src/pw_device_manager.hpp
+index d9728ff..ec0bc3d 100644
+--- a/src/pw_device_manager.hpp
++++ b/src/pw_device_manager.hpp
+@@ -58,6 +58,7 @@ class DeviceManager : public QObject {
+ 
+   void inputRouteChanged(DeviceInfo device);
+   void outputRouteChanged(DeviceInfo device);
++  void outputRoutesInvalidated(uint32_t device_id);
+ 
+  private:
+   struct proxy_data {
+diff --git a/src/pw_manager.cpp b/src/pw_manager.cpp
+index 6c7be89..519d0cb 100644
+--- a/src/pw_manager.cpp
++++ b/src/pw_manager.cpp
+@@ -173,10 +173,21 @@ void on_core_info(void* data, const struct pw_core_info* info) {
+   util::debug(std::format("Core name: {}", info->name));
+ }
+ 
+-void on_core_done(void* data, uint32_t id, [[maybe_unused]] int seq) {
++void on_core_done(void* data, uint32_t id, int seq) {
+   auto* const pm = static_cast<pw::Manager*>(data);
+ 
+   if (id == PW_ID_CORE) {
++    if (seq == pm->speaker_shutdown_sync) {
++      pm->speaker_shutdown_sync = -1;
++      pw_thread_loop_signal(pm->thread_loop, false);
++      return;
++    }
++    if (seq == pm->speaker_metadata_sync) {
++      pm->speaker_routing.ready = !pw::Manager::exiting;
++      pm->speaker_routing.refresh();
++      pm->speaker_metadata_sync = -1;
++      return;
++    }
+     pw_thread_loop_signal(pm->thread_loop, false);
+   }
+ }
+@@ -211,7 +222,70 @@ Manager::Manager(QObject* parent)
+       link_manager(LinkManager(core, thread_loop, model_nodes, list_links)),
+       module_manager(ModuleManager(core, thread_loop, model_modules)),
+       client_manager(ClientManager(core, thread_loop, model_clients)),
+-      device_manager(DeviceManager(list_devices)) {
++      device_manager(DeviceManager(list_devices)),
++      speaker_routing(DbStreamOutputs::speakerCorrectionDevice().toStdString(),
++                      DbStreamOutputs::speakerCorrectionRoute().toStdString(),
++                      [this](uint32_t id, const std::string& key, const SpeakerRouting::Value& value) {
++                        metadata_manager.set_property(id, key.c_str(), value ? value->type.c_str() : nullptr,
++                                                      value ? value->value.c_str() : nullptr);
++                      }) {
++  // These callbacks run in the PipeWire loop, before any GUI/autoload queue.
++  if (speaker_routing.scoped) {
++    speaker_routing.selected_output = DbStreamOutputs::outputDevice().toStdString();
++    speaker_routing.process_outputs = DbMain::processAllOutputs();
++    connect(&metadata_manager, &MetadataManager::metadataAvailable, this, [this](bool available) {
++      speaker_routing.metadata_available = false;
++      speaker_routing.ready = false;
++      speaker_routing.correction_active.store(false, std::memory_order_release);
++      speaker_routing.release_all();
++      speaker_routing.targets.clear(); speaker_routing.pending.clear();
++      speaker_routing.metadata_available = available;
++      if (available) speaker_metadata_sync = pw_core_sync(core, PW_ID_CORE, 0);
++    }, Qt::DirectConnection);
++    connect(&metadata_manager, &MetadataManager::targetChanged, this,
++            [this](uint32_t id, const QString& key, const QString& type, const QString& value, bool present) {
++      speaker_routing.target_changed(id, key.toStdString(), present ? SpeakerRouting::Value{
++          SpeakerRouting::Property{type.toStdString(),value.toStdString()}} : SpeakerRouting::Value{});
++    }, Qt::DirectConnection);
++    connect(&metadata_manager, &MetadataManager::defaultSinkChanged, this, [this](const QString& name) {
++      speaker_routing.default_output = name.toStdString(); speaker_routing.refresh();
++    }, Qt::DirectConnection);
++    connect(&node_manager, &NodeManager::nodeChanged, this, &Manager::refreshSpeakerNode, Qt::DirectConnection);
++    connect(&node_manager, &NodeManager::nodeRemoved, this, [this](NodeInfo node) {
++      speaker_routing.node_removed(node.id);
++    }, Qt::DirectConnection);
++    connect(&device_manager, &DeviceManager::outputRoutesInvalidated, this, [this](uint32_t id) {
++      for (auto it=speaker_routing.routes.begin();it!=speaker_routing.routes.end();) {
++        if (it->first.first==id) it=speaker_routing.routes.erase(it); else ++it;
++      }
++      speaker_routing.refresh();
++    }, Qt::DirectConnection);
++    connect(&device_manager, &DeviceManager::outputRouteChanged, this, [this](DeviceInfo device) {
++      speaker_routing.routes[{device.id,device.output_route_device}] = device.output_route_name.toStdString();
++      speaker_routing.refresh();
++    }, Qt::DirectConnection);
++    connect(&link_manager, &LinkManager::linkChanged, this, [this](LinkInfo link) {
++      if (link.state >= PW_LINK_STATE_PAUSED)
++        speaker_routing.links[link.id] = {link.output_node_id,link.input_node_id};
++      else speaker_routing.links.erase(link.id);
++      speaker_routing.refresh();
++    }, Qt::DirectConnection);
++    connect(&link_manager, &LinkManager::linkRemoved, this, [this]() {
++      for (auto it=speaker_routing.links.begin();it!=speaker_routing.links.end();) {
++        if (std::ranges::none_of(list_links,[&](const auto& link){ return link.id==it->first; }))
++          it=speaker_routing.links.erase(it);
++        else ++it;
++      }
++    }, Qt::DirectConnection);
++    connect(DbStreamOutputs::self(), &DbStreamOutputs::outputDeviceChanged, this, [this]() {
++      lock(); speaker_routing.selected_output=DbStreamOutputs::outputDevice().toStdString();
++      speaker_routing.refresh(); unlock();
++    });
++    connect(DbMain::self(), &DbMain::processAllOutputsChanged, this, [this]() {
++      lock(); speaker_routing.process_outputs=DbMain::processAllOutputs();
++      speaker_routing.refresh(); unlock();
++    });
++  }
+   connect(&metadata_manager, &MetadataManager::defaultSourceChanged, [&](const QString& name) {
+     defaultInputDeviceName = name;
+ 
+@@ -390,6 +464,16 @@ Manager::Manager(QObject* parent)
+    * available.
+    */
+ 
++  if (speaker_routing.scoped) {
++    lock();
++    speaker_routing.effects_id=ee_sink_node.id; speaker_routing.effects_serial=ee_sink_node.serial;
++    for (const auto& node:model_nodes.get_list()) refreshSpeakerNode(node);
++    for (const auto& link:list_links) if (link.state>=PW_LINK_STATE_PAUSED)
++      speaker_routing.links[link.id]={link.output_node_id,link.input_node_id};
++    speaker_routing.refresh();
++    unlock();
++  }
++
+   for (const auto& node : model_nodes.get_list()) {
+     if (node.media_class == tags::pipewire::media_class::output_stream) {
+       if (DbMain::processAllOutputs() && !node.is_blocklisted) {
+@@ -408,6 +492,17 @@ Manager::~Manager() {
+ 
+   lock();
+ 
++  speaker_routing.ready = false;
++  speaker_routing.correction_active.store(false, std::memory_order_release);
++  speaker_routing.release_all();
++  if (speaker_routing.scoped) {
++    speaker_shutdown_sync = pw_core_sync(core, PW_ID_CORE, 0);
++    // Flush owned-target restoration before disconnecting. A dead server
++    // cannot hold shutdown indefinitely.
++    timespec deadline;
++    pw_thread_loop_get_time(thread_loop, &deadline, 2 * SPA_NSEC_PER_SEC);
++    while (speaker_shutdown_sync >= 0 && pw_thread_loop_timed_wait_full(thread_loop, &deadline) == 0) {}
++  }
+   spa_hook_remove(&registry_listener);
+   spa_hook_remove(&core_listener);
+   spa_hook_remove(&metadata_listener);
+@@ -435,7 +530,16 @@ Manager::~Manager() {
+   pw_thread_loop_destroy(thread_loop);
+ }
+ 
+-void Manager::connectStreamOutput(const uint& id) const {
++void Manager::refreshSpeakerNode(NodeInfo node) {
++  speaker_routing.node_changed(node.id, {node.serial,node.name.toStdString(),
++      node.media_class==tags::pipewire::media_class::output_stream,node.is_blocklisted,
++      node.device_id,node.profile_device,node.property_target.toStdString()});
++}
++
++void Manager::connectStreamOutput(const uint& id) {
++  if (speaker_routing.scoped) {
++    lock(); refreshSpeakerNode(model_nodes.get_node_by_id(id)); unlock(); return;
++  }
+   set_metadata_target_node(id, ee_sink_node.id, ee_sink_node.serial);
+ }
+ 
+@@ -455,9 +559,15 @@ void Manager::set_metadata_target_node(const uint& origin_id,
+   sync_wait_unlock();
+ }
+ 
+-void Manager::disconnectStream(const uint& stream_id) const {
++void Manager::disconnectStream(const uint& stream_id) {
+   lock();
+ 
++  if (speaker_routing.scoped && model_nodes.get_node_by_id(stream_id).media_class ==
++      tags::pipewire::media_class::output_stream) {
++    refreshSpeakerNode(model_nodes.get_node_by_id(stream_id));
++    speaker_routing.release(stream_id);
++    unlock(); return;
++  }
+   // target.node for backward compatibility with old PW session managers
+   metadata_manager.set_property(stream_id, "target.node", nullptr, nullptr);
+   metadata_manager.set_property(stream_id, "target.object", nullptr, nullptr);
+diff --git a/src/pw_manager.hpp b/src/pw_manager.hpp
+index e552d74..3eab023 100644
+--- a/src/pw_manager.hpp
++++ b/src/pw_manager.hpp
+@@ -41,6 +41,7 @@
+ #include "pw_module_manager.hpp"
+ #include "pw_node_manager.hpp"
+ #include "pw_objects.hpp"
++#include "speaker_routing.hpp"
+ 
+ namespace pw {
+ 
+@@ -126,6 +127,11 @@ class Manager : public QObject {
+   ModuleManager module_manager;
+   ClientManager client_manager;
+   DeviceManager device_manager;
++  SpeakerRouting speaker_routing;
++  int speaker_metadata_sync = -1;
++  int speaker_shutdown_sync = -1;
++  void refreshSpeakerNode(NodeInfo node);
++  [[nodiscard]] auto outputCorrectionBypassed() const -> bool { return speaker_routing.bypass(); }
+ 
+   [[nodiscard]] auto count_node_ports(const uint& node_id) const -> uint;
+ 
+@@ -153,9 +159,9 @@ class Manager : public QObject {
+ 
+   Q_INVOKABLE void setNodeMute(const uint& serial, const bool& state);
+   Q_INVOKABLE void setNodeVolume(const uint& serial, const uint& n_vol_ch, const float& value);
+-  Q_INVOKABLE void connectStreamOutput(const uint& id) const;
++  Q_INVOKABLE void connectStreamOutput(const uint& id);
+   Q_INVOKABLE void connectStreamInput(const uint& id) const;
+-  Q_INVOKABLE void disconnectStream(const uint& id) const;
++  Q_INVOKABLE void disconnectStream(const uint& id);
+ 
+  Q_SIGNALS:
+ 
+diff --git a/src/pw_metadata_manager.cpp b/src/pw_metadata_manager.cpp
+index 2137995..a4bc058 100644
+--- a/src/pw_metadata_manager.cpp
++++ b/src/pw_metadata_manager.cpp
+@@ -49,6 +49,7 @@ auto MetadataManager::register_metadata(pw_registry* registry, uint32_t id, cons
+ 
+     if (std::strcmp(name, "default") == 0) {
+       if (metadata != nullptr) {
++        Q_EMIT metadataAvailable(false);
+         util::debug("A new default metadata is available. We will use it");
+ 
+         spa_hook_remove(&metadata_listener);
+@@ -59,6 +60,7 @@ auto MetadataManager::register_metadata(pw_registry* registry, uint32_t id, cons
+       if (metadata != nullptr) {
+         pw_metadata_add_listener(metadata, &metadata_listener, &metadata_events, this);  // NOLINT
+ 
++        Q_EMIT metadataAvailable(true);
+         util::debug("Successfully registered default metadata");
+ 
+         return true;
+@@ -86,13 +88,23 @@ auto MetadataManager::on_metadata_property(void* data,
+ 
+   util::debug(std::format("New metadata property: {}, {}, {}, {}", id, str_key, str_type, str_value));
+ 
++  if (id != PW_ID_CORE && (key == nullptr || str_key == "target.node" || str_key == "target.object")) {
++    Q_EMIT mm->targetChanged(id, QString::fromStdString(str_key), QString::fromStdString(str_type),
++                            QString::fromStdString(str_value), value != nullptr);
++    return 0;
++  }
++
+   if (str_value.empty()) {
++    if (id == PW_ID_CORE && (key == nullptr || str_key == "default.audio.sink"))
++      Q_EMIT mm->defaultSinkChanged(QString{});
+     return 0;
+   }
+ 
+   // Handle specific metadata properties
+   if (str_key == "default.audio.sink") {
+-    auto v = nlohmann::json::parse(str_value).value("name", "");
++    auto parsed = nlohmann::json::parse(str_value, nullptr, false);
++    if (!parsed.is_object() || !parsed.contains("name") || !parsed["name"].is_string()) return 0;
++    auto v = parsed["name"].get<std::string>();
+ 
+     if (v == tags::pipewire::ee_sink_name) {
+       return 0;
+@@ -104,7 +116,9 @@ auto MetadataManager::on_metadata_property(void* data,
+   }
+ 
+   if (str_key == "default.audio.source") {
+-    auto v = nlohmann::json::parse(str_value).value("name", "");
++    auto parsed = nlohmann::json::parse(str_value, nullptr, false);
++    if (!parsed.is_object() || !parsed.contains("name") || !parsed["name"].is_string()) return 0;
++    auto v = parsed["name"].get<std::string>();
+ 
+     if (v == tags::pipewire::ee_source_name) {
+       return 0;
+diff --git a/src/pw_metadata_manager.hpp b/src/pw_metadata_manager.hpp
+index 096114b..82e1384 100644
+--- a/src/pw_metadata_manager.hpp
++++ b/src/pw_metadata_manager.hpp
+@@ -55,6 +55,8 @@ class MetadataManager : public QObject {
+  Q_SIGNALS:
+   void defaultSinkChanged(const QString& name);
+   void defaultSourceChanged(const QString& name);
++  void targetChanged(uint32_t id, const QString& key, const QString& type, const QString& value, bool present);
++  void metadataAvailable(bool available);
+ 
+  private:
+   pw_metadata* metadata = nullptr;
+diff --git a/src/pw_node_manager.cpp b/src/pw_node_manager.cpp
+index aa844d3..91da57f 100644
+--- a/src/pw_node_manager.cpp
++++ b/src/pw_node_manager.cpp
+@@ -316,7 +316,8 @@ void NodeManager::onNodeInfo(void* object, const pw_node_info* info) {
+     }
+   }
+ 
+-  if (nd->nd_info->media_class == tags::pipewire::media_class::output_stream) {
++  if (nd->nd_info->media_class == tags::pipewire::media_class::output_stream &&
++      DbStreamOutputs::speakerCorrectionDevice().isEmpty() && DbStreamOutputs::speakerCorrectionRoute().isEmpty()) {
+     if (const auto* target_object = spa_dict_lookup(info->props, PW_KEY_TARGET_OBJECT)) {
+       // target.object can a name or serial number:
+       // https://gitlab.freedesktop.org/pipewire/pipewire/-/blob/master/src/pipewire/keys.h#L334
+@@ -346,6 +347,7 @@ void NodeManager::onNodeInfo(void* object, const pw_node_info* info) {
+ 
+   if (ignore_node) {
+     // Just in case the previous tests returned false in the first callback iteration
++    Q_EMIT nm->nodeRemoved(*nd->nd_info);
+     nm->model_nodes.remove_by_serial(nd->nd_info->serial);
+ 
+     if (nd->proxy != nullptr) {
+@@ -414,6 +416,9 @@ void NodeManager::onNodeInfo(void* object, const pw_node_info* info) {
+   }
+ 
+   util::spa_dict_get_num(info->props, PW_KEY_DEVICE_ID, nd->nd_info->device_id);
++  util::spa_dict_get_num(info->props, "card.profile.device", nd->nd_info->profile_device);
++  nd->nd_info->property_target.clear();
++  util::spa_dict_get_string(info->props, PW_KEY_TARGET_OBJECT, nd->nd_info->property_target);
+ 
+   // Now that we know the media name we check the blocklist again
+ 
+@@ -454,7 +459,8 @@ void NodeManager::onNodeInfo(void* object, const pw_node_info* info) {
+   }
+ 
+   auto connect_to_ee_sink = [&]() {
+-    if (DbMain::processAllOutputs() && !nd->nd_info->is_blocklisted) {
++    if (DbMain::processAllOutputs() && !nd->nd_info->is_blocklisted &&
++        DbStreamOutputs::speakerCorrectionDevice().isEmpty() && DbStreamOutputs::speakerCorrectionRoute().isEmpty()) {
+       // target.node for backward compatibility with old PW session managers
+       nm->metadata_manager.set_property(nd->nd_info->id, "target.node", "Spa:Id",
+                                         util::to_string(nm->ee_sink_node.id).c_str());
+@@ -515,6 +521,8 @@ void NodeManager::onNodeInfo(void* object, const pw_node_info* info) {
+     }
+   }
+ 
++  Q_EMIT nm->nodeChanged(*nd->nd_info);
++
+   if ((info->change_mask & PW_NODE_CHANGE_MASK_PARAMS) != 0U) {
+     auto params = std::span(info->params, info->n_params);
+ 
+@@ -668,6 +676,7 @@ void NodeManager::onDestroyNodeProxy(void* data) {
+ 
+   nd->nd_info->proxy = nullptr;
+ 
++  Q_EMIT nm->nodeRemoved(*nd->nd_info);
+   nm->model_nodes.remove_by_serial(nd->nd_info->serial);
+ 
+   util::debug(std::format("{} {} {} has been removed", nd->nd_info->media_class.toStdString(), nd->nd_info->id,
+@@ -698,7 +707,7 @@ auto NodeManager::load_virtual_devices(pw_core* core) -> std::pair<pw_proxy*, pw
+   pw_properties_set(props_sink, PW_KEY_NODE_NAME, tags::pipewire::ee_sink_name);
+   pw_properties_set(props_sink, PW_KEY_NODE_DESCRIPTION, "Easy Effects Sink");
+   pw_properties_set(props_sink, PW_KEY_NODE_VIRTUAL, "true");
+-  pw_properties_set(props_sink, PW_KEY_NODE_GROUP, "ee_sink_group");
++  pw_properties_set(props_sink, PW_KEY_NODE_GROUP, "rog_audio_speaker_sink_group");
+   pw_properties_set(props_sink, "factory.name", "support.null-audio-sink");
+   pw_properties_set(props_sink, "audio.position", "FL,FR");
+   pw_properties_set(props_sink, "monitor.channel-volumes", DbMain::activateMonitorChannelVolumes() ? "true" : "false");
+@@ -719,7 +728,7 @@ auto NodeManager::load_virtual_devices(pw_core* core) -> std::pair<pw_proxy*, pw
+   pw_properties_set(props_source, PW_KEY_NODE_NAME, tags::pipewire::ee_source_name);
+   pw_properties_set(props_source, PW_KEY_NODE_DESCRIPTION, "Easy Effects Source");
+   pw_properties_set(props_source, PW_KEY_NODE_VIRTUAL, "true");
+-  pw_properties_set(props_source, PW_KEY_NODE_GROUP, "ee_source_group");
++  pw_properties_set(props_source, PW_KEY_NODE_GROUP, "rog_audio_speaker_source_group");
+   pw_properties_set(props_source, "factory.name", "support.null-audio-sink");
+   pw_properties_set(props_source, "audio.position", "FL,FR");
+   pw_properties_set(props_source, "monitor.channel-volumes",
+diff --git a/src/pw_node_manager.hpp b/src/pw_node_manager.hpp
+index 85d726a..7598f5a 100644
+--- a/src/pw_node_manager.hpp
++++ b/src/pw_node_manager.hpp
+@@ -79,6 +79,8 @@ class NodeManager : public QObject {
+ 
+   void sourceAdded(NodeInfo node);
+   void sinkAdded(NodeInfo node);
++  void nodeChanged(NodeInfo node);
++  void nodeRemoved(NodeInfo node);
+ 
+  private:
+   struct NodeData {
+diff --git a/src/pw_objects.hpp b/src/pw_objects.hpp
+index 2d459bf..210c0b3 100644
+--- a/src/pw_objects.hpp
++++ b/src/pw_objects.hpp
+@@ -39,6 +39,8 @@ struct NodeInfo {
+   uint64_t serial = SPA_ID_INVALID;
+ 
+   uint device_id = SPA_ID_INVALID;
++  int profile_device = -1;
++  QString property_target;
+ 
+   QString name;
+ 
+@@ -183,6 +185,7 @@ struct DeviceInfo {
+   QString input_route_name;
+   QString input_route_description;
+ 
++  int output_route_device = -1;
+   QString output_route_name;
+   QString output_route_description;
+ 
+diff --git a/src/speaker_routing.hpp b/src/speaker_routing.hpp
+new file mode 100644
+index 0000000..7d98746
+--- /dev/null
++++ b/src/speaker_routing.hpp
+@@ -0,0 +1,176 @@
++/**
++ * Copyright © 2026 rog_audio contributors
++ * SPDX-License-Identifier: GPL-3.0-or-later
++ * This routing extension is distributed under the same terms as EasyEffects.
++ */
++#pragma once
++
++#include <atomic>
++#include <cstdint>
++#include <deque>
++#include <functional>
++#include <map>
++#include <optional>
++#include <string>
++#include <utility>
++
++namespace pw {
++
++// Every mutation runs under the PipeWire loop lock. Only correction_active is
++// read by DSP threads. Scope strings are immutable for the lifetime of the app.
++class SpeakerRouting {
++ public:
++  struct Property {
++    std::string type, value;
++    auto operator==(const Property&) const -> bool = default;
++  };
++  using Value = std::optional<Property>;
++  using Key = std::pair<uint32_t, std::string>;
++  using Writer = std::function<void(uint32_t, const std::string&, const Value&)>;
++  struct Node {
++    uint64_t serial;
++    std::string name;
++    bool output_stream, blocked;
++    uint32_t device;
++    int profile_device;
++    std::string property_target;
++  };
++  struct Link { uint32_t output, input; };
++  struct Owned { uint64_t serial; Value node, object; };
++
++  const std::string device_name, route_name;
++  const bool scoped;
++  std::atomic<bool> correction_active{false};
++  bool ready = false, process_outputs = true, metadata_available = false;
++  std::string selected_output, default_output;
++  std::map<uint32_t, Node> nodes;
++  std::map<uint32_t, Link> links;
++  std::map<std::pair<uint32_t,int>, std::string> routes;
++  std::map<Key, Value> targets;
++  std::map<Key, std::deque<Value>> pending;
++  std::map<uint32_t, Owned> owned;
++  Writer writer;
++  uint32_t effects_id = UINT32_MAX;
++  uint64_t effects_serial = UINT64_MAX;
++
++  SpeakerRouting(std::string device, std::string route, Writer write)
++      : device_name(std::move(device)), route_name(std::move(route)),
++        scoped(!device_name.empty() || !route_name.empty()), writer(std::move(write)) {}
++
++  auto bypass() const -> bool {
++    return scoped && !correction_active.load(std::memory_order_acquire);
++  }
++
++  auto value(uint32_t id, const std::string& key) const -> Value {
++    auto it = targets.find({id,key});
++    return it == targets.end() ? Value{} : it->second;
++  }
++
++  auto expected(const std::string& key) const -> Value {
++    return Property{"Spa:Id",std::to_string(key == "target.node" ? effects_id : effects_serial)};
++  }
++
++  void write(uint32_t id, const std::string& key, const Value& v) {
++    // Update our cache before the asynchronous echo. Pending writes prevent an
++    // old acknowledgment from being mistaken for a new explicit app target.
++    if (value(id,key) == v) return;
++    targets[{id,key}] = v;
++    pending[{id,key}].push_back(v);
++    writer(id,key,v);
++  }
++
++  void release(uint32_t id) {
++    auto it=owned.find(id);
++    if (it==owned.end()) return;
++    auto original=it->second;
++    owned.erase(it);
++    if (value(id,"target.node")==expected("target.node")) write(id,"target.node",original.node);
++    if (value(id,"target.object")==expected("target.object")) write(id,"target.object",original.object);
++  }
++
++  void release_all() {
++    while (!owned.empty()) release(owned.begin()->first);
++  }
++
++  void target_changed(uint32_t id, const std::string& key, Value v) {
++    if (key.empty()) {
++      targets.erase({id,"target.node"}); targets.erase({id,"target.object"});
++      pending.erase({id,"target.node"}); pending.erase({id,"target.object"});
++      owned.erase(id);
++      return;
++    }
++    if (key!="target.node" && key!="target.object") return;
++    auto& queue=pending[{id,key}];
++    if (!queue.empty() && queue.front()==v) { queue.pop_front(); return; }
++    targets[{id,key}]=std::move(v);
++    // A target supplied by another client wins. Restore only the other key if
++    // it is still ours; never clear the new HDMI/USB/application choice.
++    if (owned.contains(id) && value(id,key)!=expected(key)) release(id);
++    refresh();
++  }
++
++  void node_changed(uint32_t id, Node node) {
++    auto it=nodes.find(id);
++    if (it!=nodes.end() && it->second.serial!=node.serial) node_removed(id);
++    nodes.insert_or_assign(id,std::move(node)); refresh();
++  }
++
++  void node_removed(uint32_t id) {
++    nodes.erase(id); owned.erase(id);
++    targets.erase({id,"target.node"}); targets.erase({id,"target.object"});
++    pending.erase({id,"target.node"}); pending.erase({id,"target.object"});
++    for (auto it=links.begin();it!=links.end();) {
++      if (it->second.output==id || it->second.input==id) it=links.erase(it); else ++it;
++    }
++    refresh();
++  }
++
++  auto scoped_sink() const -> std::optional<std::pair<uint32_t,Node>> {
++    for (const auto& [id,node]:nodes) if (node.name==device_name) return std::pair{id,node};
++    return {};
++  }
++
++  auto points_to_sink(const Value& v, const Node& sink, uint32_t id, bool object) const -> bool {
++    if (!v) return true;
++    return v->value==sink.name || v->value==std::to_string(object ? sink.serial : id);
++  }
++
++  auto explicit_target(const Node& node, uint32_t id) const -> bool {
++    return value(id,"target.node").has_value() || value(id,"target.object").has_value() ||
++           !node.property_target.empty();
++  }
++
++  void refresh() {
++    if (!scoped) return;
++    auto sink=scoped_sink();
++    bool active=ready && metadata_available && !route_name.empty() && sink.has_value() &&
++                selected_output==device_name &&
++                routes[{sink->second.device,sink->second.profile_device}]==route_name;
++    correction_active.store(active,std::memory_order_release);
++    for (auto it=owned.begin();it!=owned.end();) {
++      auto id=it++->first; const auto& original=owned.at(id); auto n=nodes.find(id);
++      if (!active || !process_outputs || n==nodes.end() || n->second.blocked ||
++          n->second.serial!=original.serial ||
++          (!n->second.property_target.empty() && n->second.property_target!=device_name &&
++           (!sink || n->second.property_target!=std::to_string(sink->second.serial))) ||
++          (!original.node && !original.object && n->second.property_target.empty() && default_output!=device_name))
++        release(id);
++    }
++    if (!active || !process_outputs || effects_id==UINT32_MAX || effects_serial==UINT64_MAX) return;
++    for (const auto& [link_id,link]:links) {
++      if (link.input!=sink->first || owned.contains(link.output)) continue;
++      auto it=nodes.find(link.output);
++      if (it==nodes.end() || !it->second.output_stream || it->second.blocked) continue;
++      auto id=it->first; const auto& node=it->second;
++      if (!points_to_sink(value(id,"target.object"),sink->second,sink->first,true) ||
++          !points_to_sink(value(id,"target.node"),sink->second,sink->first,false) ||
++          (!node.property_target.empty() && node.property_target!=device_name &&
++           node.property_target!=std::to_string(sink->second.serial)) ||
++          (!explicit_target(node,id) && default_output!=device_name)) continue;
++      owned.emplace(id,Owned{node.serial,value(id,"target.node"),value(id,"target.object")});
++      write(id,"target.node",expected("target.node"));
++      write(id,"target.object",expected("target.object"));
++    }
++  }
++};
++} // namespace pw
+diff --git a/src/tags_app.hpp b/src/tags_app.hpp
+index 9d7b376..4a590b0 100644
+--- a/src/tags_app.hpp
++++ b/src/tags_app.hpp
+@@ -23,13 +23,13 @@ namespace tags::app {
+ 
+ inline constexpr auto minimum_pw_version = "0.3.70";
+ 
+-inline constexpr auto id = "com.github.wwmm.easyeffects";
++inline constexpr auto id = "org.rog_audio.SpeakerEffects";
+ 
+-inline constexpr auto path = "/com/github/wwmm/easyeffects";
++inline constexpr auto path = "/org/rog_audio/SpeakerEffects";
+ 
+-inline constexpr auto path_stream_inputs = "/com/github/wwmm/easyeffects/streaminputs/";
++inline constexpr auto path_stream_inputs = "/org/rog_audio/SpeakerEffects/streaminputs/";
+ 
+-inline constexpr auto path_stream_outputs = "/com/github/wwmm/easyeffects/streamoutputs/";
++inline constexpr auto path_stream_outputs = "/org/rog_audio/SpeakerEffects/streamoutputs/";
+ 
+ inline constexpr auto flatpak_info_file = "/.flatpak-info";
+ 
+diff --git a/src/tags_local_server.hpp b/src/tags_local_server.hpp
+index 5058776..2929ee8 100644
+--- a/src/tags_local_server.hpp
++++ b/src/tags_local_server.hpp
+@@ -21,7 +21,7 @@
+ 
+ namespace tags::local_server {
+ 
+-inline constexpr auto server_name = "EasyEffectsServer";
++inline constexpr auto server_name = "RogAudioSpeakerEffectsServer";
+ 
+ inline constexpr auto quit_app = "quit_app\n";
+ 
+diff --git a/src/tags_pipewire.hpp b/src/tags_pipewire.hpp
+index 6445b66..4807a79 100644
+--- a/src/tags_pipewire.hpp
++++ b/src/tags_pipewire.hpp
+@@ -21,9 +21,9 @@
+ 
+ namespace tags::pipewire {
+ 
+-inline constexpr auto ee_source_name = "easyeffects_source";
++inline constexpr auto ee_source_name = "rog_audio_speaker_source";
+ 
+-inline constexpr auto ee_sink_name = "easyeffects_sink";
++inline constexpr auto ee_sink_name = "rog_audio_speaker_sink";
+ 
+ }  // namespace tags::pipewire
+ 
+diff --git a/src/util.cpp b/src/util.cpp
+index b5237b7..95ef4ca 100644
+--- a/src/util.cpp
++++ b/src/util.cpp
+@@ -314,7 +314,7 @@ auto get_lock_file() -> std::unique_ptr<QLockFile> {
+       std::filesystem::exists("/.flatpak-info") ? QStandardPaths::TempLocation : QStandardPaths::RuntimeLocation;
+ 
+   auto lockFile = std::make_unique<QLockFile>(
+-      QString::fromStdString(QStandardPaths::writableLocation(sys_path).toStdString() + "/easyeffects.lock"));
++      QString::fromStdString(QStandardPaths::writableLocation(sys_path).toStdString() + "/rog-audio-speaker-effects.lock"));
+ 
+   lockFile->setStaleLockTime(0);
+ 

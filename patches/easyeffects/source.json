@@ -1,0 +1,29 @@
+{
+  "checksum_reason": "Local routing series now includes private candidate XDG/app/node namespace, preventing stock EasyEffects from consuming candidate routing settings",
+  "files": {
+    "0001-Scope-speaker-correction-to-device-route.patch": "3e07b594973916288ce748df9484d1bd2ebcc752d5fbb74b58bbdd4452c185c3",
+    "ubuntu/0001-Disable-echo-canceller.patch": "fc990509008860da01bc3b0719d2b7af173e16e6efd7aba26e3ad0f65282ba11",
+    "ubuntu/COPYRIGHT": "5ffb35e31945036cf81c7dd63b14c28af850213f4083279e9f3c2ef50e49e207"
+  },
+  "routing_contract": "exact-device-route-v1",
+  "routing_header_sha256": "5f974d41cd39a9582bb33fe85565a3243474bd916739941a9d1b2c43ab67a292",
+  "schema_version": 1,
+  "series": [
+    "ubuntu/0001-Disable-echo-canceller.patch",
+    "0001-Scope-speaker-correction-to-device-route.patch"
+  ],
+  "ubuntu": {
+    "notice": "ubuntu/COPYRIGHT",
+    "packaging_licence": "CC0-1.0",
+    "patch_author": "Sebastian Ramacher <sramacher@debian.org>",
+    "source_package": "easyeffects",
+    "version": "8.2.8+ds-1build1"
+  },
+  "upstream": {
+    "author": "Wellington Wallace and contributors",
+    "commit": "6d9b1220d3dcebb154ba759a05600662bc0af549",
+    "licence": "GPL-3.0-or-later",
+    "tag": "v8.2.8",
+    "url": "https://github.com/wwmm/easyeffects"
+  }
+}
