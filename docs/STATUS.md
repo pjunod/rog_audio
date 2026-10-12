@@ -5,8 +5,8 @@
 | Work | State | Next evidence |
 |---|---|---|
 | Hardware inventory | Read-only inspection complete | Sanitized receipt and build contracts imported |
-| ASUS speaker tuning | Original XML and matching INF published | Converter built; final review/tests pending |
-| Diagnostics and latency | Tools implemented; final review/tests pending | Reviewed inspector, analyser and candidate generator |
+| ASUS speaker tuning | Original XML and matching INF published | 48 tests and three OEM conversions passed; runtime/acoustics pending |
+| Diagnostics and latency | Reviewed; 42 tests and native rule checks passed | Physical comparison and coordinated activation |
 | Host Atmos | Pinned Linux build and offline CLI implemented | Offline harness, synthetic renderer and capability receipt |
 | macOS comparison | Pending physical measurements | M4 Air primary, M3 Max secondary |
 | Sonos Arc/eARC | Deferred until internal audio work | TV route and actual received formats |

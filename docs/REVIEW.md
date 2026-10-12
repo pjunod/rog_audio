@@ -25,3 +25,15 @@ issues in those changes. Atmos fixes precede the final Linux acceptance pass.
 No physical acoustic or latency measurement, actual JOC reference comparison,
 EasyEffects runtime loading or Dolby certification is claimed by these checks.
 Final results and exact source identities will be recorded after fixes.
+
+## Completed final lanes
+
+Speaker: 48 tests, zero skips, plus music/dynamic/off conversion and verification
+passed once on the reviewed source. Latency: 42 tests, zero skips, config merge,
+warnings-as-errors compilation and exact/negative native route tests passed
+once. Neither lane needed retries or a redundant macOS/hosted run. Source
+hashes bind the accepted code despite later documentation commits.
+
+The [speaker receipt](../evidence/audio-speaker-validation-2026-10-12.json) and
+[latency receipt](../evidence/audio-latency-validation-2026-10-12.json) record
+source, dependency, command and cleanup evidence. Atmos remains in final fixes.

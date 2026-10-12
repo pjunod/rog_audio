@@ -1,0 +1,68 @@
+{
+  "cleanup": {
+    "cleanup_status": "confirmed-absent",
+    "remote_directories_created_outside_container": false,
+    "shared_base_image_preserved": true
+  },
+  "command": "python3 scripts/validate_audio_linux.py --stage all --ssh-target PRIVATE_ALIAS --identity-file PRIVATE_KEY --output PRIVATE_LOG.json",
+  "compiler": "cc (Ubuntu 15.3.0-4ubuntu1) 15.3.0",
+  "evidence_class": "synthetic-test",
+  "execution_count": 1,
+  "image": "ubuntu@sha256:ee126c2fa0249079a7e24ae3a3d29b04783ef93ab33c868751c9a1289d3fffff",
+  "limits": [
+    "Synthetic unit/native inactive-stream validation only",
+    "No physical latency or acoustic improvement claim",
+    "No host sound/config/runtime mounts; no remote directories outside container"
+  ],
+  "live_audio_changes": false,
+  "log_sha256": "c681c1909d633bd365df2cee5a32fb3742262f3b15f29d1a38bb0ded2f32d13f",
+  "module_counts": {
+    "test_analyse_audio_latency": 23,
+    "test_inspect_audio": 9,
+    "test_prepare_audio_latency": 6,
+    "test_validate_audio_linux": 4
+  },
+  "packages": {
+    "gcc": "4:15.2.0-5ubuntu1",
+    "libpipewire-0.3-dev": "1.6.8-1ubuntu4",
+    "pipewire": "1.6.8-1ubuntu4",
+    "wireplumber": "0.5.17-1ubuntu1"
+  },
+  "physical_measurements": false,
+  "platform": "Linux amd64",
+  "python": "3.14.8",
+  "retry_count": 0,
+  "revision": "dc714656f1902532245c00850247fc5ac5af0be1",
+  "schema_version": 1,
+  "source_sha256": {
+    "evidence/audio-latency-synthetic-analysis.json": "17e2907fcd50aceb80b369697249c103073b8cc3718ee9140518103bba8fde63",
+    "scripts/analyse_audio_latency.py": "25b536fe316b55dd074406184edf039fe0280aa147db2808d6ae1503a6b8a1f4",
+    "scripts/audio_common.py": "14a70e97a92a961a28df64d27af9cecf5a7044c3e6d97a8901ce6ed3fc7564ea",
+    "scripts/inspect_audio.py": "60008887f538c161cd4581f1805b7fc8286bf0d0929d7f70edaa006e5f4e42bc",
+    "scripts/prepare_audio_latency.py": "2db2f6be2ce5189e8a36b282ed18b4a06ff299816c5fbc52598f80b8b9df4219",
+    "scripts/validate_audio_linux.py": "5216e4ca56da657396c8da29ace774f6c724893f7be757b87ce960af160a2527",
+    "tests/audio/linux-validation.sh": "74321c47afb7c97e6e03959f972cfe0d463735b452a4452dcd6049e7deb4e57a",
+    "tests/audio/synthetic-candidate.conf": "aa645a990795fedea181557d49e1954a1bf7f92b70f98a23ab05fd4354f0831f",
+    "tests/audio/synthetic-trials.json": "7a3122145a54111b9dba8e67c05c5b1de19fa3be4381e7992042243b4d01b1ac",
+    "tests/audio/validate_client.c": "903ff7dee8c84707186dbe02b156e7793f6a2dbf0398e77202d74fde5161138a",
+    "tests/test_analyse_audio_latency.py": "f8f5dd0a6b7e6f12f90517c7a6d6d26289481d7fc23dc0db9b6b3fea1a6694f6",
+    "tests/test_inspect_audio.py": "dbef0de4f5153cf4b64620c11ffb70f099953b43668082fa89d97b860d739a22",
+    "tests/test_prepare_audio_latency.py": "e36762701d12e91ed126610d92339dc1d1ae6e7000c06588982b93f4d1959b0c",
+    "tests/test_validate_audio_linux.py": "f0009ce438cf7f050c5c05e2099ff0381c355fe9d7fbedfb6f62ec48913ff125"
+  },
+  "source_unchanged_after_validation": true,
+  "tests": {
+    "failed_test_ids": [],
+    "skipped_count": 0,
+    "stage_outcomes": {
+      "compile": "passed",
+      "config": "passed",
+      "native-match": "passed",
+      "native-other-app": "passed",
+      "native-other-target": "passed",
+      "unit": "passed"
+    },
+    "successful": true,
+    "tests_run": 42
+  }
+}

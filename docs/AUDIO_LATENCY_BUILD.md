@@ -1,7 +1,6 @@
 # Audio latency build — inspect, measure and generate reversible candidates
 
-**Status:** tools implemented; native config parse passed, final integration checks
-pending, physical data absent ·
+**Status:** reviewed Linux validation passed; physical data absent ·
 **Written:** 2026-10-12 · **Executes:** diagnostics/latency lane in
 [implementation](AUDIO_IMPLEMENTATION.md).
 
@@ -489,12 +488,23 @@ same tests locally or remotely. A failed individual method in a suite job
 needs a fresh dispatch selecting only its reported ID. GitHub's whole-job
 rerun repeats passed methods and retains the old SHA; corrected code needs a
 new dispatch on the corrected reviewed SHA. The workflow definition must first
-land on the default branch. This harness change has not been executed before
-the combined review, as requested by the owner.
+land on the default branch. This batch used the same harness directly after
+review, as recorded below.
 
 The combined source review found that raw JSON numeric spellings split model
 groups and that non-timeout interruption skipped container cleanup. Both are
 corrected in source, with a 100-trial numeric-equivalence regression and mocked
 cleanup/interrupt tests. `unit-validator` covers the packaging lifecycle without
-starting Docker/SSH. No tests have been run on these review fixes before the
-combined re-review; final integrated Linux validation remains pending.
+starting Docker/SSH. Tests were held until source re-review, then passed in
+the single final run below.
+
+## 9. Final reviewed Linux acceptance — 2026-10-12
+
+The [final receipt](../evidence/audio-latency-validation-2026-10-12.json)
+records one post-review run on the integrated source: 42 tests passed, zero
+skips, plus native config parsing, warnings-as-errors compilation and all
+three exact/negative client-rule cases. No retries or duplicate macOS/hosted
+run were needed. Its source hashes identify the accepted bytes independently
+of later documentation commits. The owned container was confirmed absent.
+Earlier working-tree receipts above remain historical; physical latency and
+acoustic comparisons remain unmeasured.
