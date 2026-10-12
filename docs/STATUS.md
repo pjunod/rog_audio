@@ -1,6 +1,6 @@
 # Status — implementation and physical acceptance
 
-**Updated:** 2026-10-12 · **State:** first batch merged; both inactive installation kits built; adversarial review complete in source/routing lanes; review fixes in progress.
+**Updated:** 2026-10-12 · **State:** first batch merged; both inactive installation kits built; all review findings cleared; selective acceptance running.
 
 | Work | State | Next evidence |
 |---|---|---|
@@ -8,7 +8,7 @@
 | ASUS speaker tuning | Original XML and matching INF published | 48 tests and three OEM conversions passed; runtime/acoustics pending |
 | Diagnostics and latency | Reviewed; 42 tests and native rule checks passed | Physical comparison and coordinated activation |
 | Host Atmos | 15 tests passed; focused CI cleanup fix passed | Actual JOC reference media and physical qualification |
-| Laptop installation runtime | Patched EasyEffects compiled and packaged; both inactive kits prepared | Fix route selection/metadata ownership and snapshot recovery findings; then focused acceptance |
+| Laptop installation runtime | Patched EasyEffects compiled and packaged; both inactive kits prepared | All source fixes re-reviewed; selective unit and per-device runtime acceptance running |
 | ThinkPad X1 Extreme | Downloaded exact-match sources and three inactive bundles built; WinRE index inspected | Combined batch review/tests and installation runtime |
 | macOS comparison | Pending physical measurements | M4 Air primary, M3 Max secondary |
 | Sonos Arc/eARC | Deferred until internal audio work | TV route and actual received formats |
@@ -77,11 +77,22 @@ Native review requires route-index filtering for automatic preset selection,
 restoration when a still-live stream becomes ignored, and an exact typed-target
 restoration assertion in the real graph test. Installer review identified
 backup durability, settings preimage consistency, architecture-aware package
-inspection and lifecycle-state validation issues. Fixes are in progress; no
-second-batch unit or graph acceptance tests have run. The architecture/provider
-inspection correction has cleared focused source re-review, with nine new
-regression cases queued for the acceptance pass.
+inspection and lifecycle-state validation issues. All seven findings are fixed and have cleared focused source re-review at
+`155d003`. Selective unit and runtime acceptance is authorized on those source
+bytes. The dependency-inspector lane adds nine regression cases; installation
+adds four cases and native routing adds three. Final results are pending.
 
 The current APT simulations bind the pre-fix package. Native fixes require a
 new package and a focused repeat of its dependency simulation. Earlier results
 remain historical receipts and will not be presented as acceptance of new bytes.
+
+
+## Acceptance progress
+
+The shared speaker/importer suite passed 55 cases and dependency inspection
+passed nine cases, each once with zero failures/skips. Source staging passed
+one case and reversible installation passed 12. The first native routing run
+hit 20 execution errors because its isolated Docker temporary mount was
+`noexec`; compilation succeeded. Only those 20 failed cases are being retried
+with an executable temporary mount. Source and installation passes are retained.
+Real runtime acceptance for each laptop remains pending.

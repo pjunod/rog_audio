@@ -97,3 +97,14 @@ Native fixes require a replacement binary/package. The earlier compiler and
 APT receipts describe their recorded hashes and are retained as historical
 evidence; acceptance will bind the final source and artifact bytes. No PR 2
 unit/runtime tests have run as of this review entry.
+
+
+All seven findings cleared focused source re-review at `155d003`. Installer
+regressions now total 12, native routing cases total 20, and the inspector has
+nine cases. Test execution is authorized on this revision; results follow.
+Repository integrity passed. Whitespace validation initially flagged valid
+final blank context lines in the two EasyEffects patch files; the reviewed
+`51a794d` attribute-only correction passed its focused retry with patch bytes
+unchanged. Gitleaks found no leaks in the public candidate tree or new commit
+history through `51a794d`. Later receipts/documentation receive a final delta
+check without repeating passing audio tests.
