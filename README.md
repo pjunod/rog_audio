@@ -67,6 +67,7 @@ recovered vendor files and separately fetched dependencies.
 ## Progress
 
 - [x] Inspect ASUS hardware and publish matching OEM tuning.
-- [ ] Merge reviewed speaker, latency and offline Atmos tools.
+- [x] Build and validate reviewed speaker, latency and offline Atmos tools.
+- [ ] Complete reversible installation and headphone/HDMI routing qualification.
 - [ ] Measure built-in speaker quality and latency against the Macs.
 - [ ] Qualify Sonos Arc/eARC last.

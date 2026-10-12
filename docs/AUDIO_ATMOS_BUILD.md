@@ -22,7 +22,10 @@ Independent source review found PCM/metadata boundary and JOC timeslot defects;
 three attributed patches now apply to a disposable verified source copy.
 The [patch manifest](../probes/atmos/source_manifest.json) preserves the original
 pin and declares the modified dependency. The [review-fix compiler receipt](../evidence/audio-atmos-review-fixes-2026-10-12.json)
-is separate from the pending final test run. Initial OAMD is required; later
+is separate from the [final acceptance receipt](../evidence/audio-atmos-acceptance-2026-10-12.json):
+all fifteen reviewed-source methods passed once. The CI output-ownership
+cleanup failure was corrected and its focused path passed without rerunning
+those tests. Initial OAMD is required; later
 reuse is reported accurately, and incompatible array configurations or sparse
 workarounds are rejected. Publication errors preserve public paths because a
 conditional inode check followed by unlink would still race with a replacement.

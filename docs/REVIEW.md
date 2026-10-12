@@ -37,4 +37,23 @@ hashes bind the accepted code despite later documentation commits.
 
 The [speaker receipt](../evidence/audio-speaker-validation-2026-10-12.json) and
 [latency receipt](../evidence/audio-latency-validation-2026-10-12.json) record
-source, dependency, command and cleanup evidence. Atmos fixes have cleared source re-review; its final tests are running.
+source, dependency, command and cleanup evidence. Atmos fixes have cleared source re-review; all 15 tests passed once, with zero failures or skips. The surrounding CI
+command initially failed removing root-owned build outputs. The reviewed
+caller-UID/GID correction passed only a focused compile, ownership, report-copy
+and cleanup retry; zero unit tests repeated. The
+[Atmos receipt](../evidence/audio-atmos-acceptance-2026-10-12.json) records the
+original exit status and separate successful cleanup acceptance.
+
+## Final integration checks
+
+The independently reviewed ThinkPad documentation matches the read-only raw
+captures and official model mapping, with recovery-access denial separated
+from unknown image contents. No model-specific tuning is activated.
+
+Repository documentation/JSON and recovered ASUS byte checks passed. Gitleaks
+found no leaks in the initial candidate tree or all 16 then-reachable commits.
+The whitespace check initially flagged required blank context markers in
+unified patches; a narrowly scoped Git attribute preserves those bytes and
+the focused retry passed. The final documentation/evidence delta receives
+its own integrity/privacy check; passing audio suites are retained by source
+hash and are not repeated.

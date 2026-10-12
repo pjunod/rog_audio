@@ -1,15 +1,15 @@
 # Status — implementation and physical acceptance
 
-**Updated:** 2026-10-12 · **State:** speaker and latency acceptance passed; Atmos fixes reviewed, final tests running.
+**Updated:** 2026-10-12 · **State:** first implementation batch reviewed and validated; live installation pending.
 
 | Work | State | Next evidence |
 |---|---|---|
 | Hardware inventory | Read-only inspection complete | Sanitized receipt and build contracts imported |
 | ASUS speaker tuning | Original XML and matching INF published | 48 tests and three OEM conversions passed; runtime/acoustics pending |
 | Diagnostics and latency | Reviewed; 42 tests and native rule checks passed | Physical comparison and coordinated activation |
-| Host Atmos | Review fixes source-checked | Final isolated Linux acceptance running |
-| ASUS installation kit | Implementation started | EasyEffects runtime, scoped routing and reversible install/remove |
-| ThinkPad X1 Extreme | First-generation inventory complete; recovery mount needs admin access | Official Lenovo driver search and exact-match tuning |
+| Host Atmos | 15 tests passed; focused CI cleanup fix passed | Actual JOC reference media and physical qualification |
+| ASUS installation kit | Implementation underway; stock EasyEffects route transition issue identified | Target-aware routing, prompt headphone bypass and reversible install/remove |
+| ThinkPad X1 Extreme | First-generation inventory and exact-match Lenovo package found | Recovery access retry and separate model-specific importer |
 | macOS comparison | Pending physical measurements | M4 Air primary, M3 Max secondary |
 | Sonos Arc/eARC | Deferred until internal audio work | TV route and actual received formats |
 
@@ -39,6 +39,7 @@ runtime, internal-speaker routing and reversible install/remove kit still
 need implementation and acceptance. Acoustic quality and physical latency
 remain later measurements.
 
-ThinkPad: first-generation model and codec are identified. Recovery access
-and exact-match OEM tuning remain pending before a model-specific candidate.
+ThinkPad: first-generation model and codec are identified. An exact-match
+Lenovo package has been found. Recovery inspection and a model-specific
+importer remain in progress before an install candidate.
 The recovery search is read-only; ASUS coefficients are not a ThinkPad profile.

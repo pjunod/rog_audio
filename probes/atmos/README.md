@@ -1,7 +1,8 @@
 # Atmos probe — offline Cavern inspection and rendering
 
-**Status:** patched libraries, CLI and source regressions compiled on Linux
-x86_64 on 2026-10-12; post-review tests and JOC/reference qualification pending.
+**Status:** patched libraries/CLI compiled and all fifteen reviewed-source
+regressions passed on Linux x86_64 on 2026-10-12; JOC/reference qualification
+remains pending.
 
 This probe processes explicit files and writes new JSON/WAV outputs. It never
 opens a sound device, discovers personal media, registers with a desktop or
@@ -172,10 +173,13 @@ python3 probes/atmos/test_probe.py --probe private-atmos/build/atmos-probe \
 ```
 
 Fixture bytes depend on the encoder version; the retained receipt uses FFmpeg
-9.0.1 and records hashes. The final integration suite/review is deferred by
-the owner's updated batching policy. Earlier tests exercised eight passing
-synthetic cases and discovered the stereo decoder limitation; the subsequent
-5.1 CLI check is a separate build/debug receipt, not a final suite pass.
+9.0.1 and records hashes. The final reviewed-source run at
+`42642b287868069239f17dbc8cc57e69af455927` passed all fifteen methods with no
+skips. The [acceptance receipt](../../evidence/audio-atmos-acceptance-2026-10-12.json)
+binds its source hashes and private log digest. CI cleanup initially failed
+on root-owned outputs; the narrow reviewed UID/GID correction passed a focused
+compile/ownership/report-copy/cleanup retry with zero tests repeated. Earlier
+pre-review receipts are historical, separate from this final qualification.
 
 | Capability | Evidence and remaining limit |
 |---|---|
@@ -213,9 +217,9 @@ from a manually dispatched GitHub job on `ubuntu-24.04`:
 probes/atmos/ci.sh --report atmos-regression.json
 ```
 
-A GitHub job can upload `atmos-regression.json` as its test artifact. This
-recipe is supplied for parent integration and has not yet been executed;
-source compilation/CLI debugging and retained tests are separate receipts.
+A GitHub job can upload `atmos-regression.json` as its test artifact. The reviewed-source recipe has been executed, and all fifteen methods passed.
+The later cleanup correction was checked on its focused workflow path only;
+passing tests were retained rather than repeated.
 Do not automatically run it on every push. Retry only a failing or affected
 method, using either a retained build or the same isolated CI recipe:
 
