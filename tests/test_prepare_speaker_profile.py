@@ -241,6 +241,49 @@ DEV_0285_SUBSYS_10431C63_PCI_SUBSYS_1C631043.xml=1
         self.assertEqual(next(x for x in report["fields"] if "future-field" in x["source"])["status"],
                          "unsupported")
 
+    def test_dynamics_report_matches_music_dynamic_and_off_stage_presence(self):
+        # Invented enable bits and stage sets reproduce the published profiles'
+        # presence cases without copying their coefficients into the fixtures.
+        cases = {
+            "music": {"multiband_compressor#0", "multiband_compressor#1"},
+            "dynamic": {"equalizer#1", "multiband_compressor#1"},
+            "off": set()}
+        families = {
+            "multiband_compressor#0": ("tuning-vlldp", "mb-compressor-enable", "mb-compressor-target-power-level"),
+            "multiband_compressor#1": ("tuning-vlldp", "regulator-speaker-dist-enable", "regulator-tuning"),
+            "equalizer#1": ("tuning-cp", "dialog-enhancer-enable", "dialog-enhancer-amount")}
+        for profile_name, present in cases.items():
+            with self.subTest(profile=profile_name):
+                prof = self.root.find(f"endpoint/profile[@type='{profile_name}']")
+                for stage, (parent, enable, parameter) in families.items():
+                    branch = prof.find(parent)
+                    ET.SubElement(branch, enable, value="1" if stage in present else "0")
+                    if parameter == "regulator-tuning":
+                        ET.SubElement(ET.SubElement(branch, parameter), "threshold_high", value="-16")
+                    else:
+                        ET.SubElement(branch, parameter, value="0")
+                stages = [{"name": "convolver#0", "bypassed": False},
+                          *({"name": n, "bypassed": True} for n in sorted(present)),
+                          {"name": "limiter#0", "bypassed": False}]
+                report = speaker.field_report(prof, self.root, stages)
+                for stage, (parent, enable, _) in families.items():
+                    row = next(row for row in report["fields"]
+                               if row["source"].split("[")[0] == parent + "/" + enable)
+                    self.assertEqual(row["status"], "approximation-bypassed" if stage in present else "disabled")
+                    self.assertEqual(row["output_stage"], stage if stage in present else None)
+                self.assertTrue(all(row["output_stage"] is None or row["output_stage"] in
+                                    {s["name"] for s in stages} for row in report["fields"]))
+
+    def test_enabled_but_unemitted_dynamics_are_not_reported_bypassed(self):
+        prof = self.root.find("endpoint/profile")
+        cp = prof.find("tuning-cp")
+        ET.SubElement(cp, "dialog-enhancer-enable", value="1")
+        ET.SubElement(cp, "dialog-enhancer-amount", value="0")
+        report = speaker.field_report(prof, self.root, [{"name": "convolver#0", "bypassed": False}])
+        rows = [row for row in report["fields"] if "dialog-enhancer" in row["source"]]
+        self.assertTrue(rows)
+        self.assertTrue(all(row["status"] == "not-emitted" and row["output_stage"] is None for row in rows))
+
     def test_inventory_is_read_once(self):
         real_read = speaker.read_file
         calls = []
@@ -329,6 +372,55 @@ class DSPPreparationTest(unittest.TestCase):
         report = json.loads((self.path / "bundle/field-mapping.json").read_text())
         self.assertAlmostEqual(report["signal_checks"]["fir_attenuation_db"], 0, places=6)
 
+    def asymmetric_pass_filter(self, kinds):
+        for kind in kinds:
+            for source_channel in (0, 1):
+                with self.subTest(kind=kind, channel=source_channel):
+                    self.root = fixture()
+                    vl = self.root.find("endpoint/profile/tuning-vlldp")
+                    vl.find("speaker-peq-enable").set("value", "1")
+                    filters = ET.SubElement(vl, "speaker-peq-filters")
+                    cutoff = "240" if kind in (7, 9) else "9000"
+                    ET.SubElement(filters, "filter", enabled="1", type=str(kind),
+                                  speaker=str(source_channel), f0=cutoff, gain="0", q="0.707", s="1", order="4")
+                    self.write_fixture()
+                    output = self.path / f"bundle-{kind}-{source_channel}"
+                    self.make(output=output)
+                    eq = json.loads((output / "preset.json").read_text())["output"]["equalizer#0"]
+                    source = ("left", "right")[source_channel]
+                    other = ("right", "left")[source_channel]
+                    actual = eq[source]["band0"]
+                    self.assertEqual(actual["type"], "Hi-pass" if kind in (7, 9) else "Lo-pass")
+                    self.assertEqual(actual["frequency"], float(cutoff))
+                    self.assertEqual(actual["slope"], "x2")
+                    neutral = eq[other]["band0"]
+                    self.assertEqual(neutral["type"], "Bell")
+                    self.assertEqual(neutral["gain"], 0)
+                    self.assertFalse(neutral["mute"])
+                    self.assertEqual(eq["output-gain"], 0)
+
+    def test_asymmetric_high_pass_does_not_filter_other_channel(self):
+        self.asymmetric_pass_filter((7, 9))
+
+    def test_asymmetric_low_pass_does_not_filter_other_channel(self):
+        self.asymmetric_pass_filter((6, 8))
+
+    def test_asymmetric_pass_band_count_preserves_supplied_filters(self):
+        vl = self.root.find("endpoint/profile/tuning-vlldp")
+        vl.find("speaker-peq-enable").set("value", "1")
+        filters = ET.SubElement(vl, "speaker-peq-filters")
+        for channel, cutoff in ((0, 120), (0, 240), (1, 180)):
+            ET.SubElement(filters, "filter", enabled="1", type="7", speaker=str(channel),
+                          f0=str(cutoff), gain="0", q="0.707", s="1", order="4")
+        self.write_fixture()
+        self.make()
+        eq = json.loads((self.path / "bundle/preset.json").read_text())["output"]["equalizer#0"]
+        self.assertEqual(eq["num-bands"], 2)
+        self.assertEqual([eq["left"]["band"+str(i)]["frequency"] for i in (0, 1)], [120, 240])
+        self.assertEqual(eq["right"]["band0"]["frequency"], 180)
+        self.assertEqual(eq["right"]["band1"]["type"], "Bell")
+        self.assertEqual(eq["right"]["band1"]["gain"], 0)
+
     def test_no_session_commands_or_socket_access(self):
         fake = self.path / "session"
         fake.mkdir()
@@ -402,6 +494,21 @@ class DSPPreparationTest(unittest.TestCase):
         with self.assertRaises(speaker.ProfileError) as cm:
             speaker.verify(self.path / "bundle")
         self.assertEqual(cm.exception.reason, "invalid_kernel_reference")
+
+    def test_mapping_cannot_reference_absent_preset_stage(self):
+        self.make()
+        path = self.path / "bundle/field-mapping.json"
+        report = json.loads(path.read_text())
+        report["fields"][0]["output_stage"] = "multiband_compressor#0"
+        report["fields"][0]["status"] = "approximation-bypassed"
+        path.write_bytes(speaker.json_bytes(report))
+        manifest_path = self.path / "bundle/manifest.json"
+        manifest = json.loads(manifest_path.read_text())
+        manifest["outputs"]["field-mapping.json"] = speaker.digest(path.read_bytes())
+        manifest_path.write_bytes(speaker.json_bytes(manifest))
+        with self.assertRaises(speaker.ProfileError) as cm:
+            speaker.verify(self.path / "bundle")
+        self.assertEqual(cm.exception.reason, "mapping_reference_not_emitted")
 
     def test_converter_modified_source_refused(self):
         source = self.path / "converter"

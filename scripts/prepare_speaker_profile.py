@@ -403,9 +403,37 @@ def validate_selected_profile(profile):
             require(el.get("speaker") in ("0", "1"), "unsupported_peq_channel", 3)
 
 
+def make_speaker_peq(bands, filters):
+    """Retain supplied upstream bands; pad asymmetric channels with unity EQ.
+
+    Upstream pads HP/LP categories with active pass filters. A channel without
+    that source filter must instead get a zero-gain bell, which is neutral.
+    The category order/counts come from the hash-pinned builder itself.
+    """
+    eq = bands.make_peq_eq(filters)
+    if eq is None:
+        return None
+    offset = 0
+    for category in bands._PEQ_CATEGORIES:
+        counts = [sum(f["speaker"] == channel and f["type"] in category.types
+                      for f in filters) for channel in (0, 1)]
+        width = max(counts)
+        for channel, count in zip(("left", "right"), counts):
+            for index in range(count, width):
+                eq[channel][f"band{offset + index}"] = bands.make_band(1000.0, 0.0)
+        offset += width
+    return eq
+
+
 def field_report(profile, root, stages, voicing="balanced"):
     """Every selected profile leaf is reported, including unsupported ones."""
     rows = []
+    emitted = {s["name"]: s for s in stages}
+    enable_paths = {"equalizer#0": "tuning-vlldp/speaker-peq-enable",
+                    "equalizer#1": "tuning-cp/dialog-enhancer-enable",
+                    "autogain#0": "tuning-cp/volume-leveler-enable",
+                    "multiband_compressor#0": "tuning-vlldp/mb-compressor-enable",
+                    "multiband_compressor#1": "tuning-vlldp/regulator-speaker-dist-enable"}
     static = {
         "tuning-vlldp/audio-optimizer-enable": ("convolver#0", "0/1 enable"),
         "tuning-vlldp/audio-optimizer-bands/ch_00": ("convolver#0", "raw/16 dB; FL"),
@@ -440,7 +468,6 @@ def field_report(profile, root, stages, voicing="balanced"):
             approx = "Enable-gated static response; IEQ steering omitted; FIR at 48 kHz."
         elif clean in approximated or re.fullmatch(
                 r"tuning-vlldp/regulator-tuning/(?:threshold_high|isolated_band)/ch_00", clean):
-            status = "approximation-bypassed"
             if "volume-leveler" in clean:
                 stage, unit = "autogain#0", "enable 0/1; amount 0..10; out-target raw/16 dBFS"
             elif "dialog-enhancer" in clean:
@@ -449,10 +476,20 @@ def field_report(profile, root, stages, voicing="balanced"):
                 stage, unit = "multiband_compressor#0", "group: grid index, Q4 threshold, Q15 inverse ratio, Q15 block-256 attack/release, Q4 makeup"
             else:
                 stage, unit = "multiband_compressor#1", "threshold raw/16 dBFS; isolation 0/1; ch_00 stereo reference"
-            approx = "Conditional approximate EasyEffects stage is bypassed; thresholds/time constants/ratios are unqualified."
+            status = "approximation-bypassed" if emitted.get(stage, {}).get("bypassed") else "approximation-emitted"
+            approx = "Approximate EasyEffects stage is emitted " + \
+                ("bypassed" if status == "approximation-bypassed" else "active") + \
+                "; thresholds/time constants/ratios are unqualified."
         else:
             stage, status = None, "unsupported"
             unit, approx = "not interpreted", "No equivalent processing stage is emitted."
+        if stage is not None and stage not in emitted:
+            enable = profile.find(enable_paths[stage]) if stage in enable_paths else None
+            disabled = enable is not None and enable.get("value") == "0"
+            status = "disabled" if disabled else "not-emitted"
+            approx = "Source stage is disabled; no preset stage emitted." if disabled else \
+                "No preset stage emitted for these fields."
+            stage = None
         rows.append({"source": path, "raw_attributes": dict(el.attrib), "unit_scale": unit,
                      "output_stage": stage, "status": status, "approximation": approx})
 
@@ -463,8 +500,9 @@ def field_report(profile, root, stages, voicing="balanced"):
             used = el.tag in ("band_20_freq", "ieq_" + voicing)
             rows.append({"source": "constant/" + el.tag, "raw_attributes": dict(el.attrib),
                          "unit_scale": "Hz for grid; raw/16 dB for IEQ",
-                         "output_stage": "convolver#0" if used else None,
-                         "status": "mapped-static-approximation" if used else "not-selected",
+                         "output_stage": "convolver#0" if used and "convolver#0" in emitted else None,
+                         "status": ("mapped-static-approximation" if "convolver#0" in emitted else "not-emitted")
+                         if used else "not-selected",
                          "approximation": "Selected voicing only; log-frequency interpolation."})
     return {"schema_version": 1, "complete_equivalence": False, "fields": rows,
             "stages": stages, "limits": [
@@ -508,7 +546,7 @@ def build(args):
         taps = taps.astype(np.float32)
         stem = "speaker-" + digest(taps.tobytes())[:16]
         convolver = bands.make_convolver(stem)
-        eq = bands.make_peq_eq(tuning.peq_filters)
+        eq = make_speaker_peq(bands, tuning.peq_filters)
         if eq:
             # Sum all positive peaks for each channel, rather than upstream's
             # maximum single bandwidth-weighted boost. This remains an estimate.
@@ -661,6 +699,15 @@ def verify(bundle):
                 stage["output-gain"] <= 0, "invalid_stage_gain")
         require(stage["bypass"] == (name in ("equalizer#1", "autogain#0", "multiband_compressor#0",
                                              "multiband_compressor#1")), "invalid_bypass_state")
+    require(report["stages"] == [{"name": n, "bypassed": out[n]["bypass"]} for n in order],
+            "mapping_stage_inventory_mismatch")
+    for field in report["fields"]:
+        stage = field["output_stage"]
+        require(stage is None or stage in order, "mapping_reference_not_emitted")
+        if field["status"] == "approximation-bypassed":
+            require(stage in order and out[stage]["bypass"], "mapping_bypass_mismatch")
+        elif field["status"] in ("disabled", "not-emitted"):
+            require(stage is None, "mapping_absent_stage_reference")
     finite_tree(preset)
     finite_tree(report)
     # A minimal RIFF parser verifies format without requiring numpy/scipy.
