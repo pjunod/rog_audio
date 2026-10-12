@@ -4,13 +4,13 @@
 body{font:16px/1.55 system-ui,sans-serif;margin:3rem auto;padding:0 1.5rem;max-width:1050px;background:#101823;color:#edf2f7}
 h1{font-size:2rem}h2{color:#91d7ee}a{color:#91d7ee}table{border-collapse:collapse;width:100%;margin:2rem 0}td{border-bottom:1px solid #3b4b60;padding:.8rem;vertical-align:top}tr:first-child{font-weight:700;background:#1e3047}p{margin:.5rem 0}
 </style><main><h1>Status — implementation and physical acceptance</h1>
-<p>**Updated:** 2026-10-12 · **State:** offline tools assembled; final integration and review pending.</p>
+<p>**Updated:** 2026-10-12 · **State:** offline tools assembled; ready for adversarial review; final acceptance tests pending.</p>
 <table>
 <tr><td>Work</td><td>State</td><td>Next evidence</td></tr>
 <tr><td>Hardware inventory</td><td>Read-only inspection complete</td><td>Sanitized receipt and build contracts imported</td></tr>
 <tr><td>ASUS speaker tuning</td><td>Original XML and matching INF published</td><td>Converter built; final review/tests pending</td></tr>
 <tr><td>Diagnostics and latency</td><td>Tools implemented; final review/tests pending</td><td>Reviewed inspector, analyser and candidate generator</td></tr>
-<tr><td>Host Atmos</td><td>GPT-6.1 Sol isolated Linux build in progress</td><td>Offline harness, synthetic renderer and capability receipt</td></tr>
+<tr><td>Host Atmos</td><td>Pinned Linux build and offline CLI implemented</td><td>Offline harness, synthetic renderer and capability receipt</td></tr>
 <tr><td>macOS comparison</td><td>Pending physical measurements</td><td>M4 Air primary, M3 Max secondary</td></tr>
 <tr><td>Sonos Arc/eARC</td><td>Deferred until internal audio work</td><td>TV route and actual received formats</td></tr>
 </table>
@@ -18,4 +18,13 @@ h1{font-size:2rem}h2{color:#91d7ee}a{color:#91d7ee}table{border-collapse:collaps
 <p>Independent adversarial review happens once the batch is ready to merge;</p>
 <p>findings are addressed before the required tests run. Failed or invalidated</p>
 <p>tests alone are repeated. Source capability, synthetic results, installation</p>
-<p>and measured performance remain separate claims.</p><p><a href="https://github.com/pjunod/rog_audio/blob/main/docs/STATUS.md">GitHub progress ledger</a></p></main></html>
+<p>and measured performance remain separate claims.</p>
+<h2>Decisions made during implementation</h2>
+<p>The repository is public, matching the display project. Original tool code</p>
+<p>uses MIT; vendor and third-party terms remain separate. The owner explicitly</p>
+<p>requested the recovered ASUS XML/INF be committed, overriding earlier private</p>
+<p>storage instructions. Raw observations and access credentials remain excluded.</p>
+<p>The first implementation PR combines the three lanes. Tests are explicitly</p>
+<p>selected after adversarial review; hosted CI is manual to avoid duplicate</p>
+<p>push-triggered runs. All agent workspaces are outside the owner&#x27;s ~/code tree.</p>
+<p>No live audio deployment or physical measurement is implied by this batch.</p><p><a href="https://github.com/pjunod/rog_audio/blob/main/docs/STATUS.md">GitHub progress ledger</a></p></main></html>

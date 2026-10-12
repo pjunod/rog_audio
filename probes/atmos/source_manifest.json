@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "cavern": {
+    "repository": "https://github.com/VoidXH/Cavern",
+    "commit": "7d85d1880666ca5ea323848cff47ce7f50b29f7d",
+    "projects": [
+      "Cavern/Cavern.csproj",
+      "Cavern.Format/Cavern.Format.csproj"
+    ],
+    "target_framework": "netstandard2.1",
+    "licence": "https://github.com/VoidXH/Cavern/blob/7d85d1880666ca5ea323848cff47ce7f50b29f7d/LICENSE.md",
+    "author": "Bence Sg\u00e1netz (VoidX)",
+    "nuget_dependencies": []
+  },
+  "sdk_version": "8.0.414",
+  "container": "mcr.microsoft.com/dotnet/sdk:8.0.414-bookworm-slim@sha256:ff8311847c54c04d1a14c488362807997d59b61372da5095a95f89cbcda7f9b7",
+  "runtime_version": "8.0.20",
+  "alternate_contract": {
+    "repository": "https://github.com/DolbyLaboratories/gst-home-audio",
+    "commit": "e37c7a61b82cd91e4584ce1fe579c326991334e4",
+    "status": "not built: proprietary Linux libraries not supplied"
+  },
+  "launcher_dependency": {
+    "python3_debian_version": "3.11.2-1+b1",
+    "stdlib_only": true,
+    "python311_debian_version": "3.11.2-6+deb12u9"
+  },
+  "ci_only_fixture_encoder": {
+    "ffmpeg_debian_version": "7:5.1.9-0+deb12u1",
+    "qualification": "not yet executed; final integration test after adversarial review"
+  }
+}

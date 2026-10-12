@@ -1,0 +1,3 @@
+# Preserve recovered vendor bytes, including CRLF and original whitespace.
+profiles/asus/**/*.xml -text whitespace=-trailing-space
+profiles/asus/**/*.inf -text whitespace=-trailing-space

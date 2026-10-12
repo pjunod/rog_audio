@@ -1,6 +1,7 @@
 # Host Atmos build — prove decoding and rendering before live integration
 
-**Status:** isolated feasibility build authorised; no host Atmos qualified ·
+**Status:** Linux libraries/CLI built; synthetic renderer exercised; JOC and
+physical qualification pending ·
 **Written:** 2026-10-12 · **Executes:** host Atmos lane in
 [implementation](AUDIO_IMPLEMENTATION.md).
 
@@ -8,6 +9,25 @@ Read [audio quality](AUDIO_QUALITY.md), [hardware](AUDIO_HARDWARE.md) and
 [development](DEVELOPMENT.md). This lane builds host-side file processing
 for laptop/headphone use. Sonos Arc passthrough is explicitly last; do not
 spend this batch implementing or testing Sonos routing.
+
+## Implemented offline artifact (2026-10-12)
+
+The [Atmos probe](../probes/atmos/README.md) now contains pinned Linux build
+automation, an offline inspect/render CLI, synthetic scenes/regressions and a
+[hosted CI recipe](../probes/atmos/ci.sh). The
+[source-bound receipt](../evidence/audio-atmos-build-2026-10-12.json) separates
+compilation, retained tests and the final default 5.1 E-AC-3 bed-render check.
+The bed result is labelled explicitly; no opt-in permission is required.
+Stereo E-AC-3 is rejected upstream, and the generated mono fixture fails.
+JOC, TrueHD, binaural, realtime integration and physical acceptance remain
+separate capabilities with documented limits.
+
+The owner moved integration to `pjunod/rog_audio` and requested one substantive
+batch. Final adversarial review and the affected tests/integrity/privacy checks
+belong to the parent integration; they have not been claimed here. Retry
+selected test IDs after that run. Import only the lane files, not this clone's
+inherited display history. The remaining numbered sections retain the build
+contract and later qualification requirements.
 
 ## 1. Establish the exact candidate and compiler loop
 

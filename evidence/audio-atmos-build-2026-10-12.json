@@ -1,0 +1,190 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-12",
+  "evidence_class": [
+    "source-compilation",
+    "synthetic-test",
+    "offline-cli-debug"
+  ],
+  "purpose": "Atmos lane implementation handoff for selective import to rog_audio; final review/tests deferred to integrated batch",
+  "cavern": {
+    "commit": "7d85d1880666ca5ea323848cff47ce7f50b29f7d",
+    "tree": "640e5f991db979db2395a789753033f0f9809364",
+    "projects": [
+      "Cavern/Cavern.csproj",
+      "Cavern.Format/Cavern.Format.csproj"
+    ],
+    "target_framework": "netstandard2.1",
+    "external_nuget_dependencies": [],
+    "modified_upstream_source": false
+  },
+  "compiler": {
+    "os": "Debian 12",
+    "architecture": "Linux x86_64",
+    "sdk": "8.0.414",
+    "msbuild": "17.11.41+18f1ecf82",
+    "runtime": "8.0.20",
+    "base_image_digest": "sha256:ff8311847c54c04d1a14c488362807997d59b61372da5095a95f89cbcda7f9b7",
+    "observed_build_image_id": "sha256:eecf1a124c54540908dd07baf9ca0581e2c88c4faa80f91dd91ce1dcbb8f40f9",
+    "python": "3.11.2",
+    "python_debian_package": "3.11.2-1+b1",
+    "python311_debian_package": "3.11.2-6+deb12u9",
+    "clean_upstream_build": {
+      "result": "pass",
+      "warnings": [
+        "CS0649 EnhancedAC3Body.lfeahtinu",
+        "CS0649 EnhancedAC3Body.cplahtinu"
+      ]
+    },
+    "final_harness_build": {
+      "result": "pass",
+      "warnings": 0,
+      "errors": 0,
+      "upstream_rebuild": "incremental; original clean build recorded separately"
+    }
+  },
+  "isolation": {
+    "network_during_build_and_cli": "none",
+    "docker_memory_limit_bytes": 1073741824,
+    "docker_pids_limit": 128,
+    "sound_devices_mounted": false,
+    "desktop_socket_mounted": false,
+    "live_audio_changes": false
+  },
+  "commands": [
+    "sh probes/atmos/build.sh --source /work/Cavern --output /work/build",
+    "/work/build/atmos-probe render --input /work/generated-5.1.eac3 --layout 7.1.4 --output /work/generated.wav --report /work/generated.json"
+  ],
+  "final_compiled_source_sha256": {
+    "probes/atmos/Program.cs": "8bbe6ec7a0da1117d31af8700057ce58510ca8d2115bf7eb7820306f65c2ecb5",
+    "probes/atmos/AtmosProbe.csproj": "8f6138f99460436ae9677176be4d618d6d9929da0c0b2a7c333855394d919144",
+    "probes/atmos/atmos-probe": "f05ec0c0faea04f2cbd3745407273b0c926bf1178d7f14f44af3c904c9e81090",
+    "probes/atmos/build.sh": "0f5bff955ac16aa85545577849b361f720de71255f192254c09c97b4cad89e1a",
+    "probes/atmos/global.json": "20d69b2f203f974ab645a50ee80fdaf2284a1d6f81c15d9ff052038157d40e79"
+  },
+  "artifact_sha256": {
+    "AtmosProbe.dll": "f6579056556ac6ebc1f04696dced729fad5516f01e783b5c7a3bc01c368628f4",
+    "Cavern.dll": "dacf85b757a80fe8cedef36296fa2cb3d61428d9cc0b40678046a14b85d0838d",
+    "Cavern.Format.dll": "5ccf4136836ebeae9ae3f4bf2c6b0f2d5347dcafcaacd2bab89a0b2f29d1f34e",
+    "bed-default.wav": "d136a2365267073b445b34d988f1b1c7bbef14bd201315cc1b0a34d405b5e243"
+  },
+  "fixture_generation": {
+    "encoder": "FFmpeg 9.0.1",
+    "signal": "lavfi sine=frequency=997:sample_rate=48000:duration=0.16",
+    "codec": "eac3",
+    "commands": [
+      "ffmpeg -f lavfi -i sine=frequency=997:sample_rate=48000:duration=0.16 -c:a eac3 -b:a 768k -ac 6 -f eac3 GENERATED_5_1",
+      "ffmpeg -f lavfi -i sine=frequency=997:sample_rate=48000:duration=0.16 -c:a eac3 -b:a 192k -ac 2 -f eac3 GENERATED_STEREO",
+      "ffmpeg -f lavfi -i sine=frequency=997:sample_rate=48000:duration=0.16 -c:a eac3 -b:a 192k -ac 1 -f eac3 GENERATED_MONO"
+    ],
+    "hashes": {
+      "synthetic-bed.eac3": "7f584b48f210e87d2525e83b38121e55b4840e673cb6a15f79b9bde249a4c7ef",
+      "synthetic-mono.eac3": "a4a1f6b695a14fd99fcbde753a3b63828a74c47d8599a3559ba84c9c041fd5e3",
+      "synthetic-surround.eac3": "2d0c3de5fa5dbaf1742e93ca74366263e02a7abd4cd27b8e2a3fae0628a682e5"
+    },
+    "copyrighted_media_used": false
+  },
+  "final_default_bed_render": {
+    "schema_version": 1,
+    "tool_version": "0.1.0",
+    "cavern_source": "7d85d1880666ca5ea323848cff47ce7f50b29f7d",
+    "status": "bed-fallback-rendered",
+    "evidence_class": "private-offline",
+    "container": "raw-eac3",
+    "codec": "E-AC-3",
+    "atmos_signalling": null,
+    "decoder": "Cavern.Format.EnhancedAC3Decoder",
+    "object_metadata_consumed": false,
+    "renderer": "Cavern.Listener/BalanceBasedRenderer",
+    "output": {
+      "layout": "7.1.4",
+      "sample_rate": 48000,
+      "channels": [
+        "FL",
+        "FR",
+        "FC",
+        "LFE",
+        "BL",
+        "BR",
+        "SL",
+        "SR",
+        "TFL",
+        "TFR",
+        "TBL",
+        "TBR"
+      ],
+      "samples_per_channel": 7680,
+      "peak": 0.12498254,
+      "rms": [
+        0,
+        0,
+        0.0868649871743005,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "format": "WAVE-extensible-float32",
+      "gain": "unity listener; normalizer disabled; E-AC-3 object renderer upstream gain 0.707"
+    },
+    "warnings": [
+      "Explicit conventional-channel fallback; not Atmos rendering."
+    ],
+    "delay": {
+      "block_samples": 256,
+      "decoder_delay_samples": null,
+      "renderer_delay_samples": null,
+      "compensation_samples": 0,
+      "note": "No delay compensation or tail flush; physical latency unmeasured."
+    },
+    "input_sha256": "2d0c3de5fa5dbaf1742e93ca74366263e02a7abd4cd27b8e2a3fae0628a682e5",
+    "input_samples": 7680,
+    "processing": {
+      "elapsed_ms": 15.6593,
+      "allocated_bytes": 519000,
+      "block_samples": 256,
+      "evidence": "single offline run, includes WAV I/O and startup; not realtime qualification"
+    },
+    "decoded_frames": 5,
+    "object_frames": 0
+  },
+  "retained_earlier_tests": {
+    "tests_run": 9,
+    "passing_methods": 8,
+    "failing_methods": 1,
+    "failing_method": "test_generated_eac3_bed",
+    "reason": "generated stereo fixture exposed actual unsupported upstream stereo mode; no successful full-suite claim",
+    "moving_scene_wav_sha256": "d5c60c089e7292db30e0eebfd8d06aad829ee4661039b2a80dd596fe17a708cf",
+    "final_source_requalification": "deferred; EOF observation, default bed behavior, input validation and test selection changed after retained run"
+  },
+  "capabilities": {
+    "synthetic_speaker_render": "exercised: stereo and 7.1.4, motion, repeatability, silence and partial-block length",
+    "generated_5_1_eac3": "default bed render succeeds, 7680 samples/channel; not Atmos",
+    "stereo_eac3": "upstream UnsupportedFeatureException(stereo)",
+    "generated_mono_eac3": "upstream DecoderException: internal error code 1",
+    "joc": "compiled API, not qualified without lawfully supplied reference sample",
+    "truehd": "unsupported; inspected Cavernize adapter uses externally downloaded truehdd.exe",
+    "binaural": "unsupported; no qualified/licensed HRTF selected",
+    "dolby_native": "not supplied proprietary Linux dependencies",
+    "realtime": "offline timing only; no timestamp/seek/flush/live EOS integration",
+    "physical_audio": "unmeasured",
+    "sonos": "deferred"
+  },
+  "ci": {
+    "recipe": "probes/atmos/ci.sh --report atmos-regression.json",
+    "dependency": "Debian ffmpeg 7:5.1.9-0+deb12u1",
+    "recipe_executed": false,
+    "tests": "10 methods; supports repeated --test METHOD; two codec skips without explicit generated fixtures"
+  },
+  "final_review_and_integrity": "parent integrated batch: review first, then affected Linux/unit/repository/privacy checks once; retry failures/affected only",
+  "limitations": [
+    "No lawful JOC sample or renderer reference comparison supplied.",
+    "Source/CLI and synthetic receipts do not establish Dolby metadata fidelity, acoustic quality, physical latency or certification.",
+    "No upstream source modification, desktop integration, installation, activation or sound-device operation."
+  ]
+}

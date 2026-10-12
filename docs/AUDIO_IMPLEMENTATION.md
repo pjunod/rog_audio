@@ -1,6 +1,6 @@
 # Audio implementation — build order, ownership and integration
 
-**Status:** ready for isolated builds; deployment and physical tests pending ·
+**Status:** offline tools built; integration review and final tests pending ·
 **Written:** 2026-10-12 · **Executes:** [audio quality](AUDIO_QUALITY.md).
 
 Read [hardware evidence](AUDIO_HARDWARE.md), [status](STATUS.md), and
@@ -33,17 +33,17 @@ report the exact remaining test. Do not invent a pass or stop at a plan.
 | Host Atmos | [Atmos build](AUDIO_ATMOS_BUILD.md) | Pinned Linux compiler receipt, offline decode/render harness and honest capability matrix |
 | Integration | This document | One reviewed implementation PR, merged docs/status, evidence and explicit deployment procedure |
 
-All proposed commands in the lane documents are interfaces to implement,
-not claims that those executables already exist. Re-verify upstream interfaces
-at the pinned revisions before implementing adapters. Workers own their new
-files and tests; shared README/status changes are reconciled at integration.
+Lane documents distinguish implemented CLI commands from later deployment
+and physical measurement procedures. Source interfaces are pinned and audited.
+Workers own their implementation and tests; shared docs are reconciled in
+one combined integration PR.
 
 ## 3. Keep source and results reproducible
 
 | Candidate | Repository | Inspected/resolved revision | Purpose |
 |---|---|---|---|
 | Speaker converter | [speaker-tuning-to-easyeffects](https://github.com/antoinecellerier/speaker-tuning-to-easyeffects) | `430e3a501e21bf8fdb615b133d2e8130b17973c1` | DAX3 parser and filter-generation reference; source inspected |
-| Cavern | [VoidXH/Cavern](https://github.com/VoidXH/Cavern) | `7d85d1880666ca5ea323848cff47ce7f50b29f7d` | Object rendering candidate; remote HEAD resolved, not built |
+| Cavern | [VoidXH/Cavern](https://github.com/VoidXH/Cavern) | `7d85d1880666ca5ea323848cff47ce7f50b29f7d` | Linux library and offline harness built; codec qualification separate |
 | Dolby integration | [gst-home-audio](https://github.com/DolbyLaboratories/gst-home-audio) | `e37c7a61b82cd91e4584ce1fe579c326991334e4` | Public wrapper/contract reference; proprietary runtime required |
 
 A worker may select a better-supported revision after documenting the reason
@@ -81,7 +81,8 @@ to the lane, and the staged-tree/reachable-history privacy scan. Retry only
 failed or invalidated checks. Record test skips and unavailable dependencies.
 
 Open a PR against current main, resolve shared-document conflicts against the
-latest ledger, and merge only the qualified scope. Do not merge unrelated display PRs. Keep source, build readiness,
+latest ledger, and merge only the qualified scope. Do not merge unrelated
+display PRs. Keep source, build readiness,
 installation and physical acceptance as separate status fields. Update the
 HTML workboard alongside the Markdown ledger. This batch authorises builds
 and document integration, not an uncoordinated live audio deployment.

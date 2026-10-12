@@ -1,0 +1,88 @@
+#!/usr/bin/env python3
+"""Bounded offline launcher. Publishes new files only, never accesses audio devices."""
+import argparse
+import json
+import os
+from pathlib import Path
+import platform
+import resource
+import subprocess
+import sys
+import tempfile
+
+
+def limits():
+    resource.setrlimit(resource.RLIMIT_CPU, (60, 60))
+    resource.setrlimit(resource.RLIMIT_NOFILE, (64, 64))
+    resource.setrlimit(resource.RLIMIT_CORE, (0, 0))
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('command', choices=['inspect', 'render'])
+    parser.add_argument('--input', required=True, type=Path)
+    parser.add_argument('--report', required=True, type=Path)
+    parser.add_argument('--output', type=Path)
+    parser.add_argument('--layout', choices=['stereo-speakers', '7.1.4'], default='stereo-speakers')
+    args = parser.parse_args()
+    if platform.system() != 'Linux':
+        parser.error('Linux launcher required')
+    if args.command == 'render' and args.output is None:
+        parser.error('render requires --output')
+    if args.command == 'inspect' and args.output is not None:
+        parser.error('inspect does not take output')
+    # Resolve parents only. Existing files, directories and broken symlinks collide.
+    targets = [args.report] + ([args.output] if args.output else [])
+    targets = [p.parent.resolve(strict=True) / p.name for p in targets]
+    if len(set(targets)) != len(targets) or any(os.path.lexists(p) for p in targets):
+        parser.error('output collision')
+    input_path = args.input.resolve(strict=True)
+    if input_path in targets or not input_path.is_file():
+        parser.error('input must be a separate regular file')
+    executable = Path(__file__).resolve().with_name('AtmosProbe.dll')
+    env = dict(os.environ, DOTNET_GCHeapHardLimit='20000000', DOTNET_CLI_TELEMETRY_OPTOUT='1',
+               DOTNET_EnableDiagnostics='0')
+    # Same-filesystem hard links publish without overwriting a raced destination.
+    with tempfile.TemporaryDirectory(prefix='.atmos-probe-', dir=targets[0].parent) as tmp:
+        temp = Path(tmp)
+        report = temp / 'report.json'
+        wav = temp / 'output.wav'
+        command = ['dotnet', str(executable), args.command, '--input', str(input_path),
+                   '--report', str(report), '--layout', args.layout]
+        if args.output:
+            command += ['--output', str(wav)]
+        try:
+            result = subprocess.run(command, env=env, preexec_fn=limits, capture_output=True, timeout=90)
+            code = result.returncode
+        except subprocess.TimeoutExpired:
+            code = 124
+        if not report.exists() or code < 0 or code == 124:
+            report.write_text(json.dumps({'schema_version': 1, 'status': 'resource-limit-or-process-failure',
+                                         'evidence_class': 'private-offline', 'exit_code': code}) + '\n')
+            code = 2
+        published = []
+        try:
+            # Copy WAV privately to its own filesystem if outputs have different parents.
+            if code == 0 and args.output:
+                with tempfile.TemporaryDirectory(prefix='.atmos-probe-', dir=targets[1].parent) as wt:
+                    copy = Path(wt) / 'output.wav'
+                    import shutil
+                    shutil.copyfile(wav, copy)
+                    os.link(copy, targets[1])
+                    published.append(targets[1])
+            os.link(report, targets[0])
+        except OSError:
+            for path in published:
+                path.unlink()
+            print('publication failed: output collision or filesystem error', file=sys.stderr)
+            return 2
+        print(json.loads(report.read_text())['status'])
+        return 0 if code == 0 else 2
+
+
+if __name__ == '__main__':
+    try:
+        sys.exit(main())
+    except (OSError, ValueError):
+        print('input/output unavailable or invalid', file=sys.stderr)
+        sys.exit(2)
