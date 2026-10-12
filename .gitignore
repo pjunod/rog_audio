@@ -1,0 +1,11 @@
+private/
+work/
+artifacts/
+build/
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+bin/
+obj/
+.DS_Store
