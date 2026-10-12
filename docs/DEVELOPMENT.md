@@ -42,7 +42,10 @@ python3 scripts/check_repository.py  # Final repository integrity check.
 ```
 
 This check validates documentation/JSON hygiene without network, hardware,
-profile activation or dependency installation. Lane documents give the
+profile activation or dependency installation. Every tracked profile manifest
+must name nonduplicate, tracked regular files whose sizes and SHA256 values
+match the published originals. This covers both ASUS and Lenovo inputs.
+Lane documents give the
 actual build and test commands; do not confuse a skipped compiler with a pass.
 
 ## Preserve evidence and dependency rights
