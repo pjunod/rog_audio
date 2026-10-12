@@ -1,130 +1,227 @@
-# Speaker build — turn exact OEM tuning into an offline Linux candidate
+# Speaker build — prepare and inspect offline candidates
 
-**Status:** ready to implement; exact-match private XML available ·
-**Written:** 2026-10-12 · **Executes:** speaker lane in
+**Status:** importer and three candidates implemented; integration review/tests,
+EasyEffects runtime validation and physical qualification pending ·
+**Updated:** 2026-10-12 · **Executes:** speaker lane in
 [implementation](AUDIO_IMPLEMENTATION.md).
 
-Read [hardware](AUDIO_HARDWARE.md), [audio quality](AUDIO_QUALITY.md) and
-[development](DEVELOPMENT.md). Build real tools and test artifacts, without
-activating the profile. Preserve the working CS35L56 firmware and gain. The
-initial deliverable is an auditable candidate, not a calibrated speaker claim.
+Read [hardware](AUDIO_HARDWARE.md) for identity/recovery evidence and
+[audio quality](AUDIO_QUALITY.md) for acoustic acceptance. This document is the
+operator contract for [the preparation tool](../scripts/prepare_speaker_profile.py).
+The [build receipt](../evidence/audio-speaker-build-2026-10-12.json) separates
+previous synthetic checks from the actual isolated Linux conversions. No live
+routing, package, service or amplifier control changed.
 
-## 1. Bind the input to the observed hardware
+## 1. Bind inputs before conversion
 
-The target is Realtek `10ec0285`, subsystem `10431c63`, two CS35L56 SPI amps,
-and speaker ID 0. The exact DAX3 input hash is in the
-[inventory receipt](../evidence/audio-inventory-2026-10-12.json). Match both
-codec and subsystem, endpoint `internal_speaker`, mode `normal`; require an
-explicit profile choice. Start by comparing `music`, `dynamic` and `off`.
-Do not silently use a generic ASUS match or a headphone endpoint.
+The implementation accepts the inspected Realtek `10ec0285`, subsystem
+`10431c63`, two CS35L56 amps and speaker ID 0. The supplied inventory receipt
+is trusted input, not a fresh hardware probe. By default the tool uses
+[the public inventory](../evidence/audio-inventory-2026-10-12.json).
+`--inventory` can supply another receipt, including synthetic tests; it still
+must declare the supported identity. No owner-authorization switch is needed.
 
-Read the associated INF and private XML; emit only metadata and input hashes
-publicly. Recheck the eSupport duplicate or independent WIM extraction because
-the first image listing warned about reference counts. Keep disagreement as
-a failed input-verification result. Do not copy the entire recovery image.
+The XML/INF names, sizes and SHA256 hashes must match that receipt. The INF
+must contain the exact HDAUDIO/INTELAUDIO ID in a DeviceExtensions section,
+including the optional `FUNC_01` prefix. Its selected install section must
+copy the XML and SourceDisksFiles must list it. Renamed source-file copies are
+unsupported. The filename/hashes identify bytes, not signed authenticity.
 
-## 2. Implement an explicit preparation interface
+The endpoint explicitly selects `internal_speaker`, mode `normal`, two front
+channels and 48 kHz. Profile choice is required. Invalid numeric fields,
+nested/duplicate endpoints/profiles and unknown enabled PEQ shapes fail.
+The XML is bounded to 2 MiB, 10,000 nodes, 32 levels and 512 children per
+node. DTDs, entities and external references fail. File opens reject symlinks,
+nonregular files and FIFOs; no-follow directory descriptors prevent ancestor
+symlink races. Only pinned converter Python bytes enter its import snapshot.
 
-Proposed repository interface:
+Use `--duplicate-xml DUPLICATE` on inspect/build to demand byte identity with
+an independently recovered copy. Disagreement fails. This lane used the
+original hash-pinned extraction; the duplicate has **not** been newly verified.
+The inherited 7-Zip reference-count warning remains open before physical
+reliance on those coefficients. No recovery partition/image was accessed here.
 
-```bash
-python3 scripts/prepare_speaker_profile.py inspect --xml PRIVATE_XML --inf PRIVATE_INF --report PRIVATE_REPORT
-python3 scripts/prepare_speaker_profile.py build --xml PRIVATE_XML --inf PRIVATE_INF --codec 10ec0285 --subsystem 10431c63 --endpoint internal_speaker --mode normal --profile music --output PRIVATE_BUNDLE
-python3 scripts/prepare_speaker_profile.py verify --bundle PRIVATE_BUNDLE
-```
+The owner authorised publication of the recovered ASUS XML/INF in `rog_audio`.
+Integration owns `profiles/asus/gu605mz/`, original notices and hash provenance;
+these inputs can be used directly from that repository. Raw diagnostics and
+connection credentials remain excluded. Generated candidate bundles are kept
+in ignored output storage until runtime/physical qualification.
 
-`inspect` parses input without writing configuration or contacting a session.
-`build` writes only under the explicit new output directory; refuse overwrite
-by default. `verify` checks hashes, schema and internal references. None of
-these commands installs, autoloads, launches an audio client or restarts a
-service. Exit 0 means the stated offline operation succeeded, 2 means invalid
-input/identity, and 3 means an unsupported mapping or missing dependency.
-No successful exit may imply physical safety or acoustic accuracy.
+## 2. Prepare a new bundle
 
-The bundle contains `manifest.json`, an EasyEffects JSON preset, impulse
-response files if needed, and a machine-readable field-mapping report. A
-PipeWire `.conf` candidate is optional after the EasyEffects path is audited.
-The manifest records schema version, exact converter commit, dependency
-versions, input hashes, hardware IDs, profile/endpoint, sample rate, output
-hashes and `activation_state: "not-installed"`.
-
-The mapping report records each interpreted field's source, unit/scale,
-output stage, approximation and unsupported status. Reject malformed/nonfinite
-parameters and ambiguous profile matches. Limit input size, XML complexity,
-output paths and references; never permit profile names or embedded paths to
-escape the output directory. Resolve symlinks safely. Unknown relevant fields
-must be visible and must prevent a claim of complete equivalence.
-
-## 3. Audit the upstream generator before adapting it
-
-The pinned converter in [implementation](AUDIO_IMPLEMENTATION.md) is MIT
-licensed. Its `lib/dax/parse.py` exposes endpoint/profile discovery and XML
-parsing; `dolby_to_easyeffects.py` selects and emits profiles. The parser has
-fixed-point and per-channel rules that must be retained or deliberately
-corrected with tests. The implementation must document omitted speaker-DSP
-stages and volume-dependent behaviour, rather than claim one static filter
-recreates all Windows processing.
-
-Observed CLI controls at that pin include `--endpoint`, `--mode`, `--profile`,
-`--output-dir`, `--irs-dir`, `--no-reload` and `--skip-ee-check`. The wrapper
-`dolby_to_pipewire.py` supports `--output-dir` and `--no-activate`. Its default
-behaviour writes live configuration and restarts PipeWire. `--dry-run` can
-still unpack a driver archive into a cache. Never execute those defaults.
-Re-verify call paths at the pinned checkout; prefer direct pure parser/build
-functions behind the repository wrapper, or run the external CLI in an
-isolated process with only explicit input/output paths and no session access.
-Do not repurpose HOME or mount the owner's XDG directories into a container.
-
-Keep OEM FIR/dynamics separate from amplifier firmware calibration. Never
-write CS35L56 controls, replace firmware or disable amp protection. No bass
-boost, gain restoration or virtual-bass switch is enabled merely to make the
-candidate louder. Audit defaults and total headroom. A sample peak limiter
-is not a thermal/excursion protection implementation.
-
-## 4. Establish the build loop and focused checks
-
-Use a disposable Linux Python environment with pinned NumPy/SciPy and any
-upstream test dependencies. Record architecture and versions. Upstream's
-synthetic-only baseline command is:
+Commands below are implemented. Replace uppercase output/source placeholders;
+the XML/INF paths refer to the integration-owned source files. Existing output
+and report paths are never overwritten. There is no activation command.
 
 ```bash
-pytest -n 0 -m "not live_machine" --ignore=tests/corpus tests/
+# Read identity and discover profile names; writes a new metadata report.
+python3 scripts/prepare_speaker_profile.py inspect \
+  --xml profiles/asus/gu605mz/DEV_0285_SUBSYS_10431C63_PCI_SUBSYS_1C631043.xml \
+  --inf profiles/asus/gu605mz/dax3_ext_rtk.inf --report REPORT
+
+# Generate the explicit music/balanced candidate from pinned converter source.
+python3 scripts/prepare_speaker_profile.py build \
+  --xml profiles/asus/gu605mz/DEV_0285_SUBSYS_10431C63_PCI_SUBSYS_1C631043.xml \
+  --inf profiles/asus/gu605mz/dax3_ext_rtk.inf \
+  --codec 10ec0285 --subsystem 10431c63 \
+  --endpoint internal_speaker --mode normal --profile music \
+  --voicing balanced --converter PINNED_CONVERTER --output BUNDLE
+
+# Verify hashes, references, stages and the stereo float-WAV format.
+python3 scripts/prepare_speaker_profile.py verify --bundle BUNDLE
 ```
 
-The upstream `live_machine` marker can remove isolation environment values,
-so excluding it and the corpus directory is mandatory for this synthetic run.
-Keep the container itself isolated from host audio and private data. Run only
-relevant upstream synthetic subsets in the fast lane after identifying them;
-record their actual names. Keep a private conversion receipt separate.
+`--voicing` accepts balanced · detailed · warm, default balanced. The profile
+`off` uses its XML enable bits; it does not promise an empty preset. The final
+sample limiter remains present. Generate music, dynamic and off separately.
 
-Required focused checks for the new wrapper:
+**How to read it:** exit 0 means the offline operation succeeded; 2 means
+invalid input/identity/schema/filesystem operation; 3 means unsupported
+capability or missing dependency. Output uses allowlisted status and manifest
+hashes, never arbitrary paths/exceptions or coefficients. `activation_state`
+is always `not-installed`, qualification `offline-candidate-unqualified`.
+Verification checks integrity and the bounded bundle contract; it does not
+externally authenticate a self-supplied manifest.
 
-- Exact match succeeds; wrong codec/subsystem, duplicate endpoint/profile,
-  truncated XML and unsupported mode fail without output activation.
-- Hostile profile names, symlink output, external references and oversized
-  inputs cannot read/write outside the specified paths.
-- Synthetic impulse and sweep inputs verify finite output, the expected
-  sample rate/channel layout, clipping/headroom reporting and correct units.
-- Output is deterministic for a pinned dependency set; manifest hashes catch
-  edits, missing impulse files and incorrect references.
-- A sentinel fake session and command recorder prove preparation performs
-  no `systemctl`, `wpctl` setter, `pactl` setter, autoload, playback or reload.
-- Linux plugin/format validation runs against an isolated runtime if needed;
-  no public CI job or private conversion opens a physical sound device.
+| Bundle file | Purpose |
+|---|---|
+| `manifest.json` | Schema, converter pin, versions, input hashes, hardware/selection, output hashes and activation state |
+| `preset.json` | EasyEffects output preset referencing its IR stem |
+| `irs/speaker-HASH.irs` | 4096-frame stereo float32 RIFF/WAV, 48 kHz; stem follows sample-content hash |
+| `field-mapping.json` | Selected profile leaves, source attributes, units, output stages, approximations/unsupported fields and FIR-only signal checks |
 
-## 5. Deliver a reviewable candidate and a deployment handoff
+Unknown/omitted fields are visible; `complete_equivalence` is always false.
+Verification rejects edited/missing/extra files, escaping references, wrong
+kernel names, nonfinite samples, wrong layouts and positive stage input/output
+gain. Approximate dynamics must remain bypassed. Input bytes are bound at
+preparation time; verify does not reopen XML/INF.
 
-First produce the wrapper, synthetic fixtures and tests. Then privately
-convert the matched OEM input and report mapped/approximated/unsupported
-stages, candidate hashes and any failed requirements. If mapping is incomplete,
-ship the honest offline tooling and leave the candidate unqualified; continue
-fixing supported mappings rather than inventing coefficients.
+## 3. Understand what the candidate maps
 
-Update this document with actual CLI names and a source-bound build receipt.
-Include later install/remove commands and per-device matching design as
-reviewable text, but do not execute them. EasyEffects retains the hardware
-sink as default. Speaker selection must be scoped to the actual internal
-route, not the ephemeral node ID or every stereo sink. Headphone/HDMI bypass,
-service restart behaviour and removal restoring stock are required before
-physical testing. Run adversarial review and the affected fast lane per
-[implementation](AUDIO_IMPLEMENTATION.md), then submit the completed batch.
+The external converter is MIT licensed by Antoine Cellerier. Its commit and
+all imported runtime Python file hashes are in
+[speaker source pins](../evidence/audio-speaker-sources.json). The wrapper
+snapshots verified code and calls `lib.dax.parse`, `lib.preset.fir`,
+`lib.preset.bands` and `lib.preset.plugins` directly. It never calls upstream
+CLIs, discovery, autoload, reload, stale-IR cleanup, audio clients or services.
+
+The audit found EasyEffects reload/autoload, hardware/session probes and
+stale-file scans/removal in upstream CLI paths. The PipeWire CLI can install
+configuration and restart PipeWire by default; dry-run can unpack archives.
+These paths are excluded from preparation.
+
+| Stage | Candidate behaviour | Evidence limit |
+|---|---|---|
+| Audio optimizer | L/R divided by 16 dB; disabled optimizer gives zero correction | Static curve only; no acoustic calibration |
+| IEQ | Selected curve /16 dB, weighted by amount/100; disabled IEQ contributes zero | Static approximation, no media steering; absent amount explicitly uses upstream 10% default |
+| FIR | Minimum-phase, 4096 frames, shared louder-peak reference | Positive peaks attenuated; all-cut curves never boosted; runtime latency unmeasured |
+| Speaker PEQ | Supported explicit filters mapped; positive gains summed per channel for attenuation | Headroom estimate, not full cascade/sample/protection proof |
+| Dialog/leveler/MBC/regulator | Available plugin approximations emitted bypassed | No dynamics equivalence or qualification |
+| Final limiter | -1 dB sample threshold, 1 ms lookahead, no gain boost | Not thermal/excursion protection or total physical latency |
+| Loudness restoration/virtual bass | Suppressed | No volmax, gain restoration, bass synthesis or widening |
+| Other OEM fields | Listed unsupported | Includes vendor coefficients, volume models, CP processing and steering; no host Atmos |
+
+Upstream's independent channel normalization can erase an intended stereo
+level difference or boost an all-cut curve. This wrapper uses one nonnegative
+attenuation to preserve balance without restoring gain. Synthetic regressions
+exercise both cases and the Q4/Q15 compressor units and band-index sentinel.
+
+Impulse/sweep peaks, shape error, samples over full scale, frequency peak and
+L1-norm bound describe the **FIR only**. They do not execute the EasyEffects
+EQ/limiter or model physical drivers. The runtime loader and plugin availability
+have not been validated. Stock amp firmware/calibration/gain remain unchanged.
+
+## 4. Reproduce the isolated Linux build
+
+[The Dockerfile](../scripts/speaker-build.Dockerfile) pins the base-image digest
+and dependencies. The completed conversion used Linux x86_64, Python 3.12.15,
+NumPy 2.2.6 and SciPy 1.15.3. Dependencies were installed only in the disposable
+image. Runtime had no network, a read-only filesystem, all capabilities dropped
+and no-new-privileges. Only explicit source/input/output mounts and temporary
+storage were present. Never mount `/dev/snd`, desktop sockets or owner config.
+
+[Focused tests](../tests/test_prepare_speaker_profile.py) construct invented
+values; no OEM discovery occurs. An explicit converter environment variable
+selects the DSP test dependency; without it those tests report skips.
+
+The following recipe works in a local clone or a GitHub Linux runner. It uses
+an empty Docker build context so ignored raw/private files are not sent to the
+builder. Runtime mounts only this audio repository, the pinned converter and
+an explicit output directory. The source snapshot verifies converter file
+hashes again at build time. Choose a new empty `build/speaker-validation`
+directory for each validation batch because the bundle tool refuses overwrite.
+
+```bash
+# Fetch only the pinned public converter; keep its licence in the checkout.
+git clone https://github.com/antoinecellerier/speaker-tuning-to-easyeffects \
+  build/speaker-converter
+git -C build/speaker-converter checkout 430e3a501e21bf8fdb615b133d2e8130b17973c1
+mkdir -p build/speaker-validation
+
+# Empty build context; packages are installed inside the disposable image.
+docker build --tag rog-audio-speaker:local - < scripts/speaker-build.Dockerfile
+
+# Synthetic tests once, then actual repository ASUS conversion/verification.
+docker run --rm --network none --read-only --cap-drop ALL \
+  --security-opt no-new-privileges --user "$(id -u):$(id -g)" \
+  --tmpfs /tmp:rw,nosuid,nodev,size=256m \
+  --mount "type=bind,src=$(pwd),dst=/repo,readonly" \
+  --mount "type=bind,src=$(pwd)/build/speaker-converter,dst=/converter,readonly" \
+  --mount "type=bind,src=$(pwd)/build/speaker-validation,dst=/output" \
+  --env ROG_SPEAKER_CONVERTER=/converter rog-audio-speaker:local sh -ec '
+    python -m unittest discover -s tests -p test_prepare_speaker_profile.py -v
+    for profile in music dynamic off; do
+      python scripts/prepare_speaker_profile.py build \
+        --xml profiles/asus/gu605mz/DEV_0285_SUBSYS_10431C63_PCI_SUBSYS_1C631043.xml \
+        --inf profiles/asus/gu605mz/dax3_ext_rtk.inf \
+        --codec 10ec0285 --subsystem 10431c63 \
+        --endpoint internal_speaker --mode normal --profile "$profile" \
+        --converter /converter --output "/output/$profile"
+      python scripts/prepare_speaker_profile.py verify --bundle "/output/$profile"
+    done
+  '
+```
+
+For a failed wrapper check, keep the same container mounts and run only its
+reported ID, for example `PYTHONPATH=tests python -m unittest -v
+test_prepare_speaker_profile.DSPPreparationTest.test_stereo_units_and_headroom`.
+Do not rerun unrelated passing tests. A failed conversion leaves no qualified
+bundle; correct its input/capability cause and retry that selected profile in
+a new directory.
+
+```bash
+# Integration unit lane; defer until the single batch review is complete.
+ROG_SPEAKER_CONVERTER=PINNED_CONVERTER \
+  python3 -m unittest discover -s tests -p test_prepare_speaker_profile.py -v
+
+# Relevant upstream lane in a source-only isolated container.
+pytest -n 0 -m "not live_machine" --ignore=tests/corpus -p no:cacheprovider \
+  tests/test_fir_math.py tests/test_biquads.py tests/test_decoders.py \
+  tests/test_golden_preset.py
+```
+
+Earlier revisions passed 39 wrapper tests and 145 upstream synthetic tests.
+Those receipts are historical, not a pass on the latest code. Later edits and
+new regressions await the parent's single integration review/test lane per the
+owner's revised workflow. Music, dynamic and off converted and verified in
+Linux; their hashes/stages are in the receipt and generated bytes remain ignored.
+
+## 5. Hand off activation and physical acceptance
+
+This tool does not install/remove config or set routing/autoload. No deployable
+routing package is claimed. First validate the loader/plugins in isolated
+EasyEffects, compare the recovery duplicate, and prepare exact snapshot,
+install and removal commands against the chosen EasyEffects version. Those
+commands belong to integration; copying into an unknown live XDG path cannot
+establish correct per-device activation.
+
+The later procedure must retain the hardware sink as default, scope correction
+to hardware identity and the actual internal analog speaker port, bypass
+headphones/HDMI, handle restart/resume, and restore the previous configuration
+on removal. Coordinate every restart and audible test. Transient node IDs or
+every stereo sink are not suitable selection rules.
+
+Physical acceptance requires calibrated microphone/level-matched response and
+distortion captures, listening preference, channel/driver operation, physical
+latency, calls/hotplug, CPU/power and resume results. Neither a bundle nor amp
+calibration messages supplies those measurements. Sonos Arc/eARC remains last.

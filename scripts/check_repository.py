@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Check tracked project docs and evidence without machine side effects."""
+import hashlib
 import json
 import re
 import subprocess
@@ -28,6 +29,20 @@ def main():
                 target = unquote(target.split('#')[0])
                 if target and not (path.parent / target).exists():
                     errors.append(f'{name}: missing link {target}')
+    manifest_path = ROOT / 'profiles/asus/gu605mz/manifest.json'
+    if manifest_path.exists():
+        try:
+            manifest = json.loads(manifest_path.read_text())
+            for record in manifest['files']:
+                path = manifest_path.parent / record['path']
+                if path.parent != manifest_path.parent or not path.is_file():
+                    errors.append('invalid ASUS manifest path')
+                    continue
+                data = path.read_bytes()
+                if len(data) != record['size_bytes'] or hashlib.sha256(data).hexdigest() != record['sha256']:
+                    errors.append(f'ASUS artifact hash/size mismatch: {path.name}')
+        except (OSError, ValueError, KeyError, TypeError):
+            errors.append('invalid ASUS provenance manifest')
     for error in errors:
         print(error)
     if errors:

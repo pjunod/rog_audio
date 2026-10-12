@@ -1,0 +1,207 @@
+{
+  "base_image": {
+    "digest": "sha256:a6e34c598f2467ed0e9a8d349809fcd8b5c603269512df273a0bb1784edc11b1",
+    "tag": "python:3.12-slim"
+  },
+  "built_image_id": "sha256:4756878a9c21a1e542ea186bfe87a2d7a4719aa43b2e74559b777af67a10d4db",
+  "conversion": {
+    "candidates": [
+      {
+        "activation_state": "not-installed",
+        "complete_equivalence": false,
+        "field_status_counts": {
+          "approximation-bypassed": 14,
+          "mapped-static-approximation": 8,
+          "not-selected": 2,
+          "unsupported": 110
+        },
+        "manifest_sha256": "21bda944a766795570bd7482be072a64edda2e325bca032ab81f6aacdb75e0dd",
+        "output_hashes": {
+          "field-mapping.json": "8456f35b3b5440200a140a3f835ef07fdc785f89d3c9ae92522fae77855cd408",
+          "irs/speaker-0b005b1e77267d49.irs": "1d30e4445384b6a03af2eaa85fae6d73ce1bf1ff986d201cdb4162e4116d5661",
+          "preset.json": "f4e1d0d45ec0f25935816a0a2517db17fd7dae8d6a644488b21beb622a5e7c58"
+        },
+        "profile": "music",
+        "result": "converted-and-verified",
+        "stages": [
+          {
+            "bypassed": false,
+            "name": "convolver#0"
+          },
+          {
+            "bypassed": true,
+            "name": "multiband_compressor#0"
+          },
+          {
+            "bypassed": true,
+            "name": "multiband_compressor#1"
+          },
+          {
+            "bypassed": false,
+            "name": "limiter#0"
+          }
+        ],
+        "voicing": "balanced"
+      },
+      {
+        "activation_state": "not-installed",
+        "complete_equivalence": false,
+        "field_status_counts": {
+          "approximation-bypassed": 14,
+          "mapped-static-approximation": 8,
+          "not-selected": 2,
+          "unsupported": 110
+        },
+        "manifest_sha256": "a46b25cee959c9fa5c971d0f27afbd57b3c7a620fcf53a7244e86d32e6a69082",
+        "output_hashes": {
+          "field-mapping.json": "026173131939835bb938de95f700fe0b959c16d4232b5dceffc197353859773d",
+          "irs/speaker-d3382f73a7b6f861.irs": "b07540de632197a15519a0951defe3dce7ae609112f727ca63a18a9afa48fb81",
+          "preset.json": "63e01a152bd9bc80ffccffd578515f5a71a8bb581dff8269d7afb707ec0919be"
+        },
+        "profile": "dynamic",
+        "result": "converted-and-verified",
+        "stages": [
+          {
+            "bypassed": false,
+            "name": "convolver#0"
+          },
+          {
+            "bypassed": true,
+            "name": "equalizer#1"
+          },
+          {
+            "bypassed": true,
+            "name": "multiband_compressor#1"
+          },
+          {
+            "bypassed": false,
+            "name": "limiter#0"
+          }
+        ],
+        "voicing": "balanced"
+      },
+      {
+        "activation_state": "not-installed",
+        "complete_equivalence": false,
+        "field_status_counts": {
+          "approximation-bypassed": 14,
+          "mapped-static-approximation": 8,
+          "not-selected": 2,
+          "unsupported": 110
+        },
+        "manifest_sha256": "2e03af8c303dabbd82aedb16f3ddb02ef994c6f6fb0d6d87689efbb48c0658ca",
+        "output_hashes": {
+          "field-mapping.json": "59aeeb0c85e37467e286bc77bc6c6b745158189e9bbbe669ad802583b1a0679a",
+          "irs/speaker-bc1028cbea482521.irs": "c0614d1875f757b1217473b2a828b5c29e8473dd4b1e1fc5236a259b3a64e6cd",
+          "preset.json": "80d6d2cfc75da225adb005d81507ce93d47cd6e4ed18c4a163c6aa836cd7e4ed"
+        },
+        "profile": "off",
+        "result": "converted-and-verified",
+        "stages": [
+          {
+            "bypassed": false,
+            "name": "convolver#0"
+          },
+          {
+            "bypassed": false,
+            "name": "limiter#0"
+          }
+        ],
+        "voicing": "balanced"
+      }
+    ],
+    "command_template": "python scripts/prepare_speaker_profile.py build --xml /inputs/DEV_0285_SUBSYS_10431C63_PCI_SUBSYS_1C631043.xml --inf /inputs/dax3_ext_rtk.inf --codec 10ec0285 --subsystem 10431c63 --endpoint internal_speaker --mode normal --profile PROFILE --converter /converter --output /output/CANDIDATE",
+    "input_hashes": {
+      "duplicate_xml": "not-verified",
+      "inf_sha256": "4d0ed7ca9905f3eb5ec4ff0bdf4fdaa55c8c5c6233cdbbdc4a240ed01cc820f9",
+      "inventory_sha256": "81c1f9d2deb926c8bd76bb48dd0b74eb86128e56514c51f5c3899bd25a835730",
+      "xml_sha256": "d6728635859309e0fecf2bdc32844ac15a32f67261e5aae8ae2e91ab01580149"
+    },
+    "script_sha256": "e66dc3c2d044d4f4462be768d5e6e66599445c3917c0046922432cbfb356f0c2"
+  },
+  "converter_commit": "430e3a501e21bf8fdb615b133d2e8130b17973c1",
+  "date": "2026-10-12",
+  "earlier_synthetic_tests": {
+    "qualification": "earlier revisions only; not latest code acceptance",
+    "upstream": {
+      "command": "pytest -n 0 -m \"not live_machine\" --ignore=tests/corpus -p no:cacheprovider tests/test_fir_math.py tests/test_biquads.py tests/test_decoders.py tests/test_golden_preset.py",
+      "passed": 145,
+      "raw_log_sha256": "9d8795a26b11b1abe50860ceebbbedc95dcbc3279c6c702a78d895c63e7c058d"
+    },
+    "wrapper": {
+      "command": "ROG_SPEAKER_CONVERTER=/converter python -m unittest discover -s tests -p test_prepare_speaker_profile.py -v",
+      "passed": 39,
+      "raw_log_sha256": "19ada75f5c8cd8e9b1ced6b9103e34997ccd9d9b620a6027a3bb34cfe8e30165"
+    }
+  },
+  "evidence_kinds": [
+    "source-review",
+    "synthetic-test",
+    "private-offline"
+  ],
+  "handoff_scans": {
+    "reachable_history": {
+      "command": "gitleaks git --redact --config .gitleaks.toml --log-opts=--all",
+      "commits_scanned": 96,
+      "result": "passed"
+    },
+    "scope": "relocated speaker clone; new audio repository integration scans remain parent-owned",
+    "staged_tree": {
+      "command": "gitleaks git --staged --redact --config .gitleaks.toml",
+      "result": "passed"
+    },
+    "whitespace": {
+      "command": "git diff --cached --check",
+      "result": "passed"
+    }
+  },
+  "isolation": {
+    "capabilities": "ALL dropped",
+    "desktop_sockets_mounted": false,
+    "filesystem": "read-only except explicit output and tmpfs",
+    "network": "none during runtime",
+    "no_new_privileges": true,
+    "owner_configuration_mounted": false,
+    "sound_devices_mounted": false
+  },
+  "limits": [
+    "Latest integration unit tests and adversarial review are deferred to the single substantial integration batch at owner request.",
+    "Final cleanup traversal changed after private conversion; conversion receipt binds the executed revision.",
+    "Generated presets/IRs/field reports remain in ignored storage. Original ASUS XML/INF publication is separately authorised and owned by integration.",
+    "Independent recovery duplicate not newly verified; inherited extractor reference-count warning remains.",
+    "EasyEffects preset loader/plugin execution not validated; verified WAV/schema is not runtime DSP proof.",
+    "FIR-only synthetic checks are not full-chain acoustic accuracy, physical latency or amplifier thermal/excursion protection.",
+    "No playback, recording, routing/control changes, service restarts or host package installation.",
+    "No Sonos or host Atmos qualification."
+  ],
+  "runtime": {
+    "architecture": "x86_64",
+    "numpy": "2.2.6",
+    "pytest": "8.3.5",
+    "python": "3.12.15",
+    "scipy": "1.15.3",
+    "xdist": "3.6.1"
+  },
+  "schema_version": 1,
+  "source_audit": {
+    "entrypoints_called": [
+      "lib.dax.parse.parse_xml",
+      "lib.preset.fir.make_fir",
+      "lib.preset.bands.make_convolver",
+      "lib.preset.bands.make_peq_eq",
+      "lib.preset.plugins.make_dialog_enhancer",
+      "lib.preset.plugins.make_autogain",
+      "lib.preset.plugins.make_multiband_compressor",
+      "lib.preset.plugins.make_regulator",
+      "lib.preset.plugins.make_limiter"
+    ],
+    "entrypoints_excluded": [
+      "upstream CLIs",
+      "discovery",
+      "autoload",
+      "reload",
+      "stale impulse cleanup",
+      "hardware probes"
+    ]
+  }
+}
