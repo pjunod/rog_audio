@@ -16,3 +16,7 @@ The extraction reader reported an incorrect-reference-count warning, retained
 in the manifest. Hashes identify the recovered files, not vendor-signature
 authentication. Linux conversion and physical speaker qualification are
 separate from publication. See the [speaker build](../../../docs/AUDIO_SPEAKER_BUILD.md).
+
+The [eSupport package comparison](../../../evidence/asus-tuning-duplicate-2026-10-12.json)
+found a second copy with identical XML bytes. Both were read from the same
+recovery image with the same reader; the extraction warning is still retained.

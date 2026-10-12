@@ -20,5 +20,10 @@
       "size_bytes": 23633,
       "sha256": "4d0ed7ca9905f3eb5ec4ff0bdf4fdaa55c8c5c6233cdbbdc4a240ed01cc820f9"
     }
-  ]
+  ],
+  "duplicate_comparison": {
+    "receipt": "../../../evidence/asus-tuning-duplicate-2026-10-12.json",
+    "eSupport_xml_matches": true,
+    "independent_reader": false
+  }
 }

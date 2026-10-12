@@ -17,6 +17,8 @@ being addressed before the final Linux acceptance pass.
 | Atmos | Eager frame fetch advances metadata before final PCM block renders | Explicit attributed patch of pinned upstream dependency |
 | Atmos | JOC matrix timeslot wraps at channel count instead of frame length | Patch to frame-size/subband count and add dependency regression |
 | Atmos | Sparse-decoder flag observed before matrix expansion updates it | Validate after rendering before publishing a successful result |
+| Atmos | Persistent metadata and changing object/channel counts were not distinguished | Track payload presence and reject unsupported renderer reconfiguration |
+| Atmos | Relative build output resolved in the wrong directory | Resolve from caller before changing directories |
 | Atmos | Output rollback unlinks a path without confirming file identity | Preserve unrelated replacements during failure cleanup |
 | Documentation | Old display provenance still called published OEM files private | Update migration note and stale README label |
 

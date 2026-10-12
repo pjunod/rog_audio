@@ -93,3 +93,9 @@ The recovered XML and matching INF are now available in
 [profiles/asus/gu605mz](../profiles/asus/gu605mz/README.md), at the owner’s
 explicit request. The manifest preserves hashes and the extraction warning.
 Raw diagnostics, the recovery index and access configuration stay outside Git.
+
+A [second extraction from the eSupport package](../evidence/asus-tuning-duplicate-2026-10-12.json)
+matched the DriverStore XML byte for byte on 2026-10-12. The temporary mount
+was read-only and was unmounted. This strengthens cross-package consistency,
+but uses the same recovery image and reader, so it is not independent-reader
+or vendor-signature authentication. The reference-count warning remains.
