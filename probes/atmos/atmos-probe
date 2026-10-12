@@ -60,7 +60,6 @@ def main():
             report.write_text(json.dumps({'schema_version': 1, 'status': 'resource-limit-or-process-failure',
                                          'evidence_class': 'private-offline', 'exit_code': code}) + '\n')
             code = 2
-        published = []
         try:
             # Copy WAV privately to its own filesystem if outputs have different parents.
             if code == 0 and args.output:
@@ -69,12 +68,12 @@ def main():
                     import shutil
                     shutil.copyfile(wav, copy)
                     os.link(copy, targets[1])
-                    published.append(targets[1])
             os.link(report, targets[0])
         except OSError:
-            for path in published:
-                path.unlink()
-            print('publication failed: output collision or filesystem error', file=sys.stderr)
+            # No public unlink: even an inode check followed by unlink can race
+            # with a replacement. A successfully linked WAV may remain; preserve
+            # it and any racer-owned replacement rather than risk deleting data.
+            print('publication failed; a linked WAV may remain; no public paths removed', file=sys.stderr)
             return 2
         print(json.loads(report.read_text())['status'])
         return 0 if code == 0 else 2

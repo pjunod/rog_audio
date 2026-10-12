@@ -25,7 +25,7 @@ code=0
 docker run --rm --name "rog-atmos-$(basename "$scratch")" --network none \
     --memory 1g --pids-limit 128 -v "$scratch:/work" -w /work "$tag" \
     sh -c 'set -eu
-        sh probe/build.sh --source /work/Cavern --output /work/build
+        sh probe/build.sh --source /work/Cavern --output build
         ffmpeg -hide_banner -loglevel error -f lavfi -i sine=frequency=997:sample_rate=48000:duration=0.16 -c:a eac3 -b:a 768k -ac 6 -f eac3 /work/bed.eac3
         ffmpeg -hide_banner -loglevel error -f lavfi -i sine=frequency=997:sample_rate=48000:duration=0.16 -c:a eac3 -b:a 192k -ac 2 -f eac3 /work/stereo.eac3
         python3 probe/test_probe.py --probe /work/build/atmos-probe --bed-fixture /work/bed.eac3 --stereo-fixture /work/stereo.eac3 --report /work/regression.json "$@"

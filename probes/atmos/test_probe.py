@@ -7,6 +7,8 @@ from pathlib import Path
 import struct
 import subprocess
 import tempfile
+import runpy
+from unittest import mock
 import unittest
 
 PROBE = None
@@ -153,6 +155,46 @@ class ProbeTests(unittest.TestCase):
         self.assertEqual(receipt['status'], 'unsupported')
         self.assertEqual(receipt['error'], 'upstream_feature_stereo')
         self.assertFalse(output.exists())
+
+    def regression(self, name):
+        result = subprocess.run(['dotnet', str(PROBE.parent/'regressions'/'BlockBufferRegression.dll'), name],
+                                capture_output=True, text=True, timeout=30)
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn(name + ': pass', result.stdout)
+
+    def test_block_buffer_metadata_boundary(self):
+        self.regression('block-buffer')
+
+    def test_joc_timeslot_frame_boundary(self):
+        self.regression('joc-timeslots')
+
+    def test_late_sparse_detection(self):
+        self.regression('late-sparse')
+
+    def test_oamd_freshness_and_stable_configuration(self):
+        self.regression('metadata-state')
+
+    def test_publication_racer_preserved(self):
+        launcher = runpy.run_path(str(PROBE))
+        source = self.root/'scene.json'; source.write_text('{}')
+        report, output = self.root/'report.json', self.root/'output.wav'
+        original_link = __import__('os').link
+        def decoder(command, **kwargs):
+            Path(command[command.index('--report')+1]).write_text('{"status":"synthetic-rendered"}')
+            Path(command[command.index('--output')+1]).write_bytes(b'generated')
+            return subprocess.CompletedProcess(command,0)
+        def raced_link(src,dest):
+            if Path(dest) == output:
+                original_link(src,dest)
+                output.unlink()  # A competing writer replaces the published inode.
+                output.write_bytes(b'racer-owned')
+            else:
+                raise FileExistsError('competing report publication')
+        with mock.patch('sys.argv',[str(PROBE),'render','--input',str(source),'--report',str(report),'--output',str(output)]), \
+             mock.patch('subprocess.run',side_effect=decoder), mock.patch('os.link',side_effect=raced_link):
+            self.assertEqual(launcher['main'](),2)
+        self.assertEqual(output.read_bytes(),b'racer-owned')
+        self.assertFalse(report.exists())
 
     def test_generated_eac3_bed(self):
         if BED is None:

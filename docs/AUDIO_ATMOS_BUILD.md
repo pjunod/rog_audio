@@ -18,6 +18,14 @@ automation, an offline inspect/render CLI, synthetic scenes/regressions and a
 [source-bound receipt](../evidence/audio-atmos-build-2026-10-12.json) separates
 compilation, retained tests and the final default 5.1 E-AC-3 bed-render check.
 The bed result is labelled explicitly; no opt-in permission is required.
+Independent source review found PCM/metadata boundary and JOC timeslot defects;
+three attributed patches now apply to a disposable verified source copy.
+The [patch manifest](../probes/atmos/source_manifest.json) preserves the original
+pin and declares the modified dependency. The [review-fix compiler receipt](../evidence/audio-atmos-review-fixes-2026-10-12.json)
+is separate from the pending final test run. Initial OAMD is required; later
+reuse is reported accurately, and incompatible array configurations or sparse
+workarounds are rejected. Publication errors preserve public paths because a
+conditional inode check followed by unlink would still race with a replacement.
 Stereo E-AC-3 is rejected upstream, and the generated mono fixture fails.
 JOC, TrueHD, binaural, realtime integration and physical acceptance remain
 separate capabilities with documented limits.

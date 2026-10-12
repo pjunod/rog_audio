@@ -10,7 +10,34 @@
     "target_framework": "netstandard2.1",
     "licence": "https://github.com/VoidXH/Cavern/blob/7d85d1880666ca5ea323848cff47ce7f50b29f7d/LICENSE.md",
     "author": "Bence Sg\u00e1netz (VoidX)",
-    "nuget_dependencies": []
+    "nuget_dependencies": [],
+    "modified_upstream_source": true,
+    "patches": [
+      {
+        "path": "patches/0001-block-buffer-exact-read.patch",
+        "sha256": "600e941247b4f18db8cddfeb7b16b537e4ba78f74cd384b794b3ae1c8f552f05",
+        "reason": "Preserve current-frame metadata/LastFetchStart until its final PCM block has been consumed.",
+        "original_file_sha256": "3edbdce14b799dad809725ab5270c4fa93aca89cd7f2abf9196e7b262703a2ef",
+        "patched_file_sha256": "185bdeeb387e092548640e00d5ea93d5809eab281fa33a02f3df47a64193b6b2",
+        "source_file": "Cavern.Format/Utilities/BlockBuffer.cs"
+      },
+      {
+        "path": "patches/0002-joc-timeslot-frame-boundary.patch",
+        "source_file": "Cavern.Format/Decoders/EnhancedAC3/JointObjectCodingApplier.cs",
+        "sha256": "4e2beb50f9093a993af9cba3353c0cb615391a6ff212bb925b415a79c35a79be",
+        "reason": "Wrap QMF timeslots at the PCM frame boundary, not the input channel count.",
+        "original_file_sha256": "bc77eb5dc73c3e25ac60a9365caaf4c4eceaeda2a36b31638c4064e05c5e5a4e",
+        "patched_file_sha256": "9b781725eb792da286f1a7cf5cd66e1f679e577f40ca7b3e4d3249623a628977"
+      },
+      {
+        "path": "patches/0003-emdf-oamd-presence.patch",
+        "source_file": "Cavern.Format/Decoders/EnhancedAC3/ExtensibleMetadataDecoder.cs",
+        "sha256": "19d9cb1cddd6613ef5c7bd41947034de48571c9cde2767045d23b948a52b3b5b",
+        "reason": "Expose current-frame OAMD presence; retained object counts are not payload freshness.",
+        "original_file_sha256": "c6030dc062dcb2590d70b3b98c681b578ba2f55f3c78984e87e84620ce99433e",
+        "patched_file_sha256": "b56efa31f1357c41cb99a3a6bbb6dde3c282621fbdd8cae9ade7f384d4269475"
+      }
+    ]
   },
   "sdk_version": "8.0.414",
   "container": "mcr.microsoft.com/dotnet/sdk:8.0.414-bookworm-slim@sha256:ff8311847c54c04d1a14c488362807997d59b61372da5095a95f89cbcda7f9b7",

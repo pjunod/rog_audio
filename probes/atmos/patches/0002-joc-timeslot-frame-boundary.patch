@@ -1,0 +1,14 @@
+# Cavern local correction by Codex Agent; original code: Bence Sgánetz (VoidX).
+# Base: 7d85d1880666ca5ea323848cff47ce7f50b29f7d. Upstream licence retained.
+# Wrap QMF timeslots at the PCM frame boundary, not the input channel count.
+--- a/Cavern.Format/Decoders/EnhancedAC3/JointObjectCodingApplier.cs
++++ b/Cavern.Format/Decoders/EnhancedAC3/JointObjectCodingApplier.cs
+@@ -127,7 +127,7 @@
+             }
+             taskWaiter.Wait();
+ 
+-            if (++timeslot == input.Length) {
++            if (++timeslot == frameSize / QuadratureMirrorFilterBank.subbands) {
+                 timeslot = 0;
+             }
+             return timeslotCache;

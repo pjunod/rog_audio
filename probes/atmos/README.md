@@ -1,7 +1,7 @@
 # Atmos probe — offline Cavern inspection and rendering
 
-**Status:** pinned libraries and CLI built on Linux x86_64 on 2026-10-12;
-synthetic renderer exercised; E-AC-3 JOC/reference qualification pending.
+**Status:** patched libraries, CLI and source regressions compiled on Linux
+x86_64 on 2026-10-12; post-review tests and JOC/reference qualification pending.
 
 This probe processes explicit files and writes new JSON/WAV outputs. It never
 opens a sound device, discovers personal media, registers with a desktop or
@@ -38,7 +38,20 @@ The libraries use `netstandard2.1`; the harness uses `net8.0`. Neither library
 has a NuGet package dependency. Builds preserve the upstream licence in the
 output. Cavern's first clean build produced two CS0649 warnings; the harness
 uses warnings as errors. The build refuses a wrong/dirty source revision,
-wrong SDK or existing output directory.
+wrong SDK or existing output directory. Relative output paths are resolved
+from the caller before changing directory, and final symlinks remain collisions.
+
+The original source pin is unchanged. The build archives that verified pristine
+commit into a disposable copy, verifies original file/patch hashes and applies
+three local corrections: [PCM metadata boundary](patches/0001-block-buffer-exact-read.patch),
+[JOC timeslot wrap](patches/0002-joc-timeslot-frame-boundary.patch) and
+[OAMD payload presence](patches/0003-emdf-oamd-presence.patch). It verifies the
+patched file hashes before compilation. The original checkout is never edited.
+[SHA256SUMS](SHA256SUMS) was created deliberately for these patch bytes;
+[source manifest](source_manifest.json) and runtime reports identify a patched
+dependency. Original authorship/licence remains Bence Sgánetz (VoidX); the
+local changes are attributed to Codex Agent. Neither upstream acceptance nor
+JOC fidelity is implied.
 
 ## Generate and process a synthetic scene
 
@@ -90,9 +103,16 @@ extension selects the synthetic schema.
 
 The pinned `EnhancedAC3Decoder` parses JOC/EMDF. The adapter observes the exact
 internal `Extensions.HasObjects` branch using reflection at this source pin;
-changes to those internals fail closed. Object rendering requires JOC/OAMD
-with bounded object counts in every decoded frame and rejects sparse JOC
-workarounds. It does not claim metadata fidelity from that check. Successful
+changes to those internals fail closed. Object rendering requires initially observed OAMD and current JOC with bounded
+object counts. The patched parser tracks actual OAMD payload presence separately
+from its persisted instance: later frames may reuse OAMD state, and reports
+count `oamd_fresh_object_frames` and `oamd_reused_object_frames`. Object/JOC
+counts, JOC channels, bed count and LFE placement must remain compatible with
+the initially allocated renderer arrays. Incompatible configuration changes
+are rejected before those arrays are consumed. Sparse JOC workarounds are
+checked both during frame observation and after rendering, because the flag
+can first become true during matrix expansion in the final frame. These checks
+do not establish metadata fidelity. Successful
 JOC results carry `joc-rendered-unqualified`, never a certification/acceptance
 label. Reference comparison is still required, including height and motion.
 
@@ -102,7 +122,8 @@ returns `bed-fallback-rendered`, with
 Update/Dispose code cannot be used safely at this pin. The adapter sorts
 input channels to match the decoder's interleaved order. It preserves
 conventional channels, not Atmos objects. A generated 5.1 stream successfully
-exercised this path. No opt-in permission is required for supported bed input. The pinned decoder rejects stereo mode explicitly and
+exercised this path. No opt-in permission is required for supported bed input.
+The pinned decoder rejects stereo mode explicitly and
 fails on the generated mono fixture; these are recorded capabilities rather
 than silently substituted decoders.
 
@@ -126,7 +147,10 @@ is instead bounded by the validated sample/channel counts (under 139 MiB).
 JSON and WAV are privately prepared and published with exclusive hard links.
 Existing files/directories and broken symlinks collide. A raced destination
 fails publication. Failed decoding publishes its error report but no WAV;
-failed multi-file publication removes only its newly published WAV. Keep
+a later publication collision may leave an already linked WAV. Publication
+returns an error and never unlinks a public target. An inode check followed by
+unlink is still racy, so this preserves both partial output and any replacement
+made by another writer; it does not promise an atomic two-file transaction. Keep
 reports, inputs and generated outputs from personal media private.
 
 ## Synthetic regression and qualification boundaries
@@ -201,5 +225,12 @@ probes/atmos/ci.sh --report stereo-retry.json --test test_unsupported_stereo_eac
 ```
 
 Repeat `--test` to select several method IDs. Unknown IDs fail instead of
-silently running an empty suite. The complete suite has ten methods; without
+silently running an empty suite. Four additional source-bound regressions exercise the exact PCM/metadata read
+boundary, QMF timeslot wrap across 256/512/768/1536-sample frames, late sparse
+flag detection and initial/fresh/reused OAMD with stable renderer configuration.
+A publication regression simulates a competing writer replacing the linked
+WAV before report collision and checks that its inode/data remains. These
+regressions use generated arrays and reflection, with no Dolby payload.
+
+The complete suite has fifteen methods; without
 explicit generated codec fixtures, those two methods are recorded as skips.

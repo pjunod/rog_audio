@@ -8,6 +8,7 @@
     <AssemblyName>AtmosProbe</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="regressions/**/*.cs" />
     <Reference Include="Cavern"><HintPath>$(CavernPath)/Cavern/bin/Release/netstandard2.1/Cavern.dll</HintPath></Reference>
     <Reference Include="Cavern.Format"><HintPath>$(CavernPath)/Cavern.Format/bin/Release/netstandard2.1/Cavern.Format.dll</HintPath></Reference>
   </ItemGroup>

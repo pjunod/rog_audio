@@ -24,6 +24,7 @@ static class Program {
     static readonly string[] Surround = ["FL", "FR", "FC", "LFE", "BL", "BR", "SL", "SR", "TFL", "TFR", "TBL", "TBR"];
     static Dictionary<string, object?> report = new() {
         ["schema_version"] = 1, ["tool_version"] = "0.1.0", ["cavern_source"] = Pin,
+        ["modified_upstream_source"] = true, ["cavern_patches"] = new[]{"0001-block-buffer-exact-read", "0002-joc-timeslot-frame-boundary", "0003-emdf-oamd-presence"},
         ["status"] = "pending", ["evidence_class"] = "private-offline",
         ["container"] = null, ["codec"] = null, ["atmos_signalling"] = null,
         ["decoder"] = null, ["object_metadata_consumed"] = null,
@@ -182,6 +183,8 @@ static class Program {
             report["object_metadata_consumed"] = false;
             report["decoded_frames"] = decoder.Frames;
             report["object_frames"] = decoder.ObjectFrames;
+            report["oamd_fresh_object_frames"] = decoder.FreshOamdFrames;
+            report["oamd_reused_object_frames"] = decoder.ReusedOamdFrames;
             report["status"] = decoder.ObjectFrames > 0 ? "joc-inspected-unqualified" : "bed-only";
             Warnings.Add("Signalling describes parsed frames; absence is not an independent bitstream metadata audit.");
             return;
@@ -193,10 +196,13 @@ static class Program {
         using Renderer renderer = objects ? new EnhancedAC3Renderer(decoder) : new BedRenderer(decoder);
         listener.AttachSources(renderer.Objects);
         Render(listener,output,scan.samples,layout,_=>{});
+        if (objects) decoder.VerifyNoSparse();
         if (objects && decoder.ObjectFrames != scan.frames) throw new Unsupported("object_metadata_not_continuous");
         report["atmos_signalling"] = objects ? "Cavern-parsed-JOC" : null;
         report["object_metadata_consumed"] = objects;
         report["decoded_frames"] = decoder.Frames; report["object_frames"] = decoder.ObjectFrames;
+        report["oamd_fresh_object_frames"] = decoder.FreshOamdFrames;
+        report["oamd_reused_object_frames"] = decoder.ReusedOamdFrames;
         report["status"] = objects ? "joc-rendered-unqualified" : "bed-fallback-rendered";
         Warnings.Add(objects ? "No lawfully supplied JOC reference comparison; this path remains unqualified." : "Explicit conventional-channel fallback; not Atmos rendering.");
     }
@@ -237,9 +243,12 @@ sealed class ObservedDecoder(BlockBuffer<byte> reader) : EnhancedAC3Decoder(read
     static readonly PropertyInfo ExtensionsProperty = typeof(EnhancedAC3Decoder).GetProperty("Extensions",BindingFlags.Instance|BindingFlags.NonPublic)!;
     public int Frames { get; private set; }
     public int ObjectFrames { get; private set; }
+    public int FreshOamdFrames { get; private set; }
+    public int ReusedOamdFrames { get; private set; }
     public bool RequireObjects, RejectObjects;
     bool seeded;
     int expectedFrames;
+    readonly ObjectFrameGuard guard = new();
     object Extensions => ExtensionsProperty.GetValue(this)!;
     static object Value(object obj,string name) => obj.GetType().GetProperty(name)!.GetValue(obj)!;
     public bool HasObjects => (bool)Value(Extensions,"HasObjects");
@@ -249,17 +258,21 @@ sealed class ObservedDecoder(BlockBuffer<byte> reader) : EnhancedAC3Decoder(read
         if (HasObjects) {
             ObjectFrames++;
             object oamd = Value(Extensions,"OAMD"), joc = Value(Extensions,"JOC");
-            int objects = (int)Value(oamd,"ObjectCount"), codingObjects = (int)Value(joc,"ObjectCount");
-            if (objects is < 1 or > 64 || codingObjects is < 1 or > 64 || (bool)Value(joc,"HadSparse")) throw new Unsupported("unsupported_object_metadata");
+            if ((bool)Value(Extensions,"HasOAMD")) FreshOamdFrames++; else ReusedOamdFrames++;
+            guard.Validate((bool)Value(Extensions,"HasOAMD"), (int)Value(oamd,"ObjectCount"),
+                (int)Value(joc,"ObjectCount"), (int)Value(joc,"ChannelCount"), (byte)Value(oamd,"Beds"),
+                (int)oamd.GetType().GetMethod("GetLFEPosition")!.Invoke(oamd,null)!);
+            VerifyNoSparse();
             if (RejectObjects) throw new Unsupported("joc_appeared_in_bed_fallback");
         } else if (RequireObjects) throw new Unsupported("object_metadata_missing_frame");
     }
+    public void VerifyNoSparse() => ObjectFrameGuard.CheckSparse((bool)Value(Value(Extensions,"JOC"),"HadSparse"));
     protected override float[] DecodeFrame() {
         float[] result = base.DecodeFrame();
         // Finished is set while reading ahead to the next header. The last valid
         // frame still has samples; the next call returns a synthetic zero frame.
-        // BlockBuffer eagerly fetches that zero frame even on an exact-length
-        // read. Observe only the syncframes counted by the validated scanner.
+        // The source patch prevents exact-read prefetch. Still exclude any EOF
+        // zero fill beyond the syncframes counted by the validated scanner.
         if (seeded && Frames < expectedFrames) Observe();
         return result;
     }
