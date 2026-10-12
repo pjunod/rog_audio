@@ -74,3 +74,13 @@ have read-only GitHub permissions, no credentials persisted by checkout, and
 no automatic push/PR trigger. Runtime tests do not mount sound devices or
 session sockets. Synthetic logs can appear in job output; personal captures
 and credentials cannot enter that workflow.
+
+The installation lane runs file, source-staging and native routing tests through
+`python3 scripts/validate_speaker_install.py --stage all`. Select `install`,
+`source` or `routing`, optionally with repeated `--test-id` arguments, to retry
+only failed cases. Missing compiler/source prerequisites and skipped tests
+fail the lane. The manually dispatched job stages only pinned public source.
+Real EasyEffects graph acceptance has two separate selectors and uses the
+retained compiled image and source-built kits; see
+[speaker installation](SPEAKER_INSTALL.md). It is deliberately separate from
+the unit lane so a unit retry does not rebuild or rerun both runtime cases.

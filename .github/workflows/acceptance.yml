@@ -6,10 +6,10 @@ on:
         description: 'Reviewed lane to run; do not repeat already passing lanes'
         required: true
         type: choice
-        options: [all, repository, speaker, latency, atmos]
+        options: [all, repository, speaker, installation, latency, atmos]
         default: all
       selection:
-        description: 'all, or a single speaker/latency stage; use unit with test_ids'
+        description: 'all, or a stage from the selected lane; use test_ids for failed cases'
         required: true
         default: all
       test_ids:
@@ -81,3 +81,33 @@ jobs:
           bash probes/atmos/ci.sh --report build/atmos-result.json "${args[@]}"
       - if: always()
         run: if test -f build/atmos-result.json; then cat build/atmos-result.json; fi
+
+  installation:
+    if: inputs.lane == 'all' || inputs.lane == 'installation'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    env:
+      SELECTION: ${{ inputs.selection }}
+      TEST_IDS: ${{ inputs.test_ids }}
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - name: Stage pinned public source
+        shell: bash
+        run: |
+          mkdir -p build
+          git init build/easyeffects-git
+          git -C build/easyeffects-git remote add origin https://github.com/wwmm/easyeffects.git
+          git -C build/easyeffects-git fetch --depth=1 origin 6d9b1220d3dcebb154ba759a05600662bc0af549
+          git -C build/easyeffects-git checkout --detach FETCH_HEAD
+          python3 scripts/build_easyeffects_runtime.py source --source build/easyeffects-git --output build/easyeffects-source
+      - name: Run selected reviewed tests
+        shell: bash
+        run: |
+          export ROG_EASYEFFECTS_GIT="$PWD/build/easyeffects-git"
+          export ROG_EASYEFFECTS_SOURCE="$PWD/build/easyeffects-source"
+          read -r -a ids <<< "$TEST_IDS"
+          args=()
+          for id in "${ids[@]}"; do args+=(--test-id "$id"); done
+          python3 scripts/validate_speaker_install.py --stage "$SELECTION" "${args[@]}"
