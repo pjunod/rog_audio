@@ -2,7 +2,6 @@
 // Synthetic PipeWire Device with a real Route parameter; no ALSA/device access.
 #include <pipewire/pipewire.h>
 #include <spa/monitor/device.h>
-#include <pipewire/impl.h>
 #include <spa/param/route.h>
 #include <spa/pod/builder.h>
 #include <spa/utils/hook.h>
@@ -76,9 +75,6 @@ int main() {
   d.info={.version=SPA_VERSION_DEVICE_INFO,.change_mask=SPA_DEVICE_CHANGE_MASK_PROPS|SPA_DEVICE_CHANGE_MASK_PARAMS,.flags=0,.props=&d.props->dict,.params=&d.parameter,.n_params=1};
   d.loop=pw_main_loop_new(nullptr);
   auto* context=pw_context_new(pw_main_loop_get_loop(d.loop),nullptr,0);
-  if(!pw_context_load_module(context,"libpipewire-module-client-device",nullptr,nullptr)) {
-    std::cerr<<"SPA device export module unavailable"<<std::endl;return 2;
-  }
   auto* core=pw_context_connect(context,nullptr,0);
   if(!core)return 2;
   auto* proxy=pw_core_export(core,SPA_TYPE_INTERFACE_Device,&d.props->dict,&d.device,0);

@@ -249,9 +249,9 @@ The real EasyEffects loader and plugins process generated audio through an
 exported synthetic SPA Device Route and null sinks. PipeWire's
 [client-device module](https://github.com/PipeWire/pipewire/blob/1.6.8/src/modules/module-client-device.c)
 exports `SPA_TYPE_INTERFACE_Device` locally and exposes a PipeWire Device to
-remote observers; the fixture implements SPA info/result/sync methods and loads
-that module in its private client context; the pinned server configuration
-already loads it. Each laptop's emitted preset/IR
+remote observers; the fixture implements SPA info/result/sync methods. The pinned
+client and server configurations already load that module, so the fixture uses
+them without duplicate registration. Each laptop's emitted preset/IR
 gets a separate receipt. The runner observes ordinary app interception,
 HDMI/USB choices, automatic loading with two route profile-device indices,
 default changes, route bypass before delayed autoload,
