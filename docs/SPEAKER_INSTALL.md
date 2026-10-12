@@ -241,7 +241,11 @@ docker run --rm --network none --read-only --cap-drop ALL \
 ```
 
 The real EasyEffects loader and plugins process generated audio through an
-exported synthetic Device Route and null sinks. Each laptop's emitted preset/IR
+exported synthetic SPA Device Route and null sinks. PipeWire's
+[client-device module](https://github.com/PipeWire/pipewire/blob/1.6.8/src/modules/module-client-device.c)
+exports `SPA_TYPE_INTERFACE_Device` locally and exposes a PipeWire Device to
+remote observers; the fixture implements SPA info/result/sync methods and loads
+that module in its private client/server contexts. Each laptop's emitted preset/IR
 gets a separate receipt. The runner observes ordinary app interception,
 HDMI/USB choices, automatic loading with two route profile-device indices,
 default changes, route bypass before delayed autoload,

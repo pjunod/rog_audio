@@ -105,7 +105,8 @@ def acceptance(kit_path,case,output,binary,mock,player):
     settings=kit.settings(b'',manifest).replace(b'presetsAutoloadInterval=0',b'presetsAutoloadInterval=1000')
     target=locations['config']/'db/easyeffectsrc';kit.mkdir(target.parent);kit.replace(target,settings)
     conf=state/'config/pipewire/pipewire.conf.d/99-private.conf';kit.mkdir(conf.parent)
-    conf.write_text('context.properties = { core.name = "'+environment['PIPEWIRE_REMOTE']+'" }\n')
+    conf.write_text('context.properties = { core.name = "'+environment['PIPEWIRE_REMOTE']+'" }\n'
+                    'context.modules = [ { name = libpipewire-module-client-device } ]\n')
     graph=Graph(output,environment);node_name=manifest['binding']['node_name'];observations=[]
     try:
         graph.start('pipewire',['pipewire']);graph.until(lambda _:True)
@@ -116,7 +117,7 @@ def acceptance(kit_path,case,output,binary,mock,player):
         selector=selectors.DefaultSelector();selector.register(device.stdout,selectors.EVENT_READ)
         if not selector.select(15):raise GraphError('synthetic device did not export')
         line=device.stdout.readline().decode().strip();selector.close()
-        if not line.startswith('device '):raise GraphError('unexpected synthetic device response')
+        if not line.startswith('device '):raise GraphError('synthetic SPA device export failed before bound ID')
         device_id=int(line.split()[1])
         for name in (node_name,'rog-hdmi','rog-usb'):
             properties={'factory.name':'support.null-audio-sink','node.name':name,'node.description':'Synthetic graph sink',
