@@ -12,6 +12,36 @@ change the physical default sink, set amplifier controls, restart services,
 play audio or record sound. Coordinate the later runtime start and audible
 acceptance window separately.
 
+## Download v0.2.0 and select your kit
+
+The [v0.2.0 release](https://github.com/pjunod/rog_audio/releases/tag/v0.2.0)
+contains the reviewed runtime package with corresponding source, two kits and
+SHA256 checksums. Use an owned directory outside any existing checkout.
+
+```bash
+# Obtain versioned tools and matching assets; requires GitHub CLI.
+git clone --branch v0.2.0 https://github.com/pjunod/rog_audio.git rog-audio-0.2.0
+cd rog-audio-0.2.0
+mkdir delivery
+gh release download v0.2.0 --repo pjunod/rog_audio --dir delivery \
+  --pattern 'rog-audio-speaker-*.tar.gz' --pattern SHA256SUMS
+(cd delivery && sha256sum --check SHA256SUMS)
+tar -xzf delivery/rog-audio-speaker-runtime-0.2.0.tar.gz -C delivery
+tar -xzf delivery/rog-audio-speaker-kits-0.2.0.tar.gz -C delivery
+```
+
+Both checksum entries must report `OK`. The runtime directory is
+`delivery/runtime`. Choose `delivery/kits/asus` for the GU605MZ or
+`delivery/kits/thinkpad` for the first-generation X1 Extreme. These are separate
+music/balanced candidates bound to the inspected device and route. Use those
+paths in place of `RUNTIME_ARTIFACT` and `KIT` below. The `.deb` SHA256 is
+`089ae964c8e1b75281d589a6cd52a3a25d358f9443112162fea616b69b5904d7`.
+
+Run the read-only prerequisite inspection in §5 and retain the fresh inventory
+from §2 before the coordinated install. The kits and package do not start audio
+automatically. Read §3–4 before installation so the private snapshot and removal
+commands are ready. Keep the corresponding source and notices with the package.
+
 ## 1. Bind the hardware and runtime
 
 The kit binds the Realtek codec `10ec0285` to ASUS subsystem `10431c63` or

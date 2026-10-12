@@ -58,53 +58,62 @@ the focused retry passed. The final documentation/evidence delta receives
 its own integrity/privacy check; passing audio suites are retained by source
 hash and are not repeated.
 
-## Second implementation batch — acceptance preparation
-
-PR 2 combines model-specific Lenovo preparation, original source publication,
-bounded recovery findings and the speaker runtime/installation work. The
-completed batch must receive independent adversarial review before its tests.
-The runtime builder has compiled and packaged the candidate and prepared an
-inactive kit for each laptop. Review and test results are not yet recorded.
-
-The required coverage includes shared ASUS/Lenovo preparation regressions,
-file installation and removal, pinned source staging, native target ownership
-and route transitions, and a real isolated EasyEffects graph for each emitted
-speaker preset. Those graph tests use generated audio and private session
-services, without sound devices or the owner's desktop sockets. Source hashes
-will bind inherited receipts and new results to the merge candidate. Unchanged
-latency and Atmos suites retain their first-batch acceptance and are not rerun.
-
-The package and both kits remain inactive. Physical headphone transitions,
-resume, listening, power and latency measurements require the coordinated
-laptop window after delivery.
-
+## Second implementation batch — final disposition
 
 Three independent agents reviewed the completed PR 2 source at `661dafb`
 without executing tests. The Lenovo/source-provenance lane found no actionable
-defects. The other two lanes requested these fixes before acceptance:
+defects. All seven findings below were fixed and cleared focused source
+re-review at `155d003` before unit execution.
 
-| Area | Finding | State |
+| Area | Finding | Resolution |
 |---|---|---|
-| Native routing | Delayed autoload ignores the route profile-device index on multi-output ALSA devices | Fix in progress; add automatic preset-selection regression |
-| Native routing | Ignoring a still-live stream drops target ownership without restoring metadata | Fix in progress; distinguish from actual removal/ID reuse |
-| Runtime acceptance | Relinking after quit does not prove exact typed metadata restoration | Add pre-interception metadata and exact post-quit comparison |
-| File recovery | Backup files/directories are not durable before the journal allows replacement | Flush complete snapshot and archive before mutations |
-| File installation | Settings payload can precede a newer snapshot preimage | Derive settings from verified backup bytes |
-| Dependency inspection | Package names collapse architecture and multiple providers | Fixed in `dbb1dba`; source re-review passed, nine regression cases pending execution |
-| Public status | Snapshot lifecycle state is returned without enum validation | Reject unknown state before public output |
+| Native routing | Delayed autoload ignored route profile-device index | Filter exact route index; unrelated output cannot select a preset |
+| Native routing | A still-live stream becoming ignored lost target ownership | Restore owned metadata before dropping its observation proxy |
+| Runtime acceptance | Relinking after quit did not prove typed metadata restoration | Assert original pair, intercepted pair and exact restored types/values |
+| File recovery | Backups were not durable before replacement | Sync backup bytes, directories and publication parents before mutations |
+| File installation | Settings could precede the snapshot preimage | Derive settings from verified backup bytes |
+| Dependency inspection | Names collapsed architectures and providers | Keep architecture-aware real/virtual provider lists |
+| Public status | Snapshot lifecycle state lacked validation | Validate the fixed lifecycle enum before public output |
 
-Native fixes require a replacement binary/package. The earlier compiler and
-APT receipts describe their recorded hashes and are retained as historical
-evidence; acceptance will bind the final source and artifact bytes. No PR 2
-unit/runtime tests have run as of this review entry.
+The final package passed read-only APT simulation on both laptops with zero
+upgrades/removals and unchanged installed-package inventories. Historical
+pre-fix compiler/APT receipts remain explicitly superseded.
 
+## PR 2 acceptance — passing sources retained
 
-All seven findings cleared focused source re-review at `155d003`. Installer
-regressions now total 12, native routing cases total 20, and the inspector has
-nine cases. Test execution is authorized on this revision; results follow.
-Repository integrity passed. Whitespace validation initially flagged valid
-final blank context lines in the two EasyEffects patch files; the reviewed
-`51a794d` attribute-only correction passed its focused retry with patch bytes
-unchanged. Gitleaks found no leaks in the public candidate tree or new commit
-history through `51a794d`. Later receipts/documentation receive a final delta
-check without repeating passing audio tests.
+The shared importer passed 55 cases and dependency inspection nine, each once.
+Source staging passed one case and installation 12. Native routing initially
+had 20 execution errors because its private container mount was noexec; only
+those 20 failed cases were retried with an executable private mount and passed.
+All 97 affected unit cases passed with zero skips. Their source-hash manifests
+match the merge candidate. Unchanged latency 42 and Atmos 15 passes from PR 1
+were retained without reruns.
+
+Both device graph cases passed ten assertions on `ca0e755`, using the final
+package and each delivered kit. They cover automatic preset/IR/plugin loading,
+ordinary interception, explicit HDMI/USB targets, default changes, immediate
+speaker-route bypass, stock namespace isolation and exact typed restoration.
+The ASUS case required four failed attempts before its pass: wrong fixture
+export interface, duplicate server module, duplicate client module, then an
+observation timeout with no retained precise stage. Each fixture correction
+cleared focused review; the final retry added private writable state and stage
+diagnostics. The earlier state warning was not proven to cause the timeout.
+The ThinkPad case passed on its first attempt. No assertions were relaxed,
+no passing cases were repeated, and production bytes remained unchanged.
+
+Receipts: [shared/importer and inspector](../evidence/speaker-importer-inspector-acceptance-2026-10-12.json),
+[source/install/native units](../evidence/speaker-installation-unit-validation-2026-10-12.json),
+[compiler](../evidence/speaker-runtime-build-2026-10-12.json),
+[final package simulation](../evidence/speaker-package-reviewed-simulation-2026-10-12.json)
+and [real isolated graphs](../evidence/speaker-runtime-graph-validation-2026-10-12.json).
+Raw logs remain private and are bound by hashes.
+
+Repository integrity passed at the reviewed production revision. Whitespace
+validation initially flagged required blank context in unified patches; the
+reviewed attribute-only correction passed with patch bytes unchanged. Privacy
+scans passed for that public tree/history and the staged runtime/source release.
+Final documentation and receipt additions receive a final integrity, whitespace
+and privacy check before merge; accepted unit/runtime tests are not repeated.
+
+These results establish readiness for coordinated installation, not physical
+acoustic quality, protection, hotplug/resume or macOS-equivalent latency.

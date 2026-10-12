@@ -1,8 +1,7 @@
 # Lenovo speaker profile — exact first-generation ThinkPad preparation
 
-**Status:** original source published in the candidate branch; three inactive
-Linux bundles built; integration review/unit tests and physical acceptance
-pending · **Updated:** 2026-10-12.
+**Status:** original source published; three inactive Linux bundles built;
+review, units and isolated runtime passed; ready for coordinated installation · **Updated:** 2026-10-12.
 
 Companion to [ThinkPad inventory](THINKPAD_AUDIO.md) (what this unit runs) and
 [speaker preparation](AUDIO_SPEAKER_BUILD.md) (the shared offline API). This is
@@ -131,16 +130,17 @@ There was no source/DSP workaround or dependency-pin change.
 
 Synthetic Lenovo regressions cover model/codec/PCI matching, source pinning,
 legacy channel declarations, gain units, stereo relationship and cross-device
-labelling rejection. They are added to the shared focused module but await
-independent batch review before execution. Use individual unittest IDs for
+labelling rejection. All 55 shared/importer cases passed after independent
+batch review; see [review](REVIEW.md). Use individual unittest IDs for
 failed-case retries; do not repeat unrelated passing first-batch checks.
 
-## Runtime routing and physical results remain open
+## Installation is ready; physical results remain open
 
-The shared tool prepares files only. It does not load a profile, configure
-headphone/HDMI bypass or implement a system-wide renderer. The next installation
-batch must define actual internal-speaker route matching and reversible
-installation/removal. Coordinate every service/routing change and audible test.
+The preparation tool produces files only. The separate reviewed
+[installation runtime](SPEAKER_INSTALL.md) implements exact internal-speaker
+route matching and reversible installation/removal. Its Lenovo isolated graph
+passed with the delivered preset and IR. Coordinate live routing changes and
+audible tests.
 
 EasyEffects loader/plugin execution, acoustic response/distortion, subjective
 level-matched listening, physical latency, protection behaviour, hotplug,

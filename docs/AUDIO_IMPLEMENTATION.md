@@ -1,6 +1,6 @@
 # Audio implementation — build order, ownership and integration
 
-**Status:** offline tools built; integration review and final tests pending ·
+**Status:** offline tools and speaker installation accepted; physical testing pending ·
 **Written:** 2026-10-12 · **Executes:** [audio quality](AUDIO_QUALITY.md).
 
 Read [hardware evidence](AUDIO_HARDWARE.md), [status](STATUS.md), and
