@@ -24,7 +24,7 @@ class GraphError(Exception):pass
 
 class Graph:
     def __init__(self,root,environment):
-        self.root=root;self.env=environment;self.processes=[];self.handles=[]
+        self.root=root;self.env=environment;self.processes=[];self.handles=[];self.stage="server startup"
     def start(self,name,argv,pipe=False,environment=None):
         log=(self.root/(name+'.log')).open('wb');self.handles.append(log)
         child=subprocess.Popen(argv,env=environment or self.env,stdin=subprocess.PIPE if pipe else subprocess.DEVNULL,
@@ -42,9 +42,9 @@ class Graph:
                 result=predicate(self.dump())
                 if result:return result
             except (ValueError,GraphError):pass
-            if any(p.poll() is not None for p in self.processes):raise GraphError('graph process exited')
+            if any(p.poll() is not None for p in self.processes):raise GraphError('graph process exited: '+self.stage)
             time.sleep(.05)
-        raise GraphError('graph observation timed out')
+        raise GraphError('graph observation timed out: '+self.stage)
     def node(self,graph,name):
         return next((x for x in graph if x['type']=='PipeWire:Interface:Node' and
                      x.get('info',{}).get('props',{}).get('node.name')==name),None)
@@ -96,7 +96,7 @@ def acceptance(kit_path,case,output,binary,mock,player):
     environment=dict(os.environ,ROG_AUDIO_STATE_DIR=str(state),XDG_RUNTIME_DIR=str(runtime),
                      PIPEWIRE_RUNTIME_DIR=str(runtime),PIPEWIRE_REMOTE='rog-graph-'+uuid.uuid4().hex[:12],
                      XDG_CONFIG_HOME=str(state/'config'),XDG_DATA_HOME=str(state/'data'),
-                     XDG_CACHE_HOME=str(state/'cache'),QT_QPA_PLATFORM='offscreen',QT_QUICK_BACKEND='software',
+                     XDG_CACHE_HOME=str(state/'cache'),XDG_STATE_HOME=str(state/'session'),QT_QPA_PLATFORM='offscreen',QT_QUICK_BACKEND='software',
                      QT_LOGGING_RULES='easyeffects.debug=true')
     for key in ('PIPEWIRE_CONFIG_DIR','PIPEWIRE_CONFIG_NAME','PULSE_SINK','PULSE_SOURCE'):environment.pop(key,None)
     locations=kit.roots(environment)
@@ -127,6 +127,7 @@ def acceptance(kit_path,case,output,binary,mock,player):
                 properties.update({'device.id':device_id,'card.profile.device':0 if name==node_name else 1,'device.api':'alsa'})
             graph.call(['pw-cli','create-node','adapter',json.dumps(properties)])
         physical=graph.until(lambda g:graph.node(g,node_name));graph.call(['wpctl','set-default',str(physical['id'])])
+        graph.stage='candidate startup and automatic preset'
         graph.start('easyeffects',[binary,'--hide-window','--service-mode'])
         graph.until(lambda g:graph.node(g,'rog_audio_speaker_sink'))
         graph.until(lambda _:graph.preset(binary)==manifest['preset_name'])
@@ -143,9 +144,11 @@ def acceptance(kit_path,case,output,binary,mock,player):
         observations.append('automatic preset selected; unrelated route index preserved it')
         for uri in ('http://lsp-plug.in/plugins/lv2/para_equalizer_x32_lr',
                     'http://lsp-plug.in/plugins/lv2/sc_limiter_stereo'):graph.call(['lv2info',uri])
+        graph.stage='ordinary app interception'
         default=graph.start('default-player',[player,'rog-default'])
         graph.until(lambda g:graph.linked(g,'rog-default','rog_audio_speaker_sink'))
         for name,target in (('rog-hdmi-player','rog-hdmi'),('rog-usb-player','rog-usb')):
+            graph.stage='explicit target '+target
             graph.start(name,[player,name,target]);graph.until(lambda g:graph.linked(g,name,target))
             if graph.linked(graph.dump(),name,'rog_audio_speaker_sink'):raise GraphError('explicit target intercepted')
         observations.extend(['ordinary app processed','explicit HDMI preserved','explicit USB preserved'])
@@ -158,9 +161,11 @@ def acceptance(kit_path,case,output,binary,mock,player):
         if not expected<=actual:raise GraphError('emitted plugin nodes missing')
         observations.append('actual preset/IR/plugins loaded')
         # Default change returns ordinary streams to the user's selected sink.
+        graph.stage='default switch to USB'
         usb=graph.node(graph.dump(),'rog-usb');graph.call(['wpctl','set-default',str(usb['id'])])
         graph.until(lambda g:graph.linked(g,'rog-default','rog-usb'))
         graph.stop(default)
+        graph.stage='direct effects capture and route bypass'
         direct=graph.start('direct-effects-player',[player,'rog-direct','rog_audio_speaker_sink'])
         graph.until(lambda g:graph.linked(g,'rog-direct','rog_audio_speaker_sink'))
         capture=graph.start('capture-corrected',[player,'--capture',node_name,str(output/'corrected.raw')])
@@ -177,6 +182,7 @@ def acceptance(kit_path,case,output,binary,mock,player):
         stock_root=output/'stock';stock_root.mkdir()
         stock_env=dict(environment,XDG_CONFIG_HOME=str(stock_root/'config'),
                        XDG_DATA_HOME=str(stock_root/'data'),XDG_CACHE_HOME=str(stock_root/'cache'))
+        graph.stage='stock application isolation'
         stock=graph.start('stock-easyeffects',['/usr/bin/easyeffects','--hide-window','--service-mode'],environment=stock_env)
         graph.until(lambda g:graph.node(g,'easyeffects_sink'))
         result=subprocess.run(['/usr/bin/easyeffects','--quit'],env=stock_env,capture_output=True,timeout=15)
@@ -191,6 +197,7 @@ def acceptance(kit_path,case,output,binary,mock,player):
         observations.append('stock startup/config/control isolated')
         # The analog route is still headphones, so interception is inactive while
         # the real default metadata receives a deliberately typed original pair.
+        graph.stage='typed target restoration'
         explicit=graph.start('explicit-speaker',[player,'rog-explicit-speaker',node_name])
         graph.until(lambda g:graph.linked(g,'rog-explicit-speaker',node_name))
         current=graph.dump();stream_id=graph.node(current,'rog-explicit-speaker')['id']
@@ -224,7 +231,12 @@ def acceptance(kit_path,case,output,binary,mock,player):
                  'assertions':observations,'corrected_rms':corrected,'bypass_rms':bypass,
                  'physical_device_or_session_access':False,'acoustic_or_physical_latency_measurement':False}
         kit.replace(output/'receipt.json',kit.encoded(receipt));return receipt
-    finally:graph.close()
+    finally:
+        try:
+            if sys.exc_info()[0] is not None:
+                try:kit.replace(output/'failure-graph.json',kit.encoded(graph.dump()))
+                except (GraphError,ValueError,subprocess.TimeoutExpired):pass
+        finally:graph.close()
 
 
 def main(argv=None):

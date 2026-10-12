@@ -252,7 +252,9 @@ exports `SPA_TYPE_INTERFACE_Device` locally and exposes a PipeWire Device to
 remote observers; the fixture implements SPA info/result/sync methods. The pinned
 client and server configurations already load that module, so the fixture uses
 them without duplicate registration. Each laptop's emitted preset/IR
-gets a separate receipt. The runner observes ordinary app interception,
+gets a separate receipt. Failures retain the last private graph snapshot and
+name the observation stage; session-manager state stays in the writable private
+output tree. The runner observes ordinary app interception,
 HDMI/USB choices, automatic loading with two route profile-device indices,
 default changes, route bypass before delayed autoload,
 stock/candidate isolation and exact typed target restoration. The latter sets
