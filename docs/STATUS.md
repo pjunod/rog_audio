@@ -99,6 +99,8 @@ with an executable temporary mount, and all passed. Source and installation
 passes were retained. All 97 affected unit cases are now green.
 The first ASUS real-runtime attempt stopped before app/preset/audio execution:
 the synthetic device exporter used the wrong PipeWire interface. Its fixture
-correction will receive focused review before retry. The ThinkPad selector has
-not been run against this broken fixture. Production package and unit passes
+correction cleared review. Its retry then found a duplicate client-device
+module load in the private server; the redundant load is removed and under
+focused review. Both failures occurred before candidate/audio execution. The
+ThinkPad selector has not been run against these broken fixture versions. Production package and unit passes
 are unchanged; real runtime acceptance for each laptop remains pending.
