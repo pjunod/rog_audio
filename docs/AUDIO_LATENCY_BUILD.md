@@ -438,3 +438,47 @@ focused unit suite once plus compiler and native-rule checks. For remote
 Docker, append the explicitly authorised `--ssh-target` and `--identity-file`
 arguments. There are no host sound/config/runtime mounts. An interrupted run
 attempts removal of only its own uniquely named container.
+
+### Select one stage or failed method without repeating passing tests
+
+The Linux CLI accepts `--stage all` (default), `unit`, `unit-inspector`,
+`unit-analyser`, `unit-candidate`, `config`, `compile`, `native-match`,
+`native-other-app` or `native-other-target`. `--check` is an alias for
+`--stage`. Each explicit invocation creates a new disposable container.
+Dependency setup may repeat; passing test cases do not need to repeat.
+`HOME` is left intact; only XDG config/runtime variables are assigned.
+
+`all` executes the unit suite once, configuration assertion once, native
+compile once and each native rule check once. Unit or config failure does
+not hide independent later checks. A failed compile or isolated daemon setup
+marks native checks `not-run-prerequisite-failed`; run those once after fixing
+the prerequisite. The private JSON includes every selected stage outcome and
+failed unittest method IDs. Unexpected successes also count as failures.
+Subtest failures record their parent method, the smallest unittest retry unit.
+
+```bash
+python3 scripts/validate_audio_linux.py --stage all \
+  --output private/latency-initial.json
+python3 scripts/validate_audio_linux.py --stage unit \
+  --test-id test_inspect_audio.InspectorTests.test_allowlist \
+  --output private/latency-unit-retry.json
+python3 scripts/validate_audio_linux.py --stage native-other-app \
+  --output private/latency-native-retry.json
+```
+
+Repeat `--test-id` for multiple failed methods. IDs must belong to the selected
+suite (or any of the three lane modules for `unit`); duplicates, arbitrary
+commands and cross-suite IDs are refused. A suite stage with no IDs executes
+that suite only. Native stages compile their prerequisite program and start
+only an isolated daemon; they run no unit suite or standalone config check.
+
+For later hosted CI, use `workflow_dispatch` after review with Docker on an
+Ubuntu hosted runner. Pull the pinned image explicitly before using the
+wrapper's `--pull=never`. Either one `all` job or separate jobs for the three
+unit suites/config/native checks can be authoritative; do not also run those
+same tests locally or remotely. A failed individual method in a suite job
+needs a fresh dispatch selecting only its reported ID. GitHub's whole-job
+rerun repeats passed methods and retains the old SHA; corrected code needs a
+new dispatch on the corrected reviewed SHA. The workflow definition must first
+land on the default branch. This harness change has not been executed before
+the combined review, as requested by the owner.

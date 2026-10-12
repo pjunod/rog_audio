@@ -5,6 +5,8 @@ No hardware, host configuration or desktop socket mounts. Logs remain private.
 This is an explicit build/test command, never called by repository checks.
 """
 import io
+import json
+import re
 import os
 from pathlib import Path
 import shlex
@@ -14,6 +16,10 @@ import uuid
 from audio_common import PrivateArgumentParser
 
 IMAGE = 'ubuntu@sha256:ee126c2fa0249079a7e24ae3a3d29b04783ef93ab33c868751c9a1289d3fffff'
+CHECKS = ('all', 'unit', 'unit-inspector', 'unit-analyser', 'unit-candidate', 'config',
+          'compile', 'native-match', 'native-other-app', 'native-other-target')
+UNIT_MODULES = {'unit-inspector':'test_inspect_audio', 'unit-analyser':'test_analyse_audio_latency',
+                'unit-candidate':'test_prepare_audio_latency'}
 FILES = ('scripts/audio_common.py', 'scripts/inspect_audio.py',
          'scripts/analyse_audio_latency.py', 'scripts/prepare_audio_latency.py',
          'tests/test_inspect_audio.py', 'tests/test_analyse_audio_latency.py',
@@ -38,13 +44,19 @@ def main():
     parser=PrivateArgumentParser(description=__doc__)
     parser.add_argument('--ssh-target',help='Optional private SSH alias; otherwise use local Docker')
     parser.add_argument('--identity-file',help='Optional private SSH key path')
+    parser.add_argument('--stage','--check',dest='stage',choices=CHECKS,default='all')
+    parser.add_argument('--test-id',action='append',default=[],help='Failed unittest method ID; repeat within selected unit suite')
     parser.add_argument('--output',required=True,help='New private validation-log JSON')
     args=parser.parse_args()
     if args.identity_file and not args.ssh_target:
         parser.error('identity requires ssh')
+    module=UNIT_MODULES.get(args.stage)
+    pattern=(re.escape(module) if module else r'(?:test_inspect_audio|test_analyse_audio_latency|test_prepare_audio_latency)')+r'\.[A-Za-z][A-Za-z0-9_]*\.test_[A-Za-z0-9_]+'
+    if args.test_id and (args.stage not in ('unit', *UNIT_MODULES) or len(args.test_id)>128 or len(set(args.test_id)) != len(args.test_id) or any(not re.fullmatch(pattern,x) for x in args.test_id)):
+        parser.error('invalid method selection')
     root=Path(__file__).resolve().parents[1]
     name='audio-latency-'+uuid.uuid4().hex[:12]
-    docker=['docker','run','--rm','--pull=never','-i','--name',name,IMAGE,'bash','-c',
+    docker=['docker','run','--rm','--pull=never','-i','--name',name,'-e','AUDIO_STAGE='+args.stage,'-e','AUDIO_TEST_IDS='+json.dumps(args.test_id),IMAGE,'bash','-c',
             'mkdir /case; tar -x -C /case; bash /case/tests/audio/linux-validation.sh']
     cleanup=['docker','rm','-f',name]
     if args.ssh_target:
@@ -70,11 +82,17 @@ def main():
         except subprocess.TimeoutExpired:
             subprocess.run(cleanup,capture_output=True,timeout=30)
             result={'returncode':None,'status':'timeout'}
+        result['report']=None
+        for line in result.get('stdout','').splitlines():
+            if line.startswith('audio_validation_report='):
+                try:
+                    result['report']=json.loads(line.split('=',1)[1])
+                except ValueError:
+                    pass
         # Write only to the exclusively reserved file, with no private console text.
-        import json
         with output_stream as stream:
             json.dump({'schema_version':1,'kind':'private-linux-validation',
-                       'image':IMAGE,'container':name,'result':result},stream,indent=2)
+                       'image':IMAGE,'container':name,'stage':args.stage,'test_ids':args.test_id,'result':result},stream,indent=2)
             stream.write('\n')
         print('Linux validation passed' if result.get('returncode')==0 else 'Linux validation failed; inspect private log')
         return 0 if result.get('returncode')==0 else 1

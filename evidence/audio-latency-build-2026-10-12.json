@@ -57,7 +57,8 @@
     "bounded config discovery and final encoded capture budget",
     "client.conf version family restricted to PipeWire 1.4-1.6",
     "container preflight before package operations",
-    "device/route identifiers require exact integers"
+    "device/route identifiers require exact integers",
+    "HOME left intact; only XDG config/runtime assigned"
   ],
   "schema_version": 1,
   "snapshot_summary": "audio-latency-snapshot-2026-10-12.json",
@@ -67,8 +68,8 @@
     "scripts/audio_common.py": "14a70e97a92a961a28df64d27af9cecf5a7044c3e6d97a8901ce6ed3fc7564ea",
     "scripts/inspect_audio.py": "60008887f538c161cd4581f1805b7fc8286bf0d0929d7f70edaa006e5f4e42bc",
     "scripts/prepare_audio_latency.py": "2db2f6be2ce5189e8a36b282ed18b4a06ff299816c5fbc52598f80b8b9df4219",
-    "scripts/validate_audio_linux.py": "fead017fc00919305f506492c9b47b7812a309c80e722287642ef7ea2bb2a1aa",
-    "tests/audio/linux-validation.sh": "fe1b3f3a23283e11095f8dceb45e6345e94b1ff10ceb2bf0a941d14294c43f1c",
+    "scripts/validate_audio_linux.py": "af5bf1db6c91bb9882271225d4a86ce8c257a7687422c2eb28b0d0dc771ec993",
+    "tests/audio/linux-validation.sh": "809ad6eaa0dcd84afc194f1d0be193d44415a14e90808030c1eb271e29728df5",
     "tests/audio/synthetic-candidate.conf": "aa645a990795fedea181557d49e1954a1bf7f92b70f98a23ab05fd4354f0831f",
     "tests/audio/synthetic-trials.json": "7a3122145a54111b9dba8e67c05c5b1de19fa3be4381e7992042243b4d01b1ac",
     "tests/audio/validate_client.c": "903ff7dee8c84707186dbe02b156e7793f6a2dbf0398e77202d74fde5161138a",
@@ -76,5 +77,12 @@
     "tests/test_inspect_audio.py": "dbef0de4f5153cf4b64620c11ffb70f099953b43668082fa89d97b860d739a22",
     "tests/test_prepare_audio_latency.py": "e36762701d12e91ed126610d92339dc1d1ae6e7000c06588982b93f4d1959b0c"
   },
-  "topic": "audio diagnostics and latency"
+  "topic": "audio diagnostics and latency",
+  "validation_selectors": {
+    "all_continues_after_independent_failures": true,
+    "default": "all",
+    "native_retry": "--stage native-match|native-other-app|native-other-target",
+    "source_validation": "pending combined review; not executed",
+    "unit_method_retry": "--stage unit --test-id MODULE.CLASS.METHOD"
+  }
 }
