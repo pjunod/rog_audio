@@ -1,5 +1,6 @@
 {
   "apt_update_run": false,
+  "artifact_status": "historical-pre-review-fix-package",
   "command": "apt-get --simulate --no-remove -o Debug::NoLocking=1 install CANDIDATE_DEB",
   "date": "2026-10-12",
   "evidence_kind": "live-read-only-package-simulation",
@@ -36,5 +37,6 @@
     "Repeat only if the candidate package or dependency expression changes"
   ],
   "packages_installed": false,
-  "schema_version": 1
+  "schema_version": 1,
+  "superseded_by": "speaker-package-reviewed-simulation-2026-10-12.json"
 }
