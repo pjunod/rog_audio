@@ -76,7 +76,7 @@ session sockets. Synthetic logs can appear in job output; personal captures
 and credentials cannot enter that workflow.
 
 The installation lane runs file, source-staging and native routing tests through
-`python3 scripts/validate_speaker_install.py --stage all`. Select `install`,
+`python3 scripts/validate_speaker_install.py --stage all`. Select `install`, `inspector`,
 `source` or `routing`, optionally with repeated `--test-id` arguments, to retry
 only failed cases. Missing compiler/source prerequisites and skipped tests
 fail the lane. The manually dispatched job stages only pinned public source.

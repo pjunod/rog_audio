@@ -7,6 +7,7 @@ import unittest
 
 MODULES = {
     'install': 'test_speaker_install',
+    'inspector': 'test_inspect_speaker_runtime',
     'source': 'test_easyeffects_runtime',
     'routing': 'test_speaker_routing',
 }
