@@ -77,3 +77,23 @@ latency and Atmos suites retain their first-batch acceptance and are not rerun.
 The package and both kits remain inactive. Physical headphone transitions,
 resume, listening, power and latency measurements require the coordinated
 laptop window after delivery.
+
+
+Three independent agents reviewed the completed PR 2 source at `661dafb`
+without executing tests. The Lenovo/source-provenance lane found no actionable
+defects. The other two lanes requested these fixes before acceptance:
+
+| Area | Finding | State |
+|---|---|---|
+| Native routing | Delayed autoload ignores the route profile-device index on multi-output ALSA devices | Fix in progress; add automatic preset-selection regression |
+| Native routing | Ignoring a still-live stream drops target ownership without restoring metadata | Fix in progress; distinguish from actual removal/ID reuse |
+| Runtime acceptance | Relinking after quit does not prove exact typed metadata restoration | Add pre-interception metadata and exact post-quit comparison |
+| File recovery | Backup files/directories are not durable before the journal allows replacement | Flush complete snapshot and archive before mutations |
+| File installation | Settings payload can precede a newer snapshot preimage | Derive settings from verified backup bytes |
+| Dependency inspection | Package names collapse architecture and multiple providers | Preserve architecture-aware candidate lists |
+| Public status | Snapshot lifecycle state is returned without enum validation | Reject unknown state before public output |
+
+Native fixes require a replacement binary/package. The earlier compiler and
+APT receipts describe their recorded hashes and are retained as historical
+evidence; acceptance will bind the final source and artifact bytes. No PR 2
+unit/runtime tests have run as of this review entry.
