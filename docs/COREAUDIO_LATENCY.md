@@ -1,7 +1,7 @@
 # CoreAudio latency — compare reported output terms without inventing delay
 
 **Updated:** 2026-10-13 · **State:** M4 Air idle and silent-running snapshots
-collected; native compile passed; batch review/unit acceptance pending.
+collected; native compile, source review and 16 offline unit cases passed.
 
 Companion to [latency tooling](AUDIO_LATENCY_BUILD.md) and
 [audio quality](AUDIO_QUALITY.md). This document explains the Mac component
@@ -181,18 +181,20 @@ trials per state for the existing comparison plan. Built-in microphone
 differences remain part of the practical loop comparison. A shared external
 trigger/recorder is still needed for the stronger output-only comparison.
 
-## Review and focused acceptance remain pending
+## Reviewed offline summary acceptance
 
 [Synthetic tests](../tests/test_analyse_coreaudio_latency.py) cover component
 arithmetic, missing/zero latency, rate mismatch, route changes, multiple
 outputs/streams, privacy, invalid numeric values, failed/duplicate objects,
 bounded exclusive file IO and symlink/FIFO handling. They invoke no HAL or
-audio IO. Run them once only after the complete latency batch is reviewed:
+audio IO. The 16 cases passed once after combined source review, as recorded
+in [acceptance](../evidence/audio-path-acceptance-2026-10-13.json). The command
+below is for a future changed source requiring revalidation:
 
 ```bash
 python3 -m unittest discover -s tests -p test_analyse_coreaudio_latency.py -v
 ```
 
 The receipt distinguishes native compilation and getter/silent operational
-observations from those unrun tests. This lane supplies no audible capture,
+observations from the later unit acceptance. This lane supplies no audible capture,
 latency reduction, per-client Mac tuning, acoustic calibration or Atmos work.

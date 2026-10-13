@@ -1,7 +1,7 @@
 # Linux audio path — inspect tuned playback and trial one latency request
 
-**Updated:** 2026-10-13 · **State:** implementation prepared; combined review,
-unit acceptance and native filter-rule acceptance pending.
+**Updated:** 2026-10-13 · **State:** reviewed; 30 Linux path/trial unit cases
+and native filter/config acceptance passed; live trial follows separately.
 
 Companion to [latency comparison](LATENCY_COMPARISON.md) (the experiment and
 Mac reference), [installation](SPEAKER_INSTALL.md) (the existing runtime), and
