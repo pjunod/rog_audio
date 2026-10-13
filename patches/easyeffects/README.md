@@ -1,6 +1,6 @@
 # EasyEffects runtime source series
 
-**Status:** device-return fix accepted; programme-loudness review corrections rebuilding, re-review and acceptance pending ·
+**Status:** device-return fix accepted; programme-loudness corrections reviewed, 28 affected units and two isolated graphs passed ·
 **Updated:** 2026-10-13.
 
 [The source manifest](source.json) pins upstream v8.2.8 and each patch hash.
@@ -28,7 +28,8 @@ Apply in this order to commit
    local: independent 0–36 dB automatic makeup limit, retained-state clamping,
    silence/readiness resets, synchronized analyser ownership and history,
    ingestion-error resets, louder-source reduction and preset/UI controls.
-   This candidate is distinct from the accepted device-return runtime.
+   This reviewed candidate is distinct from the published device-return
+   runtime; laptop gain/listening acceptance remains separate.
 
 Upstream code and the local routing and makeup headers are GPL-3.0-or-later. The original
 copyright headers are retained. Ubuntu packaging attribution and CC0-1.0 terms

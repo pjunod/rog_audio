@@ -1,0 +1,197 @@
+{
+  "bounds": {
+    "cpus": 2,
+    "host_audio_devices_or_session_mounted": false,
+    "memory_gib": 6,
+    "network": "none",
+    "pids": 2048,
+    "total_memory_swap_gib": 6
+  },
+  "date": "2026-10-13",
+  "graphs": [
+    {
+      "assertions": [
+        "exact model IR and plugin chain loaded with unchanged voicing",
+        "native preset consumes model maximum-gain",
+        "shared automatic gain preserves stereo balance",
+        "lower cap clamps retained native gain in the same process",
+        "injected real ingestion error resets makeup to unity; history callback and recovery remain usable",
+        "silence resets retained makeup and normal recovery remains bounded",
+        "louder programme transition remains finite behind original final limiter",
+        "original preset/IR/autoload payload unchanged; one processor lifetime"
+      ],
+      "attempts": [
+        {
+          "attempt": 1,
+          "failure_class": "GraphError",
+          "finish_unix_seconds": 1791920759.36713,
+          "log_sha256": "a49695ac32ab48dc1edd5bd1dbd660b22f00d283efc072a09ed8d8df3c033794",
+          "reason": "missing-explicit-raw-PCM-mode",
+          "returncode": 1,
+          "start_unix_seconds": 1791920758.1570387,
+          "status": "failed-before-gain-assertions"
+        },
+        {
+          "attempt": 2,
+          "finish_unix_seconds": 1791921108.9671924,
+          "log_sha256": "f265866d88c415398e833dd859e235c365e7420c099fcfb5666b0eccd1063697",
+          "returncode": 0,
+          "start_unix_seconds": 1791921077.7995336,
+          "status": "passed"
+        }
+      ],
+      "baseline_rms": [
+        0.01302256787565483,
+        0.006511283937827415
+      ],
+      "case": "asus-programme",
+      "final_overdrive_sample_peak": 0.8912501335144043,
+      "lowered_cap_rms": [
+        0.01302256787565483,
+        0.006511283937827415
+      ],
+      "measured_model_gain_db": [
+        2.64883652279615,
+        2.64883652279615
+      ],
+      "model_maximum_gain_db": 2.647500000006407,
+      "native_ingestion_failures_injected": 23,
+      "ordered_chain_nodes_including_virtual_and_physical": [
+        9
+      ],
+      "ordered_stereo_chain_observations": 12,
+      "post_silence_early_gain_db": [
+        1.1793987721605412,
+        1.1793987721605412
+      ],
+      "receipt_sha256": "84892deaa98119c3723450a38fae226c2bc05b9e99be91b23deb05a10f34cdd6",
+      "speaker_bundle_manifest_sha256": "c1baaadc0d19f1bf7f930dd9475e3a7fe3a5c6f9412011b90096d49338c24738",
+      "status": "passed"
+    },
+    {
+      "assertions": [
+        "exact model IR and plugin chain loaded with unchanged voicing",
+        "native preset consumes model maximum-gain",
+        "shared automatic gain preserves stereo balance",
+        "lower cap clamps retained native gain in the same process",
+        "injected real ingestion error resets makeup to unity; history callback and recovery remain usable",
+        "silence resets retained makeup and normal recovery remains bounded",
+        "louder programme transition remains finite behind original final limiter",
+        "original preset/IR/autoload payload unchanged; one processor lifetime"
+      ],
+      "attempts": [
+        {
+          "attempt": 1,
+          "failure_class": "GraphError",
+          "finish_unix_seconds": 1791920760.5873258,
+          "log_sha256": "9b29a8db11c0fb7a3594f3852738fff8d16db0d8461ef0ddfc9965f46637a3a5",
+          "reason": "missing-explicit-raw-PCM-mode",
+          "returncode": 1,
+          "start_unix_seconds": 1791920759.367382,
+          "status": "failed-before-gain-assertions"
+        },
+        {
+          "attempt": 2,
+          "finish_unix_seconds": 1791921139.8275008,
+          "log_sha256": "8e4793356ad7ea8141ae6cbe7d8415d327ea7e5f24c1cc08e68fb30c86e69f7e",
+          "returncode": 0,
+          "start_unix_seconds": 1791921108.9674833,
+          "status": "passed"
+        }
+      ],
+      "baseline_rms": [
+        0.006171285759845306,
+        0.003229948060967393
+      ],
+      "case": "lenovo-programme",
+      "final_overdrive_sample_peak": 0.89124995470047,
+      "lowered_cap_rms": [
+        0.006172192151071468,
+        0.0032306278787343355
+      ],
+      "measured_model_gain_db": [
+        10.136849561035891,
+        10.138675512210323
+      ],
+      "model_maximum_gain_db": 10.137500000002703,
+      "native_ingestion_failures_injected": 23,
+      "ordered_chain_nodes_including_virtual_and_physical": [
+        8
+      ],
+      "ordered_stereo_chain_observations": 12,
+      "post_silence_early_gain_db": [
+        0.8855984649420106,
+        0.8858670124651844
+      ],
+      "receipt_sha256": "a7ddad63c7eaa94221498521901f9e66d9306ae37847e5a99190997fff356567",
+      "speaker_bundle_manifest_sha256": "e8f0fe311f077826506a9dcb675429d5d2596cf21579c4d049a1d99b3d963bcd",
+      "status": "passed"
+    }
+  ],
+  "kind": "programme-loudness-selective-acceptance",
+  "limits": [
+    "The two initial graph failures occurred before gain assertions because pw-cat decoded raw stdin without --raw. They remain retained failures.",
+    "The independently re-reviewed harness fix added explicit raw mode and clean owned-pipe shutdown; only the two failed selectors were repeated.",
+    "All 28 unit methods passed on first execution and remained valid; unchanged PR9 suites were inherited, not repeated.",
+    "Controlled graph presets use -12 LUFS with a generated 0.025-amplitude tone and 4.0-amplitude float overdrive to exercise both model caps and limiters. These are device-free synthetic conditions, not ordinary laptop listening.",
+    "The failure shim injected actual libebur128 ingestion errors only in acceptance and is absent from the production package.",
+    "Synthetic passing output does not establish a ROG everyday-media root cause, comfortable loudness, calibrated acoustic quality or physical latency."
+  ],
+  "live_acceptance": {
+    "final_configuration_hour_completed": false,
+    "gain_installed": false,
+    "ordinary_media_loudness_accepted": false,
+    "physical_or_acoustic_measurement": false,
+    "sonos_deferred": true
+  },
+  "retention": {
+    "corrected_graph_archive": {
+      "archive_bytes": 1828061,
+      "archive_sha256": "3275854280b0b5f1e8ef700c9aff82e9f843a8c8b24454f0c1debebb9e8d3b47"
+    },
+    "failed_and_passed_logs_graphs_generated_captures_retained_off_host": true,
+    "initial_linux_archive": {
+      "archive_bytes": 242797,
+      "archive_sha256": "475fa5103b085b969d701762429aa08370340f8788f9e973487e96cabdf061a8"
+    },
+    "owned_containers_removed": true
+  },
+  "runtime": {
+    "binary_sha256": "3f110d6a2d1e2c743cc552b58930679acd0c00e45f5771a23d4b7702ca31206d",
+    "image_id": "d75f27386d140602e579ead6165f6f9118a395e41429782c89921529781c81fb",
+    "package_sha256": "92349a51ba98c6659caabc505f57117b8db46b1c70c705d99ea3449ee16ab6a8",
+    "package_version": "8.2.8+rog3",
+    "programme_loudness_contract": "bounded-programme-makeup-v1"
+  },
+  "schema_version": 1,
+  "source": {
+    "corresponding_source_files": 713,
+    "final_graph_fixture_commit": "a624b54db094bbb787ebcb4fc45ac6ea1d6374d3",
+    "graph_script_sha256": "8e20becbf53ef82ee0c1c307db9dce17e9105c8b3d44e57cc1699a7c22672a9c",
+    "initial_test_fixture_commit": "4e910d889912e7f2e85acc44e72fde67367d3f3a",
+    "reviewed_code_commit": "1db1e9fd4c0c3cfc66b4f35ba2345037b7c708ea",
+    "source_manifest_sha256": "ed8c4acbb12af651e1382a6e37f00a908bd21782ae4f119dfea68bae3eb86f83"
+  },
+  "state": "passed-after-failed-selector-only-retry",
+  "units": {
+    "attempts_per_method": 1,
+    "failed": 0,
+    "groups": {
+      "export_contract": 3,
+      "native_analyser_lifecycle": 4,
+      "native_makeup": 8,
+      "programme_profile": 12,
+      "source_preparation": 1
+    },
+    "linux_finish_unix_seconds": 1791920758.1568708,
+    "linux_log_sha256": "6ecac36d51d4e708eb86b75b450dbc32821064485db84dda69f49d43861c4b70",
+    "linux_start_unix_seconds": 1791920754.7051237,
+    "mac_finish_unix_seconds": 1791920752.3337102,
+    "mac_source_log_sha256": "672696b83001a3c78f89bf237063445f00e9eb6d8fa1d1ec2dc99da4474f7a80",
+    "mac_start_unix_seconds": 1791920751.736893,
+    "methods": 28,
+    "passed": 28,
+    "passing_methods_repeated": false,
+    "skipped": 0
+  }
+}

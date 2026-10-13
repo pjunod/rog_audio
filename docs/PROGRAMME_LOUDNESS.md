@@ -1,7 +1,7 @@
 # Programme loudness — adjustable makeup with original speaker voicing
 
-**Status:** initial native candidate compiled; review fixes rebuilding and
-under focused re-review; affected acceptance pending · **Updated:** 2026-10-13.
+**Status:** corrected native source/artifacts reviewed; 28 affected units and
+both isolated model graphs passed; coordinated laptop acceptance pending · **Updated:** 2026-10-13.
 
 Companion to [speaker installation](SPEAKER_INSTALL.md) and
 [device-return autoload](SPEAKER_AUTOLOAD.md). This document describes the
@@ -157,16 +157,25 @@ laptops have accepted everyday loudness and sound quality.
 
 ## 3. Review and run only the affected acceptance selection
 
-The [initial compiler/export receipt](../evidence/programme-loudness-build-2026-10-13.json)
-binds the first additive source and 712 corresponding files, compiled
-runtime, package and bounded native image. That initial build is superseded
-by the review corrections; its receipt and artifact remain retained. The
-corrected 713-file source is rebuilding before artifact rebind and focused
-re-review. Compilation is distinct from acceptance.
+The [corrected compiler/export receipt](../evidence/programme-loudness-reviewed-build-2026-10-13.json)
+binds the reviewed 713-file source, compiled runtime, package and both newly
+bound model kits. The [initial build receipt](../evidence/programme-loudness-build-2026-10-13.json)
+and artifact remain retained and superseded. Compilation is distinct from
+[selective acceptance](../evidence/programme-loudness-acceptance-2026-10-13.json).
 All existing attributed/imported patch bytes remain unchanged; SHA256SUMS was
 deliberately extended for the new additive patch and native header pin.
 
-After independent source/artifact review, execute each affected unit once:
+The accepted selection passed after independent source/artifact and final
+fixture review. All 28 unit methods passed on their first execution, without
+skips or repeats. Both graph selectors initially stopped before gain checks
+because raw stdin lacked `pw-cat --raw`; those failures are retained. The
+independently re-reviewed harness correction added explicit raw mode and
+clean stopped-pipe shutdown. Only those two failed selectors repeated, and
+both then passed all eight assertions. No production source or package
+changed for the harness correction.
+
+The commands below document that completed selection; do not repeat passing
+methods or selectors without a change that invalidates their results:
 
 ```bash
 # Use a durable scratch parent; these cases access no laptop audio.
@@ -224,7 +233,7 @@ requires native unity/reset and recovery; that shim is not part of the
 production runtime.
 All private captures, graphs and failures are retained. Retry only a failed
 case or a case invalidated by a subsequent correction. The final repository
-check follows review and selective acceptance.
+check follows the integrated factual documentation and selective acceptance.
 
 ## Evidence still required on the laptops
 

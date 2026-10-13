@@ -1,0 +1,123 @@
+{
+  "acceptance": {
+    "laptop_installation": false,
+    "ordinary_media_loudness_accepted": false,
+    "physical_or_acoustic_measurement": false,
+    "planned_graph_selectors": [
+      "asus-programme",
+      "lenovo-programme"
+    ],
+    "planned_methods": 28,
+    "runtime_graph_cases_executed": false,
+    "units_executed": false
+  },
+  "activation_state": "not-installed",
+  "build": {
+    "build_log_sha256": "8a3121bf934ab5cb1c62ceafabe5a68aa309f6cc76c94d4eb1d453ffb6909726",
+    "builder_pid_limit": "unverified-engine-default",
+    "candidate_image_id": "d75f27386d140602e579ead6165f6f9118a395e41429782c89921529781c81fb",
+    "compile_steps": 142,
+    "compiler_only_probes": [
+      "threaded analyser lifecycle executable",
+      "acceptance-only ingestion failure shared library"
+    ],
+    "compiler_workers": 1,
+    "cpu_period_us": 100000,
+    "cpu_quota_us": 200000,
+    "engine": "podman",
+    "export_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "export_pid_limit": 2048,
+    "finish_unix_seconds": 1791919995.774297,
+    "memory_gib": 6,
+    "network": "none",
+    "parent_image_id": "779339f99373522ffe7f7cc2245fef4f19766c7e5a0ab3691fa327cdb74a890d",
+    "payload_bytes": 42924,
+    "payload_scope": "eight allowlisted public source/build/compiler-only probe files",
+    "payload_sha256": "33726ec3fbde97728a2b810b2ed3b0aac56bd15f3e800e10d18aed721ba0d6c6",
+    "returncode": 0,
+    "start_unix_seconds": 1791919681.6553972,
+    "total_memory_swap_gib": 6
+  },
+  "date": "2026-10-13",
+  "kind": "programme-loudness-reviewed-native-build",
+  "limits": [
+    "The initial build and its receipt remain superseded and immutable; this corrected candidate has not been installed.",
+    "Programme leveling remains an improvement under evaluation, not a proven explanation or fix for the ROG everyday-media regression.",
+    "The synthetic ingestion error shim is only an acceptance probe, not shipped or referenced by the production runtime.",
+    "Compilation, source/artifact review and offline model preparation do not establish test acceptance, calibrated acoustics or physical latency."
+  ],
+  "model_preparation": {
+    "asus": {
+      "bundle_manifest_sha256": "c1baaadc0d19f1bf7f930dd9475e3a7fe3a5c6f9412011b90096d49338c24738",
+      "graph_kit_sha256": "d8c30d37109ac3fa12d3a98d1ab971eb445a44e46d765ed969cb2e5c01850b5a",
+      "impulse_sha256": "1d30e4445384b6a03af2eaa85fae6d73ce1bf1ff986d201cdb4162e4116d5661",
+      "maximum_gain_db": 2.647500000006407,
+      "parent_manifest_sha256": "9859c31d7e262268da6a062eb140fe29cbb299467c972ffd6df5dc9783f56ca7",
+      "target_lufs": -20.0
+    },
+    "thinkpad": {
+      "bundle_manifest_sha256": "e8f0fe311f077826506a9dcb675429d5d2596cf21579c4d049a1d99b3d963bcd",
+      "graph_kit_sha256": "ab07899846106533b2a345552b3d3f5c917fa93417979aac835546a98a6dedb0",
+      "impulse_sha256": "2040c08e3d19489331ace93d2503431ea1a63425d99fb8ad6a80977e2ad8b058",
+      "maximum_gain_db": 10.137500000002703,
+      "parent_manifest_sha256": "d4db50b23c56310df1b4c5a2153da51d84486799b06dcc10d22d2df7b472af08",
+      "target_lufs": -20.0
+    }
+  },
+  "package_footprint": {
+    "compressed_bytes": 3751126,
+    "directories": 103,
+    "four_kib_block_estimate_including_directories": 26669056,
+    "installed_size_field": "absent",
+    "regular_file_bytes": 26125232,
+    "regular_files": 53
+  },
+  "preparation_history": {
+    "correction": "new file mode100644; native source bytes unchanged by this metadata fix",
+    "diagnostics_and_rejected_public_patch_retained": true,
+    "failed_source_staging_attempts": 3,
+    "reason": "new header additions initially lacked new-file mode metadata",
+    "rejected_patch_sha256": "4ea5ddb52df0fd9e95f9db517e1a2e9d7007e1a4c7c57f364a72ca1f2e6b1c6e"
+  },
+  "retention": {
+    "artifact_archive_bytes": 18874850,
+    "artifact_archive_sha256": "9f15950c24db4f32220fc622bb4cae96aa0d7144be2494f4543b6a08604f4720",
+    "owned_export_container_removed": true,
+    "prior_and_corrected_images_retained_for_acceptance": true,
+    "runtime_and_full_corresponding_source_verified_off_host": true
+  },
+  "runtime": {
+    "binary_sha256": "3f110d6a2d1e2c743cc552b58930679acd0c00e45f5771a23d4b7702ca31206d",
+    "package": "rog-audio-easyeffects_8.2.8+rog3_amd64.deb",
+    "package_sha256": "92349a51ba98c6659caabc505f57117b8db46b1c70c705d99ea3449ee16ab6a8",
+    "package_version": "8.2.8+rog3",
+    "programme_loudness_contract": "bounded-programme-makeup-v1",
+    "routing_contract": "exact-device-route-v1"
+  },
+  "schema_version": 1,
+  "source": {
+    "additive_patch_sha256": "5b1f996c59fad6caac5dfc4b21defbd5200f8e84c13bf76fa1371cd0c04fea52",
+    "corresponding_source_files": 713,
+    "generated_file_excluded_from_original_source_map": "src/.qmlls.ini",
+    "native_analyser_header_sha256": "58bfcd8f55218d431d3b7fe54682abf24a81ae3e938dac25ddfff6696ad2864d",
+    "native_makeup_header_sha256": "124e244d5d28833ba78f7eb316e8c9c0b3a6ab093efc00b79cb9864113323724",
+    "prior_patch_bytes_preserved": true,
+    "reviewed_code_commit": "1db1e9fd4c0c3cfc66b4f35ba2345037b7c708ea",
+    "source_manifest_sha256": "ed8c4acbb12af651e1382a6e37f00a908bd21782ae4f119dfea68bae3eb86f83",
+    "source_tree_manifest_sha256": "0436b9afa312cd6eed0830306b8df3c862060a7efa325a32abf6fafd78a9b31d",
+    "upstream_commit": "6d9b1220d3dcebb154ba759a05600662bc0af549",
+    "verification": "exact-source-tree-match"
+  },
+  "state": "corrected-compiled-and-exported-acceptance-pending",
+  "superseded_artifact_retained": true,
+  "supersedes": "programme-loudness-build-2026-10-13.json",
+  "toolchain": {
+    "cmake": "4.3.4-1ubuntu1",
+    "g++-15": "15.3.0-4ubuntu1",
+    "libebur128-dev:amd64": "1.2.6-2",
+    "libpipewire-0.3-0t64:amd64": "1.6.8-1ubuntu4",
+    "qt6-base-dev:amd64": "6.11.2+dfsg-4ubuntu2",
+    "qt6-declarative-dev:amd64": "6.11.2+dfsg-2ubuntu1",
+    "wireplumber": "0.5.17-1ubuntu1"
+  }
+}
