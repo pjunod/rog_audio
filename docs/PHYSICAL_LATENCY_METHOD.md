@@ -68,7 +68,12 @@ M3 preparation as M4 readiness; that label was corrected and retained in the
 handoff history. The separately collected M4 HAL observations remain valid.
 The earlier unarmed Chrome smoke is local M3 evidence, not a remote M4 browser
 or acoustic pass. Manual launch, armed output/route checks and the capture
-pilot remain pending. Raw remote receipts and host paths stay private.
+pilot remain pending. The ThinkPad's three accepted emitter files were also
+copied to its intended Documents location with source/hashes verified; it was
+unarmed and unlaunched, with no audio or microphone access. All file preparation
+is complete. The private handoff's current M4/ThinkPad instructions are maintained
+by its owner; earlier staging/mislabel receipts remain separate history.
+Raw remote receipts and host paths stay private.
 
 The repository also has [offline trial analysis](../scripts/analyse_audio_latency.py),
 [Linux inspection](../scripts/inspect_audio_path.py) and
@@ -122,20 +127,20 @@ physical measurement acceptance.
 ## 3. Preserve the tuned state and coordinate the capture window
 
 Complete software qualification before the coordinated recording session.
-ROG 512 frames passed one bounded corrected-runtime check but failed a later
-six-second baseline on driver error growth. The private 512 request was
-removed; the +rog2 shared graph negotiated 1024 with ERR 4 unchanged across
-11 samples. A later explicit guarded 1024 trial passed, but the ROG +rog3
-update failed during shutdown/serialization; original +rog2 was recovered
-with 1024 retained. The service-stop fix and programme retry remain pending;
-larger-request source review and four focused methods passed. ThinkPad's +rog3
-retry succeeded with two automatic starts and a short 256-frame ERR-0 check,
-retaining original voicing. Its old-runtime hour remains historical. Fresh
-provisional-default hours and everyday loudness acceptance remain open. Preserve each host's actually accepted
-runtime, timing and tuning bindings. Record the negotiated running driver
-quantum/rate for each physical capture; the request alone does not establish
-that condition. Keep different periods or runtime versions in separate
-measurement groups. The historical PR 8 source/test receipt remains unchanged.
+Both laptops now run +rog3 with the separate reviewed helper/unit backport:
+ROG 1024/48000, target −20 LUFS/cap 2.6475 dB; ThinkPad 256/48000, target
+−16 LUFS/cap 14.1375 dB. Original IRs/non-AutoGain stages and final limiters
+remain intact. Fresh settings-bound hours are active, not complete; current
+programme listening is still pending. Earlier ROG 256/512 failures, 1024
+short pass and recovered shutdown failure, and the old ThinkPad hour/partial
+−20 run remain distinct history in [status](STATUS.md).
+
+Preserve each host's actually kept runtime, timing and tuning bindings. Record
+the negotiated running driver quantum/rate for each physical capture; the
+request alone does not establish that condition. Keep different periods,
+runtime versions or gain settings in separate measurement groups. The
+historical PR 8 source/test receipt remains unchanged. No browser was armed
+or physical result collected by file staging.
 
 Before the window, retain runtime/kit/preset/IR/plugin settings hashes, the
 physical default/profile/route, owner volume, persistent startup state and

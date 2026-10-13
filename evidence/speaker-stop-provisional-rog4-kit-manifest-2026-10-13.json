@@ -1,0 +1,43 @@
+{
+  "status": "provisional-prepared-not-installed-not-published",
+  "repository_head": "ba269db84c5f6877014dfc2e124af7c0b74d8f06",
+  "package_filename": "rog-audio-easyeffects_8.2.8+rog4_amd64.deb",
+  "package_sha256": "17e8dcdd0f59461a035fa0eea8ec6c692194878ed788765a39c7de54ce732e91",
+  "paired_runtime_source_archive": "rog-audio-packaging-only-8.2.8+rog4.tar.gz",
+  "paired_runtime_source_archive_sha256": "f00fe028e3c65e669bbb9a696cf0357b67bd0c1642f4fab6ae96f30aa6c0df1c",
+  "service_unit_companion_required": true,
+  "service_unit_inside_deb": false,
+  "service_unit_companion_sha256": "65beb0fa15830f9204d9026c06e37ec14fc5bb1d33a4f9108eafce93d3a706dd",
+  "models": {
+    "asus": {
+      "kit_sha256": "51efcc00529e2eb73880c017cb743c768f2cf95a91afb59b4ac590acff9d0f7d",
+      "preset_sha256": "78dba4c0ea3a6e68227f4f48e7a9534359c3a3ecce21d308b1bfaf03e32ffcc4",
+      "bundle_manifest_sha256": "c1baaadc0d19f1bf7f930dd9475e3a7fe3a5c6f9412011b90096d49338c24738",
+      "target_lufs": -20,
+      "maximum_gain_db": 2.647500000006407,
+      "listening_accepted": false,
+      "physical_latency_measured": false,
+      "qualification": "provisional distribution candidate; not owner approved",
+      "retained_inventory_input_sha256": "69b31d409f0084ed2a9af8ba56fa601bbe09caccd48de1f2c020e76fd5122071"
+    },
+    "thinkpad": {
+      "kit_sha256": "a292c2c67526de5ef1e759365ac81486912dd4dbd1be55b928d2216dc20dc142",
+      "preset_sha256": "c2b907510d3d850055b01238e61b45d76854157f523a16c9aa51a6589f392ab9",
+      "bundle_manifest_sha256": "e017f76d6e2927dad91b26eebe697b2e31648c7940388fd3de15178835072bcc",
+      "target_lufs": -16,
+      "maximum_gain_db": 14.137500000002703,
+      "listening_accepted": false,
+      "physical_latency_measured": false,
+      "qualification": "provisional distribution candidate; not owner approved",
+      "retained_inventory_input_sha256": "af62885cf204ca93bdb7a9419c3009940a7d88cb6729027bc655dc86311b5946"
+    }
+  },
+  "listening_accepted": false,
+  "physical_latency_measured": false,
+  "owner_approved": false,
+  "live_package_versions_unchanged": "both +rog3 with separate helper/unit correction",
+  "old_v022_assets_untouched": true,
+  "privacy_findings": [],
+  "raw_inventories_captures_credentials_included": false,
+  "if_feedback_changes_settings": "reprepare affected model kit with accepted prepare tool and same reviewed runtime metadata; do not manually edit output hashes"
+}

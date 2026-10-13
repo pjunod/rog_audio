@@ -4,18 +4,17 @@
 **Updated:** 2026-10-13 · **Executes:** internal-speaker installation from
 [status](STATUS.md).
 
-The ROG now runs corrected `8.2.8+rog2` with its original speaker tuning;
-[the upgrade receipt](../evidence/rog-speaker-runtime-upgrade-2026-10-13.json)
-records automatic tuned-preset loading during a controlled service start,
-preserved preset/IR/autoload and non-main RC bytes, expected main-RC counter
-and formatting changes, retained rollback and unchanged owner volume/stock
-services. Its [short 512-frame check](../evidence/rog-speaker-latency512-short-trial-2026-10-13.json)
-passed separately; no new ROG reboot or full-hour pass is claimed. ThinkPad
-now runs +rog3 after a corrected retry following a procedural query failure
-and completed old-runtime recovery. Two automatic starts and a 20.162-second
-256-frame check passed, with original IR/non-AutoGain settings and protected
-state intact. Its new hour and everyday loudness acceptance remain pending. The old-runtime hour and one separate post-boot
-observation remain scoped historical results.
+[Both current laptops](../evidence/programme-service-autoload-and-current-settings-v2-2026-10-13.json)
+now run +rog3 with the separately backported reviewed stop helper and user
+unit. Native/helper stops returned 0, settings serialized correctly, two
+automatic preset starts and fresh IR/full-stereo checks passed. ROG uses
+1024/48000 at −20 LUFS/cap 2.6475 dB; ThinkPad uses 256/48000 at −16
+LUFS/cap 14.1375 dB. Original IR/non-AutoGain settings, final limiters, owner
+gains/routes, stock services/firmware and exact rollback remain preserved.
+New hours are active, not complete; current owner listening, new reboot,
+hotplug/resume and physical/acoustic acceptance remain separate. The old
+ThinkPad hour, ROG 256/512 failures and earlier recovered updates are dated
+history in [status](STATUS.md). No +rog4 package was installed by the backport.
 
 The original [ROG](../evidence/rog-speaker-deployment-2026-10-12.json) and
 [ThinkPad](../evidence/thinkpad-speaker-deployment-2026-10-12.json) deployment
@@ -273,8 +272,10 @@ The published v0.2.2 `8.2.8+rog3` native runtime passed the isolated
 28-unit/two-graph programme batch. The current packaging follow-up emits
 `8.2.8+rog4` with the same native ELF/source and an added authenticated
 service-stop helper; its separate source review, eleven units and one
-isolated native integration passed. No +rog4 artifact build/publication or
-laptop package replacement is claimed. Actual laptop
+isolated native integration passed. The [verified +rog4 artifact](../evidence/speaker-stop-packaging-only-rog4-2026-10-13.json)
+is built without a native recompile; it is not published or installed on the
+laptops. Its separate corrected unit companion must be used for future
+installs; the deb alone does not replace or enable the user unit. Actual laptop
 listening/stability remain pending; published v0.2.1 and its `+rog2` recovery
 artifacts remain unchanged. Read [programme loudness](PROGRAMME_LOUDNESS.md)
 for the independent controls, preserved voicing and source/build contract.

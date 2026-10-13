@@ -405,6 +405,17 @@ container was removed. This supplies the native contract that fixture-child
 units alone cannot establish; it is not live hardware or acoustic acceptance.
 
 No required methods/integration remain unexecuted. The final repository
-checker is still pending for this batch. The reversible renderer change uses
+checker passed once before PR 12 merged as `ba269db8`. The reversible renderer change uses
 static generated-HTML inspection; no cosmetic unit tests. Native/source/patch
 bytes remain unchanged and no source/native acceptance suites were repeated.
+
+## Packaging-only verified artifact and later live receipts
+
+The [exact packaging receipt](../evidence/speaker-stop-packaging-only-rog4-2026-10-13.json)
+was independently read and cleared for import at SHA256 `8908010c`. It records
++rog4 built/verified from the accepted native payload: all 142 entries equal
++rog3 in paths, types, regular-file bytes, modes and symlink targets. Helper,
+MIT notice and Python dependency are added; the merged service unit remains a
+required separate companion. The original +rog3 package is unchanged. No
+compiler, unit/native integration repeat, laptop rewrite or publication is
+claimed. Later live transactions and kept-settings hours remain separate.

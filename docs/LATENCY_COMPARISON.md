@@ -10,6 +10,15 @@ This document compares the actual installed speaker paths. Preserve the sound
 already accepted on the ROG and the separate Lenovo tuning on the ThinkPad.
 Sonos Atmos remains outside this phase.
 
+[The current deployed receipt](../evidence/programme-service-autoload-and-current-settings-v2-2026-10-13.json)
+records +rog3 on both laptops with the separate synchronous-stop backport.
+ROG's 20-second 1024/48000 check retained driver ERR 4; ThinkPad's 20-second
+256/48000 check retained ERR 0. Both produced eleven positive observations
+with original IR/non-AutoGain/full stereo preserved. Fresh hours on ROG
+−20/cap 2.6475 and ThinkPad −16/cap 14.1375 are active, not complete.
+These current conditions do not retroactively replace the failed or old-runtime
+intervals below, and none measures physical speaker delay.
+
 ## 1. Compare the same kind of evidence
 
 | Evidence | Linux observation | Mac observation | What it establishes |
