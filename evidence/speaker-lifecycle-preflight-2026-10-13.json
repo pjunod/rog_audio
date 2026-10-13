@@ -1,0 +1,120 @@
+{
+  "date": "2026-10-13",
+  "default_and_volume_unchanged": true,
+  "evidence_kind": "live-operational-observation",
+  "host": "lab6",
+  "kind": "speaker-lifecycle-preflight",
+  "kit_sha256": "0b431577b22dbe014ec8185717e779673fc2f93825a9b8c9d835e3561f7c8a64",
+  "latency_rule_installed": false,
+  "limits": [
+    "No latency request installed in this preflight window.",
+    "Native RC serialization is distinct from unchanged preset/IR payloads.",
+    "No reboot or microphone capture; short zero-PCM observations are not physical latency or sustained-load qualification.",
+    "First running driver error count was 1, then unchanged; this is not a zero-error startup pass."
+  ],
+  "native_plugin_rc_files_created": [
+    "db/autogainrc",
+    "db/convolverrc",
+    "db/limiterrc",
+    "db/multibandcompressorrc"
+  ],
+  "native_quit_drift": {
+    "count_after": 2,
+    "count_before": 1,
+    "only_changed_key": "usedPresets",
+    "only_changed_section": "StreamOutputs",
+    "plugin_settings_unchanged": true,
+    "preset_names_unchanged": true
+  },
+  "observations": [
+    {
+      "error_delta_status": "incomplete-or-reset",
+      "full_chain_both_channels_before_and_after": true,
+      "owned_zero_wav_removed": true,
+      "playback_elapsed_seconds": 5.844955144013511,
+      "plugins_order": [
+        "convolver#0",
+        "autogain#0",
+        "multiband_compressor#1",
+        "limiter#0"
+      ],
+      "rate_hz": 48000,
+      "running_driver_error_observations": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "running_driver_quantum_frames": 2048,
+      "signal": {
+        "all_samples_zero": true,
+        "channels": 2,
+        "maximum_duration_seconds": 120,
+        "rate_hz": 48000,
+        "requested_client_latency": "4800/48000",
+        "sample_width_bytes": 2,
+        "wav_sha256": "3847c20f84388056b5808edea7167bc8e95e365954d44e4e245c2e316df4c71e"
+      },
+      "source_receipt": "lab6-baseline-operation.json"
+    },
+    {
+      "error_delta_status": "incomplete-or-reset",
+      "full_chain_both_channels_before_and_after": true,
+      "owned_zero_wav_removed": true,
+      "playback_elapsed_seconds": 5.854981275013415,
+      "plugins_order": [
+        "convolver#0",
+        "autogain#0",
+        "multiband_compressor#1",
+        "limiter#0"
+      ],
+      "rate_hz": 48000,
+      "running_driver_error_observations": [
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "running_driver_quantum_frames": 2048,
+      "signal": {
+        "all_samples_zero": true,
+        "channels": 2,
+        "maximum_duration_seconds": 120,
+        "rate_hz": 48000,
+        "requested_client_latency": "4800/48000",
+        "sample_width_bytes": 2,
+        "wav_sha256": "3847c20f84388056b5808edea7167bc8e95e365954d44e4e245c2e316df4c71e"
+      },
+      "source_receipt": "lab6-quit-drift-validation-operation.json"
+    }
+  ],
+  "original_transient_service_active": false,
+  "payload_unchanged": true,
+  "persistent_service_active": true,
+  "persistent_service_enabled": true,
+  "private_receipt_sha256": {
+    "lab6-baseline-operation.json": "0eb4ec0ac307c9adcc27627fabb74e21b233f9451e9c581ec978e3d6e8448e34",
+    "lab6-environment-files-typed-property.json": "125c633d8df7034ab35f00e57285d830bba27b02b0059465d6d616ba51b9439b",
+    "lab6-prepare-operation.json": "abbff43b90b72bd58434c7031444081723660d789a97db89e5f1ea26df3b7ceb",
+    "lab6-quit-drift-operation.json": "6db83f7433d81a2f3321528c50af30fcae4eb6628455c13da65fcdd61b0c61aa",
+    "lab6-quit-drift-validation-operation.json": "5ff215fdcb64e2fadd6c46c06f653f35e664beeb7d530cdde5d0c404de072a03",
+    "lab6-restart-environment-diagnostic.json": "d699b77a66408bc27d7b2ae07debbdb4385c56aba067419c19724d40f9071e3f",
+    "lab6-restart-environment-property-names.json": "409a8af64998cfa9b931f62f318120598e3463bcb6dd6a6f091c4c5d7b60a9de",
+    "lab6-systemd-environment-dbus.json": "6451e4282228f62de8e4c8f69a2079d7ef2ed99dc93abc4817dec0a2881ed436",
+    "lab6-transition-operation.json": "2987f2c0acbec9bba9216400d94d68b42b4130141a803e918112a7a6471a52a5"
+  },
+  "runtime_binary_sha256": "e5061dcc1e0b925933eceeacffb576536d24f609307166b97d0e159c0f1772d1",
+  "schema_version": 1,
+  "stock_audio_services_unchanged": true,
+  "systemd_environment_files": {
+    "dbus_entry_count": 0,
+    "dbus_signature": "a(sb)",
+    "formatted_show_omits_empty_property_even_with_all": true,
+    "systemd_version": "261.3-0ubuntu3",
+    "typed_getter_exit_code": 0
+  },
+  "tool_source_commit": "c97840cc476f2b861c253018c9cb18665a055b14",
+  "unit_sha256": "6a6603dabd7188909d8dd7810f2af6dc8a622074da2b616bad64a474d8bb4b0a"
+}

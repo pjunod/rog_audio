@@ -2,7 +2,7 @@
 
 **Updated:** 2026-10-13 · **State:** both speaker candidates installed with
 login startup configured; ROG stereo tuning restored after four-channel
-investigation; latency comparison implementation is in progress.
+investigation; PR 5 merged and scoped latency trials are in progress.
 
 | Work | State | Next evidence |
 |---|---|---|
@@ -10,9 +10,9 @@ investigation; latency comparison implementation is in progress.
 | ASUS speaker tuning | Validated stereo restored with full tuned path; prior owner feedback positive | Scoped latency trial, physical hotplug and measurements |
 | ThinkPad speaker tuning | Separate Lenovo music/balanced candidate running; live preset, IR, plugins and hardware output verified | Owner listening, physical hotplug and measurements |
 | Laptop installation runtime | Both active with private rollback and login startup; inherited 97 unit cases and both isolated graph cases passed | Actual post-reboot observation and physical qualification |
-| Diagnostics and latency | PR 5 source reviewed; 46 new unit cases and all native checks passed; prior 42 tests retained | Bounded 256-frame trials with tuning and rollback preserved |
+| Diagnostics and latency | PR 5 merged; 46 new unit cases and all native checks passed; prior 42 tests retained | Bounded 256-frame trials with tuning and rollback preserved |
 | Host Atmos | 15 tests and focused CI cleanup acceptance passed in PR 1 | Actual JOC reference media and physical qualification |
-| macOS comparison | M4 Air getter and silent-running snapshots complete; native probe compiled | Review and summary tests, then physical comparison |
+| macOS comparison | M4 Air getter and silent-running snapshots complete; 16 summary tests passed in PR 5 | Matched Linux software observations, then physical comparison |
 | Sonos Arc/eARC | Deferred until internal audio work | TV route and actual received formats |
 
 Companion to [installation](SPEAKER_INSTALL.md), [review](REVIEW.md) and
@@ -178,7 +178,8 @@ relationship; measurement equipment is not yet established. No new latency
 improvement or Mac parity is claimed. Sonos Atmos remains last.
 
 [PR 5](https://github.com/pjunod/rog_audio/pull/5) contains the complete
-implementation and has received three independent adversarial reviews. All
+implementation, merged at `d02c07178bfaff0c5582cb253d10c8c1738d17c9`,
+and received three independent adversarial reviews. All
 four findings were fixed and source-cleared before 46 new unit cases passed
 once. Seven native filter cases passed; the config stage passed after one
 reviewed command correction and config-only retry. No passing case repeated. Existing speaker and unrelated Atmos passes remain retained.
@@ -222,3 +223,25 @@ record the route investigation and restoration. The
 [Mac receipt](../evidence/m4-coreaudio-timing-2026-10-13.json) records its getter
 compilation and idle/running snapshots. None is unit or physical acceptance
 of the forthcoming latency request.
+
+## Scoped live latency trials
+
+The ThinkPad has moved from the original transient process to the already
+enabled persistent user service. The controlled quit serialized the four
+previously absent plugin settings files through the runtime's native save
+path. That serialization is recorded separately from payload preservation;
+the preset, IR, runtime, startup unit, default, volume and stock audio service
+process IDs were preserved. The reviewed settings snapshot now succeeds.
+
+A fresh baseline under the persistent service used an explicit 4800/48000
+client request and all-zero PCM. Its actual driver period remained 2048/48000
+with the full Lenovo processing chain connected on both channels. The scoped
+256-frame request has not yet been accepted on a live laptop. Preflight found
+two tool assumptions to correct: systemd's formatted output omits an empty
+`EnvironmentFiles` property, and native controlled quit saves a preset-use
+counter. Typed D-Bus inspection proves the former is empty; the latter changed
+only `[StreamOutputs] usedPresets`, with no DSP setting change. The ThinkPad
+baseline was resumed and its full chain rechecked. Both listeners retain their
+working tuning while the corrections are built and reviewed.
+The [preflight receipt](../evidence/speaker-lifecycle-preflight-2026-10-13.json)
+records both observations, raw-evidence hashes and the preserved startup state.
