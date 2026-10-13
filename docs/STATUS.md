@@ -1,18 +1,18 @@
 # Status — implementation and physical acceptance
 
 **Updated:** 2026-10-13 · **State:** both speaker candidates installed with
-login startup configured; latency comparison is in progress and ROG route
-drift needs resolution before its trial.
+login startup configured; ROG stereo tuning restored after four-channel
+investigation; latency comparison implementation is in progress.
 
 | Work | State | Next evidence |
 |---|---|---|
 | Hardware inventory | Both laptops inspected read-only | Refresh during installation |
-| ASUS speaker tuning | Prior owner feedback positive; fresh four-channel output differs from kit stereo binding | Resolve route drift before latency trial |
+| ASUS speaker tuning | Validated stereo restored with full tuned path; prior owner feedback positive | Scoped latency trial, physical hotplug and measurements |
 | ThinkPad speaker tuning | Separate Lenovo music/balanced candidate running; live preset, IR, plugins and hardware output verified | Owner listening, physical hotplug and measurements |
 | Laptop installation runtime | Both active with private rollback and login startup; inherited 97 unit cases and both isolated graph cases passed | Actual post-reboot observation and physical qualification |
 | Diagnostics and latency | New read-only baselines and scoped latency implementation in progress; prior 42 tests retained | Review complete changes, then affected tests and bounded trials |
 | Host Atmos | 15 tests and focused CI cleanup acceptance passed in PR 1 | Actual JOC reference media and physical qualification |
-| macOS comparison | M4 Air read-only CoreAudio baseline in progress | Compare software timing separately from physical speaker delay |
+| macOS comparison | M4 Air getter and silent-running snapshots complete; native probe compiled | Review and summary tests, then physical comparison |
 | Sonos Arc/eARC | Deferred until internal audio work | TV route and actual received formats |
 
 Companion to [installation](SPEAKER_INSTALL.md), [review](REVIEW.md) and
@@ -188,8 +188,13 @@ closing, and requested that four-channel output remain selected while its
 compatibility is investigated. Active capture subsequently showed that the physical speaker DAC consumes
 channels 2/3 in this profile, while the installed stereo processor would feed
 ports 0/1. Correct four-channel routing needs a runtime extension. The owner
-authorized stereo fallback if needed; restoration of the validated stereo
-route is now coordinated for the latency phase. The ThinkPad still matches its
+authorized stereo fallback if needed. The validated stereo route was restored
+at 20% volume without restarting the candidate or stock audio services. The
+full ASUS pipeline and hardware FL/FR links were observed during ten seconds
+of silent PCM; the speaker DAC returned to channel 0 and all five running
+error-counter observations were zero. Startup, preset, IR and managed
+configuration hashes remained unchanged. The profile/default/volume preimage
+and reversal instructions are retained privately. The ThinkPad still matches its
 installed Lenovo route.
 
 The M4 Air retained a 512-frame buffer at 48 kHz during silent playback, with

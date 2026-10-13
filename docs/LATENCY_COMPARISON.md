@@ -128,3 +128,13 @@ the headphone DAC to channels 0/1. The installed processor would link its
 stereo output to ports 0/1. Correct rear-pair routing requires a runtime change;
 the owner-authorized fallback to the validated stereo profile is being used
 for this latency phase. The OEM two-channel coefficients remain unchanged.
+
+
+After the authorized fallback, a separate ten-second silent observation on the
+ROG confirmed the full ASUS pipeline: convolver, two multiband-compressor
+stages, limiter, spectrum and output-level filters, then hardware FL/FR. The
+speaker DAC used stream 1, channel 0. With the same 100 ms client request the
+driver again ran at 2048/48000; all five running error-counter samples were
+zero. Volume was explicitly set to 20% for the restored output. Managed DSP
+files, startup configuration and all audio service process IDs were unchanged.
+This is the tuned stereo baseline for the forthcoming ROG trial.

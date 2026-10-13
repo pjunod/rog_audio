@@ -5,17 +5,17 @@ body{font:16px/1.55 system-ui,sans-serif;margin:3rem auto;padding:0 1.5rem;max-w
 h1{font-size:2rem}h2{color:#91d7ee}a{color:#91d7ee}table{border-collapse:collapse;width:100%;margin:2rem 0}td{border-bottom:1px solid #3b4b60;padding:.8rem;vertical-align:top}tr:first-child{font-weight:700;background:#1e3047}p{margin:.5rem 0}
 </style><main><h1>Status — implementation and physical acceptance</h1>
 <p>**Updated:** 2026-10-13 · **State:** both speaker candidates installed with</p>
-<p>login startup configured; latency comparison is in progress and ROG route</p>
-<p>drift needs resolution before its trial.</p>
+<p>login startup configured; ROG stereo tuning restored after four-channel</p>
+<p>investigation; latency comparison implementation is in progress.</p>
 <table>
 <tr><td>Work</td><td>State</td><td>Next evidence</td></tr>
 <tr><td>Hardware inventory</td><td>Both laptops inspected read-only</td><td>Refresh during installation</td></tr>
-<tr><td>ASUS speaker tuning</td><td>Prior owner feedback positive; fresh four-channel output differs from kit stereo binding</td><td>Resolve route drift before latency trial</td></tr>
+<tr><td>ASUS speaker tuning</td><td>Validated stereo restored with full tuned path; prior owner feedback positive</td><td>Scoped latency trial, physical hotplug and measurements</td></tr>
 <tr><td>ThinkPad speaker tuning</td><td>Separate Lenovo music/balanced candidate running; live preset, IR, plugins and hardware output verified</td><td>Owner listening, physical hotplug and measurements</td></tr>
 <tr><td>Laptop installation runtime</td><td>Both active with private rollback and login startup; inherited 97 unit cases and both isolated graph cases passed</td><td>Actual post-reboot observation and physical qualification</td></tr>
 <tr><td>Diagnostics and latency</td><td>New read-only baselines and scoped latency implementation in progress; prior 42 tests retained</td><td>Review complete changes, then affected tests and bounded trials</td></tr>
 <tr><td>Host Atmos</td><td>15 tests and focused CI cleanup acceptance passed in PR 1</td><td>Actual JOC reference media and physical qualification</td></tr>
-<tr><td>macOS comparison</td><td>M4 Air read-only CoreAudio baseline in progress</td><td>Compare software timing separately from physical speaker delay</td></tr>
+<tr><td>macOS comparison</td><td>M4 Air getter and silent-running snapshots complete; native probe compiled</td><td>Review and summary tests, then physical comparison</td></tr>
 <tr><td>Sonos Arc/eARC</td><td>Deferred until internal audio work</td><td>TV route and actual received formats</td></tr>
 </table>
 <p>Companion to [installation](SPEAKER_INSTALL.md), [review](REVIEW.md) and</p>
@@ -161,8 +161,13 @@ h1{font-size:2rem}h2{color:#91d7ee}a{color:#91d7ee}table{border-collapse:collaps
 <p>compatibility is investigated. Active capture subsequently showed that the physical speaker DAC consumes</p>
 <p>channels 2/3 in this profile, while the installed stereo processor would feed</p>
 <p>ports 0/1. Correct four-channel routing needs a runtime extension. The owner</p>
-<p>authorized stereo fallback if needed; restoration of the validated stereo</p>
-<p>route is now coordinated for the latency phase. The ThinkPad still matches its</p>
+<p>authorized stereo fallback if needed. The validated stereo route was restored</p>
+<p>at 20% volume without restarting the candidate or stock audio services. The</p>
+<p>full ASUS pipeline and hardware FL/FR links were observed during ten seconds</p>
+<p>of silent PCM; the speaker DAC returned to channel 0 and all five running</p>
+<p>error-counter observations were zero. Startup, preset, IR and managed</p>
+<p>configuration hashes remained unchanged. The profile/default/volume preimage</p>
+<p>and reversal instructions are retained privately. The ThinkPad still matches its</p>
 <p>installed Lenovo route.</p>
 <p>The M4 Air retained a 512-frame buffer at 48 kHz during silent playback, with</p>
 <p>its device-running flag changing false/true/false. Separate device, stream and</p>
