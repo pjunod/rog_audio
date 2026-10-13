@@ -311,7 +311,13 @@
     "candidate_compilation": "pending",
     "focused_acceptance": "not-executed",
     "live_deployment": "not-installed",
-    "method_document": "docs/SPEAKER_AUTOLOAD.md"
+    "method_document": "docs/SPEAKER_AUTOLOAD.md",
+    "latest_authored_commit": "135c60ffd98aa87828e4a99c582246db6a19165a",
+    "source_manifest_sha256": "c3216c89f313104bb2ca567433562abc4fdbeea9113acea5b3e3f2bbf3b63c7d",
+    "additive_patch_sha256": "a72802db40779287da67cdf7d116df76adb37f44a101aa78947b5a50cf1bed5e",
+    "planned_affected_unit_methods": 29,
+    "planned_graph_selectors": 5,
+    "acceptance_executed": false
   },
   "planned_release": {
     "tag": "v0.2.1",
@@ -319,5 +325,16 @@
     "status": "planned-after-combined-review-focused-acceptance-and-merge",
     "assets": "corrected-runtime-exact-corresponding-source-newly-bound-ASUS-and-Lenovo-kits",
     "prior_release": "v0.2.0-assets-retained-unchanged"
+  },
+  "deployment_holds": {
+    "thinkpad": {
+      "status": "storage-audit-pending",
+      "trigger": "ENOSPC-on-pilot-file-staging",
+      "audit": "sole-live-operator-read-only-capacity-check",
+      "new_runtime_installed": false,
+      "unrelated_files_removed": false,
+      "rollback_assets_preserved": true,
+      "completed_existing_runtime_result": "unchanged"
+    }
   }
 }

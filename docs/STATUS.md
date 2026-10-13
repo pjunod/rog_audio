@@ -373,12 +373,20 @@ compilation/export remains pending; the existing-runtime ThinkPad final
 receipt is integrated; independent
 adversarial review and affected acceptance follow the complete batch. No new
 unit or graph case has executed. The focused coverage comprises the extended
-source method, 13 actual-header autoload cases, 10 build-orchestration cases,
+source method, 17 actual-header autoload cases, 10 build-orchestration cases,
 three event-order graph selectors, the two existing ASUS/Lenovo loader-route
 selectors invalidated by the new runtime, and one new 512-frame lifecycle
-method. Unit method counts and graph selector counts remain separate.
+method: 29 affected unit methods and five graph selectors in total. No
+unrelated passing suites repeat; unit and graph counts remain separate.
 No candidate fix is installed and no active hour is interrupted for that work.
 Accepted unchanged units remain retained.
+
+The ThinkPad reported `ENOSPC` while copying pilot files after its completed
+existing-runtime hour. Its frozen evidence is retained separately on the
+coordinator's machine. The runtime upgrade and further file staging are held
+pending the sole live operator's read-only capacity audit. No unrelated files
+or recovery assets are removed. This deployment hold does not change the
+completed old-runtime result or imply acceptance of the new runtime.
 
 The latency tool now also prepares a 512/48000 candidate (10.667 ms) while
 retaining its 256-frame default and guarded file-only install/remove contract.

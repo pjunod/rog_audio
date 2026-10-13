@@ -36,6 +36,8 @@ pending. [Current results](docs/STATUS.md#startup-and-sustained-check-progress--
 keep those evidence classes distinct. A new `v0.2.1` release with package
 `8.2.8+rog2`, corresponding source and newly bound kits is planned after
 review, focused tests and merge; existing v0.2.0 assets remain unchanged.
+The ThinkPad runtime update is held pending a read-only storage-capacity
+audit after pilot-file staging reported `ENOSPC`; recovery assets stay retained.
 
 Display work remains in [rog_hdr_dv](https://github.com/pjunod/rog_hdr_dv).
 
