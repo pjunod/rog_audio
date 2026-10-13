@@ -271,5 +271,7 @@ once; no already-passing units were repeated for merge. The next loudness
 implementation and its affected validation remain a separate coherent batch.
 The [digital diagnosis receipt](../evidence/both-laptop-digital-gain-transfer-2026-10-13.json)
 provides a low-level speech baseline, not acceptance of louder programme,
-a new gain implementation, acoustics or physical latency. The frozen PR 9
-release archives and notes remain unchanged while upload approval is pending.
+a new gain implementation, acoustics or physical latency. The PR 9 release was subsequently authorized directly and published as
+v0.2.1 with its reviewed archives and notes unchanged. Its tag target,
+three remote asset hashes/sizes and preserved v0.2.0 digests were verified
+without repeating unit tests; see the [publication receipt](../evidence/speaker-runtime-v021-publication-2026-10-13.json).
