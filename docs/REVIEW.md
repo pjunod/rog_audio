@@ -275,3 +275,13 @@ a new gain implementation, acoustics or physical latency. The PR 9 release was s
 v0.2.1 with its reviewed archives and notes unchanged. Its tag target,
 three remote asset hashes/sizes and preserved v0.2.0 digests were verified
 without repeating unit tests; see the [publication receipt](../evidence/speaker-runtime-v021-publication-2026-10-13.json).
+
+
+A follow-up documentation review found that a current download-hash replacement
+had also changed the historical PR 2 acceptance hash. Correction `af706406`
+restored that historical v0.2.0 identity and explicitly separated its receipt
+from current v0.2.1 acceptance. Focused re-review cleared the correction before
+a release-body update changed only the installation-guide URL to that immutable
+corrected document. The [link-correction receipt](../evidence/speaker-runtime-v021-guide-correction-2026-10-13.json)
+retains original/new notes hashes and verified unchanged tag/three assets.
+No code, patch, runtime or test result was changed, and no units repeated.
