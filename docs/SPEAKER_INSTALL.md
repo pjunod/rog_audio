@@ -272,7 +272,9 @@ remain separate from this installation procedure and prior acceptance.
 The published v0.2.2 `8.2.8+rog3` native runtime passed the isolated
 28-unit/two-graph programme batch. The current packaging follow-up emits
 `8.2.8+rog4` with the same native ELF/source and an added authenticated
-service-stop helper; its separate focused review/acceptance is pending. Actual laptop
+service-stop helper; its separate source review, eleven units and one
+isolated native integration passed. No +rog4 artifact build/publication or
+laptop package replacement is claimed. Actual laptop
 listening/stability remain pending; published v0.2.1 and its `+rog2` recovery
 artifacts remain unchanged. Read [programme loudness](PROGRAMME_LOUDNESS.md)
 for the independent controls, preserved voicing and source/build contract.

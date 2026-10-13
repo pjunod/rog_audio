@@ -5,10 +5,10 @@ trial passed, but programme-update serialization failed and original +rog2
 tuning was restored. ThinkPad +rog3 remains active at 256; its −20 LUFS run
 ended explicitly after 1647.944 seconds for a planned louder candidate, not a
 stability failure or completed hour. A synchronous service-stop/package fix
-is implemented; independent review, eleven Linux units and actual helper-to-
-native integration precede deployment. Fresh hours and physical measurements
+cleared independent review, eleven Linux units and actual helper-to-native
+integration. The final repository check and merge precede deployment. Fresh hours and physical measurements
 remain open.
-**Evidence update:** 2026-10-13 22:23 UTC; dated receipts retain separate attempts.
+**Evidence update:** 2026-10-13 22:38 UTC; dated receipts retain separate attempts.
 
 PR 9 startup source/artifact findings cleared re-review; 29 affected unit methods and
 six isolated graph selectors passed once, with zero failures or skips. PR 9
@@ -761,7 +761,7 @@ live deployment, acoustic measurement or owner-accepted loudness result.
 These three device-free diagnostic cases are separate from acceptance units;
 no native build or passing unit suite repeated.
 
-## Synchronous service stop — implemented, review and focused acceptance pending
+## Synchronous service stop — review clear; eleven units and native integration passed
 
 [The explicit ROG 1024/recovery receipt](../evidence/rog-explicit1024-programme-recovery-2026-10-13.json)
 records eleven positive 1024/48000 observations at driver ERR 4 unchanged,
@@ -806,6 +806,17 @@ separately; no unnecessary full package rewrite or OS cleanup is planned.
 
 The authored source `ecd2d9b` and fixture-only robustness follow-up `b5a0ad0c`
 were imported preserving authorship as `3b8ac6c` and `c8ec251`. Independent
-adversarial review precedes eleven selected Linux unit methods and one actual
-accepted-helper-to-native ROG IPC/save/exit integration. Neither selection has
-executed yet. Earlier passing native/audio suites will not be repeated.
+adversarial review cleared the combined source and final unsigned UID/GID
+correction before all eleven selected Linux unit methods passed once, with
+zero failures, errors or skips. [The authentic unit receipt](../evidence/synchronous-stop-unit-acceptance-2026-10-13.json)
+records the exact reviewed `8c2c234f` source, unchanged hashes, retained log
+and verified isolated two-CPU/6-GiB/2048-PID/network-none environment. The
+owned container was removed. The separately coordinated [actual helper-to-native integration](../evidence/speaker-stop-native-integration-2026-10-13.json)
+passed first execution: exact reviewed helper `ba8c4a6a` and accepted native
+ELF `3f110d6a`; helper and primary returned 0 in 0.321 seconds with expected
+ROG AutoGain settings saved, automatic preset/IR and full stereo route
+verified. No secondary native CLI or helper signals were used. This is an
+isolated native protocol result; live backport and final settings-bound hours
+remain pending. Earlier unchanged native/audio
+suites were not repeated; one changed export method was legitimately
+invalidated and re-executed. No native compiler pass is claimed.

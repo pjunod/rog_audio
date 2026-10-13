@@ -30,8 +30,9 @@ The later explicit 1024/48000 trial passed with driver ERR 4 unchanged across
 the new preset, but the service stop sequence hung during serialization.
 Original +rog2 tuning was recovered and automatically loaded, retaining the
 1024 request. A [synchronous service-stop fix](docs/SPEAKER_SERVICE.md) is
-implemented for independent review, eleven focused Linux methods and one
-actual helper-to-native integration; no native engine rebuild is required. ThinkPad
+independently reviewed; eleven focused Linux methods and one actual
+helper-to-native integration passed first execution. Final merge and live
+backport remain pending; no native engine rebuild is required. ThinkPad
 retains its independent 256 request. The M4 Air reports
 a 512-frame HAL buffer (10.667 ms). These are software timing terms, not
 measured speaker delay or proof of Mac parity.

@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-13",
+  "scope": "Final-reviewed helper stopping accepted native ROG runtime on isolated device-free Linux graph",
+  "reviewed_head": "8c2c234f39d943d5c7825badde80432b08a668af",
+  "stop_helper_sha256": "ba8c4a6a103a03969879fab794c823438247eb173e7f227f29630c2585273d42",
+  "binary_sha256": "3f110d6a2d1e2c743cc552b58930679acd0c00e45f5771a23d4b7702ca31206d",
+  "preset_sha256": "78dba4c0ea3a6e68227f4f48e7a9534359c3a3ecce21d308b1bfaf03e32ffcc4",
+  "ir_sha256": "1d30e4445384b6a03af2eaa85fae6d73ce1bf1ff986d201cdb4162e4116d5661",
+  "public_fixture_provenance_sha256": "b1a5b63d33fb69101f61ade86c6a8e867b6cf61442da32cda16325102d830b56",
+  "status": "passed",
+  "executions": 1,
+  "helper_returncode": 0,
+  "primary_returncode": 0,
+  "helper_elapsed_seconds": 0.32081580406520516,
+  "primary_exit_elapsed_seconds": 0.32132612203713506,
+  "saved_native_settings": {
+    "target_lufs": -20,
+    "maximum_gain_db": 2.647500000006407,
+    "reference": 2,
+    "silence_threshold_lufs": -50
+  },
+  "ordered_both_channel_chain_verified": true,
+  "automatic_preset_load_verified": true,
+  "secondary_native_cli_used": false,
+  "helper_sent_signals": false,
+  "physical_device_or_session_access": false,
+  "native_source_changed": false,
+  "compiler_or_old_suites_repeated": false,
+  "private_receipt_sha256": "6257c587074e5c0bca3db008bdccbf1396fcf2ff6ab063cb5faa161ad2dd9bc9",
+  "archive_sha256": "798284087ef5e536239942250597fadf8971413cd8941c79ba3a1627e785069a",
+  "limits": [
+    "This isolated IPC/exit/settings result is not an acoustic, physical latency or live hardware stability measurement.",
+    "Live helper/unit installation and laptop listening remain separate acceptance."
+  ]
+}

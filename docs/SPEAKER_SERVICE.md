@@ -1,7 +1,7 @@
 # Speaker service — quit the owned process and wait for saved state
 
-**Status:** implemented; independent review, eleven focused Linux methods and
-one actual helper-to-native integration pending · **Updated:** 2026-10-13 ·
+**Status:** independent review clear; eleven focused Linux methods passed once;
+actual helper-to-native integration passed once · **Updated:** 2026-10-13 ·
 **Executes:** the controlled-stop part of [speaker installation](SPEAKER_INSTALL.md).
 
 Companion to [native autoload](SPEAKER_AUTOLOAD.md), [programme loudness](PROGRAMME_LOUDNESS.md)
@@ -102,12 +102,18 @@ hours bind the final running invocation and settings.
 
 ## 4. Keep focused and physical acceptance separate
 
-After independent review, run only the eleven selected Linux methods: six
+Independent review cleared before all eleven selected Linux methods passed
+once, with zero failures, errors or skips: six
 process/peer/lifetime/timeout cases, two MAINPID/unit cases and three affected
-export cases. Linux pidfd cases must execute on Linux, with zero skips. A
-separate device-free integration must exercise the exact accepted helper
-against the actual native ROG LocalServer, expected settings save and real
-exit; fixture-child tests alone do not establish that protocol.
+export cases. The [exact receipt](../evidence/synchronous-stop-unit-acceptance-2026-10-13.json)
+binds the reviewed source/helper, selected methods and verified Linux resource
+limits; individual fixtures clean themselves up and their durable scratch
+parent/logs remain retained. The separately coordinated [native integration](../evidence/speaker-stop-native-integration-2026-10-13.json)
+passed first execution with the exact accepted helper and actual native ROG
+LocalServer: both returned 0 in 0.321 seconds, expected native settings were
+saved and the original preset/IR/full stereo route were verified. No secondary
+native CLI or helper signal was used. Fixture-child tests alone would not
+establish that protocol. Both owned acceptance containers were removed.
 
 The progress renderer's reversible presentation change receives static HTML
 inspection rather than extra cosmetic tests. Passing native/audio suites are

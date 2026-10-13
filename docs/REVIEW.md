@@ -376,7 +376,7 @@ confirmed anchors, formatting and paragraph grouping; the in-app browser's
 file-URL policy prevented a visual preview. No workaround or duplicate audio
 test was used for this reversible presentation change.
 
-## Synchronous service stop — implemented, final review pending
+## Synchronous service stop — review clear; eleven units and native integration passed
 
 Authored commits `ecd2d9b` and test-only `b5a0ad0c` were imported as `3b8ac6c`
 and `c8ec251`, preserving author identity. The helper, service template and
@@ -384,11 +384,27 @@ packaging +rog4 changes are combined with the progress renderer and exact
 cleared listening, diagnostic, partial-run and recovery summaries. The native
 ELF, corresponding native source, patch bytes and earlier receipts are unchanged.
 
-After independent review clears, one executor will run eleven Linux methods:
-six helper process/peer/timeout/exit cases, two MAINPID/unit cases and three
-affected export cases. One separately coordinated device-free native integration
-must prove that the exact reviewed helper reaches the accepted ROG runtime's
-actual LocalServer protocol, saves expected settings and awaits real exit.
-Fixture-child tests alone do not establish that native contract. No affected
-methods or final repository checker have executed for this batch. The reversible
-renderer change uses static generated-HTML inspection; no cosmetic unit tests.
+Independent adversarial review cleared initial head `e9a976ef` and the exact
+unsigned UID/GID source correction `813d6ad5`, imported as `4f77287`. The final
+reviewed head is `8c2c234f`. One executor ran all eleven Linux methods once:
+six helper process/peer/timeout/exit cases, two MAINPID/unit cases, one
+previously passing mocked-export method invalidated by the packaging/export
+changes and two new export rejection methods. All passed first execution,
+with zero failures, errors or skips. The [exact unit receipt](../evidence/synchronous-stop-unit-acceptance-2026-10-13.json)
+binds the source/helper/license hashes, 2925-byte retained log, Python 3.14.8,
+Linux image, actual resource limits, read-only source/invocation mounts and
+owned scratch. The owned unit container was removed; source hashes remained equal.
+
+The separately coordinated [native integration receipt](../evidence/speaker-stop-native-integration-2026-10-13.json)
+records one first-execution pass against the actual accepted ROG LocalServer,
+with the exact reviewed helper SHA256 `ba8c4a6a` and native ELF `3f110d6a`.
+Helper and primary returned 0 in 0.321 seconds, expected native AutoGain
+settings were saved, automatic preset/IR and full ordered stereo routing were
+verified, and no secondary native CLI or helper signal was used. Its owned
+container was removed. This supplies the native contract that fixture-child
+units alone cannot establish; it is not live hardware or acoustic acceptance.
+
+No required methods/integration remain unexecuted. The final repository
+checker is still pending for this batch. The reversible renderer change uses
+static generated-HTML inspection; no cosmetic unit tests. Native/source/patch
+bytes remain unchanged and no source/native acceptance suites were repeated.
