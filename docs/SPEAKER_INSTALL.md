@@ -319,6 +319,10 @@ preserved. No display or session restart belongs to this procedure.
 
 ## 6. Review-bound isolated acceptance
 
+The receipts immediately below are inherited v0.2.0 acceptance from PR 2.
+The current v0.2.1 startup runtime has a separate [29-unit/six-graph receipt](../evidence/speaker-autoload-acceptance-2026-10-13.json);
+those passes do not rewrite the older package or test identities.
+
 Run these tests only after independent adversarial review and fixes.
 [The unit receipt](../evidence/speaker-installation-unit-validation-2026-10-12.json)
 records one source, 12 installer and 20 native routing cases passing against
@@ -330,8 +334,8 @@ records both device cases passing all 10 assertions against integrated
 `ca0e755`, with their separate verified tuning bundles. Only the failed ASUS
 case was retried after focused fixture review; the ThinkPad case passed on its
 first run. The graph helper was rebuilt separately, and both image IDs and
-helper hashes are recorded. The production package remained
-`b24e9c97fa1d892c4f1eede22ab5f0bf2669f7b0d3cc5c7985cae4965bd0582a`.
+helper hashes are recorded. The historical v0.2.0 production package remained
+`089ae964c8e1b75281d589a6cd52a3a25d358f9443112162fea616b69b5904d7`.
 Each selector can be retried independently.
 
 ```bash
