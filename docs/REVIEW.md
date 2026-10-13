@@ -285,3 +285,17 @@ a release-body update changed only the installation-guide URL to that immutable
 corrected document. The [link-correction receipt](../evidence/speaker-runtime-v021-guide-correction-2026-10-13.json)
 retains original/new notes hashes and verified unchanged tag/three assets.
 No code, patch, runtime or test result was changed, and no units repeated.
+
+
+## Programme loudness batch — compiler result before review and acceptance
+
+The new `+rog3` candidate compiled/exported with its additive native maximum-
+makeup source and 712 corresponding files retained. Eight native-header,
+eleven profile, one source and three selective export methods are planned
+(23 units), plus two separate model programme graph selectors. Independent
+source/artifact review and any corrections precede execution. No unit,
+graph, deployment or everyday-loudness pass is claimed for this candidate.
+No unchanged PR 9 acceptance suite is repeated by this documentation lane.
+The measured ThinkPad FIR contribution, unresolved ROG ordinary-media loss
+and bypassed current AutoGain remain separate from prospective gain-policy
+improvements. Existing release and rollback evidence stays immutable.

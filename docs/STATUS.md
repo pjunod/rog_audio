@@ -15,6 +15,7 @@ is merged. Fresh final-configuration hours and physical measurements remain open
 | ThinkPad speaker tuning | Separate Lenovo candidate running; demo clarity positive, everyday loudness unresolved; old-runtime hour retained | Resolve storage before corrected-runtime deployment; separate gain investigation and physical checks |
 | Laptop installation runtime | ROG corrected runtime active; ThinkPad old runtime retained; 29 affected units/six isolated graphs passed | Reboot/resume and sustained qualification; ThinkPad storage resolution |
 | Diagnostics and latency | ThinkPad old-runtime hour at 256 complete; ROG short check at 512 passed after 256 failure | Fresh final-configuration hours and physical measurements |
+| Programme loudness | `+rog3` native candidate compiled/exported; no review or acceptance claimed | Independent source/artifact review, 23 affected unit methods and two model programme graphs; then coordinated evaluation |
 | Host Atmos | 15 tests and focused CI cleanup acceptance passed in PR 1 | Actual JOC reference media and physical qualification |
 | macOS comparison | M4 Air getter and silent-running snapshots complete; 16 summary tests passed in PR 5 | Matched Linux software observations, then physical comparison |
 | Physical interaction timing | Phone/tablet method source-reviewed; ten methods and unarmed Chrome smoke passed, no physical samples | Manual pilot, then repeated same-track capture |
@@ -541,3 +542,39 @@ hour. The receipt's `v0.2.1` identifies the artifact version, subsequently
 published with matching hashes; publication does not extend this observation. ThinkPad still
 runs the prior runtime at 256 frames. Fresh full hours follow the final kept
 loudness configuration and resolution of its storage hold.
+
+
+## Programme loudness candidate — compiled, review and acceptance pending
+
+The `8.2.8+rog3` candidate was compiled/exported from the additive bounded
+makeup source with 712 corresponding files retained. Compilation is not unit,
+runtime-graph or live acceptance. No new loudness package or preset has been
+installed. The current ROG remains on `+rog2` at 512 frames; ThinkPad's current
+runtime and storage work remain separate operator observations.
+
+The native maximum automatic makeup is independent of the LUFS target. Its
+runtime default is 0 dB, so upgrading alone does not add positive gain to old
+profiles. Derived candidate bundles insert the independent leveler before
+the original final limiter, retain exact IR bytes and all non-AutoGain stages,
+and preserve original profiles/recovery. Controls remain adjustable. Candidate
+caps derived from the existing FIR normalization are engineering budgets,
+not measured acoustic headroom or accepted everyday settings.
+
+The planned selection is eight actual native-header methods, eleven profile
+preparation methods, one affected source-preparation method and three
+selective export methods: 23 unit methods in total. Two separate model
+programme graph selectors will check native cap consumption, stereo gain,
+silence and louder-source transitions, original IR/plugin loading, finite
+output and the original limiter. Independent source/artifact review precedes
+execution; no affected result is claimed yet. Previously passed unchanged
+PR 9 speaker/autoload/latency and Mac/emitter suites remain retained.
+
+The ThinkPad's measured speech loss tracks its static FIR response; the
+larger ROG ordinary-media volume loss remains unresolved. AutoGain was
+bypassed in the installed profiles, so its prospective enablement defects
+are not established causes of the current quietness. The new leveler must be
+evaluated against matched programme audio and owner listening; silence or
+absence of feedback cannot count as loudness acceptance. Fresh hour-long
+checks follow the final kept gain configuration, with speaker voicing, stock
+amplifier protection, startup, owner volumes and rollback preserved. Sonos
+remains last. Physical speaker delay and calibrated acoustics are unmeasured.
