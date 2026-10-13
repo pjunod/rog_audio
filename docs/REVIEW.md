@@ -287,15 +287,29 @@ retains original/new notes hashes and verified unchanged tag/three assets.
 No code, patch, runtime or test result was changed, and no units repeated.
 
 
-## Programme loudness batch — compiler result before review and acceptance
+## Programme loudness batch — corrected source rebuilding before acceptance
 
-The new `+rog3` candidate compiled/exported with its additive native maximum-
-makeup source and 712 corresponding files retained. Eight native-header,
-eleven profile, one source and three selective export methods are planned
-(23 units), plus two separate model programme graph selectors. Independent
-source/artifact review and any corrections precede execution. No unit,
-graph, deployment or everyday-loudness pass is claimed for this candidate.
-No unchanged PR 9 acceptance suite is repeated by this documentation lane.
+The initial `+rog3` compiler/export receipt binds 712 corresponding files.
+Six adversarial findings required corrections to analyser lifetime and reset/
+error paths, preparation output ownership and ordered active graph evidence.
+The initial artifact and receipt remain immutable and superseded. Corrected
+713-file staged source at `1db1e9f` applied exactly and cleared focused native
+source review. Harness/profile review, corrective compilation and final
+artifact rebind remain in progress; no affected acceptance has run.
+
+The revised selection is eight native makeup-header, four threaded analyser,
+twelve profile, one source and three selective export methods (28 units), plus
+the same two model programme graph selectors. Those graphs now retain ordered
+active FL/FR traversal through each distinct plugin instance, including repeated
+plugin types, and an acceptance-only ingestion-failure phase. That shim is
+excluded from the production runtime. Final source/harness/artifact review
+precedes each affected case's first execution. No unit, graph, deployment or
+everyday-loudness pass is claimed. Unchanged PR 9 suites remain retained.
+
 The measured ThinkPad FIR contribution, unresolved ROG ordinary-media loss
 and bypassed current AutoGain remain separate from prospective gain-policy
-improvements. Existing release and rollback evidence stays immutable.
+improvements. Existing release and rollback evidence stays immutable. The
+ThinkPad's authorized backed-up cleanup completed without audio-state changes,
+but actual available space is 43.23 MiB; further operator capacity checks do
+not constitute runtime deployment or a new stability pass. Raw cleanup
+records remain private.

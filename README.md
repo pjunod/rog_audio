@@ -47,8 +47,10 @@ The [ThinkPad listening receipt](evidence/thinkpad-owner-listening-2026-10-13.js
 also records “sounded good” for the demo, while explicitly leaving everyday
 loudness unaccepted after the subsequent movies/shows report. A separate gain
 investigation will address that issue without changing this frozen batch.
-The ThinkPad runtime update is held pending a read-only storage-capacity
-audit after pilot-file staging reported `ENOSPC`; recovery assets stay retained.
+The ThinkPad runtime update remains held for capacity after pilot staging
+reported `ENOSPC`. Authorized cleanup completed with verified private backup,
+but actual available space is only 45,326,336 bytes (43.23 MiB). Recovery
+assets, installed packages and audio settings remain preserved.
 A later [paired digital gain capture](evidence/both-laptop-digital-gain-transfer-2026-10-13.json)
 found speech attenuation consistent with the retained FIR filters (-0.343 dB
 ROG, -3.903/-3.783 dB ThinkPad), with no additional runtime gain loss for that

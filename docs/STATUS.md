@@ -15,7 +15,7 @@ is merged. Fresh final-configuration hours and physical measurements remain open
 | ThinkPad speaker tuning | Separate Lenovo candidate running; demo clarity positive, everyday loudness unresolved; old-runtime hour retained | Resolve storage before corrected-runtime deployment; separate gain investigation and physical checks |
 | Laptop installation runtime | ROG corrected runtime active; ThinkPad old runtime retained; 29 affected units/six isolated graphs passed | Reboot/resume and sustained qualification; ThinkPad storage resolution |
 | Diagnostics and latency | ThinkPad old-runtime hour at 256 complete; ROG short check at 512 passed after 256 failure | Fresh final-configuration hours and physical measurements |
-| Programme loudness | `+rog3` native candidate compiled/exported; no review or acceptance claimed | Independent source/artifact review, 23 affected unit methods and two model programme graphs; then coordinated evaluation |
+| Programme loudness | Initial `+rog3` build superseded; corrected native source cleared focused review, rebuild and harness review in progress | Final artifact review, 28 affected unit methods and two model programme graphs; then coordinated evaluation |
 | Host Atmos | 15 tests and focused CI cleanup acceptance passed in PR 1 | Actual JOC reference media and physical qualification |
 | macOS comparison | M4 Air getter and silent-running snapshots complete; 16 summary tests passed in PR 5 | Matched Linux software observations, then physical comparison |
 | Physical interaction timing | Phone/tablet method source-reviewed; ten methods and unarmed Chrome smoke passed, no physical samples | Manual pilot, then repeated same-track capture |
@@ -430,10 +430,15 @@ unchanged units remain retained.
 
 The ThinkPad reported `ENOSPC` while copying pilot files after its completed
 existing-runtime hour. Its frozen evidence is retained separately on the
-coordinator's machine. The runtime upgrade and further file staging are held
-pending the sole live operator's read-only capacity audit. No unrelated files
-or recovery assets are removed. This deployment hold does not change the
-completed old-runtime result or imply acceptance of the new runtime.
+coordinator's machine. The owner then authorized backup and scoped cleanup of
+164 cached installers and disabled Firefox revision 8969. The private backup
+was verified before removal. Cleanup completed with installed packages, active
+Firefox, the recovery seed alias, audio settings, services and volume preserved.
+Actual available space is 45,326,336 bytes (43.23 MiB); the earlier 92 MiB was
+a projection, not a measured result. The runtime upgrade remains held while
+the sole live operator checks redundant agent-owned files against the storage
+budget, preserving rollback. This does not change the completed old-runtime
+result or imply acceptance of the new runtime. Raw cleanup receipts stay private.
 
 The latency tool now also prepares a 512/48000 candidate (10.667 ms) while
 retaining its 256-frame default and guarded file-only install/remove contract.
@@ -544,13 +549,18 @@ runs the prior runtime at 256 frames. Fresh full hours follow the final kept
 loudness configuration and resolution of its storage hold.
 
 
-## Programme loudness candidate — compiled, review and acceptance pending
+## Programme loudness candidate — review corrections rebuilding
 
-The `8.2.8+rog3` candidate was compiled/exported from the additive bounded
-makeup source with 712 corresponding files retained. Compilation is not unit,
-runtime-graph or live acceptance. No new loudness package or preset has been
-installed. The current ROG remains on `+rog2` at 512 frames; ThinkPad's current
-runtime and storage work remain separate operator observations.
+The initial `8.2.8+rog3` candidate compiled/exported with 712 corresponding
+files retained. Six adversarial findings prompted native analyser lifetime,
+reset/error handling, output ownership and ordered graph-evidence corrections.
+The initial receipt and artifact remain immutable and superseded. Corrected
+713-file source at `1db1e9f` applied exactly and cleared focused native source
+review; corrective compilation, harness review and artifact rebind are in
+progress. Compilation and source review are distinct from unit, runtime-graph
+or live acceptance. No new loudness package or preset has been installed.
+The current ROG remains on `+rog2` at 512 frames; ThinkPad's current runtime
+and storage work remain separate operator observations.
 
 The native maximum automatic makeup is independent of the LUFS target. Its
 runtime default is 0 dB, so upgrading alone does not add positive gain to old
@@ -560,12 +570,15 @@ and preserve original profiles/recovery. Controls remain adjustable. Candidate
 caps derived from the existing FIR normalization are engineering budgets,
 not measured acoustic headroom or accepted everyday settings.
 
-The planned selection is eight actual native-header methods, eleven profile
-preparation methods, one affected source-preparation method and three
-selective export methods: 23 unit methods in total. Two separate model
-programme graph selectors will check native cap consumption, stereo gain,
-silence and louder-source transitions, original IR/plugin loading, finite
-output and the original limiter. Independent source/artifact review precedes
+The revised selection is eight actual native makeup-header methods, four
+threaded analyser methods, twelve profile preparation methods, one affected
+source-preparation method and three selective export methods: 28 unit methods
+in total. Two separate model programme graph selectors will check native cap
+consumption, stereo gain, silence and louder-source transitions, original
+IR/plugin loading, finite output, ordered active FL/FR traversal through every
+distinct plugin instance and the original limiter. Each includes actual
+ingestion-failure injection through an acceptance-only shim; the shim is not
+part of the production runtime. Final source/harness/artifact review precedes
 execution; no affected result is claimed yet. Previously passed unchanged
 PR 9 speaker/autoload/latency and Mac/emitter suites remain retained.
 
