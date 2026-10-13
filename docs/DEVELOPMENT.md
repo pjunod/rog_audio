@@ -6,13 +6,19 @@ Read [implementation](AUDIO_IMPLEMENTATION.md) for lane contracts and
 ## Clone outside the owner’s source directory
 
 ```bash
-git clone https://github.com/pjunod/rog_audio.git /tmp/rog-audio-work
-cd /tmp/rog-audio-work
+audio_work_root="$HOME/.local/state/rog-audio/work"  # Durable owned storage.
+mkdir -p "$audio_work_root"
+git clone https://github.com/pjunod/rog_audio.git "$audio_work_root/change-example"
+cd "$audio_work_root/change-example"
 git switch -c codex/audio-change
 ```
 
-Use a unique path if that directory exists. Keep dependencies and private
-inputs outside the tracked tree. Do not install build dependencies into a
+Use a unique path if that directory exists. Keep clones, build work and
+private receipts in durable owned storage; `/tmp`, `/private/tmp` and `/var/tmp`
+are not project-storage locations. Keep dependencies and private inputs
+outside the tracked tree. Set test scratch and runtime directories beneath
+the retained output when running isolated acceptance; retain receipts before
+cleaning owned work. Do not install build dependencies into a
 live audio session; use disposable Linux build environments. Record compiler
 versions, source commits and container identities. Do not expose sound
 devices or host runtime sockets to offline builds.

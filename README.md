@@ -16,10 +16,12 @@ substantial audible improvement; physical hotplug and measurements remain
 pending. macOS-equivalent performance or
 Atmos fidelity has not been measured.
 
-Both tuned Linux paths now negotiate 256 frames at 48 kHz (5.333 ms), down from
-2048 frames (42.667 ms) in paired zero-PCM observations with the same client
-request. The M4 Air reports a 512-frame HAL buffer (10.667 ms); these are
-software timing terms, not measured speaker delay or proof of Mac parity.
+Historical paired zero-PCM observations reduced both tuned Linux driver
+periods from 2048 frames (42.667 ms) to 256 frames (5.333 ms) at 48 kHz with
+the same client request. The ROG is currently restored to 2048 frames after
+its 256-frame stability failure; ThinkPad remains at 256. The M4 Air reports
+a 512-frame HAL buffer (10.667 ms). These are software timing terms, not
+measured speaker delay or proof of Mac parity.
 The [comparison and rollback](docs/LATENCY_COMPARISON.md#7-paired-256-frame-trials--both-tuned-paths-preserved)
 record the results and limits.
 
@@ -86,13 +88,19 @@ are reported explicitly. Speaker and Atmos builds have separate pinned
 container dependencies in their build documents.
 
 ```bash
-git clone https://github.com/pjunod/rog_audio.git /tmp/rog-audio-work
-cd /tmp/rog-audio-work
-python3 scripts/inspect_audio.py --output /tmp/audio-inventory.json
-python3 scripts/analyse_audio_latency.py --input tests/audio/synthetic-trials.json --output /tmp/audio-analysis.json
+audio_work_root="$HOME/.local/state/rog-audio/work"  # Durable owned storage.
+mkdir -p "$audio_work_root"
+git clone https://github.com/pjunod/rog_audio.git "$audio_work_root/diagnostics-example"
+cd "$audio_work_root/diagnostics-example"
+mkdir -p -m 700 private  # Retain raw inventory and analysis outside Git.
+python3 scripts/inspect_audio.py --output private/audio-inventory.json
+python3 scripts/analyse_audio_latency.py \
+  --input tests/audio/synthetic-trials.json --output private/audio-analysis.json
 ```
 
-Use new output paths; existing files are not overwritten. The example analysis
+Use a new clone name if that directory exists. Keep work and private outputs
+in durable owned storage; project storage in `/tmp` is not permitted. Existing
+output files are not overwritten. The example analysis
 uses synthetic trials, not a measurement of your machine. Collection is
 read-only and never starts playback or recording. See the lane documents
 for speaker conversion, client latency requests and the offline Atmos CLI.

@@ -15,8 +15,9 @@ recovery tools are retained. Physical hotplug/measurement acceptance is pending.
 The ThinkPad's separate Lenovo candidate has also passed its live loading and
 speaker output checks, with login startup enabled and rollback retained; see
 [its deployment receipt](../evidence/thinkpad-speaker-deployment-2026-10-12.json).
-Owner listening feedback on the ThinkPad remains pending. Both candidates now
-run under the persistent service with the scoped 256-frame request active.
+Owner listening feedback on the ThinkPad remains pending. Both candidates
+use the persistent service. ThinkPad retains the 256-frame request; ROG now
+uses the 2048-frame baseline after reviewed removal of its failed request.
 Their [paired latency trials and rollback](LATENCY_COMPARISON.md#7-paired-256-frame-trials--both-tuned-paths-preserved)
 preserved tuning, physical defaults and the volume observed in that paired
 window: 86% on the ROG, 20% on the ThinkPad. Those values are historical,
@@ -338,7 +339,7 @@ ROG_EASYEFFECTS_SOURCE=PATCHED_SOURCE PYTHONPATH=tests \
 ```
 
 Graph inputs are source-verified converted bundles, runtime manifest, kit and a
-new writable output directory. CI builds ASUS/Lenovo bundles from the public
+new writable output directory in durable owned storage. CI builds ASUS/Lenovo bundles from the public
 profile files and sanitized inventories described in
 [speaker preparation](AUDIO_SPEAKER_BUILD.md) and
 [ThinkPad preparation](THINKPAD_AUDIO.md). The fixture preparer invents node and
@@ -346,16 +347,19 @@ route observations; it does not need private host captures.
 
 ```bash
 # Clean container invocation; KIT_DIR holds the synthetic per-device kit.
-mkdir NEW_OUTPUT
+mkdir -m 700 NEW_OUTPUT  # Retained output beneath the durable owned workspace.
 docker run --rm --network none --read-only --cap-drop ALL \
   --security-opt no-new-privileges --user "$(id -u):$(id -g)" \
-  --tmpfs /tmp:rw,nosuid,nodev,size=128m \
+  --env TMPDIR=/output \
   --mount "type=bind,src=$(pwd),dst=/repo,readonly" \
   --mount "type=bind,src=ABSOLUTE_KIT_DIR,dst=/kit,readonly" \
   --mount "type=bind,src=ABSOLUTE_NEW_OUTPUT,dst=/output" \
   rog-audio-ee:acceptance python3 /repo/scripts/check_speaker_graph.py \
   --case asus-loader-route --kit /kit --output /output/case
 ```
+
+The fixture stores its runtime/configuration under the retained output;
+`TMPDIR` also points there rather than temporary project storage.
 
 The real EasyEffects loader and plugins process generated audio through an
 exported synthetic SPA Device Route and null sinks. PipeWire's

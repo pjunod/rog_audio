@@ -180,11 +180,18 @@ docker build --tag rog-audio-speaker:local - < scripts/speaker-build.Dockerfile
 # Synthetic tests once, then actual repository ASUS conversion/verification.
 docker run --rm --network none --read-only --cap-drop ALL \
   --security-opt no-new-privileges --user "$(id -u):$(id -g)" \
-  --tmpfs /tmp:rw,nosuid,nodev,size=256m \
+  --env TMPDIR=/output \
+  --env XDG_CONFIG_HOME=/output/empty-config \
+  --env XDG_DATA_HOME=/output/empty-data \
+  --env XDG_STATE_HOME=/output/empty-state \
+  --env XDG_CACHE_HOME=/output/empty-cache \
+  --env XDG_RUNTIME_DIR=/output/empty-runtime \
   --mount "type=bind,src=$(pwd),dst=/repo,readonly" \
   --mount "type=bind,src=$(pwd)/build/speaker-converter,dst=/converter,readonly" \
   --mount "type=bind,src=$(pwd)/build/speaker-validation,dst=/output" \
   --env ROG_SPEAKER_CONVERTER=/converter rog-audio-speaker:local sh -ec '
+    mkdir -p /output/empty-runtime
+    chmod 700 /output/empty-runtime
     python -m unittest discover -s tests -p test_prepare_speaker_profile.py -v
     for profile in music dynamic off; do
       python scripts/prepare_speaker_profile.py build \
@@ -197,6 +204,10 @@ docker run --rm --network none --read-only --cap-drop ALL \
     done
   '
 ```
+
+Use an owned clone under durable local-state storage for this example. The
+writable output, Python scratch and XDG paths are retained there; no project
+work is placed in temporary storage.
 
 For a failed wrapper check, keep the same container mounts and run only its
 reported ID, for example `PYTHONPATH=tests python -m unittest -v

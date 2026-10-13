@@ -1,6 +1,7 @@
 # Latency comparison — tuned Linux laptops and the M4 Air
 
-**Status:** both tuned 256-frame trials active; physical comparison pending ·
+**Status:** historical paired 256-frame observations retained; current ROG
+fallback 2048 frames, ThinkPad 256; physical comparison pending ·
 **Written:** 2026-10-13 · **Executes:** latency phase in
 [implementation](AUDIO_IMPLEMENTATION.md).
 
@@ -157,7 +158,9 @@ records the final operational results. Both Linux pairs used the same explicit
 DSP chain and the persistent user service. The four bounded observations lasted
 4.67–5.88 seconds; exact durations and startup sequences are in the
 receipt. The 256-frame output-filter request was observed on the actual linked
-driver, and remains active on both laptops.
+driver during those paired trials. The later ROG failure and rollback
+restored 2048/48000; ThinkPad retains 256/48000. Section 8 records that
+subsequent state.
 
 | Host | Paired baseline | Final software period | Processing and error observations |
 |---|---|---|---|

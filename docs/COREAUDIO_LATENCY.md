@@ -35,16 +35,19 @@ snapshot. A running flag is activity evidence, not a callback timing trace.
 ## Build and summarise a new private snapshot
 
 Use a Mac with an existing compiler/SDK. These commands create files only in
-a new private directory; they install no packages or audio configuration.
+a new private directory under durable owned storage; retain its binary,
+capture and summary. They install no packages or audio configuration.
 
 ```bash
-work=$(mktemp -d /tmp/rog-coreaudio-XXXXXXXX)    # New private workspace.
+coreaudio_root="$HOME/.local/state/rog-audio/coreaudio"  # Durable private root.
+mkdir -p "$coreaudio_root"
+coreaudio_work=$(mktemp -d "$coreaudio_root/capture-XXXXXXXX")  # New retained capture.
 xcrun clang -std=c11 -Wall -Wextra -Werror -Wpedantic \
   -framework CoreAudio probes/coreaudio/output_inventory.c \
-  -o "$work/coreaudio-output-inventory"         # Compile getter-only source.
-(umask 077; set -C; "$work/coreaudio-output-inventory" > "$work/capture.json")
+  -o "$coreaudio_work/coreaudio-output-inventory"         # Compile getter-only source.
+(umask 077; set -C; "$coreaudio_work/coreaudio-output-inventory" > "$coreaudio_work/capture.json")
 python3 scripts/analyse_coreaudio_latency.py \
-  --input "$work/capture.json" --output "$work/summary.json"
+  --input "$coreaudio_work/capture.json" --output "$coreaudio_work/summary.json"
 ```
 
 [The offline summariser](../scripts/analyse_coreaudio_latency.py) uses only

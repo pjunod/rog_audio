@@ -6,8 +6,9 @@ h1{font-size:2rem}h2{color:#91d7ee}a{color:#91d7ee}table{border-collapse:collaps
 </style><main><h1>Status — implementation and physical acceptance</h1>
 <p>**Updated:** 2026-10-13 · **State:** both speaker candidates installed with</p>
 <p>login startup configured; ROG stereo tuning restored after four-channel</p>
-<p>investigation; 256-frame requests deployed with rollback retained; sustained</p>
-<p>check remains active on ThinkPad; ROG stopped on error growth after 67.982</p>
+<p>investigation; ROG restored to 2048 frames after reviewed rollback; ThinkPad</p>
+<p>retains its 256-frame request with recovery assets; its sustained check</p>
+<p>remains active; ROG stopped on error growth after 67.982</p>
 <p>seconds; a ROG post-session startup race is under</p>
 <p>offline investigation after restoration of its tuned preset.</p>
 <table>
@@ -196,9 +197,11 @@ h1{font-size:2rem}h2{color:#91d7ee}a{color:#91d7ee}table{border-collapse:collaps
 <p>[Mac receipt](../evidence/m4-coreaudio-timing-2026-10-13.json) records its getter</p>
 <p>compilation and idle/running snapshots. None is unit or physical acceptance</p>
 <p>of the forthcoming latency request.</p>
-<h2>Scoped live latency trials — both candidates active</h2>
-<p>Both laptops now run the full tuning chain under the enabled persistent user</p>
-<p>service with the exact 256/48000 output-filter request active. Paired all-zero</p>
+<h2>Paired 256-frame observations — historical</h2>
+<p>Both laptops ran the full tuning chain under the enabled persistent user</p>
+<p>service with the exact 256/48000 output-filter request active during this</p>
+<p>paired window. The later ROG rollback restored 2048/48000 while ThinkPad</p>
+<p>retained 256/48000; see the current progress below. Paired all-zero</p>
 <p>PCM observations, each with the same 100 ms client request, showed their</p>
 <p>actual driver period changing from 2048/48000 (42.667 ms) to 256/48000</p>
 <p>(5.333 ms). ROG sampled driver/DSP error counters stayed zero. ThinkPad&#x27;s</p>
@@ -207,8 +210,8 @@ h1{font-size:2rem}h2{color:#91d7ee}a{color:#91d7ee}table{border-collapse:collaps
 <p>Runtime, presets, IR, plugin settings, physical defaults and stock audio</p>
 <p>services were preserved. Final owner volume remained 86% on ROG and 20% on</p>
 <p>ThinkPad. Each has versioned tools, a private fragment snapshot and rollback</p>
-<p>commands; original tuning/package recovery is also retained. Both are ready</p>
-<p>for owner listening. Actual post-reboot startup, physical hotplug/resume,</p>
+<p>commands; original tuning/package recovery is also retained. That paired window established readiness for owner listening; later</p>
+<p>listening and failure/rollback observations are recorded below. Actual post-reboot startup, physical hotplug/resume,</p>
 <p>60-minute representative load, power and physical latency remain unqualified.</p>
 <p>The [paired result](../evidence/linux-speaker-latency-trials-2026-10-13.json)</p>
 <p>and [comparison](LATENCY_COMPARISON.md) retain durations, counters, preservation</p>

@@ -2,8 +2,9 @@
 
 **Updated:** 2026-10-13 · **State:** both speaker candidates installed with
 login startup configured; ROG stereo tuning restored after four-channel
-investigation; 256-frame requests deployed with rollback retained; sustained
-check remains active on ThinkPad; ROG stopped on error growth after 67.982
+investigation; ROG restored to 2048 frames after reviewed rollback; ThinkPad
+retains its 256-frame request with recovery assets; its sustained check
+remains active; ROG stopped on error growth after 67.982
 seconds; a ROG post-session startup race is under
 offline investigation after restoration of its tuned preset.
 
@@ -228,10 +229,12 @@ record the route investigation and restoration. The
 compilation and idle/running snapshots. None is unit or physical acceptance
 of the forthcoming latency request.
 
-## Scoped live latency trials — both candidates active
+## Paired 256-frame observations — historical
 
-Both laptops now run the full tuning chain under the enabled persistent user
-service with the exact 256/48000 output-filter request active. Paired all-zero
+Both laptops ran the full tuning chain under the enabled persistent user
+service with the exact 256/48000 output-filter request active during this
+paired window. The later ROG rollback restored 2048/48000 while ThinkPad
+retained 256/48000; see the current progress below. Paired all-zero
 PCM observations, each with the same 100 ms client request, showed their
 actual driver period changing from 2048/48000 (42.667 ms) to 256/48000
 (5.333 ms). ROG sampled driver/DSP error counters stayed zero. ThinkPad's
@@ -241,8 +244,8 @@ samples; this is not a zero-error activation result.
 Runtime, presets, IR, plugin settings, physical defaults and stock audio
 services were preserved. Final owner volume remained 86% on ROG and 20% on
 ThinkPad. Each has versioned tools, a private fragment snapshot and rollback
-commands; original tuning/package recovery is also retained. Both are ready
-for owner listening. Actual post-reboot startup, physical hotplug/resume,
+commands; original tuning/package recovery is also retained. That paired window established readiness for owner listening; later
+listening and failure/rollback observations are recorded below. Actual post-reboot startup, physical hotplug/resume,
 60-minute representative load, power and physical latency remain unqualified.
 
 The [paired result](../evidence/linux-speaker-latency-trials-2026-10-13.json)
