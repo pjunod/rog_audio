@@ -116,7 +116,9 @@ def build(source,output,image_tag=None,engine='docker'):
         run([engine,'cp',container+':/opt/rog-audio/easyeffects',str(output/'runtime')])
         binary=output/'runtime/bin/easyeffects'
         package_stream=run(runtime_command(engine,'run')+['--rm','-i',image,'python3','-'],
-                           input=(ROOT/'scripts/package_easyeffects_runtime.py').read_bytes(),timeout=120)
+                           input=(b'STOP_HELPER_BYTES = bytes.fromhex('+repr((ROOT/'scripts/stop_speaker_effects.py').read_bytes().hex()).encode()+b')\n'
+                                  +b'STOP_HELPER_LICENSE_BYTES = bytes.fromhex('+repr((ROOT/'LICENSE').read_bytes().hex()).encode()+b')\n'
+                                  +(ROOT/'scripts/package_easyeffects_runtime.py').read_bytes()),timeout=120)
         with tarfile.open(fileobj=io.BytesIO(package_stream)) as tar:tar.extractall(output,filter='data')
         manifest=json.loads((output/'runtime.json').read_text())
         if sha(binary.read_bytes())!=manifest['binary_sha256']:raise BuildError('exported_binary_mismatch')
@@ -125,6 +127,10 @@ def build(source,output,image_tag=None,engine='docker'):
         if sha((output/expected_package).read_bytes())!=manifest['package_sha256']:raise BuildError('exported_package_mismatch')
         if sha((ROOT/'patches/easyeffects/source.json').read_bytes())!=manifest['source_manifest_sha256']:raise BuildError('exported_source_manifest_mismatch')
         if manifest.get('programme_loudness_contract')!='bounded-programme-makeup-v1':raise BuildError('exported_programme_contract_mismatch')
+        if (manifest.get('stop_contract')!='owned-synchronous-exit-v1' or
+                manifest.get('stop_helper_sha256')!=sha((ROOT/'scripts/stop_speaker_effects.py').read_bytes()) or
+                manifest.get('stop_helper_license_sha256')!=sha((ROOT/'LICENSE').read_bytes())):
+            raise BuildError('exported_stop_contract_mismatch')
         manifest['image']=image
         (output/'runtime.json').write_text(json.dumps(manifest,indent=2,sort_keys=True)+'\n')
         # Full upstream source and copyright travel with the built artifact.
