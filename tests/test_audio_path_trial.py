@@ -32,6 +32,87 @@ class TrialTests(unittest.TestCase):
                              refresh_inventory=lambda: copy.deepcopy(self.inv),
                              refresh_overrides=lambda: copy.deepcopy(self.overrides))
 
+    def usage_baseline(self, count=1):
+        _, kit = trial.speaker.load_kit(self.kit)
+        rc = self.root/'state/config/easyeffects/db/easyeffectsrc'
+        text = rc.read_text().replace('[StreamOutputs]\n', '[StreamOutputs]\nusedPresets='+kit['preset_name']+':'+str(count)+'\n')
+        rc.write_text(text)
+        state = trial.path.state_snapshot(self.kit, self.binary, self.env)
+        self.capture['speaker_before'] = state; self.capture['speaker_after'] = copy.deepcopy(state)
+        return rc, text, kit['preset_name']
+
+    def test_quit_counter_increment_preserves_raw_preimages_and_all_dsp(self):
+        rc, text, preset = self.usage_baseline()
+        self.prepare(); stopped = text.replace(preset+':1', preset+':2'); rc.write_text(stopped)
+        before = copy.deepcopy(self.capture['speaker_before'])
+        result = self.install()
+        self.assertEqual(result['status'], 'installed-files')
+        self.assertEqual(rc.read_text(), stopped)
+        journal = json.loads((self.snapshot/'snapshot.json').read_bytes())
+        capture = json.loads((self.bundle/'baseline-capture.json').read_bytes())
+        self.assertEqual(capture['speaker_before']['main_rc_text'], text)
+        self.assertEqual(journal['baseline']['main_rc_text'], stopped)
+        self.assertEqual(journal['baseline']['payload'], before['payload'])
+        for name in before['rc']:
+            if name != 'db/easyeffectsrc': self.assertEqual(journal['baseline']['rc'][name], before['rc'][name])
+        self.assertNotEqual(journal['baseline']['rc']['db/easyeffectsrc']['sha256'], before['rc']['db/easyeffectsrc']['sha256'])
+
+    def test_quit_counter_wrong_preset_decrease_malformed_or_other_key_refuses(self):
+        rc, text, preset = self.usage_baseline(2)
+        self.prepare()
+        alternatives = (text.replace(preset+':2', 'rog-speaker-0000000000000000:3'),
+                        text.replace(preset+':2', preset+':1'),
+                        text.replace(preset+':2', preset+':03'),
+                        text.replace(preset+':2', preset+':3,'+preset+':4'),
+                        text.replace(preset+':2', preset+':2147483648'),
+                        text.replace(preset+':2', preset+':3').replace('useDefaultOutputDevice=false', 'useDefaultOutputDevice=true'),
+                        text.replace(preset+':2', preset+':3')+'\n[Unknown]\nnewKey=true\n',
+                        text.replace(preset+':2', preset+':3')+'\n[Presets]\nmostUsedPresets='+preset+'\n',
+                        text.replace('usedPresets='+preset+':2\n', ''),
+                        text.replace('[StreamOutputs]', '[StreamOutputs]\nusedPresets='+preset+':3'))
+        for changed in alternatives:
+            with self.subTest(changed=changed):
+                rc.write_text(changed)
+                with self.assertRaises(ValueError): self.install()
+                self.assertFalse(self.target.exists())
+                self.assertFalse(self.snapshot.exists())
+
+    def test_quit_counter_plugin_or_mode_change_refuses(self):
+        rc, text, preset = self.usage_baseline()
+        self.prepare(); rc.write_text(text.replace(preset+':1', preset+':2'))
+        plugin = rc.with_name('limiterrc'); original = plugin.read_bytes()
+        plugin.write_bytes(b'changed-DSP')
+        with self.assertRaises(ValueError): self.install()
+        plugin.write_bytes(original)
+        rc.chmod(0o640)
+        with self.assertRaises(ValueError): self.install()
+        self.assertFalse(self.target.exists())
+
+    def test_counter_exception_requires_hash_bound_private_raw_text(self):
+        rc, text, preset = self.usage_baseline()
+        before = copy.deepcopy(self.capture['speaker_before'])
+        rc.write_text(text.replace(preset+':1', preset+':2'))
+        after = trial.path.state_snapshot(self.kit, self.binary, self.env)
+        for mutate in (lambda state: state.pop('main_rc_text'),
+                       lambda state: state.update(main_rc_text=state['main_rc_text']+'# unbound\n'),
+                       lambda state: state['rc']['db/easyeffectsrc'].update(size_bytes=0),
+                       lambda state: state['rc']['db/easyeffectsrc'].update(extra='unknown')):
+            bad = copy.deepcopy(before); mutate(bad)
+            self.assertFalse(trial.restart_state_equivalent(bad, after, preset))
+        self.assertTrue(trial.restart_state_equivalent(before, before, preset))
+
+    def test_counter_change_during_snapshot_still_refuses(self):
+        rc, text, preset = self.usage_baseline()
+        self.prepare(); rc.write_text(text.replace(preset+':1', preset+':2'))
+        real = trial.speaker.snapshot
+        def mutate(*args, **kwargs):
+            result = real(*args, **kwargs)
+            rc.write_text(text.replace(preset+':1', preset+':3'))
+            return result
+        with mock.patch.object(trial.speaker, 'snapshot', side_effect=mutate):
+            with self.assertRaises(ValueError): self.install()
+        self.assertFalse(self.target.exists())
+
     def test_one_private_filter_changes_no_dsp_and_restores_absent_file(self):
         self.prepare()
         original = copy.deepcopy(self.capture['speaker_before'])

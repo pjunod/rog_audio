@@ -91,7 +91,7 @@ class PathTests(unittest.TestCase):
         with mock.patch.object(path.inventory, 'collect', return_value=self.inv), mock.patch.object(path, 'process_environment', return_value={'status': 'ok', 'values': {}}):
             captured = path.collect(self.kit, self.binary, runner=runner, system='Linux', environment=self.env)
         self.assertEqual(captured['speaker_before'], captured['speaker_after'])
-        self.assertTrue(all(argv[0] in ('pw-top', 'pw-dump', 'pw-metadata', 'pactl', 'systemctl') for argv, _ in calls))
+        self.assertTrue(all(argv[0] in ('pw-top', 'pw-dump', 'pw-metadata', 'pactl', 'systemctl', 'busctl') for argv, _ in calls))
         self.assertTrue(all('restart' not in argv and 'set-param' not in argv for argv, _ in calls))
         calls.clear()
         self.assertEqual(path.collect(None, None, runner=runner, system='Darwin')['status'], 'unsupported-platform')
@@ -103,13 +103,70 @@ class PathTests(unittest.TestCase):
         self.binary.unlink(); self.binary.symlink_to(self.root/'runtime.json')
         with self.assertRaises(path.speaker.speaker.ProfileError): path.state_snapshot(self.kit, self.binary, self.env)
 
+    def test_main_settings_preimage_is_private_and_hash_bound(self):
+        rc = self.root/'state/config/easyeffects/db/easyeffectsrc'
+        marker = 'private-main-settings-preimage'
+        rc.write_bytes(rc.read_bytes()+b'\n# '+marker.encode()+b'\n')
+        state = path.state_snapshot(self.kit, self.binary, self.env)
+        self.assertIn(marker, state['main_rc_text'])
+        self.assertEqual(path.speaker.sha(state['main_rc_text'].encode()), state['rc']['db/easyeffectsrc']['sha256'])
+        self.capture['speaker_before'] = state; self.capture['speaker_after'] = copy.deepcopy(state)
+        self.assertNotIn(marker, json.dumps(path.summary(self.capture, '0'*64)))
+        real = path.speaker.read; count = [0]
+        def racing_read(filename):
+            data = real(filename)
+            if Path(filename) == rc:
+                count[0] += 1
+                if count[0] == 2: return data+b'# changed-between-reads\n'
+            return data
+        with mock.patch.object(path.speaker, 'read', side_effect=racing_read):
+            with self.assertRaisesRegex(ValueError, 'changed while reading'):
+                path.state_snapshot(self.kit, self.binary, self.env)
+
     def test_restart_environment_reads_selected_variables_only(self):
         def runner(argv, timeout):
-            return {'status': 'ok', 'stdout': 'SECRET=private-value\nPIPEWIRE_LATENCY=128/48000\n' if argv[-1] == 'show-environment' else 'Environment=SECRET=other-value\nEnvironmentFiles=\n'}
+            if argv[0] == 'busctl': return {'status': 'ok', 'stdout': 'a(sb) 0\n'}
+            return {'status': 'ok', 'stdout': 'SECRET=private-value\nPIPEWIRE_LATENCY=128/48000\n' if argv[-1] == 'show-environment' else 'Environment=SECRET=other-value\n'}
         result = path.override_context(runner, {})
+        self.assertEqual(result['status'], 'ok')
         self.assertEqual(result['manager'], {'PIPEWIRE_LATENCY': '128/48000'})
         self.assertNotIn('private-value', json.dumps(result))
         self.assertNotIn('other-value', json.dumps(result))
+
+    def test_restart_environment_requires_positive_typed_empty_array(self):
+        calls = []
+        def runner(argv, timeout):
+            calls.append((argv, timeout))
+            if argv[0] == 'busctl': return {'status': 'ok', 'stdout': 'a(sb) 0\n'}
+            return {'status': 'ok', 'stdout': 'Environment=\n' if 'show' in argv else ''}
+        self.assertEqual(path.override_context(runner, {}), {'status': 'ok', 'current': {}, 'manager': {}, 'unit': {}})
+        self.assertIn((['systemctl', '--user', 'show', 'rog-audio-speaker.service', '--all', '--property=Environment'], 5), calls)
+        self.assertIn((['busctl', '--user', 'get-property', 'org.freedesktop.systemd1',
+                        '/org/freedesktop/systemd1/unit/rog_2daudio_2dspeaker_2eservice',
+                        'org.freedesktop.systemd1.Service', 'EnvironmentFiles'], 5), calls)
+
+    def test_restart_environment_nonempty_missing_wrong_type_or_error_refuses(self):
+        probes = [{'status': 'ok', 'stdout': text} for text in (
+            'a(sb) 1 "private-env-file" false\n', '', 'as 0\n', 'a(sb)\n',
+            'a(sb) 0\nprivate-secret', 'a(sb) 00\n', 'a(sb) 0 garbage\n')]
+        probes.extend({'status': status, 'stdout': 'a(sb) 0\n', 'stderr': 'private-secret'}
+                      for status in ('unavailable', 'nonzero', 'timeout'))
+        for probe in probes:
+            with self.subTest(probe=probe):
+                def runner(argv, timeout):
+                    if argv[0] == 'busctl': return probe
+                    return {'status': 'ok', 'stdout': 'Environment=\n' if 'show' in argv else ''}
+                result = path.override_context(runner, {})
+                self.assertEqual(result['status'], 'unavailable')
+                self.assertNotIn('private-', json.dumps(result))
+
+    def test_restart_environment_missing_duplicate_or_malformed_environment_refuses(self):
+        for text in ('', 'Environment=\nEnvironment=\n', 'Environment="unclosed\n'):
+            with self.subTest(text=text):
+                def runner(argv, timeout):
+                    if argv[0] == 'busctl': return {'status': 'ok', 'stdout': 'a(sb) 0\n'}
+                    return {'status': 'ok', 'stdout': text if 'show' in argv else ''}
+                self.assertIn(path.override_context(runner, {})['status'], ('parse-error', 'unavailable'))
 
     def test_procfs_zero_size_environment_is_bounded_and_selected(self):
         info = type('Info', (), {'st_mode': 0o100600, 'st_uid': path.os.geteuid(), 'st_size': 0})()

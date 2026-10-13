@@ -112,8 +112,11 @@ def state_snapshot(kit_path, runtime, environment=None):
     if not all(value['exists'] for value in rc.values()):
         raise ValueError('runtime settings unavailable')
     config = locations['config']/'db/easyeffectsrc'
+    rc_text = speaker.read(config).decode('utf-8')
+    if speaker.sha(rc_text.encode('utf-8')) != rc['db/easyeffectsrc']['sha256']:
+        raise ValueError('runtime settings changed while reading')
     parser = configparser.ConfigParser(interpolation=None); parser.optionxform = str
-    parser.read_string(speaker.read(config).decode('utf-8'))
+    parser.read_string(rc_text)
     required = {'outputDevice': kit['binding']['node_name'],
                 'speakerCorrectionDevice': kit['binding']['node_name'],
                 'speakerCorrectionRoute': kit['binding']['route_name'],
@@ -123,7 +126,7 @@ def state_snapshot(kit_path, runtime, environment=None):
     state = locations['config'].parent.parent
     return {'kit_sha256': speaker.sha(speaker.read(root/'kit.json')),
             'binary_sha256': speaker.sha(binary), 'binding': kit['binding'],
-            'payload': files, 'rc': rc, 'state_root': str(state),
+            'payload': files, 'rc': rc, 'main_rc_text': rc_text, 'state_root': str(state),
             'pipewire_config': speaker.tree(state/'config/pipewire')}
 
 
@@ -177,8 +180,14 @@ def override_context(runner=inventory.run_command, environment=None):
     result = {'current': {k: env[k] for k in OVERRIDES if k in env}}
     manager = runner(['systemctl', '--user', 'show-environment'], 5)
     unit = runner(['systemctl', '--user', 'show', 'rog-audio-speaker.service',
-                   '--property=Environment,EnvironmentFiles'], 5)
-    if manager.get('status') != 'ok' or unit.get('status') != 'ok':
+                   '--all', '--property=Environment'], 5)
+    # systemd's EnvironmentFiles formatter prints each array entry, and no
+    # row at all for an empty array even with --all. Require positive typed
+    # evidence from the fixed owned service; missing output is never empty.
+    files = runner(['busctl', '--user', 'get-property', 'org.freedesktop.systemd1',
+                    '/org/freedesktop/systemd1/unit/rog_2daudio_2dspeaker_2eservice',
+                    'org.freedesktop.systemd1.Service', 'EnvironmentFiles'], 5)
+    if any(probe.get('status') != 'ok' for probe in (manager, unit, files)):
         result['status'] = 'unavailable'; return result
     selected = {}
     for line in manager.get('stdout', '').splitlines():
@@ -189,11 +198,11 @@ def override_context(runner=inventory.run_command, environment=None):
     properties = {}
     for line in unit.get('stdout', '').splitlines():
         key, separator, value = line.partition('=')
-        if separator and key in ('Environment', 'EnvironmentFiles'):
+        if separator and key == 'Environment':
             if key in properties:
                 result['status'] = 'parse-error'; return result
             properties[key] = value
-    if set(properties) != {'Environment', 'EnvironmentFiles'} or properties['EnvironmentFiles']:
+    if set(properties) != {'Environment'} or files.get('stdout') not in ('a(sb) 0', 'a(sb) 0\n'):
         result['status'] = 'unavailable'; return result
     selected = {}
     try:
