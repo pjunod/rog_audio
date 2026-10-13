@@ -224,3 +224,30 @@ WAV download was not exercised because the page was never armed.
 Armed browser/device behaviour and actual physical captures remain separate
 acceptance work. The interrupted laptop stability attempts do not qualify
 the emitter or either full-hour check.
+
+
+## Startup/stability batch — adversarial findings before affected acceptance
+
+Two independent adversarial reviews examined the completed native/512 source
+at integration `24a8feef`. They identified three P2 findings:
+
+- The real node model did not retain late `card.profile.device` updates, so
+  current-node/timer paths could continue to see the old unknown binding.
+  Native storage correction and a real late-profile-binding graph regression
+  are being implemented; the rebuilt artifact must match that new source.
+- Docker's default BuildKit/Buildx path did not support the legacy build
+  resource arguments. The builder is selecting the compatible bounded
+  legacy backend explicitly and extending the existing Docker unit assertion.
+- The install guide's current build emitted `+rog2` while its package/install
+  commands still named `+rog1`. Section 5 now consistently names `+rog2`,
+  directs the current procedure to the authored autoload topic, and preserves
+  the old receipt/release as history. Focused documentation re-review is pending.
+
+The intermediate compiler/export receipt for source `135c60f` remains
+unchanged. It does not qualify the forthcoming corrected source or artifact.
+No unit or graph acceptance has executed. The planned affected selection is
+29 unit methods and six graph selectors (four new event-order/binding cases
+plus the ASUS and Lenovo loader-route regressions). Final source fixes,
+matching compilation/export and both focused re-reviews precede execution.
+Only failed or subsequently invalidated cases repeat; unrelated accepted
+speaker, latency, Mac and emitter suites remain retained.

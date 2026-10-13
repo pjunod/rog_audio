@@ -242,19 +242,27 @@ remain separate from this installation procedure and prior acceptance.
 
 ## 5. Build and deliver the usable runtime
 
+The current source build emits package `8.2.8+rog2`. Follow the focused
+[autoload build and unchanged-tuning upgrade contract](SPEAKER_AUTOLOAD.md)
+for bounded native builds, corresponding source, new runtime/kit binding and
+retained rollback. The v0.2.0 `+rog1` release and its receipt remain historical
+recovery assets; the commands below name the current output consistently.
+Use them only after the combined review and affected acceptance are clear.
+
 ```bash
 # Read public Git objects only; working-tree/private data never enter Docker.
 git clone https://github.com/wwmm/easyeffects.git PUBLIC_EASYEFFECTS_GIT
 python3 scripts/build_easyeffects_runtime.py build \
   --source PUBLIC_EASYEFFECTS_GIT --output RUNTIME_ARTIFACT \
-  --image-tag rog-audio-ee:acceptance
+  --image-tag localhost/rog-audio-ee:acceptance \
+  --container-engine podman
 
 # Read-only prerequisite report on EACH actual laptop.
 python3 scripts/inspect_speaker_runtime.py \
   --manifest RUNTIME_ARTIFACT/runtime.json --output PRIVATE_COMPATIBILITY.json
 ```
 
-The delivered `rog-audio-easyeffects_8.2.8+rog1_amd64.deb` installs only its
+The current `rog-audio-easyeffects_8.2.8+rog2_amd64.deb` installs only its
 private prefix, launcher, desktop entry and licence/source notices. It has no
 service scripts or autostart activation. Dependencies derive from Ubuntu's
 EasyEffects `8.2.8+ds-1build1` package plus required LSP LV2 plugins. The runtime
@@ -263,10 +271,15 @@ an appropriate rebuild. GCC 15.3.0 compiled Release with `-O3 -DNDEBUG
 -std=gnu++20`; the actual compiler defaults were `-march=x86-64` and
 `-mtune=generic`, with no native CPU tuning. That application baseline supports
 both laptops' amd64 processors. Shared libraries retain Ubuntu's package ABI.
-[The compiler receipt](../evidence/speaker-runtime-build-2026-10-12.json) binds
-all 22 modified compiled source files to the retained review source.
-The report lists installed versions/providers and
-missing prerequisites without installing anything.
+The historical [v0.2.0 compiler receipt](../evidence/speaker-runtime-build-2026-10-12.json)
+binds its 22 modified source files and `+rog1` artifact. The
+[autoload compiler/export receipt](../evidence/speaker-autoload-build-2026-10-13.json)
+binds the intermediate `135c60f` source and `+rog2` artifact. Review found a
+late-binding model correction that requires a new matching build receipt;
+the intermediate artifact is retained rather than treated as final accepted
+source. The current final review/tests/rebuild state is in [status](STATUS.md).
+The prerequisite report lists installed versions/providers and missing
+prerequisites without installing anything.
 
 `runtime.json` records binary/package SHA256, exact source/patch manifest,
 dependency expression, build package versions and ELF library names. Retain
@@ -280,7 +293,7 @@ Use the delivered per-device kit and a new private snapshot directory.
 
 ```bash
 # Coordinated package/dependency installation on the selected laptop.
-sudo apt install ./RUNTIME_ARTIFACT/rog-audio-easyeffects_8.2.8+rog1_amd64.deb
+sudo apt install ./RUNTIME_ARTIFACT/rog-audio-easyeffects_8.2.8+rog2_amd64.deb
 mkdir -p "${XDG_STATE_HOME:-$HOME/.local/state}/rog-audio/snapshots"
 python3 scripts/speaker_install.py install \
   --kit KIT --runtime /opt/rog-audio/easyeffects/bin/easyeffects \
