@@ -3,7 +3,8 @@
 **Updated:** 2026-10-13 · **State:** both speaker candidates installed with
 login startup configured; ROG stereo tuning restored after four-channel
 investigation; 256-frame requests deployed with rollback retained; sustained
-checks are active on both laptops; a ROG post-session startup race is under
+check remains active on ThinkPad; ROG stopped on error growth after 67.982
+seconds; a ROG post-session startup race is under
 offline investigation after restoration of its tuned preset.
 
 | Work | State | Next evidence |
@@ -294,8 +295,11 @@ units remain retained because their sources are unchanged.
 
 The [progress record](../evidence/speaker-startup-stability-progress-2026-10-13.json)
 binds the sole live operator's [sanitized interim receipt](../evidence/speaker-listening-stability-interim-2026-10-13.json)
-and private launch/helper hashes. Both normal-use hours are active;
-neither has a completed continuous-monitoring and final-preservation receipt.
+and private launch/helper hashes. ThinkPad remains active; the ROG attempt
+stopped on monitored error growth. Neither has a completed full-hour receipt.
+The original v2 source remains a historical launch snapshot, with a separate
+exact operator failure report retained in the progress record; a newly scoped
+v3 source receipt is pending.
 Expected finish times are targets, not observations of a pass.
 
 | System and attempt | Observed outcome | Separate next interval |
@@ -303,7 +307,7 @@ Expected finish times are targets, not observations of a pass.
 | ROG initial attempt | Aborted before the timed interval when startup driver errors increased above the retained baseline; owned test processes removed and failure evidence retained | A new session has its own counter baseline; the earlier failure remains recorded |
 | ThinkPad initial attempt | Stopped on volume change; attempt plus cleanup lasted 581.040 seconds from 20% to 74%; sampled driver count stayed at 1, sampled DSP/owned source counts stayed zero | Retry starts a fresh full hour and logs volume adjustments as normal-use conditions |
 | ThinkPad normal-use retry | Active from 10:02:02 Eastern; observed 74% starting volume preserved; full Lenovo chain at 256/48000 | Expected finish 11:02:02; final counter, continuity and preservation receipts pending |
-| ROG post-session normal-use run | Active from 10:09:39 Eastern after exact ASUS tuned-preset restoration; physical 94% volume preserved; sampled starting errors zero at 256/48000 | Expected finish 11:09:39; final counter, continuity and preservation receipts pending |
+| ROG post-session normal-use run | Started 10:09:39 Eastern; stopped after 67.982 seconds of owned playback on monitored error growth; 256/48000 and physical 94% volume preserved | Failure archived; no automatic counter reset/retry and no full-hour pass |
 
 After the authorized HDR package/logout handoff, the ROG user session initially
 loaded bypass although the retained tuning and route file bytes were
@@ -314,6 +318,15 @@ all-zero samples reported zero errors. This restoration is distinct from a
 permanent runtime fix or proof of reliable startup. The earlier startup error
 history is retained across the PipeWire session boundary, not reset or stitched
 into the new timed interval.
+
+At 67.958 seconds in the post-session ROG run, sampled physical driver errors
+rose from 0 to 1, and the owned zero-PCM client and convolver each rose from
+0 to 2; other sampled counts stayed zero. The guard covers growth or reset,
+but the retained packet shows growth. Owned playback ended at 67.982 seconds.
+The operator removed all owned test processes, retained the full failure
+archive and preserved physical volume, service process identities and restart
+counts. The startup correction was not installed for this run. These findings
+do not identify the cause of the error growth or qualify a successful hour.
 
 The runtime owner is preparing the startup correction in a separate offline
 source/build workspace. This integration batch currently contains documentation

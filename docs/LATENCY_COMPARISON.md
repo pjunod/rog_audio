@@ -210,13 +210,19 @@ The revised normal-use method logs volume adjustments without writing volume,
 while retaining strict processing, routing, service, counter and continuity
 checks. Earlier incomplete attempts are not accumulated into a later hour.
 
-Fresh full-hour intervals are active: ThinkPad from 10:02:02 to an expected
-11:02:02 Eastern and ROG from 10:09:39 to an expected 11:09:39 on 2026-10-13.
-Both retain full tuning at 256/48000. ROG's new session started with sampled
-errors zero after restoring its native tuned preset from autoload bypass.
-The operator diagnosed a session-start ordering race; its permanent runtime
-fix remains offline work. A successful timed run after manual restoration
-would not establish reliable automatic preset loading.
+ThinkPad's fresh interval remains active from 10:02:02 to an expected
+11:02:02 Eastern on 2026-10-13. ROG started at 10:09:39 after exact tuned-preset
+restoration, with sampled errors zero. It then stopped after 67.982 seconds
+of owned playback: sampled driver errors rose 0→1 and the owned zero-PCM
+client and convolver each rose 0→2. The 256/48000 graph, 94% physical volume
+and service identities/restart counts were preserved; owned test processes
+were removed and the failure archive retained. No counter reset or retry was
+automatically performed. The startup correction was not installed, and the
+cause of this later error growth remains unestablished.
+
+The operator diagnosed a separate session-start ordering race; its permanent
+runtime fix remains offline work. A successful timed run after manual
+restoration would not establish reliable automatic preset loading.
 
 Only completed continuous coverage, endpoint checks, observed counter deltas
 and final preservation can qualify the declared software stability workload.

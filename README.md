@@ -23,9 +23,9 @@ software timing terms, not measured speaker delay or proof of Mac parity.
 The [comparison and rollback](docs/LATENCY_COMPARISON.md#7-paired-256-frame-trials--both-tuned-paths-preserved)
 record the results and limits.
 
-Both 60-minute normal-use checks are active on 2026-10-13: ThinkPad is
-scheduled for 10:02–11:02 Eastern and ROG for 10:09–11:09. Neither has a
-completed-hour receipt yet. A ROG session restart exposed preset autoload
+The ThinkPad 60-minute normal-use check is active on 2026-10-13, scheduled
+for 10:02–11:02 Eastern. The ROG post-session attempt stopped on monitored
+error growth after 67.982 seconds; neither has a completed-hour receipt yet. A ROG session restart exposed preset autoload
 bypass despite consistent tuning files; its exact tuned preset was restored
 without changing physical volume. The permanent startup correction is being
 built offline. [Current progress](docs/STATUS.md#startup-and-sustained-check-progress--2026-10-13)

@@ -3,7 +3,7 @@
   "kind": "speaker-startup-stability-progress",
   "date": "2026-10-13",
   "evidence_class": "operator-reported-live-progress",
-  "status": "in-progress",
+  "status": "thinkpad-active-rog-stopped",
   "timezone": "America/New_York",
   "completed_60_minute_passes": 0,
   "physical_latency_measured": false,
@@ -74,14 +74,41 @@
     {
       "system": "rog",
       "attempt": "post-session-normal-use",
-      "status": "active-completion-pending",
+      "status": "failed-monitored-error-growth",
       "start_local": "2026-10-13T10:09:39.101-04:00",
       "expected_finish_local": "2026-10-13T11:09:39.101-04:00",
       "initial_volume_percent": 94,
       "initial_sampled_error_counts": 0,
       "separate_full_interval": true,
       "session_boundary": "prior-session-counter-history-retained-not-stitched-to-new-process",
-      "private_launch_sha256": "d614d8936c1ab50813c218ef474e068cc3dc20bc2f0ce9e6d682d7f7fd0fab56"
+      "private_launch_sha256": "d614d8936c1ab50813c218ef474e068cc3dc20bc2f0ce9e6d682d7f7fd0fab56",
+      "actual_owned_active_seconds": 67.98183788798633,
+      "failure_packet_active_seconds": 67.957526479,
+      "failure_guard": "new-node-error-or-counter-reset",
+      "observed_counter_change": "growth",
+      "sampled_error_changes": {
+        "physical_driver": {
+          "before": 0,
+          "after": 1
+        },
+        "owned_zero_pcm_client": {
+          "before": 0,
+          "after": 2
+        },
+        "convolver": {
+          "before": 0,
+          "after": 2
+        }
+      },
+      "other_sampled_errors": 0,
+      "driver_quantum_rate_retained": true,
+      "physical_volume_percent_before": 94,
+      "physical_volume_percent_after": 94,
+      "service_processes_and_restart_counts_unchanged": true,
+      "all_owned_test_processes_removed": true,
+      "automatic_counter_reset_or_retry": false,
+      "private_failure_archive_sha256": "6763e6ab5bffcb45febf1e4eaf81dad49374f6de7cf2c1c46d9f06b1bcec1e26",
+      "result_source": "sole-live-operator-report-exact-scoped-v3-receipt-pending"
     }
   ],
   "post_session_startup": {
@@ -101,7 +128,8 @@
     "A silent processing run cannot establish absence of audible gaps, representative gaming-load reliability or physical latency.",
     "The post-session restoration does not prove a permanent startup fix, post-reboot behaviour or calibrated sound quality.",
     "Raw monitoring, identities, access data and private rollback files remain outside Git.",
-    "The initial ThinkPad elapsed value includes cleanup; it is not an exact uninterrupted active interval."
+    "The initial ThinkPad elapsed value includes cleanup; it is not an exact uninterrupted active interval.",
+    "The v2 operator receipt remains a historical launch snapshot; the later ROG failure above is a separate exact operator report pending its new scoped v3 receipt."
   ],
   "operator_source": {
     "path": "evidence/speaker-listening-stability-interim-2026-10-13.json",
