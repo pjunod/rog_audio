@@ -14,7 +14,7 @@ checks and ROG session handoff are in progress.
 | Diagnostics and latency | Both tuned drivers reduced from 42.667 to 5.333 ms in retained paired receipts; PRs 5–7 reviewed/tested | Complete sustained checks, then physical measurements |
 | Host Atmos | 15 tests and focused CI cleanup acceptance passed in PR 1 | Actual JOC reference media and physical qualification |
 | macOS comparison | M4 Air getter and silent-running snapshots complete; 16 summary tests passed in PR 5 | Matched Linux software observations, then physical comparison |
-| Physical interaction timing | Phone/tablet method source-reviewed; ten emitter methods passed once, no physical samples | Browser smoke, manual pilot, then repeated same-track capture |
+| Physical interaction timing | Phone/tablet method source-reviewed; ten methods and unarmed Chrome smoke passed, no physical samples | Manual pilot, then repeated same-track capture |
 | Sonos Arc/eARC | Deferred until internal audio work | TV route and actual received formats |
 
 Companion to [installation](SPEAKER_INSTALL.md), [review](REVIEW.md) and
@@ -272,8 +272,8 @@ not claim pure audio-output latency, calibrated accuracy or Mac parity.
 The existing offline analyser accepts nonnegative annotated physical trials.
 A condition containing any valid negative click-to-chirp interval needs a
 separate signed summary of the whole condition; no presses are removed solely
-because of their sign. The new local browser emitter requires explicit arming and a trusted, non-repeat
-Space press for a bounded ramped chirp. It exports private diagnostics and a
+because of their sign. The new local browser emitter requires explicit
+arming and a trusted, non-repeat Space press for a bounded ramped chirp. It exports private diagnostics and a
 reference waveform, opens no microphone and uses no network. Its continuously
 warm silent source is not an idle-power baseline. Automatic waveform detection
 is not implemented; the external recording needs manual pilot annotations.
@@ -282,10 +282,11 @@ arm and biased rejection of valid negative interaction intervals. Both fixes
 cleared focused source re-review at `66080621`; all ten new synthetic methods
 passed once, with zero failures or skips. The [acceptance receipt](../evidence/physical-emitter-acceptance-2026-10-13.json)
 retains source, runtime, method IDs and log hashes. No browser or audio device
-was opened by those tests. Actual browser smoke, pilot capture and physical
-comparison remain pending. The coordinated listening and 60-minute stability
-outcomes will be recorded in
-their own receipts; this plan does not mark either check passed. Accepted
+was opened by those tests. Separate unarmed Chrome smoke passed for the
+local-file page, CSP, initial controls and diagnostic JSON download, with no
+AudioContext created. Real-browser reference WAV download was not exercised.
+Pilot capture and physical comparison remain pending. Coordinated listening
+and 60-minute stability outcomes will be recorded in their own receipts; this plan does not mark either check passed. Accepted
 units remain retained because their sources are unchanged.
 
 ## Sustained software check start — 2026-10-13

@@ -214,6 +214,13 @@ and private log/result hashes. No unchanged analyser, native, speaker or
 CoreAudio methods were repeated. No browser or audio device was opened by
 the synthetic cases.
 
-Browser/device behaviour and actual physical captures remain separate
+Separate unarmed Chrome 155.0.8059.40 smoke passed at the same runtime
+source for local-file/CSP load, initial controls and diagnostic JSON download.
+It observed zero AudioContext creations, only three local page/script
+requests and no console errors. The private receipt, screenshot and script
+hashes are bound in the public acceptance receipt. Real-browser reference
+WAV download was not exercised because the page was never armed.
+
+Armed browser/device behaviour and actual physical captures remain separate
 acceptance work. The interrupted laptop stability attempts do not qualify
 the emitter or either full-hour check.

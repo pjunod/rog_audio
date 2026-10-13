@@ -1,7 +1,7 @@
 # Physical latency method — record key click and speaker response on one phone
 
 **Status:** local emitter source-reviewed; ten synthetic methods passed once;
-browser smoke and manual capture pilot pending; no physical measurements collected · **Written:** 2026-10-13 · **Executes:**
+unarmed Chrome smoke passed; manual capture pilot pending; no physical measurements collected · **Written:** 2026-10-13 · **Executes:**
 physical comparison in [latency comparison](LATENCY_COMPARISON.md).
 
 Companion to [latency tooling](AUDIO_LATENCY_BUILD.md) (trial schema and
@@ -331,8 +331,12 @@ Source parsing completed with Node v26.8.1 and Python syntax compilation;
 these alone are not unit or browser acceptance. After both reviewers cleared
 `66080621`, all ten methods passed once with zero failures or skips under
 Python 3.14.7 and Node v26.8.1. The [acceptance receipt](../evidence/physical-emitter-acceptance-2026-10-13.json)
-binds exact source hashes, method IDs and retained logs. A separate focused
-browser smoke check must verify
-the actual local-file load, controls and downloads without starting audio
-before an agreed playback window. Synthetic tests cannot qualify a browser's
-hardware route, actual chirp level or phone-capture accuracy.
+binds exact source hashes, method IDs and retained logs. A separate unarmed
+Chrome 155.0.8059.40 smoke check passed for local-file load, CSP, initial
+controls and diagnostic JSON download, with zero AudioContext creations,
+only the three local page/script requests and no console errors. Its private
+receipt, screenshot and smoke script hashes are retained in the same public
+acceptance receipt. Real-browser reference WAV download was not exercised
+because the page was not armed. Actual chirp playback and hardware routing
+require the agreed window. These checks do not qualify physical latency,
+chirp level or phone-capture accuracy.

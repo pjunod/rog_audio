@@ -51,8 +51,32 @@
     "evidence/audio-path-preset-list-acceptance-2026-10-13.json"
   ],
   "limits": [
-    "Synthetic AudioContext and DOM cases establish source behaviour only; actual browser local-file loading and downloads need a separate smoke check.",
+    "Synthetic AudioContext and DOM cases establish source behaviour. Separate unarmed Chrome smoke covers local-file loading, CSP, initial controls and diagnostic JSON download; real-browser reference WAV download remains unexercised.",
     "No laptop playback, microphone recording, physical response-time measurement, tuned route verification or sustained-load qualification occurred in these tests.",
     "Signed click-to-chirp annotations remain a separate whole-condition summary when the existing nonnegative analyser cannot represent them."
-  ]
+  ],
+  "browser_smoke": {
+    "status": "passed",
+    "scope": "real Chrome local-file load, CSP, initial controls and diagnostic JSON download; audio never armed",
+    "browser": "155.0.8059.40",
+    "audio_context_creations": 0,
+    "requests": [
+      "index.html",
+      "emitter.js",
+      "emitter-ui.js"
+    ],
+    "console_errors": [],
+    "physical_measurement": false,
+    "reference_wave_download": "not exercised because no audio arming",
+    "evidence_class": "unarmed-browser-operational-check",
+    "source_commit": "66080621bf7757ec05bd54bfeeb64eec7d69212f",
+    "source_sha256": {
+      "tools/physical-latency/index.html": "6c8f3d55f8f5779a8dc3eda44f15d438a7d9bd6ce10e63affca35a15d4630f3e",
+      "tools/physical-latency/emitter.js": "b8287fbd829e6747ea9d183591fdef44b9590a8c32a61fdcecdce361d4e0d63c",
+      "tools/physical-latency/emitter-ui.js": "36571348ae8024b3d7ea473991e43fe5090aed3748284e831af802939e8e40b4"
+    },
+    "receipt_sha256": "b60177cc80a3c3d2b56c072d17c1144c3223406f67c5955f383d6f33f0c92795",
+    "screenshot_sha256": "0a53960367a728d98f31b87a95344bee1b37743e62095b7dea95da50968f7067",
+    "script_sha256": "67f175826222ae4221b0cacec6f01ba2c09df7880a50a5a70cadf04eb8377bc2"
+  }
 }

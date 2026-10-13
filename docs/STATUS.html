@@ -17,7 +17,7 @@ h1{font-size:2rem}h2{color:#91d7ee}a{color:#91d7ee}table{border-collapse:collaps
 <tr><td>Diagnostics and latency</td><td>Both tuned drivers reduced from 42.667 to 5.333 ms in retained paired receipts; PRs 5–7 reviewed/tested</td><td>Complete sustained checks, then physical measurements</td></tr>
 <tr><td>Host Atmos</td><td>15 tests and focused CI cleanup acceptance passed in PR 1</td><td>Actual JOC reference media and physical qualification</td></tr>
 <tr><td>macOS comparison</td><td>M4 Air getter and silent-running snapshots complete; 16 summary tests passed in PR 5</td><td>Matched Linux software observations, then physical comparison</td></tr>
-<tr><td>Physical interaction timing</td><td>Phone/tablet method source-reviewed; ten emitter methods passed once, no physical samples</td><td>Browser smoke, manual pilot, then repeated same-track capture</td></tr>
+<tr><td>Physical interaction timing</td><td>Phone/tablet method source-reviewed; ten methods and unarmed Chrome smoke passed, no physical samples</td><td>Manual pilot, then repeated same-track capture</td></tr>
 <tr><td>Sonos Arc/eARC</td><td>Deferred until internal audio work</td><td>TV route and actual received formats</td></tr>
 </table>
 <p>Companion to [installation](SPEAKER_INSTALL.md), [review](REVIEW.md) and</p>
@@ -233,8 +233,8 @@ h1{font-size:2rem}h2{color:#91d7ee}a{color:#91d7ee}table{border-collapse:collaps
 <p>The existing offline analyser accepts nonnegative annotated physical trials.</p>
 <p>A condition containing any valid negative click-to-chirp interval needs a</p>
 <p>separate signed summary of the whole condition; no presses are removed solely</p>
-<p>because of their sign. The new local browser emitter requires explicit arming and a trusted, non-repeat</p>
-<p>Space press for a bounded ramped chirp. It exports private diagnostics and a</p>
+<p>because of their sign. The new local browser emitter requires explicit</p>
+<p>arming and a trusted, non-repeat Space press for a bounded ramped chirp. It exports private diagnostics and a</p>
 <p>reference waveform, opens no microphone and uses no network. Its continuously</p>
 <p>warm silent source is not an idle-power baseline. Automatic waveform detection</p>
 <p>is not implemented; the external recording needs manual pilot annotations.</p>
@@ -243,10 +243,11 @@ h1{font-size:2rem}h2{color:#91d7ee}a{color:#91d7ee}table{border-collapse:collaps
 <p>cleared focused source re-review at `66080621`; all ten new synthetic methods</p>
 <p>passed once, with zero failures or skips. The [acceptance receipt](../evidence/physical-emitter-acceptance-2026-10-13.json)</p>
 <p>retains source, runtime, method IDs and log hashes. No browser or audio device</p>
-<p>was opened by those tests. Actual browser smoke, pilot capture and physical</p>
-<p>comparison remain pending. The coordinated listening and 60-minute stability</p>
-<p>outcomes will be recorded in</p>
-<p>their own receipts; this plan does not mark either check passed. Accepted</p>
+<p>was opened by those tests. Separate unarmed Chrome smoke passed for the</p>
+<p>local-file page, CSP, initial controls and diagnostic JSON download, with no</p>
+<p>AudioContext created. Real-browser reference WAV download was not exercised.</p>
+<p>Pilot capture and physical comparison remain pending. Coordinated listening</p>
+<p>and 60-minute stability outcomes will be recorded in their own receipts; this plan does not mark either check passed. Accepted</p>
 <p>units remain retained because their sources are unchanged.</p>
 <h2>Sustained software check start — 2026-10-13</h2>
 <p>The sole live audio operator reported the ThinkPad silent 60-minute attempt</p>
