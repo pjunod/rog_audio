@@ -185,17 +185,25 @@ Fresh idle baselines show the ROG now exposes an Analog Surround 4.0 sink while
 its kit targets Analog Stereo. A remembered preset label does not prove active
 correction on that changed route. The owner selected four-channel output manually, reported the settings UI
 closing, and requested that four-channel output remain selected while its
-compatibility is investigated. The stereo profile will not be restored silently. The ThinkPad still matches its installed Lenovo route.
+compatibility is investigated. Active capture subsequently showed that the physical speaker DAC consumes
+channels 2/3 in this profile, while the installed stereo processor would feed
+ports 0/1. Correct four-channel routing needs a runtime extension. The owner
+authorized stereo fallback if needed; restoration of the validated stereo
+route is now coordinated for the latency phase. The ThinkPad still matches its
+installed Lenovo route.
 
-The M4 Air native read-only snapshot reports a 512-frame buffer at 48 kHz;
-separate device, stream and safety-offset values are being retained. Its initial
-device-running flag is false. Short silent-stream observations on the ThinkPad
-and Mac will establish running software timing without audible tones, input
-recording or volume changes. They remain distinct from a physical benchmark.
+The M4 Air retained a 512-frame buffer at 48 kHz during silent playback, with
+its device-running flag changing false/true/false. Separate device, stream and
+safety-offset values are retained. Both Linux endpoints ran at 2048/48000
+under the initial client's 100 ms request. The ThinkPad processed the full DSP
+chain; the ROG bypassed it because of route drift. ThinkPad's first active
+error counter was 1, then stable; this is not a zero-error startup pass.
+[The comparison](LATENCY_COMPARISON.md) records these bounded software
+observations separately from a physical benchmark.
 
 The original ASUS profile declares two output channels. The inspected upstream
 GU605 driver fixup shares the main and bass speaker DAC, and the current codec
 connection report is consistent with that mapping. A four-channel ACP profile
-label is not proof of four independent acoustic outputs. A focused implementation
-lane is investigating exact route rebinding and isolated channel-link acceptance
-while preserving the original stereo DSP coefficients.
+label is not proof of four independent acoustic outputs. Source and active codec evidence ruled out simple kit rebinding as a correct
+four-channel solution. No production runtime patch or invented four-channel
+DSP coefficients were introduced.

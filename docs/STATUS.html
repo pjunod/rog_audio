@@ -158,15 +158,23 @@ h1{font-size:2rem}h2{color:#91d7ee}a{color:#91d7ee}table{border-collapse:collaps
 <p>its kit targets Analog Stereo. A remembered preset label does not prove active</p>
 <p>correction on that changed route. The owner selected four-channel output manually, reported the settings UI</p>
 <p>closing, and requested that four-channel output remain selected while its</p>
-<p>compatibility is investigated. The stereo profile will not be restored silently. The ThinkPad still matches its installed Lenovo route.</p>
-<p>The M4 Air native read-only snapshot reports a 512-frame buffer at 48 kHz;</p>
-<p>separate device, stream and safety-offset values are being retained. Its initial</p>
-<p>device-running flag is false. Short silent-stream observations on the ThinkPad</p>
-<p>and Mac will establish running software timing without audible tones, input</p>
-<p>recording or volume changes. They remain distinct from a physical benchmark.</p>
+<p>compatibility is investigated. Active capture subsequently showed that the physical speaker DAC consumes</p>
+<p>channels 2/3 in this profile, while the installed stereo processor would feed</p>
+<p>ports 0/1. Correct four-channel routing needs a runtime extension. The owner</p>
+<p>authorized stereo fallback if needed; restoration of the validated stereo</p>
+<p>route is now coordinated for the latency phase. The ThinkPad still matches its</p>
+<p>installed Lenovo route.</p>
+<p>The M4 Air retained a 512-frame buffer at 48 kHz during silent playback, with</p>
+<p>its device-running flag changing false/true/false. Separate device, stream and</p>
+<p>safety-offset values are retained. Both Linux endpoints ran at 2048/48000</p>
+<p>under the initial client&#x27;s 100 ms request. The ThinkPad processed the full DSP</p>
+<p>chain; the ROG bypassed it because of route drift. ThinkPad&#x27;s first active</p>
+<p>error counter was 1, then stable; this is not a zero-error startup pass.</p>
+<p>[The comparison](LATENCY_COMPARISON.md) records these bounded software</p>
+<p>observations separately from a physical benchmark.</p>
 <p>The original ASUS profile declares two output channels. The inspected upstream</p>
 <p>GU605 driver fixup shares the main and bass speaker DAC, and the current codec</p>
 <p>connection report is consistent with that mapping. A four-channel ACP profile</p>
-<p>label is not proof of four independent acoustic outputs. A focused implementation</p>
-<p>lane is investigating exact route rebinding and isolated channel-link acceptance</p>
-<p>while preserving the original stereo DSP coefficients.</p><p><a href="https://github.com/pjunod/rog_audio/blob/main/docs/STATUS.md">GitHub progress ledger</a></p></main></html>
+<p>label is not proof of four independent acoustic outputs. Source and active codec evidence ruled out simple kit rebinding as a correct</p>
+<p>four-channel solution. No production runtime patch or invented four-channel</p>
+<p>DSP coefficients were introduced.</p><p><a href="https://github.com/pjunod/rog_audio/blob/main/docs/STATUS.md">GitHub progress ledger</a></p></main></html>

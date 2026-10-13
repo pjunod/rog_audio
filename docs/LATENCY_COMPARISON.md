@@ -89,3 +89,39 @@ Record every acceptance outcome, retry and limitation in [review](REVIEW.md).
 No new physical improvement or Mac parity has been established as of this plan.
 The comparison table will be populated only from collected, source-bound
 receipts; it will retain separate software and physical evidence labels.
+
+## 6. Initial running observations — 2026-10-13
+
+These observations used approximately ten seconds of all-zero PCM. No microphone
+was opened and no audible probe was generated. Linux used `pw-play` with its
+100 ms client request; the Mac used `afplay`. They exercise different application
+paths and do not establish equal application buffering.
+
+| Component | ROG, four-channel investigation | ThinkPad, tuned stereo | M4 Air, built-in output |
+|---|---|---|---|
+| Observed running period | 2048 / 48000 = 42.667 ms | 2048 / 48000 = 42.667 ms | HAL 512 / 48000 = 10.667 ms |
+| Speaker DSP during observation | Bypassed because kit binds stereo | Full convolver, autogain, multiband compressor and limiter | System path; no equivalent graph inventory |
+| Error observation | Zero in active snapshots | First active counter 1, then unchanged across five rows | No equivalent counter collected |
+| ALSA period / buffer | 1024 / 32768 frames | 1024 / 32768 frames | Not an ALSA endpoint |
+| API device / stream latency | Retain reported graph components separately | Retain reported graph components separately | 60 / 1280 frames = 1.25 / 26.667 ms |
+| API safety offset | Not a comparable collected field | Not a comparable collected field | 48 frames = 1 ms |
+| Physical delay | Unmeasured | Unmeasured | Unmeasured |
+
+The Linux client request influences negotiation. The 2048-frame period is not
+an intrinsic hardware minimum or an untreated default-only benchmark. Hold the
+same client request, signal and running path constant in before/after trials.
+The ROG observation is route-diagnosis evidence and cannot be used as a tuned
+performance baseline. The ThinkPad observation cannot support a zero-error
+startup claim. Neither short run establishes sustained-load reliability.
+
+On the Mac, the device-running flag changed from false to true to false; its
+reported timing components stayed constant. Device plus stream latency is
+1340 frames (27.917 ms) under the API's accounting. Keep that component separate
+from buffer size, safety offset and physical onset; do not compare it directly
+with a Linux graph period.
+
+The four-channel ROG stream assigned the speaker DAC to PCM channels 2/3 and
+the headphone DAC to channels 0/1. The installed processor would link its
+stereo output to ports 0/1. Correct rear-pair routing requires a runtime change;
+the owner-authorized fallback to the validated stereo profile is being used
+for this latency phase. The OEM two-channel coefficients remain unchanged.
