@@ -454,13 +454,15 @@ ROG post-reboot startup, repeated startup, ThinkPad corrected-runtime deployment
 hotplug/resume and the phone-capture pilot remain pending.
 
 
-The prepared `v0.2.1` release contains package `8.2.8+rog2`, exact
-corresponding source and freshly runtime-bound ASUS/Lenovo kits. Review,
-affected acceptance and merge are complete; publication remains held pending
-explicit approval to upload the reviewed assets. Existing v0.2.0 release
-assets, installed runtime/kit recovery and original snapshots remain retained.
-The latest public release is still v0.2.0; private preparation is not publication
-or sustained qualification of the new runtime.
+The [v0.2.1 release](https://github.com/pjunod/rog_audio/releases/tag/v0.2.1)
+was published after direct authorization for the reviewed runtime, full
+corresponding source/notices, ASUS/Lenovo kits and checksums. The
+[publication receipt](../evidence/speaker-runtime-v021-publication-2026-10-13.json)
+records its resolved tag at merged `30125c0`, exactly three uploaded assets
+with matching reviewed sizes/hashes, matching notes and `releases/latest`
+verified as v0.2.1. Existing v0.2.0 runtime/kit remote digests were unchanged.
+Private recordings, inventories and keys were not uploaded. Installation
+and sustained/physical qualification remain separate from publication.
 
 
 ## Digital loudness diagnosis — 2026-10-13
@@ -526,7 +528,7 @@ from usable period/counter comparisons. Count 3 is a nonzero historical
 baseline, not a zero-error startup claim. These silent checks generated no
 audible signal or recording, and do not establish absence of audible gaps,
 reboot/resume reliability, acoustic quality, Mac parity or a final-runtime
-hour. The receipt's `v0.2.1` identifies the candidate artifact version; the
-GitHub release remains unpublished pending upload approval. ThinkPad still
+hour. The receipt's `v0.2.1` identifies the artifact version, subsequently
+published with matching hashes; publication does not extend this observation. ThinkPad still
 runs the prior runtime at 256 frames. Fresh full hours follow the final kept
 loudness configuration and resolution of its storage hold.

@@ -339,9 +339,12 @@
   "planned_release": {
     "tag": "v0.2.1",
     "package_version": "8.2.8+rog2",
-    "status": "reviewed-assets-prepared-after-merge-unpublished-pending-explicit-upload-approval",
+    "status": "published-after-direct-payload-authorization-remote-tag-and-assets-verified",
     "assets": "corrected-runtime-exact-corresponding-source-newly-bound-ASUS-and-Lenovo-kits",
-    "prior_release": "v0.2.0-assets-retained-unchanged"
+    "prior_release": "v0.2.0-assets-retained-unchanged",
+    "publication_receipt": "evidence/speaker-runtime-v021-publication-2026-10-13.json",
+    "publication_receipt_sha256": "ef20f5f43f349b259a8578f0017d50e5d3073e61e5612ac3f624287828ee6e30",
+    "url": "https://github.com/pjunod/rog_audio/releases/tag/v0.2.1"
   },
   "deployment_holds": {
     "thinkpad": {

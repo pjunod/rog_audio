@@ -36,9 +36,9 @@ The corrected native runtime and final artifact bindings cleared re-review,
 PR 9 merged, and the ROG upgrade automatically loaded the unchanged tuning. All 29 affected unit methods and six isolated graph selectors passed once,
 with zero failures or skips. The [acceptance receipt](evidence/speaker-autoload-acceptance-2026-10-13.json)
 binds the reviewed source, runtime and retained logs. [Current results](docs/STATUS.md#startup-and-sustained-check-progress--2026-10-13)
-keep those evidence classes distinct. A new `v0.2.1` release with package
-`8.2.8+rog2`, corresponding source and newly bound kits has reviewed local
-assets and remains unpublished pending explicit upload approval; existing
+keep those evidence classes distinct. The [published v0.2.1 release](https://github.com/pjunod/rog_audio/releases/tag/v0.2.1)
+contains package `8.2.8+rog2`, corresponding source/notices, both newly bound
+kits and checksums. Its tag and remote asset hashes were verified; existing
 v0.2.0 assets remain unchanged.
 A later [ROG listening observation](evidence/rog-owner-listening-2026-10-13.json)
 records “Sounded good” with matching protected state; driver timing was not
