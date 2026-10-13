@@ -212,3 +212,11 @@ connection report is consistent with that mapping. A four-channel ACP profile
 label is not proof of four independent acoustic outputs. Source and active codec evidence ruled out simple kit rebinding as a correct
 four-channel solution. No production runtime patch or invented four-channel
 DSP coefficients were introduced.
+
+
+The [Linux baseline receipt](../evidence/linux-audio-latency-baselines-2026-10-13.json)
+and [ROG recovery receipt](../evidence/rog-speaker-stereo-recovery-2026-10-13.json)
+record the route investigation and restoration. The
+[Mac receipt](../evidence/m4-coreaudio-timing-2026-10-13.json) records its getter
+compilation and idle/running snapshots. None is unit or physical acceptance
+of the forthcoming latency request.

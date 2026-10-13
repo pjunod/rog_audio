@@ -92,6 +92,11 @@ receipts; it will retain separate software and physical evidence labels.
 
 ## 6. Initial running observations — 2026-10-13
 
+The [Linux baseline receipt](../evidence/linux-audio-latency-baselines-2026-10-13.json),
+[ROG stereo recovery receipt](../evidence/rog-speaker-stereo-recovery-2026-10-13.json)
+and [Mac receipt](../evidence/m4-coreaudio-timing-2026-10-13.json) retain
+source hashes and bounded software observations.
+
 Linux observations used approximately ten seconds of all-zero PCM. The Mac
 snapshot used a ten-second zero-PCM file, with its player stopped after the
 running snapshot. No microphone was opened and no audible probe was generated.

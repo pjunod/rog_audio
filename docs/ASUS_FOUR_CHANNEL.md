@@ -34,7 +34,9 @@ old `analog-stereo` node. That mismatch prevents a claim that the existing
 candidate was processing the newly selected sink.
 
 Read-only active graph and codec observations supplied by the deployment
-session on 2026-10-13 established this mapping:
+session on 2026-10-13 established this mapping. The
+[sanitized baseline receipt](../evidence/linux-audio-latency-baselines-2026-10-13.json)
+binds these observations to the retained private captures:
 
 | Observation | Active four-channel value | Meaning |
 |---|---|---|
