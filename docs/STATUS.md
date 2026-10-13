@@ -13,7 +13,7 @@ investigation; both tuned 256-frame requests are active with rollback retained.
 | Diagnostics and latency | Both tuned drivers reduced from 42.667 to 5.333 ms; PRs 5–7 source reviewed and affected tests passed | Sustained-load and physical measurements |
 | Host Atmos | 15 tests and focused CI cleanup acceptance passed in PR 1 | Actual JOC reference media and physical qualification |
 | macOS comparison | M4 Air getter and silent-running snapshots complete; 16 summary tests passed in PR 5 | Matched Linux software observations, then physical comparison |
-| Physical interaction timing | Phone/tablet procedure proposed; no physical samples collected | Review emitter/detector contract, validate pilot, then repeated same-track capture |
+| Physical interaction timing | Phone/tablet method and local emitter implemented; review/acceptance pending, no physical samples | Review/test new emitter, validate manual pilot, then repeated same-track capture |
 | Sonos Arc/eARC | Deferred until internal audio work | TV route and actual received formats |
 
 Companion to [installation](SPEAKER_INSTALL.md), [review](REVIEW.md) and
@@ -268,10 +268,14 @@ The plan records pilot validation, 100 included events per condition,
 median/tail statistics, uncertainty and private raw annotations. It does
 not claim pure audio-output latency, calibrated accuracy or Mac parity.
 
-The existing offline analyser accepts annotated physical trials. A public
-key-event chirp emitter and automatic waveform detector are not implemented;
-the documentation batch does not add them or start capture. Source review
-and repository validation of this plan remain pending integration. The
+The existing offline analyser accepts annotated physical trials. The new
+local browser emitter requires explicit arming and a trusted, non-repeat
+Space press for a bounded ramped chirp. It exports private diagnostics and a
+reference waveform, opens no microphone and uses no network. Its continuously
+warm silent source is not an idle-power baseline. Automatic waveform detection
+is not implemented; the external recording needs manual pilot annotations.
+Source review, ten new synthetic methods and repository validation remain
+pending integration. No new unit, live playback or capture ran in this batch. The
 coordinated listening and 60-minute stability outcomes will be recorded in
 their own receipts; this plan does not mark either check passed. Accepted
-units remain retained because no runtime source changed.
+units remain retained because their sources are unchanged.

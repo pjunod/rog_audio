@@ -1,7 +1,8 @@
 # Physical latency method — record key click and speaker response on one phone
 
-**Status:** proposed operator procedure; emitter and pilot not implemented;
-no physical measurements collected · **Written:** 2026-10-13 · **Executes:**
+**Status:** local emitter implemented; source review and focused acceptance
+pending; manual capture pilot not performed; no physical measurements
+collected · **Written:** 2026-10-13 · **Executes:**
 physical comparison in [latency comparison](LATENCY_COMPARISON.md).
 
 Companion to [latency tooling](AUDIO_LATENCY_BUILD.md) (trial schema and
@@ -47,39 +48,64 @@ internal speaker route under test.
 **Acceptance:** a pilot receipt names both physical endpoints, the recorder
 track and the included path. A graph quantum or HAL buffer is metadata only.
 
-## 2. Establish the emitter before calling the plan runnable
+## 2. Use the local emitter in an explicit playback window
 
-The repository has [offline trial analysis](../scripts/analyse_audio_latency.py),
+The [local browser page](../tools/physical-latency/index.html),
+[signal/lifecycle code](../tools/physical-latency/emitter.js) and
+[browser bindings](../tools/physical-latency/emitter-ui.js) need no server,
+downloaded libraries, network connection or microphone. Copy the entire
+`tools/physical-latency` folder to each laptop and open `index.html` locally.
+Loading the page creates no AudioContext. Source review and new synthetic
+acceptance are pending; the current batch has emitted no laptop test sound.
+
+The repository also has [offline trial analysis](../scripts/analyse_audio_latency.py),
 [Linux inspection](../scripts/inspect_audio_path.py) and
-[Mac output inspection](../probes/coreaudio/output_inventory.c). It has no
-public key-event chirp emitter or automatic phone-waveform detector. The
-inactive native validation probes and synthetic player are not substitutes.
-This document adds no runtime and starts no playback or recording.
+[Mac output inspection](../probes/coreaudio/output_inventory.c). Automatic
+phone-waveform detection is not implemented; use manual annotations in the
+pilot. The inactive native validation probes are not measurement emitters.
 
-The missing emitter must have the following contract, to be implemented and
-reviewed separately before formal capture:
+In the agreed window, choose the neutral system alias, verify the existing
+internal route and start at -60 dBFS. Press **Arm silent warm stream**, then
+Space on the focused test pad. Arming is silent; only an eligible Space
+keydown requests a chirp. Choose a comfortable, detectable level in the pilot
+and keep it fixed within the condition. Changes require disarming first.
+The route checkbox records an operator statement; it does not verify routing.
+
+The implemented contract is:
 
 | Behaviour | Required observation and reason |
 |---|---|
-| Physical key down | One press emits one chirp; ignore key repeat, because a held key would create an ambiguous trial. |
-| Preloaded signal | Propose a 20 ms chirp with short tapered edges; choose its frequency band and level in the pilot, then freeze exact waveform bytes/hash. Do not load or decode a file on each press. |
-| Warm audio path | Keep the owned output path active between presses. Report initial startup separately; otherwise idle wake-up and steady-state results become mixed. |
+| Browser-trusted Space key down | One eligible non-repeat press emits one chirp. Modifier/composition events and keys outside the focused pad emit none. Browser trust rejects script-dispatched DOM events; it cannot authenticate a physical keyboard. The external click supplies that reference. |
+| Preloaded signal | 20 ms, 750–3000 Hz stereo chirp, identical source channels, 2 ms raised-cosine edge ramps, generated at actual AudioContext rate. Source peak choices are -60 to -30 dBFS. It is generated once per arm, not loaded/decoded per press. |
+| Warm audio path | A continuous zero-valued source requests an active owned output between presses. Verify actual Linux graph activity independently. Report initial startup separately; warm processing is not an idle-power baseline. |
 | One application path | Use the same implementation/build and comparable settings on all three laptops. A browser version is part of the method, not an interchangeable player. |
 | Existing internal output | Verify the full ASUS/Lenovo chain and both hardware channels. Do not route directly to hardware in a way that bypasses speaker correction. |
-| Negotiation evidence | Record actual rate and Linux driver quantum while the emitter runs. If it changes from 256/48000, report a different condition; do not force global timing to make it fit. |
-| Timing and application metadata | Log key-event sequence and available callback/request timing privately for diagnosis. Do not compare laptop timestamps directly with phone timestamps. |
-| Explicit start/stop | Playback requires an operator action. Stop only the owned emitter; never stop other media or restart audio services. |
+| Negotiation evidence | The context requests a 0.1-second application latency hint without forcing sample rate or global graph timing. The browser can interpret the hint differently. Record actual context rate and Linux driver quantum while it runs; a move from 256/48000 is a different condition. |
+| Timing and application metadata | The local JSON log retains session alias, browser user agent, actual context rate, level, the operator route statement, requested latency hint and finite/null API timing estimates. Events retain sequence, page monotonic time, key event timestamp and context start time as diagnostics only; `physical_latency_ms` stays null. |
+| Input/event bounds | Leave 2–4 seconds between trials. Presses less than 750 ms apart emit none and are logged. At 2000 logged events the owned stream stops; export and reload for a new set. |
+| Explicit start/stop | Arm creates the owned context; Disarm stops/disconnects owned sources and closes that context. Hiding/leaving the page, switching windows or loss of running context also disarms it. Other media and audio services are untouched. |
 
-A local Web Audio page is one candidate, not a delivered tool. Its latency
-request and reported timing are application/API parameters, not physical
-ground truth. The [Web Audio specification](https://www.w3.org/TR/webaudio-1.0/)
+The page's latency request and reported timing are application/API parameters,
+not physical ground truth. The [Web Audio specification](https://www.w3.org/TR/webaudio-1.0/)
 defines the application graph and reported timing; the actual browser route
-and negotiation still need a pilot. If browsers cannot maintain comparable
-conditions, propose a small native emitter before expanding implementation.
+and negotiation still need a pilot. Use the same browser/version when possible
+and record differences. If browsers cannot maintain comparable conditions,
+report the limitation before proposing a native emitter.
+
+**Download private event log** saves JSON in the browser's normal download
+location. It is not a physical-trial input: no microphone samples or acoustic
+event positions are present. **Download chirp reference WAV** saves the latest
+armed waveform as stereo little-endian IEEE float32 WAV without playback.
+Retain that reference and its SHA256 for each level/rate/session before
+changing parameters; both downloads are explicit local actions. Download
+dialogs may switch focus and disarm, so export a reference before the formal
+block and re-arm to establish a new warm interval. Record the tool source
+commit/file hashes alongside the external recording and browser metadata.
 
 **Acceptance:** a short pilot demonstrates one chirp per press, an active
 verified tuned path, retained signal/source hashes and explicit stop without
-altering other streams. A prospective emitter specification is not a pass.
+altering other streams. Written code or a prospective specification is not
+physical measurement acceptance.
 
 ## 3. Preserve the tuned state and coordinate the capture window
 
@@ -266,3 +292,30 @@ under its declared load; it cannot demonstrate the absence of audible gaps
 or a physical response-time distribution. Listening, silent stability,
 physical onset and reboot/hotplug/resume are separate acceptance records.
 Sonos remains last.
+
+## 9. Review the new emitter before executing its focused cases
+
+[The new Python test wrapper](../tests/test_physical_emitter.py) selects one
+[Node case](../tests/physical_emitter_cases.js) per unit method. The cases use
+synthetic AudioContext and DOM objects; they open no browser audio device,
+recording, network or microphone. Node.js and Python 3 are required for this
+new lane. Missing Node is an execution failure, not a skipped pass.
+
+Ten methods cover no autoplay/invalid arming, actual-rate signal bounds and
+taper, trusted-key/repeat/modifier/cooldown handling, warm-stream diagnostic
+logs, exact stereo reference WAV bytes, owned-source cleanup, cancellation
+and stale state callbacks, failed start cleanup, close/event-limit behaviour,
+and browser focus/hidden-page bindings. Complete source review precedes their
+first run; only failed or invalidated methods repeat. Existing analyser,
+native, speaker and CoreAudio source is unchanged, so retain its acceptance.
+
+```bash
+python3 -m unittest discover -s tests -p test_physical_emitter.py -v  # New cases only, after review.
+```
+
+Source parsing completed with Node v26.8.1 and Python syntax compilation;
+these are not unit or browser acceptance. The ten methods have not executed
+in the implementation batch. A later focused browser smoke check must verify
+the actual local-file load, controls and downloads without starting audio
+before an agreed playback window. Synthetic tests cannot qualify a browser's
+hardware route, actual chirp level or phone-capture accuracy.

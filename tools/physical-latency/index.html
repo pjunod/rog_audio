@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'unsafe-inline'; connect-src 'none'; media-src 'none'; img-src 'none'; object-src 'none'; base-uri 'none'">
+<title>Physical interaction timing — local chirp emitter</title>
+<style>
+  body{font:17px/1.55 system-ui,sans-serif;max-width:760px;margin:2rem auto;padding:0 1rem;color:#202b36;background:#f5f7f9}
+  h1{font-size:1.8rem;line-height:1.2}label{display:block;margin:1rem 0}select,button{font:inherit;padding:.6rem;margin:.2rem}
+  button:focus-visible,select:focus-visible,input:focus-visible{outline:3px solid #126397;outline-offset:3px}
+  #pad{display:block;width:100%;min-height:110px;background:#173f5d;color:white;border:0;border-radius:.4rem}
+  button:disabled{opacity:.55}#status{padding:1rem;background:white;border-left:4px solid #126397}small{display:block}
+</style>
+<main>
+<h1>Key click → speaker chirp</h1>
+<p>Use this local tool during an agreed recording window. Record the physical
+key click and speaker response together on an external phone. This page does
+not record audio, send data, or calculate physical latency.</p>
+<p>Keep your existing speaker tuning and volume. Start at the lowest signal
+level and use a comfortable level that the recorder can identify. Stop if the
+sound is uncomfortable. Arming starts a continuous silent stream, so this is
+not an idle-power test.</p>
+<label>System alias
+<select id="system"><option value="unspecified">Unspecified</option><option value="rog">ROG</option><option value="thinkpad">ThinkPad</option><option value="m4-air">M4 Air</option></select></label>
+<label>Chirp peak level relative to digital full scale
+<select id="level"><option value="-60">−60 dBFS — start here</option><option value="-54">−54 dBFS</option><option value="-48">−48 dBFS</option><option value="-42">−42 dBFS</option><option value="-36">−36 dBFS</option><option value="-30">−30 dBFS</option></select>
+<small>Digital level is not calibrated acoustic loudness. Keep the chosen level fixed within a trial condition.</small></label>
+<label><input id="verified" type="checkbox"> I have checked the existing default output is the intended internal speaker path.</label>
+<button id="arm" type="button">Arm silent warm stream</button>
+<button id="stop" type="button" disabled>Disarm / stop owned stream</button>
+<p id="status" role="status" aria-live="polite">Not armed. No audio context has been created.</p>
+<p id="context">Audio parameters are unknown until armed. The external recorder has its own sample rate.</p>
+<button id="pad" type="button" disabled>Focus here, then press Space once per trial</button>
+<p>Only a browser-trusted, non-repeat Space press on this focused pad can request
+a 20 ms stereo chirp. Other keys and clicks do not emit it. Leave 2–4 seconds
+between trials; presses less than 750 ms apart are logged without a chirp.
+Switching windows, hiding the page or leaving it disarms the stream. The browser
+trust flag does not authenticate physical switch actuation.</p>
+<p>Logged events: <span id="count">0</span>. The local log contains browser
+and AudioContext diagnostics, not acoustic timestamps or a latency result.</p>
+<button id="export" type="button">Download private event log</button>
+<button id="reference" type="button" disabled>Download chirp reference WAV</button>
+<p>Keep the log and recordings private. The log is not an input to the physical
+trial analyser; annotate the external recording using the documented method.
+The reference WAV contains the latest armed signal; retain it and its hash for
+that session before changing level or browser. Downloading emits no chirp.</p>
+</main>
+<script src="emitter.js" defer></script>
+<script src="emitter-ui.js" defer></script>
+</html>

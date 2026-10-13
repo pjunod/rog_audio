@@ -76,9 +76,10 @@ Measurement hardware is not yet established. Native probes in this batch are
 read-only and never record microphones, play a signal or alter privacy settings.
 The owner has laptops, phones and tablets. The
 [phone-recorded interaction method](PHYSICAL_LATENCY_METHOD.md) proposes a
-same-track key-click/chirp comparison with those devices. Its emitter and
-pilot are not implemented, and it cannot isolate pure output latency from
-keyboard/application delay.
+same-track key-click/chirp comparison with those devices. Its local browser
+emitter is implemented with source review and synthetic acceptance pending;
+the manual capture pilot has not run. This interaction metric cannot isolate
+pure output latency from keyboard/application delay.
 Physical capture needs a concrete method, uncertainty budget and coordinated
 playback/recording window. Retain rejected trials and raw captures privately;
 use the existing analyser for appropriately declared physical trial sets.

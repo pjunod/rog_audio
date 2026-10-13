@@ -39,7 +39,7 @@ Display work remains in [rog_hdr_dv](https://github.com/pjunod/rog_hdr_dv).
 - [Linux tuned-path timing](docs/LINUX_AUDIO_PATH.md) — inspect the active processor and apply or remove one private latency request.
 - [CoreAudio timing](docs/COREAUDIO_LATENCY.md) — read-only Mac output terms, M4 Air observations and physical measurement limits.
 - [Latency comparison](docs/LATENCY_COMPARISON.md) — tuned laptop baselines, M4 Air reference and reversible experiments.
-- [Physical latency method](docs/PHYSICAL_LATENCY_METHOD.md) — proposed phone recording of key click to speaker response, with repeat counts and measurement limits.
+- [Physical latency method](docs/PHYSICAL_LATENCY_METHOD.md) — local key-to-chirp emitter and proposed phone-recorded comparison, with repeat counts and measurement limits.
 - [Atmos build](docs/AUDIO_ATMOS_BUILD.md) — offline object rendering and format limits.
 - [Development](docs/DEVELOPMENT.md) — review, CI and selective test policy.
 - [Operations](docs/OPERATIONS.md) — baseline, result interpretation and physical tests.
