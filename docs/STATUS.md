@@ -2,7 +2,8 @@
 
 **Updated:** 2026-10-13 · **State:** both speaker candidates installed with
 login startup configured; ROG stereo tuning restored after four-channel
-investigation; both tuned 256-frame requests are active with rollback retained.
+investigation; 256-frame requests deployed with rollback retained; sustained
+checks and ROG session handoff are in progress.
 
 | Work | State | Next evidence |
 |---|---|---|
@@ -10,7 +11,7 @@ investigation; both tuned 256-frame requests are active with rollback retained.
 | ASUS speaker tuning | Validated stereo restored with full tuned path; prior owner feedback positive | Scoped latency trial, physical hotplug and measurements |
 | ThinkPad speaker tuning | Separate Lenovo music/balanced candidate running; live preset, IR, plugins and hardware output verified | Owner listening, physical hotplug and measurements |
 | Laptop installation runtime | Both active with private rollback and login startup; inherited 97 unit cases and both isolated graph cases passed | Actual post-reboot observation and physical qualification |
-| Diagnostics and latency | Both tuned drivers reduced from 42.667 to 5.333 ms; PRs 5–7 source reviewed and affected tests passed | Sustained-load and physical measurements |
+| Diagnostics and latency | Both tuned drivers reduced from 42.667 to 5.333 ms in retained paired receipts; PRs 5–7 reviewed/tested | Complete sustained checks, then physical measurements |
 | Host Atmos | 15 tests and focused CI cleanup acceptance passed in PR 1 | Actual JOC reference media and physical qualification |
 | macOS comparison | M4 Air getter and silent-running snapshots complete; 16 summary tests passed in PR 5 | Matched Linux software observations, then physical comparison |
 | Physical interaction timing | Phone/tablet method and local emitter implemented; review/acceptance pending, no physical samples | Review/test new emitter, validate manual pilot, then repeated same-track capture |
@@ -279,3 +280,24 @@ pending integration. No new unit, live playback or capture ran in this batch. Th
 coordinated listening and 60-minute stability outcomes will be recorded in
 their own receipts; this plan does not mark either check passed. Accepted
 units remain retained because their sources are unchanged.
+
+## Sustained software check start — 2026-10-13
+
+The sole live audio operator reported the ThinkPad silent 60-minute run
+started at 09:45:38 Eastern, with an expected finish at 10:45:38. All-zero
+stereo PCM uses the same 100 ms client request and full Lenovo tuning at
+256/48000. No artificial CPU load or microphone capture was added. Start
+evidence retains the prior startup error count of 1; actual completion,
+continuous monitoring and final preservation receipts are still pending.
+This is a silent-processing check under its declared workload, not audible
+gap or representative gaming-load acceptance.
+
+The ROG attempt was aborted before its timed interval when a startup error
+counter exceeded the retained baseline. Its owned test processes were
+cleaned and failure evidence retained; no successful 60-minute result is
+claimed and no automatic retry or rollback occurred. A separately authorized
+HDR package/logout window is being coordinated before further ROG audio
+operations. The offline physical tool has no ROG session dependency. Audio
+tuning, volumes, startup and rollback must survive the handoff; a fresh audio
+preflight is needed after session changes. Operational receipts and completed
+outcomes will be documented separately from emitter source acceptance.
