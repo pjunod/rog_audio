@@ -389,7 +389,9 @@ method: 29 affected unit methods and six graph selectors in total. No
 unrelated passing suites repeat; unit and graph counts remain separate.
 Two independent reviews found late profile-index storage, Docker backend
 compatibility and stale install-guide package names. The guide is corrected;
-native/model and Docker source corrections plus focused re-review are pending.
+native/model and Docker corrections at `b6d5f1e` and the guide at `3775486c`
+have all cleared focused re-review. Revised source-transfer authorization and
+a new matching build/export are pending; no tests have executed.
 The [intermediate build receipt](../evidence/speaker-autoload-build-2026-10-13.json)
 for `135c60f` is retained and not reused as proof for corrected source. A new
 matching compile/export receipt is required. All affected tests remain held.

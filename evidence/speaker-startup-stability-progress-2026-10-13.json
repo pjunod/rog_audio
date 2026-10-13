@@ -308,17 +308,20 @@
     "patch": "patches/easyeffects/0002-Retain-output-routes-for-device-return.patch",
     "upstream_commit": "6d9b1220d3dcebb154ba759a05600662bc0af549",
     "expected_package": "rog-audio-easyeffects_8.2.8+rog2_amd64.deb",
-    "candidate_compilation": "intermediate135c60f-compiled-and-exported-late-binding-corrected-rebuild-required",
+    "candidate_compilation": "revised-transfer-authorization-and-matching-rebuild-pending",
     "focused_acceptance": "not-executed",
     "live_deployment": "not-installed",
     "method_document": "docs/SPEAKER_AUTOLOAD.md",
-    "latest_authored_commit": "135c60ffd98aa87828e4a99c582246db6a19165a",
-    "source_manifest_sha256": "c3216c89f313104bb2ca567433562abc4fdbeea9113acea5b3e3f2bbf3b63c7d",
-    "additive_patch_sha256": "a72802db40779287da67cdf7d116df76adb37f44a101aa78947b5a50cf1bed5e",
+    "latest_authored_commit": "b6d5f1e2dfc664ab21115a53aeeb64f3575177e6",
+    "source_manifest_sha256": "b484ce170e1fc50b80b2e26f21d483c8ac078a1caf8faad856298b144a243d4d",
+    "additive_patch_sha256": "94a9f45e7f843d728540a6083ea3e199b37bbbbf434889bb07b138af82673070",
     "planned_affected_unit_methods": 29,
     "planned_graph_selectors": 6,
     "acceptance_executed": false,
-    "intermediate_build_receipt": "evidence/speaker-autoload-build-2026-10-13.json"
+    "intermediate_build_receipt": "evidence/speaker-autoload-build-2026-10-13.json",
+    "source_review_status": "all-three-findings-fixed-and-cleared-by-two-independent-reviewers",
+    "native_source_cleared_commit": "b6d5f1e2dfc664ab21115a53aeeb64f3575177e6",
+    "installation_doc_cleared_commit": "3775486c9bc01d201ce832a825ce7a6da484d970"
   },
   "planned_release": {
     "tag": "v0.2.1",
@@ -349,17 +352,17 @@
     {
       "severity": "P2",
       "topic": "late-profile-index-not-persisted-in-real-node-model",
-      "status": "native-fix-and-late-binding-graph-in-progress"
+      "status": "fixed-focused-re-review-cleared"
     },
     {
       "severity": "P2",
       "topic": "Docker-default-BuildKit-incompatible-with-resource-arguments",
-      "status": "bounded-compatible-backend-and-existing-unit-assertion-in-progress"
+      "status": "fixed-focused-re-review-cleared"
     },
     {
       "severity": "P2",
       "topic": "current-build-rog2-install-doc-still-rog1",
-      "status": "install-guide-corrected-focused-re-review-pending"
+      "status": "fixed-focused-re-review-cleared"
     }
   ]
 }

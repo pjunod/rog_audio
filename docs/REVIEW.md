@@ -234,20 +234,24 @@ at integration `24a8feef`. They identified three P2 findings:
 - The real node model did not retain late `card.profile.device` updates, so
   current-node/timer paths could continue to see the old unknown binding.
   Native storage correction and a real late-profile-binding graph regression
-  are being implemented; the rebuilt artifact must match that new source.
+  are implemented in `b6d5f1e` and cleared focused source re-review; a matching
+  rebuilt artifact is still required.
 - Docker's default BuildKit/Buildx path did not support the legacy build
-  resource arguments. The builder is selecting the compatible bounded
-  legacy backend explicitly and extending the existing Docker unit assertion.
+  resource arguments. The builder now selects the compatible bounded legacy backend explicitly
+  in only the Docker build subprocess. The existing Docker unit assertion
+  is extended; `b6d5f1e` cleared focused source re-review.
 - The install guide's current build emitted `+rog2` while its package/install
   commands still named `+rog1`. Section 5 now consistently names `+rog2`,
   directs the current procedure to the authored autoload topic, and preserves
-  the old receipt/release as history. Focused documentation re-review is pending.
+  the old receipt/release as history. The correction at `3775486c` cleared
+  focused documentation re-review.
 
 The intermediate compiler/export receipt for source `135c60f` remains
 unchanged. It does not qualify the forthcoming corrected source or artifact.
 No unit or graph acceptance has executed. The planned affected selection is
 29 unit methods and six graph selectors (four new event-order/binding cases
-plus the ASUS and Lenovo loader-route regressions). Final source fixes,
-matching compilation/export and both focused re-reviews precede execution.
+plus the ASUS and Lenovo loader-route regressions). Both reviewers cleared all three fixes before execution. Revised source
+transfer authorization and matching compilation/export remain pending; the
+intermediate artifact is not substituted for that requirement.
 Only failed or subsequently invalidated cases repeat; unrelated accepted
 speaker, latency, Mac and emitter suites remain retained.
