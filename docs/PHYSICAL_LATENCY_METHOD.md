@@ -110,8 +110,9 @@ physical measurement acceptance.
 ## 3. Preserve the tuned state and coordinate the capture window
 
 Complete software qualification before the coordinated recording session.
-ROG 512 frames and ThinkPad 256 frames are the planned updated-runtime
-conditions, not yet accepted settings. Preserve each host's actually accepted
+ROG 512 frames has passed one bounded corrected-runtime check; ThinkPad
+256 frames has completed the declared hour on its original runtime. Fresh
+final-configuration hours and the ThinkPad update remain open. Preserve each host's actually accepted
 runtime, timing and tuning bindings. Record the negotiated running driver
 quantum/rate for each physical capture; the request alone does not establish
 that condition. Keep different periods or runtime versions in separate

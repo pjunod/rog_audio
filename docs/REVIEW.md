@@ -263,3 +263,13 @@ changed. This integration lane executed no units. Physical startup, actual
 ROG 512 negotiation and fresh final-configuration hours remain separate.
 Only failed or subsequently invalidated cases repeat; unrelated accepted
 speaker, latency, Mac and emitter suites remain retained.
+
+
+PR 9 merged as `30125c0d5769fbc43925012e00a0c3fc185f9c1a` from accepted head
+`31c211a04aea64290c7ac3d6c61fe5e9bd289e26`. The final repository check passed
+once; no already-passing units were repeated for merge. The next loudness
+implementation and its affected validation remain a separate coherent batch.
+The [digital diagnosis receipt](../evidence/both-laptop-digital-gain-transfer-2026-10-13.json)
+provides a low-level speech baseline, not acceptance of louder programme,
+a new gain implementation, acoustics or physical latency. The frozen PR 9
+release archives and notes remain unchanged while upload approval is pending.
