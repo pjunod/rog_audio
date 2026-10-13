@@ -354,6 +354,15 @@ startup or sustained pass. A readiness wrapper checked the raw runtime too
 early; read-only inspection confirmed completion without repeating removal
 or restart.
 
+The separate [ROG owner-listening receipt](../evidence/rog-owner-listening-2026-10-13.json)
+records 45.542 seconds of the original speech/music demo, exit 0 and owner
+feedback “Sounded good.” Speaker state, service identities and virtual-sink
+volume matched before/after. The last operator-verified 2048/48000 timing
+preceded this demo; driver timing was not sampled during it. The receipt
+claims neither a 256-frame listening pass nor sustained stability, microphone
+capture, calibrated quality or physical latency. Its source/private hashes
+are retained separately, without changing the frozen v4 receipt.
+
 The completed ThinkPad retry baseline was 100% physical-default volume, not the
 74% final level of its earlier stopped attempt. The v3 launch receipt corrects
 that earlier progress report. The final receipt confirms driver count 1 throughout its sampled active

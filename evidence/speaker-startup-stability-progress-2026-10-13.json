@@ -336,5 +336,12 @@
       "rollback_assets_preserved": true,
       "completed_existing_runtime_result": "unchanged"
     }
+  },
+  "owner_listening_observation": {
+    "path": "evidence/rog-owner-listening-2026-10-13.json",
+    "sha256": "7755e508c9ef50d20f944e1636f16ab2dd2aa1f75ce0136649c53b51e3f634e2",
+    "evidence_class": "owner-listening-observation",
+    "driver_timing_sampled_during_demo": false,
+    "scope": "subjective-ordinary-listening-only"
   }
 }

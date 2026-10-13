@@ -36,6 +36,9 @@ pending. [Current results](docs/STATUS.md#startup-and-sustained-check-progress--
 keep those evidence classes distinct. A new `v0.2.1` release with package
 `8.2.8+rog2`, corresponding source and newly bound kits is planned after
 review, focused tests and merge; existing v0.2.0 assets remain unchanged.
+A later [ROG listening observation](evidence/rog-owner-listening-2026-10-13.json)
+records “Sounded good” with matching protected state; driver timing was not
+sampled during that demo, so it is separate from latency/stability results.
 The ThinkPad runtime update is held pending a read-only storage-capacity
 audit after pilot-file staging reported `ENOSPC`; recovery assets stay retained.
 
