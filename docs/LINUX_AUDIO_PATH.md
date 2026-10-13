@@ -2,7 +2,7 @@
 
 **Updated:** 2026-10-13 · **State:** reviewed; 30 Linux path/trial unit cases
 and native filter/config acceptance passed for PR 5; native environment and
-quit-save compatibility fixes await source review and affected unit acceptance.
+quit-save compatibility fixes passed review and 29 affected methods in PR 6.
 
 Companion to [latency comparison](LATENCY_COMPARISON.md) (the experiment and
 Mac reference), [installation](SPEAKER_INSTALL.md) (the existing runtime), and

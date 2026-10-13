@@ -147,3 +147,29 @@ a section name; the reviewed `filter.rules` correction passed its config-only
 retry. No passing unit/native case repeated. All owned test containers were
 confirmed absent. Existing accepted speaker, latency and Atmos source was
 unchanged and its passes were retained.
+
+## Native lifecycle corrections — review and selective acceptance
+
+Live ThinkPad preparation exposed two assumptions absent from the synthetic
+fixtures: systemd's formatted output omits an empty environment-file array,
+and controlled quit serializes the preset-use counter. The complete correction
+batch received an independent adversarial review at `2fbe0d4`. One finding
+was fixed: legacy captures without the new private RC text now retain exact
+state matching, while changed counters still require both raw preimages.
+The fix cleared source review at `42b8fbe` before acceptance.
+
+Six affected path-inspection cases passed. Twenty-two trial cases passed; one
+new method expected the wrong exception for duplicate INI sections/options.
+The native parser already rejects them, and both CLI handlers already emit
+fixed generic refusals. The reviewed test-only correction at `79ab1d0` passed
+its single failed-parent retry. All 29 affected methods now pass, with zero
+skips and no repetition of the other 28 passes. Ten are new cases and 19
+exercise existing collection/environment/snapshot/install behavior changed
+by this batch. Unchanged native filter/config, CoreAudio, selector harness
+and earlier speaker/latency/Atmos passes remain retained.
+
+The [acceptance receipt](../evidence/audio-path-lifecycle-acceptance-2026-10-13.json)
+binds source, selected methods, attempts and logs. The
+[preflight receipt](../evidence/speaker-lifecycle-preflight-2026-10-13.json)
+separately records the persistent service transition and live blocker evidence.
+All owned acceptance containers were confirmed absent.

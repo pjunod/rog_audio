@@ -242,6 +242,8 @@ two tool assumptions to correct: systemd's formatted output omits an empty
 counter. Typed D-Bus inspection proves the former is empty; the latter changed
 only `[StreamOutputs] usedPresets`, with no DSP setting change. The ThinkPad
 baseline was resumed and its full chain rechecked. Both listeners retain their
-working tuning while the corrections are built and reviewed.
+working tuning. The complete correction batch passed adversarial review and
+29 affected unit methods; one failed test expectation was corrected and only
+that method rerun. The corrected live trial is next.
 The [preflight receipt](../evidence/speaker-lifecycle-preflight-2026-10-13.json)
 records both observations, raw-evidence hashes and the preserved startup state.
