@@ -145,6 +145,13 @@ Use a fresh read-only model/route inventory when preparing an actual laptop
 kit. The synthetic graph-kit inventory is exclusively a test fixture. Before
 any coordinated activation, retain the existing package, kit, original bundle,
 preset/IR/autoload hashes, startup unit and private install/latency snapshots.
+A programme kit intentionally changes the preset and autoload identity by
+adding or enabling the independent leveler. Compare the impulse and every
+non-AutoGain stage against the original bundle; their bytes/settings must
+remain unchanged. The no-difference payload check in
+[device-return autoload](SPEAKER_AUTOLOAD.md) applies to a runtime-only upgrade
+using the same original bundle, rather than this derived programme bundle.
+
 The [installation procedure](SPEAKER_INSTALL.md) remains the owner of file
 snapshots and conflict-aware removal. Gain work does not replace stock
 PipeWire/WirePlumber, amplifier firmware or existing hardware protection.
