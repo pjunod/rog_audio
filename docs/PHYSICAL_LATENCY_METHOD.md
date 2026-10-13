@@ -131,7 +131,8 @@ Both laptops now run +rog3 with the separate reviewed helper/unit backport:
 ROG 1024/48000, target −20 LUFS/cap 2.6475 dB; ThinkPad 256/48000, target
 −16 LUFS/cap 14.1375 dB. Original IRs/non-AutoGain stages and final limiters
 remain intact. Fresh settings-bound hours are active, not complete; current
-programme listening is still pending. Earlier ROG 256/512 failures, 1024
+generated demos are accepted at the recorded conditions; that does not
+qualify acoustic response or every media source. Earlier ROG 256/512 failures, 1024
 short pass and recovered shutdown failure, and the old ThinkPad hour/partial
 −20 run remain distinct history in [status](STATUS.md).
 

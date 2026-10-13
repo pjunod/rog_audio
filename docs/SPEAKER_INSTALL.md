@@ -41,6 +41,79 @@ change the physical default sink, set amplifier controls, restart services,
 play audio or record sound. Coordinate the later runtime start and audible
 acceptance window separately.
 
+## Prospective v0.2.3 — +rog4 package, paired kits and required service companion
+
+**Prepared, not published:** v0.2.2 remains the current public release. The
+commands below apply only after v0.2.3 is actually published at its verified
+final merge. The prepared +rog4 package reuses the accepted native ELF/source;
+it adds the shutdown helper/MIT notice. Its paired kits use the kept ROG
+−20 LUFS/cap 2.6475 and ThinkPad −16 LUFS/cap 14.1375 settings. Both generated
+demos are accepted; that is not calibrated acoustics or proof for every medium.
+The sealed kit archive retains its preparation-era provisional metadata;
+later qualification belongs in the outer release notes/manifest.
+
+Use all five release assets together. The old `rog-audio-speaker-*` download
+pattern does not select both new archives:
+
+```bash
+# Only after v0.2.3 is published; choose a new durable owned directory.
+audio_release_root="$HOME/.local/state/rog-audio/work"
+mkdir -p "$audio_release_root"
+git clone --branch v0.2.3 https://github.com/pjunod/rog_audio.git \
+  "$audio_release_root/rog-audio-0.2.3"
+cd "$audio_release_root/rog-audio-0.2.3"
+mkdir delivery
+gh release download v0.2.3 --repo pjunod/rog_audio --dir delivery \
+  --pattern 'rog-audio-packaging-only-8.2.8+rog4.tar.gz' \
+  --pattern 'rog-audio-provisional-speaker-kits-8.2.8+rog4.tar.gz' \
+  --pattern rog-audio-speaker.service --pattern RELEASE_NOTES.md --pattern SHA256SUMS
+(cd delivery && sha256sum --check SHA256SUMS)
+tar -tzf delivery/rog-audio-packaging-only-8.2.8+rog4.tar.gz
+tar -tzf delivery/rog-audio-provisional-speaker-kits-8.2.8+rog4.tar.gz
+tar -xzf delivery/rog-audio-packaging-only-8.2.8+rog4.tar.gz -C delivery
+tar -xzf delivery/rog-audio-provisional-speaker-kits-8.2.8+rog4.tar.gz -C delivery
+```
+
+The verified layouts are `delivery/artifact` for runtime/package/source and
+`delivery/speaker-kits/kits/asus` or `delivery/speaker-kits/kits/thinkpad` for
+the ordinary model kit. The package is
+`delivery/artifact/rog-audio-easyeffects_8.2.8+rog4_amd64.deb`; its SHA256 is
+`17e8dcdd0f59461a035fa0eea8ec6c692194878ed788765a39c7de54ce732e91`.
+The runtime/source archive pin is `f00fe028e3c65e669bbb9a696cf0357b67bd0c1642f4fab6ae96f30aa6c0df1c`,
+kit archive `c0520d9866b0166e194b71f1c18071755d43753c2474980d2bbe006a23cf9e0f`,
+and standalone service companion `65beb0fa15830f9204d9026c06e37ec14fc5bb1d33a4f9108eafce93d3a706dd`.
+Match these reviewed pins as well as the downloaded checksum file. Keep source,
+all notices, `runtime.json`, release notes and checksums with the delivery.
+
+Use the fresh inventory/prerequisite inspection and the existing snapshot,
+install and removal commands in §1–5 with those exact runtime/kit paths. Never
+mix +rog4 metadata/kits with an older package or a different model. The deb
+contains the helper but no automatic unit/profile activation scripts. Its
+`delivery/rog-audio-speaker.service` companion is required separately; validate
+and explicitly install it as described under automatic startup. Preserve the
+actual state-directory setting if the existing deployment uses a custom path.
+
+For an existing asynchronous `--quit` unit, apply the accepted reversible
+[helper/ExecStop correction](SPEAKER_SERVICE.md#3-distinguish-package-distribution-from-the-live-backport)
+before invoking `systemctl stop` for an upgrade. Do not issue quit and then
+immediately terminate the still-saving primary. Retain the old package,
+model-kit/config/install/latency snapshots, unit/link and helper/notice
+preimages before the coordinated window. Verify real exit and saved state,
+then install the matching package/kit and observe automatic original-voicing
+preset/IR/full stereo loading and actual driver period on the new invocation.
+
+Package rollback must keep a corrected helper in an explicitly retained
+persistent path outside the package-owned `/usr/lib/rog-audio` path, with its
+MIT notice and matching ExecStop, before downgrading to a package that lacks
+that helper. Otherwise the downgrade can remove the unit's stop executable.
+Restore the retained matching runtime/kit/config preimages with the existing
+conflict-aware removal contract; preserve the corrected stop behavior and the
+kept independent latency request. Do not restore the known asynchronous
+shutdown sequence while the programme runtime is in use. Dependencies are
+not automatically removed, and stock PipeWire/WirePlumber, amplifier firmware,
+boot and display/session configuration remain outside this upgrade.
+
+
 ## Download v0.2.2 — programme kits bound to +rog3
 
 The [v0.2.2 release](https://github.com/pjunod/rog_audio/releases/tag/v0.2.2)

@@ -11,12 +11,13 @@ records both laptops running `8.2.8+rog3` with the reviewed synchronous-stop hel
 backported separately. Original IRs, non-AutoGain settings, final limiters,
 owner gains and stock protection are preserved. Login startup is enabled;
 two controlled automatic starts and real saved-state checks passed. Fresh
-hours are active, with current programme listening and physical acceptance open.
+hours are active. Both current generated demos were accepted; physical
+measurements and broader media qualification remain open.
 
 | System | Current software | Software timing at 48 kHz | Programme settings | Current acceptance |
 |---|---|---|---|---|
-| ROG G16 | +rog3 and PR 12 helper/unit backport | 1024-frame graph cycle: 21.333 ms | −20 LUFS; cap 2.6475 dB | Short check passed; fresh hour active; programme demo waiting for owner readiness |
-| ThinkPad X1 Extreme | +rog3 and PR 12 helper/unit backport | 256-frame graph cycle: 5.333 ms | −16 LUFS; cap 14.1375 dB | Louder settings verified; fresh hour active; listening feedback pending |
+| ROG G16 | +rog3 and PR 12 helper/unit backport | 1024-frame graph cycle: 21.333 ms | −20 LUFS; cap 2.6475 dB | Short check passed; demo accepted, loudness improved; fresh hour active |
+| ThinkPad X1 Extreme | +rog3 and PR 12 helper/unit backport | 256-frame graph cycle: 5.333 ms | −16 LUFS; cap 14.1375 dB | Louder settings verified; sound/loudness demo accepted; fresh hour active |
 | M4 Air | Stock output; matched browser/emitter files staged | 512-frame HAL buffer: 10.667 ms | Unchanged | Route/armed pilot and physical comparison pending |
 | Sonos Arc/eARC | Deferred | Unmeasured | Unassessed | Follows internal-speaker acceptance |
 
@@ -33,7 +34,8 @@ checksums. The [packaging-only +rog4 artifact](evidence/speaker-stop-packaging-o
 is built and verified with the same native DSP plus the helper/MIT notice;
 its corrected service unit is a required separate companion. +rog4 is neither
 published nor installed on these laptops. Both [current-settings-bound +rog4 kits](evidence/speaker-stop-provisional-rog4-kit-manifest-2026-10-13.json)
-are prepared provisionally, with listening/owner approval pending.
+are prepared provisionally. Both current demo passes are later evidence;
+the sealed preparation metadata remains its historical snapshot.
 
 [Current status and dated receipts](docs/STATUS.md) preserve the earlier
 startup fixes, ROG 256/512 failures and 1024 pass, ThinkPad old-runtime hour,
@@ -144,7 +146,8 @@ recovered vendor files and separately fetched dependencies.
 - [x] Install both model-specific candidates and enable automatic login startup.
 - [x] Trial lower tuned Linux graph periods and collect the M4 Air software reference; retain distinct bounded passes and later ROG 256/512 failures.
 - [x] Merge guarded 1024/2048 requests and pass the explicit ROG 1024 short trial.
-- [ ] Review/test/deploy synchronous service stop, retry ROG programme settings, assess the louder ThinkPad candidate and complete fresh software hours.
+- [x] Review/test/deploy synchronous service stop and both current programme settings; retain both accepted demo listening results.
+- [ ] Finish fresh software hours on the kept settings.
 - [ ] Qualify physical headphone/HDMI routing and resume.
 - [ ] Measure built-in speaker quality and latency against the Macs.
 - [ ] Qualify Sonos Arc/eARC last.
