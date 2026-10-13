@@ -4,16 +4,16 @@
 login startup configured; ThinkPad completed the declared hour at 256 frames
 on v0.2.0; ROG's 256-frame run failed and reviewed rollback restored 2048.
 The corrected native startup runtime is compiled/exported and all source
-findings cleared re-review. Final artifact review is clear; the single affected acceptance run is in
-progress and its results remain pending. It is not deployed.
+findings cleared re-review. Final artifact review is clear; all 29 affected unit methods and six isolated
+graph selectors passed once, with zero failures or skips. It is not deployed.
 
 | Work | State | Next evidence |
 |---|---|---|
 | Hardware inventory | Both laptops inspected read-only | Refresh during installation |
-| ASUS speaker tuning | Full tuned path restored; demo clarity feedback positive, everyday movie/show loudness unresolved | Finish startup/512 acceptance; separate gain investigation and physical checks |
-| ThinkPad speaker tuning | Separate Lenovo candidate running; demo clarity positive, everyday loudness unresolved; old-runtime hour retained | Finish corrected-runtime acceptance; separate gain investigation and physical checks |
-| Laptop installation runtime | Installed tuned paths restored/active; review-fixed startup runtime compiled/exported; artifact checks/acceptance pending | Complete final artifact checks and affected tests; fresh deployed-runtime observations |
-| Diagnostics and latency | Historical paired 256-frame results retained; ThinkPad existing-runtime hour completed; ROG failed/reverted to 2048 | Review/test startup fix and 512 candidate; fresh ROG hour and physical measurements |
+| ASUS speaker tuning | Full tuned path restored; demo clarity feedback positive, everyday movie/show loudness unresolved | Deploy reviewed startup fix; trial 512 frames; separate gain investigation and physical checks |
+| ThinkPad speaker tuning | Separate Lenovo candidate running; demo clarity positive, everyday loudness unresolved; old-runtime hour retained | Resolve storage before corrected-runtime deployment; separate gain investigation and physical checks |
+| Laptop installation runtime | Installed tuned paths restored/active; review-fixed startup runtime compiled/exported; 29 affected units/six isolated graphs passed | Merge and deploy; fresh deployed-runtime observations |
+| Diagnostics and latency | Historical paired 256-frame results retained; ThinkPad existing-runtime hour completed; ROG failed/reverted to 2048 | Trial reviewed 512 candidate on ROG; fresh final-configuration hours and physical measurements |
 | Host Atmos | 15 tests and focused CI cleanup acceptance passed in PR 1 | Actual JOC reference media and physical qualification |
 | macOS comparison | M4 Air getter and silent-running snapshots complete; 16 summary tests passed in PR 5 | Matched Linux software observations, then physical comparison |
 | Physical interaction timing | Phone/tablet method source-reviewed; ten methods and unarmed Chrome smoke passed, no physical samples | Manual pilot, then repeated same-track capture |
@@ -112,8 +112,13 @@ protection or acoustic qualification receipt.
 
 The same user-login startup unit passed native validation and is enabled with
 its resolved `default.target` link. Enabling it preserved the active listening
-process. No reboot was performed; actual startup after reboot is pending
-observation. Its recovery tools, original source/notices, baseline, startup
+process. No reboot was performed during initial enablement. A later externally
+initiated boot loaded the original Lenovo tuning automatically on v0.2.0;
+[one bounded observation](../evidence/thinkpad-postboot-observation-v1-2026-10-13.json)
+records startup 18.711 seconds after boot and a separate 6.086-second silent
+check at 256/48000 with all nine sampled components reporting zero errors.
+That observation remains separate from the pre-boot hour with driver count 1,
+repeated startup and corrected-runtime qualification. Its recovery tools, original source/notices, baseline, startup
 preimage and snapshot are retained privately on the ThinkPad and locally.
 The ROG and Sonos were unchanged during this window.
 
@@ -301,7 +306,7 @@ ThinkPad's existing-runtime hour is complete. ROG stopped on error growth and
 its request was removed using reviewed rollback. The original v2/v3 receipts
 remain unchanged historical snapshots; final v4 binds completion and retained
 failure/rollback/listening evidence. The corrected runtime and 512 candidate
-still require their own acceptance and deployed observations.
+have passed focused offline acceptance; deployed observations remain pending.
 The earlier expected finish times remain historical targets; the actual
 ThinkPad completion is bound to its final receipt.
 
@@ -393,8 +398,9 @@ The original accepted patch bytes and licences are preserved. The
 binds `b6d5f1e`, final ELF/package hashes and 711 exact corresponding source
 files. The existing-runtime ThinkPad final receipt is integrated. All source
 findings and final artifact bindings cleared independent focused re-review.
-The single Linux runner is executing the affected selection on frozen code;
-its acceptance results remain pending. The focused coverage comprises the extended
+The [final selective acceptance receipt](../evidence/speaker-autoload-acceptance-2026-10-13.json)
+records all 29 affected unit methods and six isolated graph selectors passing
+on their first execution, with zero failures or skips. The focused coverage comprises the extended
 source method, 17 actual-header autoload cases, 10 build-orchestration cases,
 four event-order/binding graph selectors, the two existing ASUS/Lenovo loader-route
 selectors invalidated by the new runtime, and one new 512-frame lifecycle
@@ -405,7 +411,11 @@ compatibility and stale install-guide package names. The guide is corrected;
 native/model and Docker corrections at `b6d5f1e` and the guide at `3775486c`
 have all cleared focused re-review. The approved bounded corrective build
 compiled/exported successfully and its matching receipt is integrated.
-Tests have been released to the single native runner; this lane runs none. The [intermediate receipt](../evidence/speaker-autoload-build-2026-10-13.json)
+One detached-container setup failure occurred before any Linux test method
+executed. The attached runner then completed acceptance. Receipts were retained
+before cleanup; the owned container was removed, and its SSH keeper ended
+with exit 137 after the owned PID 1 stop timeout. No host service or linger
+setting changed. This integration lane ran no units. The [intermediate receipt](../evidence/speaker-autoload-build-2026-10-13.json)
 for `135c60f` remains unchanged and superseded. The final build used two compiler
 workers within two CPUs/6 GiB; the production CLI's one-worker default is
 unchanged. No duplicate test lane or unchanged passing suite is run.
@@ -422,7 +432,7 @@ completed old-runtime result or imply acceptance of the new runtime.
 
 The latency tool now also prepares a 512/48000 candidate (10.667 ms) while
 retaining its 256-frame default and guarded file-only install/remove contract.
-One new CLI/lifecycle preservation method is prepared but unexecuted. The
+The new CLI/lifecycle preservation method passed once in the affected selection. The
 candidate is unqualified until actual negotiation, full tuned processing,
 error continuity and preservation are observed. It is not deployed during an
 active hour, and matching the M4 Air's reported buffer duration is not physical
@@ -436,7 +446,8 @@ the owner's chosen level. Processing identity, DSP settings, physical routing,
 services, counter growth/reset and monitoring continuity remain strict guards.
 These silent runs do not establish absence of audible gaps, representative
 gaming-load reliability, calibrated acoustics or physical latency. Actual
-post-reboot startup, hotplug/resume and the phone-capture pilot remain pending.
+ROG post-reboot startup, repeated startup, corrected-runtime deployment,
+hotplug/resume and the phone-capture pilot remain pending.
 
 
 The planned `v0.2.1` release will contain package `8.2.8+rog2`, exact

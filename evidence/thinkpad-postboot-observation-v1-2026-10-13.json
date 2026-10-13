@@ -1,0 +1,39 @@
+{
+  "boot_utc": "2026-10-13T15:27:28+00:00",
+  "evidence_kind": "live-software-observation",
+  "host": "lab6",
+  "kind": "post-reboot-speaker-startup-observation",
+  "limits": [
+    "One observed reboot on the old v0.2.0 runtime; not repeated startup qualification.",
+    "The completed pre-reboot hour with driver ERR1 is a separate observation.",
+    "This short post-reboot ERR0 check is not a new hour, physical latency or corrected-runtime acceptance."
+  ],
+  "loaded_preset_matches_original_lenovo_tuning": true,
+  "login_target_link_valid": true,
+  "owner_volume_preserved": true,
+  "protected_state_preserved": true,
+  "reboot_initiated_by_this_operator": false,
+  "runtime_binary_sha256": "e5061dcc1e0b925933eceeacffb576536d24f609307166b97d0e159c0f1772d1",
+  "runtime_release": "v0.2.0",
+  "schema_version": 1,
+  "service_enabled": true,
+  "service_processes_preserved": true,
+  "service_start_seconds_after_boot": 18.710975,
+  "settings_changed": false,
+  "silent_check": {
+    "all_observed_driver_dsp_source_errors": 0,
+    "audible_signal_generated": false,
+    "driver_quantum_frames": 256,
+    "driver_rate_hz": 48000,
+    "duration_seconds": 6.086120367050171,
+    "finish_utc": "2026-10-13T16:00:10.302083+00:00",
+    "full_stereo_processing_nodes_per_sample": 9,
+    "physical_route_consistent": true,
+    "player_exit_code": 0,
+    "recording_performed": false,
+    "running_samples": 3,
+    "start_utc": "2026-10-13T16:00:04.215962+00:00"
+  },
+  "source_capture_sha256": "8ad395da34b9d2aaf4df2569e361de59d1adef80dfa02410bafba4d4beab2515",
+  "unit_restarts_observed": 0
+}

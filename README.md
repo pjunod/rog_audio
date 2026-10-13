@@ -33,9 +33,9 @@ start, midpoint and end. The ROG's 256-frame attempt failed after 67.982
 seconds; reviewed rollback preserved its full tuning at 2048 frames. Neither
 result measures physical latency or qualifies the startup-fixed runtime.
 The corrected native runtime is compiled/exported and its source fixes
-and final artifact bindings cleared re-review. The single Linux runner is
-executing the 29 affected unit methods and six graph selectors; results remain
-pending. [Current results](docs/STATUS.md#startup-and-sustained-check-progress--2026-10-13)
+and final artifact bindings cleared re-review. All 29 affected unit methods and six isolated graph selectors passed once,
+with zero failures or skips. The [acceptance receipt](evidence/speaker-autoload-acceptance-2026-10-13.json)
+binds the reviewed source, runtime and retained logs. [Current results](docs/STATUS.md#startup-and-sustained-check-progress--2026-10-13)
 keep those evidence classes distinct. A new `v0.2.1` release with package
 `8.2.8+rog2`, corresponding source and newly bound kits is planned after
 review, focused tests and merge; existing v0.2.0 assets remain unchanged.
@@ -77,7 +77,7 @@ Display work remains in [rog_hdr_dv](https://github.com/pjunod/rog_hdr_dv).
 ## Install the speaker candidate
 
 Download the runtime (including corresponding source), per-device kits and
-checksums from [v0.2.0](https://github.com/pjunod/rog_audio/releases/tag/v0.2.0).
+checksums from the [latest release](https://github.com/pjunod/rog_audio/releases/latest).
 Follow [speaker installation](docs/SPEAKER_INSTALL.md) for checksum verification,
 package dependencies, the ASUS or ThinkPad kit, a private rollback snapshot
 and explicit start/stop commands. The package does not activate itself.
@@ -91,7 +91,10 @@ Both laptops now have [automatic startup after login](docs/SPEAKER_INSTALL.md#au
 with the startup unit and disable/remove procedure retained alongside rollback.
 Initial startup enablement preserved the listening processes. Both subsequently
 moved to the persistent service during the latency trials; an actual post-reboot
-run has not yet been observed.
+run was observed once on the ThinkPad with its original v0.2.0 runtime;
+[that bounded receipt](evidence/thinkpad-postboot-observation-v1-2026-10-13.json)
+does not qualify repeated startup or the corrected runtime. ROG post-reboot
+acceptance remains pending.
 The [ThinkPad deployment receipt](evidence/thinkpad-speaker-deployment-2026-10-12.json)
 records its separate model binding, 20% initial volume and retained rollback.
 

@@ -234,8 +234,8 @@ at integration `24a8feef`. They identified three P2 findings:
 - The real node model did not retain late `card.profile.device` updates, so
   current-node/timer paths could continue to see the old unknown binding.
   Native storage correction and a real late-profile-binding graph regression
-  are implemented in `b6d5f1e` and cleared focused source re-review; a matching
-  rebuilt artifact is still required.
+  are implemented in `b6d5f1e` and cleared focused source re-review; the matching
+  rebuilt artifact and late-profile-binding graph passed acceptance.
 - Docker's default BuildKit/Buildx path did not support the legacy build
   resource arguments. The builder now selects the compatible bounded legacy backend explicitly
   in only the Docker build subprocess. The existing Docker unit assertion
@@ -248,12 +248,18 @@ at integration `24a8feef`. They identified three P2 findings:
 
 The intermediate compiler/export receipt for source `135c60f` remains
 unchanged. It does not qualify the forthcoming corrected source or artifact.
-No affected acceptance result is claimed yet. The released selection is
+The completed selection is
 29 unit methods and six graph selectors (four new event-order/binding cases
 plus the ASUS and Lenovo loader-route regressions). Both reviewers cleared all three fixes before execution. The approved corrective build now has a [matching receipt](../evidence/speaker-autoload-reviewed-build-2026-10-13.json)
 for reviewed `b6d5f1e`, final ELF/package hashes and 711 exact source files.
-The earlier receipt remains historical. Final artifact binding/receipt checks also cleared independently. The single
-native runner is now executing the 29 unit methods and six graph selectors
-once; its results are pending. This integration lane executes none.
+The earlier receipt remains historical. Final artifact binding/receipt checks also cleared independently. The [final acceptance receipt](../evidence/speaker-autoload-acceptance-2026-10-13.json)
+records 29 unit methods and six isolated graph selectors passing on first
+execution, with zero failures or skips. One earlier container-lifetime setup
+failure executed zero Linux methods. Four unit-log hashes and all six graph
+receipt hashes were independently checked against retained originals. Receipts
+were retained before owned-container cleanup; the SSH keeper ended with exit
+137 after the owned PID 1 stop timeout. No host services or linger settings
+changed. This integration lane executed no units. Physical startup, actual
+ROG 512 negotiation and fresh final-configuration hours remain separate.
 Only failed or subsequently invalidated cases repeat; unrelated accepted
 speaker, latency, Mac and emitter suites remain retained.
