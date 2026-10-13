@@ -1,4 +1,4 @@
 e10f439698d353e52c58ec0190390107d68fd0ace4f429d89c996c4104d76ede  0001-Scope-speaker-correction-to-device-route.patch
-57da2897b94765fc517ab80f7d35b4df4bd5600183df8838fc6fc1d78e399f96  0002-Retain-output-routes-for-device-return.patch
+478f730ffeb871ac0682c25efbdf376828513df1699444c760e291c380f8a5f4  0002-Retain-output-routes-for-device-return.patch
 fc990509008860da01bc3b0719d2b7af173e16e6efd7aba26e3ad0f65282ba11  ubuntu/0001-Disable-echo-canceller.patch
 5ffb35e31945036cf81c7dd63b14c28af850213f4083279e9f3c2ef50e49e207  ubuntu/COPYRIGHT

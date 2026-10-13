@@ -60,6 +60,25 @@ void run(const std::string& name) {
   } else if(name=="queued-node-reuse") {
     Node replacement=node;replacement.serial++;
     require(!Cache::same_instance(node,replacement));require(Cache::same_instance(node,node));
+  } else if(name=="duplicate-route-notification" || name=="invalidation-same-route") {
+    cache.remember(3,0,"speaker","Speakers");cache.apply(node);
+    require(cache.changed_since_notification(node));cache.notified(node);
+    if(name=="invalidation-same-route") {cache.invalidate(3);cache.apply(node);}
+    cache.remember(3,0,"speaker","Speakers");cache.apply(node);
+    require(!cache.changed_since_notification(node));
+  } else if(name=="pending-invalidation-same-route") {
+    const auto old=cache.remember(3,0,"speaker","Speakers");cache.apply(node);
+    require(cache.changed_since_notification(node)); // Scheduled, not notified.
+    cache.invalidate(3);
+    const auto current=cache.remember(3,0,"speaker","Speakers");cache.apply(node);
+    require(!cache.current(3,0,old) && cache.current(3,0,current));
+    require(cache.changed_since_notification(node));cache.notified(node);
+    require(!cache.changed_since_notification(node));
+  } else if(name=="notification-removal") {
+    cache.remember(3,0,"speaker","Speakers");cache.apply(node);cache.notified(node);
+    cache.remove_device(3);cache.remember(3,0,"speaker","Speakers");cache.apply(node);
+    require(cache.changed_since_notification(node));cache.notified(node);
+    cache.remove_node(node.id,node.serial);require(cache.changed_since_notification(node));
   } else if(name=="description-change") {
     cache.remember(3,0,"speaker","Speakers");cache.apply(node);
     cache.remember(3,0,"speaker","Haut-parleurs");require(cache.apply(node));

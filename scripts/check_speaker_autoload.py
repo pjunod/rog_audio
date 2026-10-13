@@ -11,6 +11,7 @@ from pathlib import Path
 import selectors
 import subprocess
 import sys
+import time
 import uuid
 
 from check_speaker_graph import Graph, GraphError
@@ -109,6 +110,22 @@ def acceptance(kit_path,case,output,binary,mock,player):
             return expected<=actual
         graph.until(plugins_present)
         observations.append('actual bound IR, plugins and speaker interception loaded')
+        if case=='device-return':
+            graph.stage='identical speaker Route re-enumeration'
+            log=output/'easyeffects.log'
+            text=log.read_text(errors='replace')
+            preset_marker='Autoload local preset '+manifest['preset_name']+' for device '
+            before=text.count(preset_marker)
+            route_before=text.count('output route: Speakers')
+            if before==0:raise GraphError('native autoload receipt marker absent')
+            change_route('speaker')  # SPA Route serial changes, descriptions do not.
+            graph.until(lambda _:log.read_text(errors='replace').count('output route: Speakers')>route_before)
+            deadline=time.monotonic()+.75
+            while time.monotonic()<deadline:
+                if graph.preset(binary)!=manifest['preset_name'] or log.read_text(errors='replace').count(preset_marker)!=before:
+                    raise GraphError('identical Route re-enumeration reloaded the speaker preset')
+                time.sleep(.05)
+            observations.append('identical Route re-enumeration preserved preset without an autoload reload')
         change_route('headphones')
         graph.until(lambda _:graph.preset(binary)==manifest['bypass_name'])
         graph.until(lambda g:graph.linked(g,'rog-autoload-player',node_name))

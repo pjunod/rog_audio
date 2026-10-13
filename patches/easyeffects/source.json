@@ -2,11 +2,11 @@
   "checksum_reason": "Additive device-return autoload fix retains output route state by device/profile, invalidates stale queued notifications, and resolves current sink identity; original accepted and imported patch bytes are unchanged",
   "files": {
     "0001-Scope-speaker-correction-to-device-route.patch": "e10f439698d353e52c58ec0190390107d68fd0ace4f429d89c996c4104d76ede",
-    "0002-Retain-output-routes-for-device-return.patch": "57da2897b94765fc517ab80f7d35b4df4bd5600183df8838fc6fc1d78e399f96",
+    "0002-Retain-output-routes-for-device-return.patch": "478f730ffeb871ac0682c25efbdf376828513df1699444c760e291c380f8a5f4",
     "ubuntu/0001-Disable-echo-canceller.patch": "fc990509008860da01bc3b0719d2b7af173e16e6efd7aba26e3ad0f65282ba11",
     "ubuntu/COPYRIGHT": "5ffb35e31945036cf81c7dd63b14c28af850213f4083279e9f3c2ef50e49e207"
   },
-  "output_route_header_sha256": "4caa3fbc87815a975a7e0f2bc602250e3c4799c331ff4004cad46dd2511827a1",
+  "output_route_header_sha256": "0d90981f2ec80332a4458e9f3dec2b7c239b7d96bb08b7ac0a673a63668af007",
   "routing_contract": "exact-device-route-v1",
   "routing_header_sha256": "e769b6bd2dfbe2f7b18543dc829f27dd3c344486aa7dec3d95159904878dff48",
   "schema_version": 1,

@@ -16,11 +16,17 @@ the configured empty fallback even when the physical route was speakers.
 
 The additive [source patch](../patches/easyeffects/0002-Retain-output-routes-for-device-return.patch)
 retains the current output route by PipeWire device ID and ALSA profile-device
-index. Sink arrival replays that route before preset notification. A route
+index. Sink arrival replays that route before preset notification. A single queued
+initialization reconciles a sink already discovered by Manager's registry sync
+before the effects object connected its signal handlers. A route
 arriving after the sink updates the same state. Device removal or route
 invalidation clears the cache and node route fields; a generation identifies
 scheduled work so older callbacks cannot replay superseded route descriptions.
-Queued autoload events resolve the current node under the PipeWire lock and
+Notification history is keyed by sink ID/serial and device/profile binding. It
+survives route re-enumeration, so an identical route does not reload a preset;
+actual device/node removal clears that history. Pending work is recorded only
+when a notification is emitted, so invalidation before delivery still rearms
+the fresh route notification. Queued autoload events resolve the current node under the PipeWire lock and
 require its original serial. Ordinary volume/port updates do not reload a preset.
 
 The existing direct route-event DSP bypass remains active during delayed preset
@@ -114,7 +120,8 @@ relax identity guards or reuse an old snapshot as a new trial baseline.
 The new native cache cases cover both arrival orders, node return, two profile
 indices, invalidation/removal, stale generations, device/node ID reuse, missing
 profile indices, binding changes, description changes and unchanged volume
-updates. Tests compile the actual source-bound header; they do not access audio.
+updates, duplicate route delivery, same-route re-enumeration and invalidation
+before pending notification. Tests compile the actual source-bound header; they do not access audio.
 Build contract cases check resource arguments, image collisions, durable context
 cleanup, retained failure logs and exported artifact/source bindings.
 
@@ -144,7 +151,9 @@ python3 scripts/check_speaker_autoload.py --case device-return \
 These graph cases start private PipeWire/WirePlumber and the real runtime, with
 synthetic null sinks and generated PCM. They require the exact preset, actual
 IR/plugin loading, headphone fallback/ownership release and unchanged kit bytes.
-The returned sink has a new serial while the Device remains. Each selector
+The returned sink has a new serial while the Device remains. Its case also
+requires an identical real Route re-enumeration to leave the native autoload
+log count unchanged. Each selector
 writes its own receipt and retains its failing stage/graph; retry only failed
 or code-invalidated cases. Select a failed unit method with `--test-id`.
 The inherited ASUS/Lenovo loader-route graph selectors remain available for

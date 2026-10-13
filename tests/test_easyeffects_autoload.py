@@ -11,7 +11,8 @@ import unittest
 CASES=('route-before-node','node-before-route','node-return','profile-isolation',
        'invalidation','stale-route','device-id-reuse','missing-profile',
        'binding-change','volume-update','queued-node-removal','queued-node-reuse',
-       'description-change')
+       'description-change','duplicate-route-notification','invalidation-same-route',
+       'pending-invalidation-same-route','notification-removal')
 
 class OutputAutoloadTests(unittest.TestCase):
     @classmethod
