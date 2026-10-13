@@ -53,6 +53,10 @@ class Signal:
         self.stop.set()
         graph.stop(self.child)
         self.thread.join(timeout=5)
+        try:
+            self.child.stdin.close()
+        except OSError:
+            pass  # Consumer already stopped; retain any earlier writer error.
         if self.thread.is_alive():
             raise GraphError('owned PCM writer did not stop')
 
@@ -203,7 +207,7 @@ def acceptance(kit_path, case, output, binary, mock, player):
         graph.until(lambda g: graph.node(g, 'rog_audio_speaker_sink'))
         graph.until(lambda _: graph.preset(binary) == manifest['preset_name'])
         source_child = graph.start('programme-source', [
-            'pw-cat', '--playback', '--rate', '48000', '--channels', '2', '--format', 'f32',
+            'pw-cat', '--playback', '--raw', '--rate', '48000', '--channels', '2', '--format', 'f32',
             '--target', 'rog_audio_speaker_sink', '--properties', 'node.name=rog-programme-source', '-'], pipe=True)
         signal = Signal(source_child)
         graph.until(lambda g: graph.linked(g, 'rog-programme-source', 'rog_audio_speaker_sink'))
