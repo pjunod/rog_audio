@@ -335,6 +335,14 @@ stability receipts before independent adversarial review and affected tests.
 No candidate fix is installed and no active hour is interrupted for that work.
 Accepted unchanged units remain retained.
 
+The latency tool now also prepares a 512/48000 candidate (10.667 ms) while
+retaining its 256-frame default and guarded file-only install/remove contract.
+One new CLI/lifecycle preservation method is prepared but unexecuted. The
+candidate is unqualified until actual negotiation, full tuned processing,
+error continuity and preservation are observed. It is not deployed during an
+active hour, and matching the M4 Air's reported buffer duration is not physical
+Mac parity. See [the candidate procedure](LINUX_AUDIO_PATH.md#prepare-an-inactive-filter-request).
+
 All-zero stereo PCM uses the same 100 ms client request and full model-specific
 tuning at 256/48000. The test adds no artificial CPU load, microphone capture
 or volume writes. Volume adjustments and separately owner-coordinated listening

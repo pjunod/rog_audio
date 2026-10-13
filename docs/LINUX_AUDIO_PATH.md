@@ -71,10 +71,25 @@ python3 scripts/audio_path_trial.py prepare \
   --capture PRIVATE_CAPTURE.json --quantum 256 --output PRIVATE_TRIAL
 ```
 
-The initial request is 256/48000, or 5.333 ms per cycle if negotiated. A later
-128/48000 request is supported for a separately observed experiment. Neither
-forces the linked driver to that period. Do not use a smaller request to claim
-physical performance without measuring it.
+The default request remains 256/48000, or 5.333 ms per cycle if negotiated.
+The tool also prepares 128/48000 and 512/48000 requests for separate observed
+experiments. The 512-frame candidate adds processing time (10.667 ms at
+48 kHz) after the ROG's 256-frame run stopped on monitored error growth; its
+live stability and physical latency remain unqualified. None of these requests
+forces the linked driver to that period. Do not infer physical performance
+or Mac parity from a requested or observed graph period.
+
+```bash
+python3 scripts/audio_path_trial.py prepare \
+  --capture PRIVATE_FRESH_BASELINE.json --quantum 512 --output PRIVATE_NEW_TRIAL
+```
+
+This creates an inactive bundle only. Remove any prior owned fragment using
+its retained snapshot before collecting the fresh baseline; preparation and
+installation still reject an occupied trial filename. Do not overwrite the
+256-frame fragment in place or reuse its snapshot to remove a 512-frame rule.
+Use a new bundle and snapshot for each candidate. The preset, IR, settings,
+physical route and startup unit retain the same preservation contract.
 
 The fragment uses `filter.rules` and matches all four exact properties:
 
@@ -231,3 +246,20 @@ when their inputs remain unchanged. Record each new pass/failure once, retry
 only failed or invalidated cases, and retain exact source/image hashes. These
 checks prove parser/file/rule behavior; they do not prove negotiated running
 latency, audible stability, physical hotplug, power cost or Mac parity.
+
+
+### 512-frame follow-up — source under review, not acceptance
+
+The expanded rule and CLI allowlists add 512 frames without changing the
+256-frame default or the file-only lifecycle. One new synthetic method,
+`test_audio_path_trial.TrialTests.test_512_cli_lifecycle_preserves_tuning_and_unrelated_config`,
+exercises actual CLI preparation, inactive state, exact 512-frame rule,
+install/status/remove, archived rule bytes and full restoration of tuning,
+runtime/kit identity and an unrelated config file with its mode. Unsupported
+values and types remain refused. No existing test treated 512 as invalid.
+
+Only Python syntax compilation has run for this change. Its focused method
+requires Linux `renameat2`; execute it in the isolated Linux environment after
+the complete startup/stability batch has cleared adversarial review. Retain
+accepted unchanged 128/256 and native/Mac/speaker evidence. This test proves
+scoped file behaviour, not real-driver negotiation or sustained stability.
