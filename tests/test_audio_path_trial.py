@@ -1,5 +1,6 @@
 """File-only private trial safety; invented captures, no services or audio."""
 import copy
+import io
 import json
 from pathlib import Path
 import stat
@@ -163,6 +164,20 @@ class TrialTests(unittest.TestCase):
         result = unittest.TestResult()
         self.assertFalse(units.accepted(result))
         result.testsRun = 1; result.skipped = [('synthetic-id', 'synthetic skip')]
+        self.assertFalse(units.accepted(result))
+
+    def test_subtest_failure_and_skip_return_parent_retry_id(self):
+        class Example(unittest.TestCase):
+            def exercise(self):
+                with self.subTest(text='synthetic subtest with spaces'):
+                    self.fail('deliberate nested failure')
+                with self.subTest(text='synthetic skipped subtest'):
+                    self.skipTest('deliberate nested skip')
+        case = Example('exercise')
+        result = unittest.TextTestRunner(stream=io.StringIO(), resultclass=units.RetryResult).run(case)
+        self.assertEqual(result.failed_ids, {case.id()})
+        self.assertEqual(len(result.failures), 1)
+        self.assertEqual(len(result.skipped), 1)
         self.assertFalse(units.accepted(result))
 
 

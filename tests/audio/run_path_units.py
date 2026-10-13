@@ -34,16 +34,42 @@ def accepted(result):
     return result.testsRun > 0 and result.wasSuccessful() and not result.skipped
 
 
+class RetryResult(unittest.TextTestResult):
+    """Keep subtest details in logs, but return a runnable parent method ID."""
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.failed_ids = set()
+
+    def addFailure(self, test, error):
+        self.failed_ids.add(test.id())
+        super().addFailure(test, error)
+
+    def addError(self, test, error):
+        self.failed_ids.add(test.id())
+        super().addError(test, error)
+
+    def addSubTest(self, test, subtest, error):
+        if error is not None:
+            self.failed_ids.add(test.id())
+        super().addSubTest(test, subtest, error)
+
+    def addSkip(self, test, reason):
+        self.failed_ids.add(getattr(test, 'test_case', test).id())
+        super().addSkip(test, reason)
+
+    def addUnexpectedSuccess(self, test):
+        self.failed_ids.add(test.id())
+        super().addUnexpectedSuccess(test)
+
+
 def main(argv):
     try:
         selected = suite(argv[0], argv[1:])
     except (IndexError, ValueError, AttributeError):
         print('path unit selector refused', file=sys.stderr); return 2
-    result = unittest.TextTestRunner(verbosity=2).run(selected)
-    failed = [test.id() for test, _ in result.errors+result.failures+result.skipped]
-    failed.extend(test.id() for test in result.unexpectedSuccesses)
+    result = unittest.TextTestRunner(verbosity=2, resultclass=RetryResult).run(selected)
     print(json.dumps({'tests_run': result.testsRun, 'skipped_count': len(result.skipped),
-                      'successful': accepted(result), 'failed_test_ids': sorted(set(failed))}))
+                      'successful': accepted(result), 'failed_test_ids': sorted(result.failed_ids)}))
     return 0 if accepted(result) else 1
 
 
