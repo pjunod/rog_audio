@@ -28,7 +28,7 @@ class Signal:
     """Keep one source alive across silence and programme-level transitions."""
     def __init__(self, child):
         self.child = child
-        self.amplitude = .005
+        self.amplitude = .025
         self.stop = threading.Event()
         self.error = None
         self.thread = threading.Thread(target=self.write, daemon=True)
@@ -253,7 +253,7 @@ def acceptance(kit_path, case, output, binary, mock, player):
         signal.amplitude = 0; time.sleep(1.2)
         silent = capture('silence')
         if silent['peak'] > .00001: raise GraphError('silence output was not finite and silent')
-        capture('after-silence-early', seconds=1.2, transition=.005)
+        capture('after-silence-early', seconds=1.2, transition=.025)
         # Locate the actual output onset, rather than assuming a pipe/source
         # transition is immediate. Skip 50 ms of FIR onset and measure 100 ms.
         raw = array.array('f'); raw.frombytes((output/'after-silence-early.raw').read_bytes())
@@ -272,7 +272,10 @@ def acceptance(kit_path, case, output, binary, mock, player):
         if any(abs(value-3) > .35 for value in relative(recovered, baseline)):
             raise GraphError('makeup did not recover after silence reset')
         assertions.append('silence resets retained makeup and normal recovery remains bounded')
-        loud = capture('louder-programme-transition', seconds=1, transition=.95)
+        # Float PCM can carry an explicit synthetic overdrive. This forces
+        # the original limiter to engage after either model's FIR attenuation,
+        # instead of passing a peak check with the limiter never exercised.
+        loud = capture('louder-programme-transition', seconds=1, transition=4.0)
         if loud['peak'] > math.pow(10, -1/20)+.02:
             raise GraphError('final minus-one-dB limiter failed loud-source transition')
         time.sleep(1)

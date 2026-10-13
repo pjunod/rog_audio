@@ -214,7 +214,11 @@ Use `--device thinkpad` for the separate Lenovo graph kit. Each selector keeps
 one PCM source and one runtime process alive through model-cap, lower-cap,
 silence and louder-source transitions. It checks native cap consumption,
 stereo gain, exact ordered active FL/FR links through every distinct plugin
-instance, finite output and the final limiter. An acceptance-only library
+instance, finite output and the final limiter. Controlled test presets use
+-12 LUFS so model caps bind; the generated 0.025-amplitude quiet tone remains
+above the normal silence gate after both FIRs. A separate 4.0-amplitude float
+PCM stress transition forces the final limiter to engage in the device-free
+graph. These synthetic levels are not a laptop playback programme. An acceptance-only library
 shim injects actual ingestion errors inside the same two selectors and
 requires native unity/reset and recovery; that shim is not part of the
 production runtime.
