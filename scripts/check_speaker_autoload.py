@@ -63,7 +63,7 @@ def acceptance(kit_path,case,output,binary,mock,player):
         def observed_route(description):
             log=output/'easyeffects.log'
             return log.exists() and ('output route: '+description) in log.read_text(errors='replace')
-        if case!='route-before-node':
+        if case=='device-return':
             physical=add_sink();graph.call(['wpctl','set-default',str(physical['id'])])
         graph.stage=case+' candidate startup'
         graph.start('easyeffects',[binary,'--hide-window','--service-mode'])
@@ -75,6 +75,7 @@ def acceptance(kit_path,case,output,binary,mock,player):
             observations.append('real Device route observed before its sink at zero autoload interval')
             physical=add_sink();graph.call(['wpctl','set-default',str(physical['id'])])
         elif case=='node-before-route':
+            physical=add_sink();graph.call(['wpctl','set-default',str(physical['id'])])
             graph.until(lambda _:graph.preset(binary)==manifest['bypass_name'])
             observations.append('sink without route selected the empty fallback')
             change_route('speaker')
