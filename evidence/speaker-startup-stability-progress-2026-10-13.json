@@ -29,7 +29,8 @@
       "monitor-continuity"
     ],
     "listening_or_recording_overlap": "retain-separate-owner-coordinated-overlap-intervals",
-    "runner_sha256": "3e11a61d316b6a8fd6e3a4bdf41864b90f552a5a9efd7f8128015476d8ffb9cb"
+    "runner_sha256": "3e11a61d316b6a8fd6e3a4bdf41864b90f552a5a9efd7f8128015476d8ffb9cb",
+    "scope": "original-256-frame-attempts-and-ongoing-ThinkPad-retry; ROG-current-rollback-described-separately"
   },
   "attempts": [
     {
@@ -65,11 +66,15 @@
       "status": "active-completion-pending",
       "start_local": "2026-10-13T10:02:02.621-04:00",
       "expected_finish_local": "2026-10-13T11:02:02.621-04:00",
-      "initial_volume_percent": 74,
+      "initial_volume_percent": 100,
       "initial_driver_error_count": 1,
       "initial_other_error_counts": 0,
       "separate_full_interval": true,
-      "private_launch_sha256": "954eb35f178fb272ba54362c5755b4cc4a33e00f2bb9047a4b5c79a4eb6eb89f"
+      "private_launch_sha256": "954eb35f178fb272ba54362c5755b4cc4a33e00f2bb9047a4b5c79a4eb6eb89f",
+      "volume_correction": "74% was the prior stopped attempt final value; current launch physical-default baseline is100%",
+      "latest_observed_active_seconds": 1562.5453656100144,
+      "latest_observed_driver_error_count": 1,
+      "observed_volume_condition_changes_count": 0
     },
     {
       "system": "rog",
@@ -108,7 +113,8 @@
       "all_owned_test_processes_removed": true,
       "automatic_counter_reset_or_retry": false,
       "private_failure_archive_sha256": "6763e6ab5bffcb45febf1e4eaf81dad49374f6de7cf2c1c46d9f06b1bcec1e26",
-      "result_source": "sole-live-operator-report-exact-scoped-v3-receipt-pending"
+      "result_source": "hash-bound-scoped-operator-v3-receipt",
+      "last_valid_sample_active_seconds": 66.956971463
     }
   ],
   "post_session_startup": {
@@ -129,11 +135,123 @@
     "The post-session restoration does not prove a permanent startup fix, post-reboot behaviour or calibrated sound quality.",
     "Raw monitoring, identities, access data and private rollback files remain outside Git.",
     "The initial ThinkPad elapsed value includes cleanup; it is not an exact uninterrupted active interval.",
-    "The v2 operator receipt remains a historical launch snapshot; the later ROG failure above is a separate exact operator report pending its new scoped v3 receipt."
+    "The original v2 receipt remains unchanged as a historical launch snapshot; v3 explicitly scopes silent-load and prepared-signal flags separately from subsequent listening/capture operations.",
+    "The ROG rollback observation has cumulative driver count3 constant across five valid samples; pre-start baseline was not measured by that monitor, so zero-error startup and full-hour qualification remain unestablished.",
+    "ThinkPad retry launch volume100% corrects an earlier progress report using the prior stopped attempt final74% value; no test volume write occurred."
   ],
   "operator_source": {
-    "path": "evidence/speaker-listening-stability-interim-2026-10-13.json",
-    "sha256": "b14ed4a559fe75ed115c6e14401dc17015b30ade6d596cc51c5647d9c951a61a",
-    "schema_version": 2
-  }
+    "path": "evidence/speaker-listening-stability-v3-2026-10-13.json",
+    "sha256": "cf475824c34a8098fc17f36a641511fcb8ece00a7b0d55ee1fdbd86d3af64135",
+    "schema_version": 3
+  },
+  "operator_source_history": [
+    {
+      "path": "evidence/speaker-listening-stability-interim-2026-10-13.json",
+      "sha256": "b14ed4a559fe75ed115c6e14401dc17015b30ade6d596cc51c5647d9c951a61a",
+      "schema_version": 2
+    }
+  ],
+  "reviewed_rog_latency_rollback": {
+    "bounded_silent_check": {
+      "first_valid_driver_errors": 3,
+      "full_stereo_tuned_chain_verified": true,
+      "hour_pass": false,
+      "last_valid_driver_errors": 3,
+      "player_exitcode": 0,
+      "player_seconds": 8.094456911087036,
+      "pre_start_driver_error_baseline": "not-measured-with-this-monitor",
+      "protected_state_preserved": true,
+      "sampled_cumulative_driver_errors": [
+        3,
+        3,
+        3,
+        3,
+        3
+      ],
+      "sampled_driver_quantum_frames": [
+        2048
+      ],
+      "sampled_driver_rate_hz": [
+        48000
+      ],
+      "units_preserved": true,
+      "volume_preserved": true,
+      "zero_error_startup_claim": false
+    },
+    "candidate_service_restarted_once_via_retained_recipe": true,
+    "host": "lab5",
+    "owned_rule_quarantined": true,
+    "owned_rule_status": {
+      "owned_file": "absent",
+      "status": "removed"
+    },
+    "physical_volume": 0.94,
+    "preset_correct_after_restart_without_manual_reload": true,
+    "readiness_error_handling": "read-only-inspection-confirmed-completed-removal-no-removal-or-restart-repeat",
+    "readiness_wrapper_error": "checked-raw-runtime-too-early-after-service-active",
+    "reason": "256-frame-continuous-attempt-failed-on-counter-growth",
+    "runtime_binary_preserved": true,
+    "speaker_preset_and_IR_preserved": true,
+    "stock_pipewire_and_wireplumber_not_restarted": true,
+    "volume_changed_by_agent": false
+  },
+  "other_lane_listening_overlaps": [
+    {
+      "host": "lab6",
+      "input_gain_restored": null,
+      "kind": "channel-and-mic-original-full-gain",
+      "native_recorder_exitcode_preserved": true,
+      "physical_latency_qualification": false,
+      "playback_finished_unix": 1791900494.0887685,
+      "playback_started_unix": 1791900486.0617778,
+      "player_exitcode": 0,
+      "raw_recording_not_public": true,
+      "recorder_exitcode": 1,
+      "recording_finished_unix": 1791900495.9992447,
+      "recording_receipt_sha256": "8a040b675e7221ed9c2378b840f0f0668beb6dc1d35f9afcd3e530e7f4e526c4",
+      "recording_started_unix": 1791900485.9677043,
+      "scope": "separate-owner-authorized-listening-lane",
+      "services_and_output_volume_preserved": true,
+      "speaker_state_preserved": true,
+      "temporary_input_gain": null
+    },
+    {
+      "host": "lab6",
+      "input_gain_restored": true,
+      "kind": "channel-and-mic-low-input-gain",
+      "native_recorder_exitcode_preserved": true,
+      "physical_latency_qualification": false,
+      "playback_finished_unix": 1791901071.6608238,
+      "playback_started_unix": 1791901063.6339915,
+      "player_exitcode": 0,
+      "raw_recording_not_public": true,
+      "recorder_exitcode": 1,
+      "recording_finished_unix": 1791901073.5650513,
+      "recording_receipt_sha256": "e0ea64130462910d4ff2957e572d98108d396f7b59ecdfc5cb27e26d32be72c8",
+      "recording_started_unix": 1791901063.5361154,
+      "scope": "separate-owner-authorized-listening-lane",
+      "services_and_output_volume_preserved": true,
+      "speaker_state_preserved": true,
+      "temporary_input_gain": 0.2
+    },
+    {
+      "host": "lab6",
+      "input_gain_restored": true,
+      "kind": "generated-speech-music-demo-and-mic",
+      "native_recorder_exitcode_preserved": true,
+      "physical_latency_qualification": false,
+      "playback_finished_unix": 1791901414.3083186,
+      "playback_started_unix": 1791901369.2795024,
+      "player_exitcode": 0,
+      "raw_recording_not_public": true,
+      "recorder_exitcode": 1,
+      "recording_finished_unix": 1791901419.208885,
+      "recording_receipt_sha256": "e2d080e1ec151a27630b5e66579af446accca1c4687c89f7566c25fe21eb0998",
+      "recording_started_unix": 1791901369.1789808,
+      "scope": "separate-owner-authorized-listening-lane",
+      "services_and_output_volume_preserved": true,
+      "speaker_state_preserved": true,
+      "temporary_input_gain": 0.2
+    }
+  ]
 }

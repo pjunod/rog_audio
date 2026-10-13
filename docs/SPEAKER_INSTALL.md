@@ -21,7 +21,7 @@ Their [paired latency trials and rollback](LATENCY_COMPARISON.md#7-paired-256-fr
 preserved tuning, physical defaults and the volume observed in that paired
 window: 86% on the ROG, 20% on the ThinkPad. Those values are historical,
 distinct from initial installation and later owner adjustments. The current
-normal-use check starts at 94% on ROG and 74% on ThinkPad; tests preserve the
+normal-use attempt starts at 94% on ROG and 100% on ThinkPad; tests preserve the
 chosen level and record later adjustments.
 
 Read [speaker preparation](AUDIO_SPEAKER_BUILD.md) before using

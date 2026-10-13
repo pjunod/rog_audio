@@ -10,7 +10,7 @@ offline investigation after restoration of its tuned preset.
 | Work | State | Next evidence |
 |---|---|---|
 | Hardware inventory | Both laptops inspected read-only | Refresh during installation |
-| ASUS speaker tuning | Validated stereo restored with full tuned path; prior owner feedback positive | Scoped latency trial, physical hotplug and measurements |
+| ASUS speaker tuning | Full tuned path preserved after reviewed removal of failed 256-frame request; short 2048-frame observation retained | Review/test startup fix and 512-frame candidate; physical hotplug and measurements |
 | ThinkPad speaker tuning | Separate Lenovo music/balanced candidate running; live preset, IR, plugins and hardware output verified | Owner listening, physical hotplug and measurements |
 | Laptop installation runtime | Both tuned paths restored/active; ROG session-start autoload bypass observed and restored; inherited acceptance retained | Review/test permanent startup fix, actual post-reboot observation |
 | Diagnostics and latency | Both tuned drivers reduced from 42.667 to 5.333 ms in retained paired receipts; PRs 5–7 reviewed/tested | Complete sustained checks, then physical measurements |
@@ -294,19 +294,20 @@ units remain retained because their sources are unchanged.
 ## Startup and sustained-check progress — 2026-10-13
 
 The [progress record](../evidence/speaker-startup-stability-progress-2026-10-13.json)
-binds the sole live operator's [sanitized interim receipt](../evidence/speaker-listening-stability-interim-2026-10-13.json)
+binds the sole live operator's [scoped v3 receipt](../evidence/speaker-listening-stability-v3-2026-10-13.json)
 and private launch/helper hashes. ThinkPad remains active; the ROG attempt
-stopped on monitored error growth. Neither has a completed full-hour receipt.
-The original v2 source remains a historical launch snapshot, with a separate
-exact operator failure report retained in the progress record; a newly scoped
-v3 source receipt is pending.
+stopped on monitored error growth and its request was removed using reviewed
+rollback. Neither has a completed full-hour receipt. The original
+[v2 source](../evidence/speaker-listening-stability-interim-2026-10-13.json)
+remains unchanged as a historical launch snapshot. V3 corrects scope and
+retains the later failure, cleanup, rollback and listening overlaps.
 Expected finish times are targets, not observations of a pass.
 
 | System and attempt | Observed outcome | Separate next interval |
 |---|---|---|
 | ROG initial attempt | Aborted before the timed interval when startup driver errors increased above the retained baseline; owned test processes removed and failure evidence retained | A new session has its own counter baseline; the earlier failure remains recorded |
 | ThinkPad initial attempt | Stopped on volume change; attempt plus cleanup lasted 581.040 seconds from 20% to 74%; sampled driver count stayed at 1, sampled DSP/owned source counts stayed zero | Retry starts a fresh full hour and logs volume adjustments as normal-use conditions |
-| ThinkPad normal-use retry | Active from 10:02:02 Eastern; observed 74% starting volume preserved; full Lenovo chain at 256/48000 | Expected finish 11:02:02; final counter, continuity and preservation receipts pending |
+| ThinkPad normal-use retry | Active from 10:02:02 Eastern; actual 100% physical-default starting volume preserved; full Lenovo chain at 256/48000 | Expected finish 11:02:02; final counter, continuity and preservation receipts pending |
 | ROG post-session normal-use run | Started 10:09:39 Eastern; stopped after 67.982 seconds of owned playback on monitored error growth; 256/48000 and physical 94% volume preserved | Failure archived; no automatic counter reset/retry and no full-hour pass |
 
 After the authorized HDR package/logout handoff, the ROG user session initially
@@ -327,6 +328,28 @@ The operator removed all owned test processes, retained the full failure
 archive and preserved physical volume, service process identities and restart
 counts. The startup correction was not installed for this run. These findings
 do not identify the cause of the error growth or qualify a successful hour.
+
+The reviewed removal quarantined the owned 256-frame rule and restarted only
+the candidate service once; stock PipeWire and WirePlumber stayed running.
+Runtime, speaker preset/IR and physical 94% volume were preserved. The preset
+was correct after restart without manual reload. One 8.094-second all-zero
+check verified the full ASUS stereo chain at 2048/48000. Its cumulative driver
+count was 3 in all five valid samples; the monitor did not establish a
+pre-start baseline. This is bounded restoration evidence, not a zero-error
+startup or sustained pass. A readiness wrapper checked the raw runtime too
+early; read-only inspection confirmed completion without repeating removal
+or restart.
+
+The current ThinkPad retry baseline is 100% physical-default volume, not the
+74% final level of its earlier stopped attempt. The v3 launch receipt corrects
+that earlier progress report. At the recorded 26-minute observation, driver
+count remained 1 with no volume-condition transitions. Separate owner-approved
+listening/microphone overlaps are retained with their timestamps, native
+recorder exit code 1, private recording hashes and restored temporary input
+gain. The silent workload itself emits no acoustic signal and records no
+microphone. The nested signal's `playback_performed: false` describes its
+preparation stage; later operation entries describe actual playback. Those
+scopes do not qualify physical latency or calibrated sound quality.
 
 The runtime owner is preparing the startup correction in a separate offline
 source/build workspace. This integration batch currently contains documentation

@@ -25,7 +25,9 @@ record the results and limits.
 
 The ThinkPad 60-minute normal-use check is active on 2026-10-13, scheduled
 for 10:02–11:02 Eastern. The ROG post-session attempt stopped on monitored
-error growth after 67.982 seconds; neither has a completed-hour receipt yet. A ROG session restart exposed preset autoload
+error growth after 67.982 seconds. Its owned 256-frame request was removed
+using the reviewed rollback; the full tuning now runs at the larger
+2048-frame period. Neither laptop has a completed-hour receipt yet. A ROG session restart exposed preset autoload
 bypass despite consistent tuning files; its exact tuned preset was restored
 without changing physical volume. The permanent startup correction is being
 built offline. [Current progress](docs/STATUS.md#startup-and-sustained-check-progress--2026-10-13)

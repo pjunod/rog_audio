@@ -224,6 +224,17 @@ The operator diagnosed a separate session-start ordering race; its permanent
 runtime fix remains offline work. A successful timed run after manual
 restoration would not establish reliable automatic preset loading.
 
+The [scoped v3 receipt](../evidence/speaker-listening-stability-v3-2026-10-13.json)
+also records reviewed ROG rollback: the owned 256-frame rule was quarantined,
+only the candidate service restarted once, and runtime/tuning/94% volume were
+preserved. One 8.094-second all-zero check verified full stereo at 2048/48000.
+Five valid samples held cumulative driver count 3, with no pre-start baseline
+measured by that monitor. It is not a zero-error startup or sustained pass.
+ThinkPad's retry launch physical-default volume was actually 100%; 74% was the
+preceding stopped attempt's final value. No volume write was made by the test.
+V3 retains separately coordinated listening/recording overlaps and explicitly
+scopes the silent client's all-zero/no-microphone claim to that workload.
+
 Only completed continuous coverage, endpoint checks, observed counter deltas
 and final preservation can qualify the declared software stability workload.
 The owned all-zero stream and separate listening/recording overlaps do not
