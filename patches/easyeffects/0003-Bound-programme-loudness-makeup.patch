@@ -1,22 +1,153 @@
 diff --git a/src/autogain.cpp b/src/autogain.cpp
 --- a/src/autogain.cpp
 +++ b/src/autogain.cpp
-@@ -86,6 +86,13 @@
+@@ -54,30 +54,20 @@
+ 
+   // specific plugin controls
+ 
++  analyser.set_history(settings->maximumHistory(), configure_history);
+   connect(settings, &DbAutogain::maximumHistoryChanged, [&]() {
+-    std::scoped_lock<std::mutex> lock(data_mutex);
+-
+-    set_maximum_history(settings->maximumHistory());
++    analyser.set_history(settings->maximumHistory(), configure_history);
+   });
+ }
+ 
+ Autogain::~Autogain() {
+   stop_worker();
+-
+-  std::scoped_lock<std::mutex> lock(data_mutex);
+-
+-  ebur128_ready = false;
+-
+   if (connected_to_pw) {
+     disconnect_from_pw();
+   }
+-
+   settings->disconnect();
+-
+-  if (ebur_state != nullptr) {
+-    ebur128_destroy(&ebur_state);
+-  }
+-
++  std::scoped_lock<std::mutex> lock(data_mutex);
++  analyser.clear();
+   util::debug(std::format("{}{} destroyed", log_tag, name.toStdString()));
+ }
+ 
+@@ -86,38 +76,37 @@
  }
  
  void Autogain::clear_data() {
-+  {
-+    std::scoped_lock<std::mutex> lock(data_mutex);
-+    makeup_gain.reset();
-+    internal_output_gain = 1.0;
-+    ebur128_ready = false;
-+    old_rate = 0;
+-  setup();
+-}
+-
+-auto Autogain::init_ebur128() -> bool {
+-  if (n_samples == 0U || rate == 0U) {
+-    return false;
+-  }
+-
+-  if (ebur_state != nullptr) {
+-    ebur128_destroy(&ebur_state);
+-
+-    ebur_state = nullptr;
+-  }
+-
+-  ebur_state = ebur128_init(2U, rate, EBUR128_MODE_S | EBUR128_MODE_I | EBUR128_MODE_LRA | EBUR128_MODE_SAMPLE_PEAK);
+-
+-  ebur128_set_channel(ebur_state, 0U, EBUR128_LEFT);
+-  ebur128_set_channel(ebur_state, 1U, EBUR128_RIGHT);
+-
+-  set_maximum_history(settings->maximumHistory());
+-
+-  return ebur_state != nullptr;
+-}
+-
+-void Autogain::set_maximum_history(const int& seconds) {
+-  if (ebur_state == nullptr) {
+-    return;
+-  }
+-
+-  // The value given to ebur128_set_max_history must be in milliseconds
+-
+-  ebur128_set_max_history(ebur_state, static_cast<ulong>(seconds) * 1000UL);
++  std::scoped_lock<std::mutex> lock(data_mutex);
++  makeup_gain.reset();
++  internal_output_gain = 1.0;
++  analyser.invalidate();
++  // Rebuild from the last setup snapshot, without reading PipeWire's live
++  // rate/n_samples from the UI thread or from the asynchronous worker.
++  if (configured_rate != 0U) queue_rebuild(configured_rate);
++}
++
++auto Autogain::init_ebur128(uint sample_rate) -> ebur128_state* {
++  if (sample_rate == 0U) return nullptr;
++  auto* state = ebur128_init(2U, sample_rate,
++                           EBUR128_MODE_S | EBUR128_MODE_I | EBUR128_MODE_LRA | EBUR128_MODE_SAMPLE_PEAK);
++  if (state == nullptr) return nullptr;
++  if (ebur128_set_channel(state, 0U, EBUR128_LEFT) != EBUR128_SUCCESS ||
++      ebur128_set_channel(state, 1U, EBUR128_RIGHT) != EBUR128_SUCCESS) {
++    ebur128_destroy(&state);
++    return nullptr;
 +  }
-   setup();
++  return state;
++}
++
++auto Autogain::configure_history(ebur128_state* state, int seconds) -> bool {
++  return ebur128_set_max_history(state, static_cast<ulong>(seconds) * 1000UL) == EBUR128_SUCCESS;
++}
++
++void Autogain::queue_rebuild(uint sample_rate) {
++  const auto requested = analyser.request(sample_rate);
++  QMetaObject::invokeMethod(baseWorker, [this, requested] {
++    analyser.replace(requested, init_ebur128, configure_history);
++  }, Qt::QueuedConnection);
  }
  
-@@ -175,6 +182,8 @@
+ void Autogain::setup() {
+@@ -140,32 +129,10 @@
+   // There is no need to reset libebur128 when n_samples change.
+   // Only rate changes matter for it.
+ 
+-  if (ebur128_ready && rate == old_rate) {
+-    return;
+-  }
+-
+-  ebur128_ready = false;
+-
+-  // NOLINTBEGIN(clang-analyzer-cplusplus.NewDeleteLeaks)
+-  QMetaObject::invokeMethod(
+-      baseWorker,
+-      [this] {
+-        if (ebur128_ready) {
+-          return;
+-        }
+-
+-        auto status = true;
+-
+-        old_rate = rate;
+-
+-        status = init_ebur128();
+-
+-        std::scoped_lock<std::mutex> lock(data_mutex);
+-
+-        ebur128_ready = status;
+-      },
+-      Qt::QueuedConnection);
+-  // NOLINTEND(clang-analyzer-cplusplus.NewDeleteLeaks)
++  configured_rate = rate;
++  if (!analyser.ready_for(configured_rate)) {
++    queue_rebuild(configured_rate);
++  }
+ }
+ 
+ void Autogain::process(std::span<float>& left_in,
+@@ -173,8 +140,11 @@
+                        std::span<float>& left_out,
+                        std::span<float>& right_out) {
    std::scoped_lock<std::mutex> lock(data_mutex);
++  analyser.with_state([&](ebur128_state* ebur_state) {
  
    if (bypass) {
 +    makeup_gain.reset();
@@ -24,16 +155,30 @@ diff --git a/src/autogain.cpp b/src/autogain.cpp
      std::ranges::copy(left_in, left_out.begin());
      std::ranges::copy(right_in, right_out.begin());
  
-@@ -186,6 +195,8 @@
+@@ -185,7 +155,9 @@
+     apply_gain(left_in, right_in, input_gain);
    }
  
-   if (!ebur128_ready) {
+-  if (!ebur128_ready) {
++  if (ebur_state == nullptr) {
 +    makeup_gain.reset();
 +    internal_output_gain = 1.0;
      std::ranges::copy(left_in, left_out.begin());
      std::ranges::copy(right_in, right_out.begin());
  
-@@ -220,6 +231,26 @@
+@@ -211,15 +183,33 @@
+     }
+   }
+ 
+-  ebur128_add_frames_float(ebur_state, data.data(), n_samples);
+-
+-  auto failed = false;
+-
+-  failed = (EBUR128_SUCCESS != ebur128_loudness_momentary(ebur_state, &momentary)) ||
++  auto failed = EBUR128_SUCCESS != ebur128_add_frames_float(ebur_state, data.data(), n_samples);
++
++  failed = failed || (EBUR128_SUCCESS != ebur128_loudness_momentary(ebur_state, &momentary)) ||
+            (EBUR128_SUCCESS != ebur128_loudness_shortterm(ebur_state, &shortterm)) ||
             (EBUR128_SUCCESS != ebur128_loudness_global(ebur_state, &global)) ||
             (EBUR128_SUCCESS != ebur128_relative_threshold(ebur_state, &relative)) ||
             (EBUR128_SUCCESS != ebur128_loudness_range(ebur_state, &range));
@@ -60,7 +205,7 @@ diff --git a/src/autogain.cpp b/src/autogain.cpp
  
    if (std::isinf(momentary) || std::isnan(momentary)) {
      /**
-@@ -255,7 +286,7 @@
+@@ -255,7 +245,7 @@
      global = momentary;
    }
  
@@ -69,7 +214,7 @@ diff --git a/src/autogain.cpp b/src/autogain.cpp
      double peak_L = 0.0;
      double peak_R = 0.0;
  
-@@ -321,22 +352,23 @@
+@@ -321,22 +311,23 @@
  
        const auto db_peak = util::linear_to_db(peak);
  
@@ -86,6 +231,9 @@ diff --git a/src/autogain.cpp b/src/autogain.cpp
 -          prev_gain = internal_output_gain;
 -        }
 -      }
+-    }
+-  } else if (settings->forceSilence()) {
+-    internal_output_gain = util::minimum_linear_d_level;
 +      const bool valid = db_peak > util::minimum_db_level && std::isfinite(gain) &&
 +                         std::isfinite(peak) && peak > 0.0;
 +      // A peak-bound request must reduce gain, rather than leave stale gain
@@ -95,9 +243,7 @@ diff --git a/src/autogain.cpp b/src/autogain.cpp
 +      internal_output_gain = makeup_gain.update(desired, settings->maximumGain(),
 +                                                attack_coeff, release_coeff, valid);
 +
-     }
--  } else if (settings->forceSilence()) {
--    internal_output_gain = util::minimum_linear_d_level;
++    }
 +  } else {
 +    makeup_gain.reset();
 +    internal_output_gain = settings->forceSilence() ? util::minimum_linear_d_level : 1.0;
@@ -108,18 +254,60 @@ diff --git a/src/autogain.cpp b/src/autogain.cpp
    }
  
    std::ranges::copy(left_in, left_out.begin());
+@@ -351,6 +342,7 @@
+   if (updateLevelMeters) {
+     get_peaks(left_in, right_in, left_out, right_out);
+   }
++  });
+ }
+ 
+ void Autogain::process([[maybe_unused]] std::span<float>& left_in,
+@@ -393,13 +385,5 @@
+ }
+ 
+ void Autogain::resetHistory() {
+-  internal_output_gain = 1.0;
+-
+-  data_mutex.lock();
+-
+-  ebur128_ready = false;
+-
+-  data_mutex.unlock();
+-
+-  setup();
+-}
++  clear_data();
++}
 diff --git a/src/autogain.hpp b/src/autogain.hpp
 --- a/src/autogain.hpp
 +++ b/src/autogain.hpp
-@@ -30,6 +30,7 @@
+@@ -30,6 +30,8 @@
  #include "easyeffects_db_autogain.h"
  #include "pipeline_type.hpp"
  #include "plugin_base.hpp"
 +#include "programme_makeup_gain.hpp"
++#include "programme_analyser_state.hpp"
  #include "pw_manager.hpp"
  
  class Autogain : public PluginBase {
-@@ -93,7 +94,7 @@
+@@ -82,9 +84,13 @@
+   Q_INVOKABLE void resetHistory();
+ 
+  private:
+-  bool ebur128_ready = false;
+-
+-  uint old_rate = 0U;
++  struct EburDeleter {
++    void operator()(ebur128_state* state) const {
++      if (state != nullptr) ebur128_destroy(&state);
++    }
++  };
++  programme_loudness::AnalyserState<ebur128_state, EburDeleter> analyser;
++  uint configured_rate = 0U;
+ 
+   double momentary = 0.0;
+   double shortterm = 0.0;
+@@ -93,7 +99,7 @@
    double range = 0.0;
    double loudness = 0.0;
    double internal_output_gain = 1.0;
@@ -128,6 +316,22 @@ diff --git a/src/autogain.hpp b/src/autogain.hpp
    double block_time = 0.0;
    double attack_time = 0.1;   // seconds
    double release_time = 0.4;  // seconds
+@@ -102,11 +108,11 @@
+ 
+   std::vector<float> data;
+ 
+-  ebur128_state* ebur_state = nullptr;
+-
+   DbAutogain* settings = nullptr;
+ 
+-  auto init_ebur128() -> bool;
++  static auto init_ebur128(uint sample_rate) -> ebur128_state*;
+ 
+-  void set_maximum_history(const int& seconds);
++  void queue_rebuild(uint sample_rate);
++
++  static auto configure_history(ebur128_state* state, int seconds) -> bool;
+ };
 diff --git a/src/autogain_preset.cpp b/src/autogain_preset.cpp
 --- a/src/autogain_preset.cpp
 +++ b/src/autogain_preset.cpp
@@ -190,6 +394,105 @@ diff --git a/src/contents/ui/Autogain.qml b/src/contents/ui/Autogain.qml
                      id: silenceThreshold
  
                      label: i18n("Silence") // qmllint disable
+diff --git a/src/programme_analyser_state.hpp b/src/programme_analyser_state.hpp
+new file mode 100644
+--- /dev/null
++++ b/src/programme_analyser_state.hpp
+@@ -0,0 +1,94 @@
++// SPDX-License-Identifier: GPL-3.0-or-later
++#pragma once
++#include <cstdint>
++#include <memory>
++#include <mutex>
++#include <utility>
++
++namespace programme_loudness {
++// Library state is only borrowed while with_state holds its mutex. Builders
++// allocate on the worker, never on the processing thread. A stale builder
++// cannot publish over a newer format/reset generation. Retired state is
++// destroyed after publication unlocks, with no outstanding borrowed state.
++template <typename State, typename Deleter>
++class AnalyserState {
++ public:
++  struct Request {
++    std::uint64_t generation;
++    unsigned int rate;
++  };
++
++  bool ready_for(unsigned int rate) const {
++    std::scoped_lock lock(mutex_);
++    return ready_ && rate_ == rate;
++  }
++
++  Request request(unsigned int rate) {
++    std::scoped_lock lock(mutex_);
++    ready_ = false;
++    rate_ = rate;
++    return {++generation_, rate};
++  }
++
++  void invalidate() {
++    std::scoped_lock lock(mutex_);
++    ready_ = false;
++    ++generation_;
++  }
++
++  template <typename Configure>
++  bool set_history(int seconds, Configure&& configure) {
++    std::scoped_lock lock(mutex_);
++    history_ = seconds;
++    if (state_ && !configure(state_.get(), history_)) {
++      ready_ = false;
++      return false;
++    }
++    return true;
++  }
++
++  template <typename Build, typename Configure>
++  bool replace(Request requested, Build&& build, Configure&& configure) {
++    // Allocation and a rejected candidate's destruction happen on this worker.
++    Pointer candidate(build(requested.rate));
++    Pointer retired;
++    {
++      std::scoped_lock lock(mutex_);
++      if (requested.generation != generation_ || requested.rate != rate_ ||
++          !candidate || !configure(candidate.get(), history_)) {
++        return false;
++      }
++      retired = std::move(state_);
++      state_ = std::move(candidate);
++      ready_ = true;
++    }
++    return true;
++  }
++
++  template <typename Use>
++  decltype(auto) with_state(Use&& use) {
++    std::scoped_lock lock(mutex_);
++    // Callbacks must not retain the pointer beyond this lease.
++    return std::forward<Use>(use)(ready_ ? state_.get() : nullptr);
++  }
++
++  void clear() {
++    Pointer retired;
++    {
++      std::scoped_lock lock(mutex_);
++      ready_ = false;
++      ++generation_;
++      retired = std::move(state_);
++    }
++  }
++
++ private:
++  using Pointer = std::unique_ptr<State, Deleter>;
++  mutable std::mutex mutex_;
++  Pointer state_;
++  std::uint64_t generation_ = 0;
++  unsigned int rate_ = 0;
++  int history_ = 15;
++  bool ready_ = false;
++};
++}  // namespace programme_loudness
 diff --git a/src/programme_makeup_gain.hpp b/src/programme_makeup_gain.hpp
 new file mode 100644
 --- /dev/null

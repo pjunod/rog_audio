@@ -26,6 +26,7 @@ class SourcePreparationTests(unittest.TestCase):
             self.assertTrue((source/'src/speaker_routing.hpp').is_file())
             self.assertTrue((source/'src/output_route_cache.hpp').is_file())
             self.assertTrue((source/'src/programme_makeup_gain.hpp').is_file())
+            self.assertTrue((source/'src/programme_analyser_state.hpp').is_file())
             self.assertIn('settings->maximumGain()', (source/'src/autogain.cpp').read_text())
             self.assertIn('maximum-gain', (source/'src/autogain_preset.cpp').read_text())
             self.assertIn('current_output_node',(source/'src/stream_output_effects.cpp').read_text())

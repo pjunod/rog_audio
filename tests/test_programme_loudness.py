@@ -5,6 +5,7 @@ from pathlib import Path
 import sys
 import tempfile
 import unittest
+from unittest import mock
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]/'scripts'))
 import prepare_programme_loudness as prepare
@@ -117,6 +118,19 @@ class ProgrammeTests(unittest.TestCase):
                 with self.assertRaises(ValueError):
                     prepare.build(self.source, self.output, **controls)
                 self.assertFalse(self.output.exists())
+
+    def test_post_creation_replacement_survives_write_failure(self):
+        retained = self.root/'renamed-partial'
+        def replace_then_fail(path, data):
+            self.output.rename(retained)
+            self.output.mkdir()
+            (self.output/'owner-file').write_bytes(b'keep replacement contents')
+            raise OSError('injected write failure after public path replacement')
+        with mock.patch.object(prepare.speaker, 'new_file', side_effect=replace_then_fail):
+            with self.assertRaises(OSError):
+                prepare.build(self.source, self.output)
+        self.assertEqual((self.output/'owner-file').read_bytes(), b'keep replacement contents')
+        self.assertTrue((retained/'irs').is_dir())
 
     def test_existing_destination_and_symlink_are_preserved(self):
         self.output.mkdir(); marker = self.output/'owner-file'; marker.write_bytes(b'keep')

@@ -75,6 +75,48 @@ def relative(measurement, baseline):
     return [20*math.log10(a/b) for a, b in zip(measurement['rms'], baseline['rms'])]
 
 
+def full_chain(snapshot, source_name, order, physical_name):
+    nodes = {x['id']: x.get('info', {}).get('props', {}).get('node.name')
+             for x in snapshot if x['type'] == 'PipeWire:Interface:Node'}
+    ports = {x['id']: x.get('info', {}).get('props', {})
+             for x in snapshot if x['type'] == 'PipeWire:Interface:Port'}
+    links = [x for x in snapshot if x['type'] == 'PipeWire:Interface:Link'
+             and x.get('info', {}).get('state') == 'active']
+    starts = [node for node, name in nodes.items() if name == source_name]
+    if len(starts) != 1: raise GraphError('source node is missing or ambiguous')
+    expected = [('virtual sink', 'rog_audio_speaker_sink')]
+    expected += [(stage, 'rog_audio_soe_'+stage.split('#')[0]) for stage in order]
+    expected += [('spectrum', 'rog_audio_soe_spectrum'),
+                 ('output level', 'rog_audio_soe_output_level'), ('physical output', physical_name)]
+    result = {}
+    for channel in ('FL', 'FR'):
+        current = starts[0]; seen = {current}; chain = []; edges = []
+        for label, name in expected:
+            matching = []
+            for link in links:
+                info = link['info']
+                if info.get('output-node-id') != current: continue
+                destination = info.get('input-node-id')
+                if nodes.get(destination) != name: continue
+                out_port = ports.get(info.get('output-port-id'), {})
+                in_port = ports.get(info.get('input-port-id'), {})
+                if out_port.get('audio.channel') != channel or in_port.get('audio.channel') != channel: continue
+                matching.append((link['id'], info, destination))
+            if len(matching) != 1: raise GraphError('missing or ambiguous active channel link: '+label)
+            link_id, info, destination = matching[0]
+            if destination in seen: raise GraphError('ordered plugin instance reused in channel chain')
+            seen.add(destination)
+            chain.append({'stage': label, 'node_id': destination, 'node_name': name})
+            edges.append({'link_id': link_id, 'output_node_id': current,
+                          'output_port_id': info['output-port-id'],
+                          'input_node_id': destination, 'input_port_id': info['input-port-id']})
+            current = destination
+        result[channel] = {'nodes': chain, 'links': edges}
+    if [x['node_id'] for x in result['FL']['nodes']] != [x['node_id'] for x in result['FR']['nodes']]:
+        raise GraphError('channel chains use different plugin instances')
+    return result
+
+
 def acceptance(kit_path, case, output, binary, mock, player):
     output = kit.exclusive_directory(output)
     root, manifest = kit.load_kit(kit_path)
@@ -106,12 +148,12 @@ def acceptance(kit_path, case, output, binary, mock, player):
     kit.mkdir(config.parent); kit.replace(config, kit.settings(b'', manifest))
     conf = state/'config/pipewire/pipewire.conf.d/99-private.conf'; kit.mkdir(conf.parent)
     conf.write_text('context.properties = { core.name = "'+environment['PIPEWIRE_REMOTE']+'" }\n')
-    graph = Graph(output, environment); signal = None; captures = {}; assertions = []
+    graph = Graph(output, environment); signal = None; captures = {}; assertions = []; chains = {}
     node_name = manifest['binding']['node_name']
 
-    def preset(name, cap=None, bypass=False):
+    def preset(name, cap=None, bypass=False, history=15):
         data = copy.deepcopy(source)
-        data['output']['autogain#0'].update({'target': -12.0, 'bypass': bypass})
+        data['output']['autogain#0'].update({'target': -12.0, 'bypass': bypass, 'maximum-history': history})
         if cap is not None: data['output']['autogain#0']['maximum-gain'] = cap
         kit.replace(locations['data']/('output/'+name+'.json'), kit.encoded(data))
         graph.call([binary, '--load-preset', name])
@@ -119,6 +161,7 @@ def acceptance(kit_path, case, output, binary, mock, player):
 
     def capture(name, seconds=.5, transition=None):
         graph.stage = name
+        chains[name] = graph.until(lambda g: full_chain(g, 'rog-programme-source', source['output']['plugins_order'], node_name))
         child = graph.start(name, [player, '--capture', node_name, str(output/(name+'.raw'))])
         graph.until(lambda g: graph.linked(g, node_name, 'rog-synthetic-capture'))
         if transition is not None: signal.amplitude = transition
@@ -143,7 +186,20 @@ def acceptance(kit_path, case, output, binary, mock, player):
             'device.id': device_id, 'card.profile.device': 0, 'device.api': 'alsa'})])
         physical = graph.until(lambda g: graph.node(g, node_name))
         graph.call(['wpctl', 'set-default', str(physical['id'])])
-        app = graph.start('easyeffects', [binary, '--hide-window', '--service-mode'])
+        # The shim intercepts only this isolated real processor. All ordinary
+        # phases delegate to libebur128; the controlled phase returns its real
+        # error code so the native reset behavior is observable, not inferred.
+        failure_control = output/'ebur-control'; failure_control.write_bytes(b'0')
+        failure_count = output/'ebur-failure-count'; failure_count.write_bytes(b'')
+        shim = output/'ebur128-failure-shim.so'
+        compiled = subprocess.run(['cc', '-shared', '-fPIC', '-O2', '-Wall', '-Wextra', '-Werror',
+                                   str(Path(__file__).resolve().parents[1]/'probes/speaker/ebur128_failure_shim.c'),
+                                   '-ldl', '-o', str(shim)], env=environment, capture_output=True, text=True)
+        if compiled.returncode: raise GraphError('acceptance failure shim did not compile')
+        app_environment = dict(environment, LD_PRELOAD=str(shim),
+                               ROG_AUDIO_TEST_EBUR_CONTROL=str(failure_control),
+                               ROG_AUDIO_TEST_EBUR_FAILURE_COUNT=str(failure_count))
+        app = graph.start('easyeffects', [binary, '--hide-window', '--service-mode'], environment=app_environment)
         graph.until(lambda g: graph.node(g, 'rog_audio_speaker_sink'))
         graph.until(lambda _: graph.preset(binary) == manifest['preset_name'])
         source_child = graph.start('programme-source', [
@@ -157,10 +213,7 @@ def acceptance(kit_path, case, output, binary, mock, player):
             time.sleep(.05)
         if 'kernel correctly loaded' not in log.read_text(errors='replace'):
             raise GraphError('real convolver did not load original IR')
-        expected = {n.split('#')[0] for n in source['output']['plugins_order']}
-        actual = {x.get('info', {}).get('props', {}).get('node.name', '').removeprefix('rog_audio_soe_')
-                  for x in graph.dump() if x['type'] == 'PipeWire:Interface:Node'}
-        if not expected <= actual: raise GraphError('real model plugin chain missing')
+        chains['initial'] = graph.until(lambda g: full_chain(g, 'rog-programme-source', source['output']['plugins_order'], node_name))
         assertions.append('exact model IR and plugin chain loaded with unchanged voicing')
         preset('programme-baseline', bypass=True); time.sleep(1)
         baseline = capture('baseline')
@@ -183,6 +236,20 @@ def acceptance(kit_path, case, output, binary, mock, player):
         steady = capture('three-cap')
         if any(abs(value-3) > .35 for value in relative(steady, baseline)):
             raise GraphError('ordinary gain control did not settle')
+        # Exercise the real history callback on the same native analyser.
+        preset('programme-history-change', cap=3, history=6); time.sleep(.5)
+        preset('programme-history-restored', cap=3, history=15); time.sleep(1)
+        failure_control.write_bytes(b'1'); time.sleep(.3)
+        failed_ingest = capture('injected-ingest-failure')
+        if failure_count.stat().st_size == 0:
+            raise GraphError('native ingestion error was never injected')
+        if any(abs(value) > .25 for value in relative(failed_ingest, baseline)):
+            raise GraphError('native ingestion failure retained stale automatic gain')
+        failure_control.write_bytes(b'0'); time.sleep(3)
+        ingest_recovered = capture('ingest-recovered')
+        if any(abs(value-3) > .35 for value in relative(ingest_recovered, baseline)):
+            raise GraphError('native gain did not recover after ingestion failure')
+        assertions.append('injected real ingestion error resets makeup to unity; history callback and recovery remain usable')
         signal.amplitude = 0; time.sleep(1.2)
         silent = capture('silence')
         if silent['peak'] > .00001: raise GraphError('silence output was not finite and silent')
@@ -226,7 +293,9 @@ def acceptance(kit_path, case, output, binary, mock, player):
                    'speaker_bundle_manifest_sha256': manifest['speaker_bundle_manifest_sha256'],
                    'programme_loudness_contract': programme.CONTRACT,
                    'model_maximum_gain_db': cap, 'measured_model_gain_db': gains,
-                   'captures': captures, 'assertions': assertions,
+                   'captures': captures, 'ordered_stereo_chains': chains, 'assertions': assertions,
+                   'native_ingestion_failures_injected': failure_count.stat().st_size,
+                   'acceptance_only_library_shim': True,
                    'physical_device_or_session_access': False,
                    'acoustic_or_physical_latency_measurement': False}
         kit.replace(output/'receipt.json', kit.encoded(receipt)); return receipt

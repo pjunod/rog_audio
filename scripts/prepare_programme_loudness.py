@@ -6,7 +6,6 @@ Offline only: no package install, service change, playback or recording.
 import hashlib
 import json
 from pathlib import Path
-import shutil
 import sys
 
 import prepare_speaker_profile as speaker
@@ -54,13 +53,12 @@ def build(bundle,output,target=-20.0,maximum=None,history=15,silence=-50.0):
     with speaker.parent_fd(output) as (parent,name):
         import os
         os.mkdir(name,0o700,dir_fd=parent)
-    try:
-        (output/'irs').mkdir(mode=0o700)
-        for name,data in files.items():speaker.new_file(output/name,data)
-        speaker.verify(output)
-    except BaseException:
-        with speaker.parent_fd(output) as (parent,name):shutil.rmtree(name,dir_fd=parent)
-        raise
+    # Retain partial output on failure. This public pathname may have been
+    # renamed/replaced since creation; deleting by pathname could erase an
+    # unrelated replacement directory. Recovery is an explicit operator step.
+    (output/'irs').mkdir(mode=0o700)
+    for name,data in files.items():speaker.new_file(output/name,data)
+    speaker.verify(output)
     return {'result':'prepared','activation_state':'not-installed',
             'qualification':'offline-candidate-unqualified','programme_loudness_contract':programme.CONTRACT,
             'target_lufs':settings['target_lufs'],'maximum_gain_db':maximum,

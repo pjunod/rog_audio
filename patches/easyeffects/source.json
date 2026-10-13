@@ -1,13 +1,14 @@
 {
-  "checksum_reason": "Add an independent bounded programme leveler with explicit makeup cap, reset/peak-transition handling and preset/UI controls; original Ubuntu and accepted speaker-scope/device-return patch bytes are unchanged",
+  "checksum_reason": "Extend the additive programme patch after independent review: serialize analyser ownership/history/readiness with generation-checked worker replacement, synchronize resetHistory and propagate ingest failures; original Ubuntu and accepted speaker/device-return patch bytes unchanged",
   "files": {
     "0001-Scope-speaker-correction-to-device-route.patch": "e10f439698d353e52c58ec0190390107d68fd0ace4f429d89c996c4104d76ede",
     "0002-Retain-output-routes-for-device-return.patch": "94a9f45e7f843d728540a6083ea3e199b37bbbbf434889bb07b138af82673070",
-    "0003-Bound-programme-loudness-makeup.patch": "e9de5fe366da9121b51ee5f4b5df70e53c579c6bf43eee54f82fe356a0db974a",
+    "0003-Bound-programme-loudness-makeup.patch": "5b1f996c59fad6caac5dfc4b21defbd5200f8e84c13bf76fa1371cd0c04fea52",
     "ubuntu/0001-Disable-echo-canceller.patch": "fc990509008860da01bc3b0719d2b7af173e16e6efd7aba26e3ad0f65282ba11",
     "ubuntu/COPYRIGHT": "5ffb35e31945036cf81c7dd63b14c28af850213f4083279e9f3c2ef50e49e207"
   },
   "output_route_header_sha256": "0d90981f2ec80332a4458e9f3dec2b7c239b7d96bb08b7ac0a673a63668af007",
+  "programme_analyser_header_sha256": "58bfcd8f55218d431d3b7fe54682abf24a81ae3e938dac25ddfff6696ad2864d",
   "programme_loudness_contract": "bounded-programme-makeup-v1",
   "programme_makeup_header_sha256": "124e244d5d28833ba78f7eb316e8c9c0b3a6ab093efc00b79cb9864113323724",
   "routing_contract": "exact-device-route-v1",

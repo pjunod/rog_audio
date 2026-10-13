@@ -14,6 +14,7 @@ MODULES = {
     'build': 'test_easyeffects_build',
     'programme': 'test_programme_loudness',
     'makeup': 'test_programme_makeup',
+    'analyser': 'test_programme_analyser',
 }
 
 

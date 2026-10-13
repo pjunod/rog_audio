@@ -245,7 +245,11 @@ remain separate from this installation procedure and prior acceptance.
 
 ## 5. Build and deliver the usable runtime
 
-The current source build emits package `8.2.8+rog2`. Follow the focused
+The extended source build emits the unqualified `8.2.8+rog3` programme
+loudness candidate. Published v0.2.1 remains the accepted `+rog2` runtime;
+its download commands above and recovery artifacts are unchanged. Read
+[programme loudness](PROGRAMME_LOUDNESS.md) for its pending review/acceptance
+and separate source/build contract. Follow the focused
 [autoload build and unchanged-tuning upgrade contract](SPEAKER_AUTOLOAD.md)
 for bounded native builds, corresponding source, new runtime/kit binding and
 retained rollback. The v0.2.0 `+rog1` release and its receipt remain historical
@@ -265,7 +269,7 @@ python3 scripts/inspect_speaker_runtime.py \
   --manifest RUNTIME_ARTIFACT/runtime.json --output PRIVATE_COMPATIBILITY.json
 ```
 
-The current `rog-audio-easyeffects_8.2.8+rog2_amd64.deb` installs only its
+The current `rog-audio-easyeffects_8.2.8+rog3_amd64.deb` installs only its
 private prefix, launcher, desktop entry and licence/source notices. It has no
 service scripts or autostart activation. Dependencies derive from Ubuntu's
 EasyEffects `8.2.8+ds-1build1` package plus required LSP LV2 plugins. The runtime
@@ -277,10 +281,11 @@ both laptops' amd64 processors. Shared libraries retain Ubuntu's package ABI.
 The historical [v0.2.0 compiler receipt](../evidence/speaker-runtime-build-2026-10-12.json)
 binds its 22 modified source files and `+rog1` artifact. The
 [review-fixed compiler/export receipt](../evidence/speaker-autoload-reviewed-build-2026-10-13.json)
-binds corrected `b6d5f1e` source, the `+rog2` artifact and all 711 corresponding
+binds corrected `b6d5f1e` source, the accepted `+rog2` artifact and all 711 corresponding
 source files. The earlier [intermediate receipt](../evidence/speaker-autoload-build-2026-10-13.json)
 for `135c60f` is retained unchanged as history; it is superseded for this
-candidate. Final artifact checks and affected acceptance still precede use. The current final review/tests/rebuild state is in [status](STATUS.md).
+candidate. The new +rog3 compiler receipt and current review/fix state remain separate.
+Final artifact checks and affected acceptance still precede use. The current final review/tests/rebuild state is in [status](STATUS.md).
 The prerequisite report lists installed versions/providers and missing
 prerequisites without installing anything.
 
@@ -296,7 +301,7 @@ Use the delivered per-device kit and a new private snapshot directory.
 
 ```bash
 # Coordinated package/dependency installation on the selected laptop.
-sudo apt install ./RUNTIME_ARTIFACT/rog-audio-easyeffects_8.2.8+rog2_amd64.deb
+sudo apt install ./RUNTIME_ARTIFACT/rog-audio-easyeffects_8.2.8+rog3_amd64.deb
 mkdir -p "${XDG_STATE_HOME:-$HOME/.local/state}/rog-audio/snapshots"
 python3 scripts/speaker_install.py install \
   --kit KIT --runtime /opt/rog-audio/easyeffects/bin/easyeffects \

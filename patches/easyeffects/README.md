@@ -1,6 +1,6 @@
 # EasyEffects runtime source series
 
-**Status:** device-return fix accepted; programme-loudness candidate compiled, review and acceptance pending ·
+**Status:** device-return fix accepted; programme-loudness review corrections rebuilding, re-review and acceptance pending ·
 **Updated:** 2026-10-13.
 
 [The source manifest](source.json) pins upstream v8.2.8 and each patch hash.
@@ -26,7 +26,8 @@ Apply in this order to commit
 
 4. [Bounded programme makeup](0003-Bound-programme-loudness-makeup.patch),
    local: independent 0–36 dB automatic makeup limit, retained-state clamping,
-   silence/readiness resets, louder-source reduction and preset/UI controls.
+   silence/readiness resets, synchronized analyser ownership and history,
+   ingestion-error resets, louder-source reduction and preset/UI controls.
    This candidate is distinct from the accepted device-return runtime.
 
 Upstream code and the local routing and makeup headers are GPL-3.0-or-later. The original

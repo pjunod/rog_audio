@@ -64,6 +64,7 @@ def source_snapshot(source,output):
         if sha((output/'src/speaker_routing.hpp').read_bytes())!=pins['routing_header_sha256']:raise BuildError('routing_header_pin_mismatch')
         if sha((output/'src/output_route_cache.hpp').read_bytes())!=pins['output_route_header_sha256']:raise BuildError('output_route_header_pin_mismatch')
         if sha((output/'src/programme_makeup_gain.hpp').read_bytes())!=pins['programme_makeup_header_sha256']:raise BuildError('programme_makeup_header_pin_mismatch')
+        if sha((output/'src/programme_analyser_state.hpp').read_bytes())!=pins['programme_analyser_header_sha256']:raise BuildError('programme_analyser_header_pin_mismatch')
         if 'org.rog_audio.SpeakerEffects' not in (output/'src/tags_app.hpp').read_text():raise BuildError('candidate_namespace_not_applied')
     except BaseException:
         shutil.rmtree(output);raise

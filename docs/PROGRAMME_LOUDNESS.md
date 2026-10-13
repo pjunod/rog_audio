@@ -1,7 +1,7 @@
 # Programme loudness — adjustable makeup with original speaker voicing
 
-**Status:** native candidate compiled; independent review and affected
-acceptance pending · **Updated:** 2026-10-13.
+**Status:** initial native candidate compiled; review fixes rebuilding and
+under focused re-review; affected acceptance pending · **Updated:** 2026-10-13.
 
 Companion to [speaker installation](SPEAKER_INSTALL.md) and
 [device-return autoload](SPEAKER_AUTOLOAD.md). This document describes the
@@ -63,7 +63,16 @@ state are clamped to the selected automatic limit. A lower limit clamps old
 state immediately, before smoothing. Silence, bypass, unavailable/nonfinite
 loudness estimates and failed analysis reset retained makeup to unity.
 Changing to louder material lowers the requested gain instead of retaining
-old high makeup when a sample-peak request would exceed headroom.
+old high makeup when a sample-peak request would exceed headroom. Ingestion
+errors also enter the unity/reset path; history reset invalidates analyser
+and makeup state together under synchronization.
+
+The analyser state is borrowed only while its ownership mutex is held.
+Worker allocation uses a captured format request; a generation-checked swap
+publishes readiness and rejects stale work. History controls share the same
+lease, and retired state is destroyed after the swap unlocks. This removes
+the reviewed history/reconstruction lifetime race without libebur128 state
+allocation on the processing thread.
 
 Ordinary 100 ms reduction and 400 ms increase smoothing are retained. The
 sample-peak headroom bound limits the *requested* gain; smoothing can exceed
@@ -105,7 +114,9 @@ python3 scripts/prepare_programme_loudness.py \
 The preparation API accepts finite targets from -100 to 0 LUFS, makeup from
 0 to 36 dB, integer history from 6 to 3600 seconds and silence thresholds from
 -100 to 0 LUFS. Invalid controls and existing destinations are refused without
-replacing owner files. Raising the cap above FIR normalization emits
+replacing owner files. A failure after directory creation retains partial
+output for explicit recovery; the tool does not delete a public pathname that
+may have been replaced by another writer. Raising the cap above FIR normalization emits
 `above_source_budget_advisory: true`; it remains an ordinary supported control,
 with no qualification feature flag or hidden source-budget gate.
 
@@ -146,9 +157,12 @@ laptops have accepted everyday loudness and sound quality.
 
 ## 3. Review and run only the affected acceptance selection
 
-The [compiler/export receipt](../evidence/programme-loudness-build-2026-10-13.json)
-binds the additive source and 712 corresponding files, compiled runtime,
-package and bounded native image. Compilation is distinct from acceptance.
+The [initial compiler/export receipt](../evidence/programme-loudness-build-2026-10-13.json)
+binds the first additive source and 712 corresponding files, compiled
+runtime, package and bounded native image. That initial build is superseded
+by the review corrections; its receipt and artifact remain retained. The
+corrected 713-file source is rebuilding before artifact rebind and focused
+re-review. Compilation is distinct from acceptance.
 All existing attributed/imported patch bytes remain unchanged; SHA256SUMS was
 deliberately extended for the new additive patch and native header pin.
 
@@ -158,6 +172,8 @@ After independent source/artifact review, execute each affected unit once:
 # Use a durable scratch parent; these cases access no laptop audio.
 TMPDIR=DURABLE_TEST_SCRATCH ROG_EASYEFFECTS_SOURCE=NEW_PATCHED_SOURCE \
   python3 scripts/validate_speaker_install.py --stage makeup
+TMPDIR=DURABLE_TEST_SCRATCH ROG_EASYEFFECTS_SOURCE=NEW_PATCHED_SOURCE \
+  python3 scripts/validate_speaker_install.py --stage analyser
 TMPDIR=DURABLE_TEST_SCRATCH \
   python3 scripts/validate_speaker_install.py --stage programme
 TMPDIR=DURABLE_TEST_SCRATCH ROG_EASYEFFECTS_GIT=PUBLIC_EASYEFFECTS_GIT \
@@ -170,9 +186,12 @@ TMPDIR=DURABLE_TEST_SCRATCH \
 ```
 
 Eight actual-header cases cover requested and retained caps, silence reset,
-invalid finite controls, louder-source reductions and smoothing. Eleven
+invalid finite controls, louder-source reductions and smoothing. Four
+threaded analyser methods exercise history changes during reconstruction,
+stale-generation rejection, processing leases versus state replacement and
+failed candidates. Twelve
 profile methods cover both model defaults, preserved FIR/stage/parent hashes,
-ordinary above-budget controls, invalid inputs, output ownership, tampering,
+ordinary above-budget controls, invalid inputs, output ownership/replacement, tampering,
 final-limiter requirements, old-runtime refusal and legacy bypass behavior.
 The source-preparation method and selected export methods cover changed patch,
 package and capability bindings. Previously passed, unchanged suites remain
@@ -194,7 +213,11 @@ python3 scripts/check_programme_loudness.py --case lenovo-programme \
 Use `--device thinkpad` for the separate Lenovo graph kit. Each selector keeps
 one PCM source and one runtime process alive through model-cap, lower-cap,
 silence and louder-source transitions. It checks native cap consumption,
-stereo gain, original IR/plugin loading, finite output and the final limiter.
+stereo gain, exact ordered active FL/FR links through every distinct plugin
+instance, finite output and the final limiter. An acceptance-only library
+shim injects actual ingestion errors inside the same two selectors and
+requires native unity/reset and recovery; that shim is not part of the
+production runtime.
 All private captures, graphs and failures are retained. Retry only a failed
 case or a case invalidated by a subsequent correction. The final repository
 check follows review and selective acceptance.
