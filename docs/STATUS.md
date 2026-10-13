@@ -463,6 +463,11 @@ with matching reviewed sizes/hashes, matching notes and `releases/latest`
 verified as v0.2.1. Existing v0.2.0 runtime/kit remote digests were unchanged.
 Private recordings, inventories and keys were not uploaded. Installation
 and sustained/physical qualification remain separate from publication.
+The [subsequent guide-link correction](../evidence/speaker-runtime-v021-guide-correction-2026-10-13.json)
+changed only the release installation-guide URL to the corrected immutable
+document at `af706406`; the tag and all three asset hashes/sizes stayed
+unchanged. The historical v0.2.0 package identity remains in its own acceptance
+paragraph, separate from the current v0.2.1 download hash.
 
 
 ## Digital loudness diagnosis — 2026-10-13
@@ -482,9 +487,13 @@ playback and remain separate failed attempts.
 This low-level clip does not explain or dismiss the owner's movie/show
 loudness report. Ordinary programme and level-dependent processing remain
 unmeasured; aligned digital signals are not physical speaker latency or
-calibrated acoustic output. No gain fix was applied by this diagnosis. A
+calibrated acoustic output. No gain fix was applied by this diagnosis. The ThinkPad's measured filter attenuation accounts for meaningful loss in
+this clip; the larger ROG everyday volume loss remains unresolved. A
 separate coherent implementation batch owns adjustable loudness management
-while preserving the speaker filters and final limiter. Fresh full-hour
+while preserving the speaker filters and final limiter. The current AutoGain
+stage is bypassed, so defects found in its inactive gain handling are not a
+proven cause of the current attenuation. The proposed leveler is not yet
+accepted or deployed. Fresh full-hour
 checks follow the final kept configuration; Sonos remains deferred.
 
 

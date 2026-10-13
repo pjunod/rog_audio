@@ -344,7 +344,9 @@
     "prior_release": "v0.2.0-assets-retained-unchanged",
     "publication_receipt": "evidence/speaker-runtime-v021-publication-2026-10-13.json",
     "publication_receipt_sha256": "ef20f5f43f349b259a8578f0017d50e5d3073e61e5612ac3f624287828ee6e30",
-    "url": "https://github.com/pjunod/rog_audio/releases/tag/v0.2.1"
+    "url": "https://github.com/pjunod/rog_audio/releases/tag/v0.2.1",
+    "guide_correction_receipt": "evidence/speaker-runtime-v021-guide-correction-2026-10-13.json",
+    "guide_correction_receipt_sha256": "f96016ab5179d1c3a8467a04f389ddb497cb460903675052ccd0df232bc14e17"
   },
   "deployment_holds": {
     "thinkpad": {
@@ -395,7 +397,10 @@
     "accepted": false,
     "owner_report": "Ordinary movies and shows are too quiet on both laptops at maximum volume.",
     "investigation": "separate-next-coherent-gain-stage-batch",
-    "reviewed_startup_latency_code_changed_for_this_report": false
+    "reviewed_startup_latency_code_changed_for_this_report": false,
+    "rog_root_cause": "unresolved-beyond-small-measured-speech-filter-loss",
+    "thinkpad_measured_contribution": "existing-FIR-speech-attenuation-about-four-dB",
+    "prospective_leveler_accepted_or_deployed": false
   },
   "thinkpad_postboot_observation": {
     "path": "evidence/thinkpad-postboot-observation-v1-2026-10-13.json",
