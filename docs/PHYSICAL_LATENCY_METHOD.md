@@ -1,8 +1,7 @@
 # Physical latency method — record key click and speaker response on one phone
 
-**Status:** local emitter implemented; two source-review findings addressed;
-focused re-review and acceptance pending; manual capture pilot not performed;
-no physical measurements collected · **Written:** 2026-10-13 · **Executes:**
+**Status:** local emitter source-reviewed; ten synthetic methods passed once;
+browser smoke and manual capture pilot pending; no physical measurements collected · **Written:** 2026-10-13 · **Executes:**
 physical comparison in [latency comparison](LATENCY_COMPARISON.md).
 
 Companion to [latency tooling](AUDIO_LATENCY_BUILD.md) (trial schema and
@@ -55,8 +54,9 @@ The [local browser page](../tools/physical-latency/index.html),
 [browser bindings](../tools/physical-latency/emitter-ui.js) need no server,
 downloaded libraries, network connection or microphone. Copy the entire
 `tools/physical-latency` folder to each laptop and open `index.html` locally.
-Loading the page creates no AudioContext. Source review and new synthetic
-acceptance are pending; the current batch has emitted no laptop test sound.
+Loading the page creates no AudioContext. Two source-review findings were
+fixed and cleared; ten synthetic methods passed once. The current batch has
+emitted no laptop test sound.
 
 The repository also has [offline trial analysis](../scripts/analyse_audio_latency.py),
 [Linux inspection](../scripts/inspect_audio_path.py) and
@@ -328,8 +328,11 @@ python3 -m unittest discover -s tests -p test_physical_emitter.py -v  # New case
 ```
 
 Source parsing completed with Node v26.8.1 and Python syntax compilation;
-these are not unit or browser acceptance. The ten methods have not executed
-in the implementation batch. A later focused browser smoke check must verify
+these alone are not unit or browser acceptance. After both reviewers cleared
+`66080621`, all ten methods passed once with zero failures or skips under
+Python 3.14.7 and Node v26.8.1. The [acceptance receipt](../evidence/physical-emitter-acceptance-2026-10-13.json)
+binds exact source hashes, method IDs and retained logs. A separate focused
+browser smoke check must verify
 the actual local-file load, controls and downloads without starting audio
 before an agreed playback window. Synthetic tests cannot qualify a browser's
 hardware route, actual chirp level or phone-capture accuracy.

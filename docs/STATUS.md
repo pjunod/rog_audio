@@ -14,7 +14,7 @@ checks and ROG session handoff are in progress.
 | Diagnostics and latency | Both tuned drivers reduced from 42.667 to 5.333 ms in retained paired receipts; PRs 5–7 reviewed/tested | Complete sustained checks, then physical measurements |
 | Host Atmos | 15 tests and focused CI cleanup acceptance passed in PR 1 | Actual JOC reference media and physical qualification |
 | macOS comparison | M4 Air getter and silent-running snapshots complete; 16 summary tests passed in PR 5 | Matched Linux software observations, then physical comparison |
-| Physical interaction timing | Phone/tablet method and local emitter implemented; review/acceptance pending, no physical samples | Review/test new emitter, validate manual pilot, then repeated same-track capture |
+| Physical interaction timing | Phone/tablet method source-reviewed; ten emitter methods passed once, no physical samples | Browser smoke, manual pilot, then repeated same-track capture |
 | Sonos Arc/eARC | Deferred until internal audio work | TV route and actual received formats |
 
 Companion to [installation](SPEAKER_INSTALL.md), [review](REVIEW.md) and
@@ -279,9 +279,12 @@ warm silent source is not an idle-power baseline. Automatic waveform detection
 is not implemented; the external recording needs manual pilot annotations.
 Two independent source reviews found waveform/session mismatch after a failed
 arm and biased rejection of valid negative interaction intervals. Both fixes
-are implemented; focused source re-review, ten new synthetic methods and
-repository validation remain pending integration. No new unit, live playback
-or capture ran in this batch. The coordinated listening and 60-minute stability outcomes will be recorded in
+cleared focused source re-review at `66080621`; all ten new synthetic methods
+passed once, with zero failures or skips. The [acceptance receipt](../evidence/physical-emitter-acceptance-2026-10-13.json)
+retains source, runtime, method IDs and log hashes. No browser or audio device
+was opened by those tests. Actual browser smoke, pilot capture and physical
+comparison remain pending. The coordinated listening and 60-minute stability
+outcomes will be recorded in
 their own receipts; this plan does not mark either check passed. Accepted
 units remain retained because their sources are unchanged.
 

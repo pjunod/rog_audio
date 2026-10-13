@@ -1,0 +1,58 @@
+{
+  "schema_version": 1,
+  "kind": "physical-emitter-synthetic-acceptance",
+  "date": "2026-10-13",
+  "status": "passed",
+  "evidence_class": "synthetic-unit-tests",
+  "source_commit": "66080621bf7757ec05bd54bfeeb64eec7d69212f",
+  "source_sha256": {
+    "tools/physical-latency/index.html": "6c8f3d55f8f5779a8dc3eda44f15d438a7d9bd6ce10e63affca35a15d4630f3e",
+    "tools/physical-latency/emitter.js": "b8287fbd829e6747ea9d183591fdef44b9590a8c32a61fdcecdce361d4e0d63c",
+    "tools/physical-latency/emitter-ui.js": "36571348ae8024b3d7ea473991e43fe5090aed3748284e831af802939e8e40b4",
+    "tests/physical_emitter_cases.js": "2c84ab3839a0549237be54c25cf19d39fe20bf22e72ad78f2f2c0e9e68b84320",
+    "tests/test_physical_emitter.py": "d58d467e206f2732d00383139663567068c21f0b030a532dd67948e2e8502af4"
+  },
+  "source_archive_sha256": "6c69bc8623a1c0d16cdce260fe27c785d9c81b70c992cd4053769749e91cd8df",
+  "log_sha256": "d8c9c3db61006d6253fb024e75803ad111dce6a9b3083e3b3f8da737b00296e9",
+  "result_sha256": "443c4812541eb7912ed554276fa2fae3fb911e21dcf7cff80eb3a3f8676e046f",
+  "runtime": {
+    "python": "3.14.7",
+    "node": "v26.8.1"
+  },
+  "adversarial_review": {
+    "independent_reviewers": 2,
+    "initial_findings": 2,
+    "fixed_findings": 2,
+    "remaining_actionable_findings": 0,
+    "source_cleared_before_execution": true
+  },
+  "attempts": 1,
+  "new_methods": 10,
+  "tests_run": 10,
+  "failures": 0,
+  "skipped": 0,
+  "test_ids": [
+    "test_physical_emitter.PhysicalEmitterTests.test_browser_wiring_focus_and_hidden_disarm_without_autoplay",
+    "test_physical_emitter.PhysicalEmitterTests.test_close_in_progress_blocks_rearm_and_event_limit_stops",
+    "test_physical_emitter.PhysicalEmitterTests.test_failures_do_not_leave_warm_or_chirp_sources",
+    "test_physical_emitter.PhysicalEmitterTests.test_no_autoplay_and_invalid_arm",
+    "test_physical_emitter.PhysicalEmitterTests.test_pending_arm_cancel_and_stale_state_event",
+    "test_physical_emitter.PhysicalEmitterTests.test_reference_wave_is_actual_preloaded_stereo_signal",
+    "test_physical_emitter.PhysicalEmitterTests.test_signal_bounds_taper_and_actual_rate",
+    "test_physical_emitter.PhysicalEmitterTests.test_stop_cancels_owned_nodes_without_touching_other_audio",
+    "test_physical_emitter.PhysicalEmitterTests.test_trusted_key_repeat_modifiers_and_cooldown",
+    "test_physical_emitter.PhysicalEmitterTests.test_warm_stream_log_is_diagnostic_and_export_is_detached"
+  ],
+  "browser_or_audio_device_opened": false,
+  "physical_measurements": false,
+  "retained_acceptance": [
+    "evidence/audio-path-acceptance-2026-10-13.json",
+    "evidence/audio-path-lifecycle-acceptance-2026-10-13.json",
+    "evidence/audio-path-preset-list-acceptance-2026-10-13.json"
+  ],
+  "limits": [
+    "Synthetic AudioContext and DOM cases establish source behaviour only; actual browser local-file loading and downloads need a separate smoke check.",
+    "No laptop playback, microphone recording, physical response-time measurement, tuned route verification or sustained-load qualification occurred in these tests.",
+    "Signed click-to-chirp annotations remain a separate whole-condition summary when the existing nonnegative analyser cannot represent them."
+  ]
+}

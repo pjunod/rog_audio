@@ -206,7 +206,14 @@ summary of the whole condition; the existing nonnegative analyser receives
 no truncated subset, shifted values or replacement presses. Its source is
 unchanged.
 
-Focused source re-review and the ten new synthetic methods remain pending.
-No unit case has executed in this batch. Browser/device behaviour and actual
-physical captures remain separate acceptance work. The interrupted laptop
-stability attempts do not qualify the emitter or either full-hour check.
+Both reviewers cleared exact source `66080621` before execution. All ten new
+methods passed once in 0.513 seconds, with zero failures or skips under
+Python 3.14.7 and Node v26.8.1. The [acceptance receipt](../evidence/physical-emitter-acceptance-2026-10-13.json)
+binds the five exact source/test hashes, reviewed source archive, method IDs
+and private log/result hashes. No unchanged analyser, native, speaker or
+CoreAudio methods were repeated. No browser or audio device was opened by
+the synthetic cases.
+
+Browser/device behaviour and actual physical captures remain separate
+acceptance work. The interrupted laptop stability attempts do not qualify
+the emitter or either full-hour check.
