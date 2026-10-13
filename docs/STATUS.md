@@ -2,7 +2,7 @@
 
 **Updated:** 2026-10-13 · **State:** both speaker candidates installed with
 login startup configured; ROG stereo tuning restored after four-channel
-investigation; PR 5 merged and scoped latency trials are in progress.
+investigation; ThinkPad 256-frame trial active, ROG trial in progress.
 
 | Work | State | Next evidence |
 |---|---|---|
@@ -10,7 +10,7 @@ investigation; PR 5 merged and scoped latency trials are in progress.
 | ASUS speaker tuning | Validated stereo restored with full tuned path; prior owner feedback positive | Scoped latency trial, physical hotplug and measurements |
 | ThinkPad speaker tuning | Separate Lenovo music/balanced candidate running; live preset, IR, plugins and hardware output verified | Owner listening, physical hotplug and measurements |
 | Laptop installation runtime | Both active with private rollback and login startup; inherited 97 unit cases and both isolated graph cases passed | Actual post-reboot observation and physical qualification |
-| Diagnostics and latency | PR 5 merged; 46 new unit cases and all native checks passed; prior 42 tests retained | Bounded 256-frame trials with tuning and rollback preserved |
+| Diagnostics and latency | PRs 5–6 merged; ThinkPad actual driver period reduced from 42.667 to 5.333 ms with tuning preserved | ROG paired trial, then sustained and physical measurements |
 | Host Atmos | 15 tests and focused CI cleanup acceptance passed in PR 1 | Actual JOC reference media and physical qualification |
 | macOS comparison | M4 Air getter and silent-running snapshots complete; 16 summary tests passed in PR 5 | Matched Linux software observations, then physical comparison |
 | Sonos Arc/eARC | Deferred until internal audio work | TV route and actual received formats |
@@ -247,3 +247,17 @@ working tuning. The complete correction batch passed adversarial review and
 that method rerun. The corrected live trial is next.
 The [preflight receipt](../evidence/speaker-lifecycle-preflight-2026-10-13.json)
 records both observations, raw-evidence hashes and the preserved startup state.
+
+The corrected ThinkPad trial at merged `90fea80` negotiated 256/48000 on the
+actual driver, down from 2048/48000 in its paired baseline. Both observations
+used the same explicit 4800/48000 client request and all-zero PCM. The full
+Lenovo chain remained linked on both channels; the request is left active
+under the persistent service, with a durable fragment snapshot and rollback.
+Startup reached error count 1 in both runs; the five later running samples
+remained at 1. This establishes a bounded software-period improvement, not
+zero-error activation, sustained stability or physical/Mac parity. The ROG
+paired trial prepared successfully but refused installation before any fragment
+or snapshot was created: its native usage history also retains an unchanged
+bypass-preset entry. The original tuned baseline was resumed and rechecked
+at 2048/48000. A narrow multi-entry counter correction is being built; all
+other entries must remain byte-for-byte unchanged.
