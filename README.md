@@ -28,6 +28,7 @@ Display work remains in [rog_hdr_dv](https://github.com/pjunod/rog_hdr_dv).
 - [Lenovo speaker preparation](docs/LENOVO_SPEAKER_PROFILE.md) — exact first-generation X1 Extreme source, identity and offline candidates.
 - [Speaker installation](docs/SPEAKER_INSTALL.md) — scoped runtime and reversible file kit.
 - [Latency build](docs/AUDIO_LATENCY_BUILD.md) — inspection, measurements and candidates.
+- [Latency comparison](docs/LATENCY_COMPARISON.md) — tuned laptop baselines, M4 Air reference and reversible experiments.
 - [Atmos build](docs/AUDIO_ATMOS_BUILD.md) — offline object rendering and format limits.
 - [Development](docs/DEVELOPMENT.md) — review, CI and selective test policy.
 - [Operations](docs/OPERATIONS.md) — baseline, result interpretation and physical tests.
