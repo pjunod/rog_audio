@@ -1,12 +1,13 @@
 # Status — implementation and physical acceptance
 
 **Updated:** 2026-10-13 · **State:** both speaker candidates installed with
-login startup; latency comparison against the M4 Air is in progress.
+login startup configured; latency comparison is in progress and ROG route
+drift needs resolution before its trial.
 
 | Work | State | Next evidence |
 |---|---|---|
 | Hardware inventory | Both laptops inspected read-only | Refresh during installation |
-| ASUS speaker tuning | Music/balanced candidate running; owner reports substantial audible improvement | Physical hotplug and measurements |
+| ASUS speaker tuning | Prior owner feedback positive; fresh four-channel output differs from kit stereo binding | Resolve route drift before latency trial |
 | ThinkPad speaker tuning | Separate Lenovo music/balanced candidate running; live preset, IR, plugins and hardware output verified | Owner listening, physical hotplug and measurements |
 | Laptop installation runtime | Both active with private rollback and login startup; inherited 97 unit cases and both isolated graph cases passed | Actual post-reboot observation and physical qualification |
 | Diagnostics and latency | New read-only baselines and scoped latency implementation in progress; prior 42 tests retained | Review complete changes, then affected tests and bounded trials |
@@ -179,3 +180,15 @@ improvement or Mac parity is claimed. Sonos Atmos remains last.
 Implementation will be batched into a PR, independently reviewed when ready,
 then validated with affected tests once. Only failed or invalidated cases
 will repeat. Existing speaker and unrelated Atmos passes remain retained.
+
+Fresh idle baselines show the ROG now exposes an Analog Surround 4.0 sink while
+its kit targets Analog Stereo. A remembered preset label does not prove active
+correction on that changed route. The owner has been asked whether to restore
+the validated stereo path or investigate four-channel output. No profile is
+silently changed. The ThinkPad still matches its installed Lenovo route.
+
+The M4 Air native read-only snapshot reports a 512-frame buffer at 48 kHz;
+separate device, stream and safety-offset values are being retained. Its initial
+device-running flag is false. Short silent-stream observations on the ThinkPad
+and Mac will establish running software timing without audible tones, input
+recording or volume changes. They remain distinct from a physical benchmark.
