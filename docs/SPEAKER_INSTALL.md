@@ -25,6 +25,12 @@ distinct from initial installation and later owner adjustments. The current
 normal-use attempt starts at 94% on ROG and 100% on ThinkPad; tests preserve the
 chosen level and record later adjustments.
 
+The corrected runtime is planned for `v0.2.1` (package `8.2.8+rog2`) after
+combined review, focused acceptance and merge. Its newly bound kits must retain
+exact preset/IR bytes; existing v0.2.0 assets and private rollback remain
+available. See [the upgrade contract](SPEAKER_AUTOLOAD.md). Publication and
+fresh deployed-runtime stability are still pending.
+
 Read [speaker preparation](AUDIO_SPEAKER_BUILD.md) before using
 [the installation tool](../scripts/speaker_install.py). The input is an
 integrity-checked offline tuning bundle and a fresh read-only inventory.

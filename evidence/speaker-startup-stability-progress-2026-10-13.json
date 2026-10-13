@@ -3,9 +3,9 @@
   "kind": "speaker-startup-stability-progress",
   "date": "2026-10-13",
   "evidence_class": "operator-reported-live-progress",
-  "status": "thinkpad-active-rog-stopped",
+  "status": "old-runtime-thinkpad-hour-complete-rog-256-failed-and-reverted",
   "timezone": "America/New_York",
-  "completed_60_minute_passes": 0,
+  "completed_60_minute_passes": 1,
   "physical_latency_measured": false,
   "source_acceptance_unchanged": [
     "evidence/linux-speaker-latency-trials-2026-10-13.json",
@@ -63,7 +63,7 @@
     {
       "system": "thinkpad",
       "attempt": "normal-use-retry",
-      "status": "active-completion-pending",
+      "status": "completed-60-minute-silent-observation",
       "start_local": "2026-10-13T10:02:02.621-04:00",
       "expected_finish_local": "2026-10-13T11:02:02.621-04:00",
       "initial_volume_percent": 100,
@@ -74,7 +74,22 @@
       "volume_correction": "74% was the prior stopped attempt final value; current launch physical-default baseline is100%",
       "latest_observed_active_seconds": 1562.5453656100144,
       "latest_observed_driver_error_count": 1,
-      "observed_volume_condition_changes_count": 0
+      "observed_volume_condition_changes_count": 0,
+      "actual_owned_active_seconds": 3600.1771743470163,
+      "qualification_scope": "continuous-software-path-only-old-runtime",
+      "runtime_artifact_family": "v0.2.0-8.2.8+rog1",
+      "runtime_binary_sha256": "e5061dcc1e0b925933eceeacffb576536d24f609307166b97d0e159c0f1772d1",
+      "physical_latency_qualification": false,
+      "startup_fixed_runtime_qualification": false,
+      "zero_error_startup_claim": false,
+      "protected_start_midpoint_end_state_equal": true,
+      "start_end_audio_unit_identity_equal": true,
+      "all_owned_test_processes_removed": true,
+      "monitor_frames_retained": 3616,
+      "monitor_frames_required_active_window": 3608,
+      "max_monitor_reception_gap_ns": 1002105343,
+      "private_complete_archive_sha256": "c4dd122b343f1353adcd9643125ad190687dbce51b0e03413072143afd72fdd6",
+      "final_physical_default_volume_percent": 100
     },
     {
       "system": "rog",
@@ -129,26 +144,31 @@
     "active_hour_interrupted_for_fix": false
   },
   "limits": [
-    "This is a progress record from the sole live operator, not a completed stability or source-acceptance receipt.",
-    "Expected finish times are scheduling targets; actual continuous coverage, endpoint checks, counter deltas and final preservation remain pending.",
+    "This record combines the completed existing-runtime ThinkPad workload with retained ROG failures/rollback and a startup-fixed source candidate still awaiting compilation and acceptance.",
     "A silent processing run cannot establish absence of audible gaps, representative gaming-load reliability or physical latency.",
     "The post-session restoration does not prove a permanent startup fix, post-reboot behaviour or calibrated sound quality.",
     "Raw monitoring, identities, access data and private rollback files remain outside Git.",
     "The initial ThinkPad elapsed value includes cleanup; it is not an exact uninterrupted active interval.",
     "The original v2 receipt remains unchanged as a historical launch snapshot; v3 explicitly scopes silent-load and prepared-signal flags separately from subsequent listening/capture operations.",
     "The ROG rollback observation has cumulative driver count3 constant across five valid samples; pre-start baseline was not measured by that monitor, so zero-error startup and full-hour qualification remain unestablished.",
-    "ThinkPad retry launch volume100% corrects an earlier progress report using the prior stopped attempt final74% value; no test volume write occurred."
+    "ThinkPad retry launch volume100% corrects an earlier progress report using the prior stopped attempt final74% value; no test volume write occurred.",
+    "The ThinkPad pass is runtime/hash/workload bound to v0.2.0; no ROG full-hour pass or +rog2/512 stability qualification is established."
   ],
   "operator_source": {
-    "path": "evidence/speaker-listening-stability-v3-2026-10-13.json",
-    "sha256": "cf475824c34a8098fc17f36a641511fcb8ece00a7b0d55ee1fdbd86d3af64135",
-    "schema_version": 3
+    "path": "evidence/speaker-listening-stability-v4-2026-10-13.json",
+    "sha256": "47df651cc28e55f54c39daffaaf8178c6a707e0c95ba318386775899330ede77",
+    "schema_version": 4
   },
   "operator_source_history": [
     {
       "path": "evidence/speaker-listening-stability-interim-2026-10-13.json",
       "sha256": "b14ed4a559fe75ed115c6e14401dc17015b30ade6d596cc51c5647d9c951a61a",
       "schema_version": 2
+    },
+    {
+      "path": "evidence/speaker-listening-stability-v3-2026-10-13.json",
+      "sha256": "cf475824c34a8098fc17f36a641511fcb8ece00a7b0d55ee1fdbd86d3af64135",
+      "schema_version": 3
     }
   ],
   "reviewed_rog_latency_rollback": {
@@ -252,6 +272,35 @@
       "services_and_output_volume_preserved": true,
       "speaker_state_preserved": true,
       "temporary_input_gain": 0.2
+    },
+    {
+      "channels": 1,
+      "host": "lab6",
+      "kind": "corrected-source-level-generated-speech-music-listening-overlap",
+      "mic_analysis_attribution": "listening-lane-private-analysis",
+      "original_input_gain_restored": true,
+      "owner_subjective_acceptance": "pending",
+      "physical_latency_qualification": false,
+      "playback_finished_unix": 1791902084.083657,
+      "playback_started_unix": 1791902039.0590186,
+      "player_exitcode": 0,
+      "private_receipt_sha256": "acd70f5ec476845aea73124fbb4564ba32a3f88186f4aa0c1935d6b0d27e8a6e",
+      "recorded_clipped_samples_reported_by_listening_lane": 0,
+      "recorded_peak_dbfs_reported_by_listening_lane": -15.88,
+      "recorder_exitcode": 1,
+      "recorder_exitcode_preserved": true,
+      "recording_finished_unix": 1791902088.9862268,
+      "recording_started_unix": 1791902038.9573452,
+      "sample_rate_hz": 48000,
+      "schema_version": 1,
+      "scope": "separate-owner-authorized-listening-lane",
+      "services_and_output_volume_preserved": true,
+      "sound_quality_calibration": false,
+      "source_level_adjustment": "generated-file-gain-only-no-laptop-output-volume-change",
+      "speaker_state_preserved": true,
+      "temporary_input_gain": 0.2,
+      "verified_recorded_frames": 2400000,
+      "verified_recorded_seconds": 50
     }
   ],
   "source_candidate": {
@@ -263,5 +312,12 @@
     "focused_acceptance": "not-executed",
     "live_deployment": "not-installed",
     "method_document": "docs/SPEAKER_AUTOLOAD.md"
+  },
+  "planned_release": {
+    "tag": "v0.2.1",
+    "package_version": "8.2.8+rog2",
+    "status": "planned-after-combined-review-focused-acceptance-and-merge",
+    "assets": "corrected-runtime-exact-corresponding-source-newly-bound-ASUS-and-Lenovo-kits",
+    "prior_release": "v0.2.0-assets-retained-unchanged"
   }
 }

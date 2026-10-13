@@ -1,7 +1,7 @@
 # Latency comparison — tuned Linux laptops and the M4 Air
 
-**Status:** historical paired 256-frame observations retained; current ROG
-fallback 2048 frames, ThinkPad 256; physical comparison pending ·
+**Status:** historical paired results retained; ThinkPad v0.2.0 hour complete
+at 256 frames, ROG fallback 2048; corrected-runtime/512 and physical tests pending ·
 **Written:** 2026-10-13 · **Executes:** latency phase in
 [implementation](AUDIO_IMPLEMENTATION.md).
 
@@ -213,8 +213,11 @@ The revised normal-use method logs volume adjustments without writing volume,
 while retaining strict processing, routing, service, counter and continuity
 checks. Earlier incomplete attempts are not accumulated into a later hour.
 
-ThinkPad's fresh interval remains active from 10:02:02 to an expected
-11:02:02 Eastern on 2026-10-13. ROG started at 10:09:39 after exact tuned-preset
+ThinkPad's fresh interval completed 3600.177 seconds from 10:02:02 Eastern
+on 2026-10-13, on existing v0.2.0 runtime only. Its sampled driver counter
+stayed at 1 and followers at zero; exact start/mid/end protected state matched.
+The [frozen v4 receipt](../evidence/speaker-listening-stability-v4-2026-10-13.json)
+binds continuous coverage, actual cleanup and runtime hash. ROG started at 10:09:39 after exact tuned-preset
 restoration, with sampled errors zero. It then stopped after 67.982 seconds
 of owned playback: sampled driver errors rose 0→1 and the owned zero-PCM
 client and convolver each rose 0→2. The 256/48000 graph, 94% physical volume
@@ -239,8 +242,9 @@ preceding stopped attempt's final value. No volume write was made by the test.
 V3 retains separately coordinated listening/recording overlaps and explicitly
 scopes the silent client's all-zero/no-microphone claim to that workload.
 
-Only completed continuous coverage, endpoint checks, observed counter deltas
-and final preservation can qualify the declared software stability workload.
+The completed ThinkPad receipt qualifies only its declared existing-runtime
+software workload. The new startup-fixed runtime and ROG 512-frame candidate
+need fresh continuous coverage, endpoint checks, counter deltas and preservation.
 The owned all-zero stream and separate listening/recording overlaps do not
 substitute for a physical response-time distribution or absence of audible
 gaps. [Current status](STATUS.md#startup-and-sustained-check-progress--2026-10-13)

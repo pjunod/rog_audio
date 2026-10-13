@@ -25,15 +25,17 @@ measured speaker delay or proof of Mac parity.
 The [comparison and rollback](docs/LATENCY_COMPARISON.md#7-paired-256-frame-trials--both-tuned-paths-preserved)
 record the results and limits.
 
-The ThinkPad 60-minute normal-use check is active on 2026-10-13, scheduled
-for 10:02–11:02 Eastern. The ROG post-session attempt stopped on monitored
-error growth after 67.982 seconds. Its owned 256-frame request was removed
-using the reviewed rollback; the full tuning now runs at the larger
-2048-frame period. Neither laptop has a completed-hour receipt yet. A ROG session restart exposed preset autoload
-bypass despite consistent tuning files; its exact tuned preset was restored
-without changing physical volume. The native startup correction is implemented; its candidate build,
-independent review and focused acceptance remain pending. [Current progress](docs/STATUS.md#startup-and-sustained-check-progress--2026-10-13)
-keeps the interrupted attempts, restored live state and pending fix distinct.
+The ThinkPad completed 3600.177 seconds of the declared normal-use software
+check on the existing v0.2.0 runtime: sampled driver count remained at its
+startup value of 1, followers stayed zero and protected state matched at
+start, midpoint and end. The ROG's 256-frame attempt failed after 67.982
+seconds; reviewed rollback preserved its full tuning at 2048 frames. Neither
+result measures physical latency or qualifies the startup-fixed runtime.
+The native correction is implemented, with candidate build/review/acceptance
+pending. [Current results](docs/STATUS.md#startup-and-sustained-check-progress--2026-10-13)
+keep those evidence classes distinct. A new `v0.2.1` release with package
+`8.2.8+rog2`, corresponding source and newly bound kits is planned after
+review, focused tests and merge; existing v0.2.0 assets remain unchanged.
 
 Display work remains in [rog_hdr_dv](https://github.com/pjunod/rog_hdr_dv).
 
