@@ -29,6 +29,7 @@ Display work remains in [rog_hdr_dv](https://github.com/pjunod/rog_hdr_dv).
 - [ASUS four-channel mapping](docs/ASUS_FOUR_CHANNEL.md) — why the investigated profile needs explicit rear-pair routing and stereo remains the working fallback.
 - [Speaker installation](docs/SPEAKER_INSTALL.md) — scoped runtime and reversible file kit.
 - [Latency build](docs/AUDIO_LATENCY_BUILD.md) — inspection, measurements and candidates.
+- [Linux tuned-path timing](docs/LINUX_AUDIO_PATH.md) — inspect the active processor and apply or remove one private latency request.
 - [CoreAudio timing](docs/COREAUDIO_LATENCY.md) — read-only Mac output terms, M4 Air observations and physical measurement limits.
 - [Latency comparison](docs/LATENCY_COMPARISON.md) — tuned laptop baselines, M4 Air reference and reversible experiments.
 - [Atmos build](docs/AUDIO_ATMOS_BUILD.md) — offline object rendering and format limits.
