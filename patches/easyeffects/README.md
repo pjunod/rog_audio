@@ -21,7 +21,8 @@ Apply in this order to commit
    config/application/control/graph identity.
 3. [Device-return autoload](0002-Retain-output-routes-for-device-return.patch),
    local: retained device/profile route state, sink-arrival hydration,
-   invalidation generations and current-node validation for queued events.
+   invalidation generations, persistent late profile bindings and current-node
+   validation for queued events.
 
 Upstream code and the local routing header are GPL-3.0-or-later. The original
 copyright headers are retained. Ubuntu packaging attribution and CC0-1.0 terms

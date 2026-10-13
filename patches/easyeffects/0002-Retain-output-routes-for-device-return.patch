@@ -443,3 +443,16 @@ diff --git a/src/stream_output_effects.hpp b/src/stream_output_effects.hpp
  
    void connect_filters(const bool& bypass = false);
  
+diff --git a/src/pw_model_nodes.cpp b/src/pw_model_nodes.cpp
+--- a/src/pw_model_nodes.cpp
++++ b/src/pw_model_nodes.cpp
+@@ -420,6 +420,9 @@
+   updateIfDifferent(Roles::Id, info.id, new_info.id);
+   updateIfDifferent(Roles::Serial, info.serial, new_info.serial);
+   updateIfDifferent(Roles::DeviceId, info.device_id, new_info.device_id);
++  // Internal route binding is not exposed as a QML role. Persist it before
++  // Manager resolves delayed autoload from the model instead of NodeData.
++  list[row].profile_device = new_info.profile_device;
+   updateIfDifferent(Roles::Name, info.name, new_info.name);
+   updateIfDifferent(Roles::Description, info.description, new_info.description);
+   updateIfDifferent(Roles::MediaClass, info.media_class, new_info.media_class);

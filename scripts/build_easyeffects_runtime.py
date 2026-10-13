@@ -101,7 +101,9 @@ def build(source,output,image_tag=None,engine='docker'):
             shutil.copy2(ROOT/'patches/easyeffects/source.json',context/'source.json')
             (context/'Dockerfile').write_bytes((ROOT/'scripts/easyeffects-build.Dockerfile').read_bytes())
             try:
-                result=subprocess.run(build_command(engine,image,context),capture_output=True,timeout=1800)
+                # These bounds require Docker's legacy builder, not Buildx/BuildKit.
+                environment=dict(os.environ,DOCKER_BUILDKIT='0') if engine=='docker' else None
+                result=subprocess.run(build_command(engine,image,context),capture_output=True,timeout=1800,env=environment)
             except subprocess.TimeoutExpired as error:
                 (output/'build.log').write_bytes((error.stdout or b'')+(error.stderr or b''))
                 raise BuildError('compiler_build_timed_out') from None

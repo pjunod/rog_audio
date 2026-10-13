@@ -17,7 +17,7 @@ import uuid
 from check_speaker_graph import Graph, GraphError
 import speaker_install as kit
 
-CASES=('route-before-node','node-before-route','device-return')
+CASES=('route-before-node','node-before-route','device-return','late-profile-binding')
 
 
 def acceptance(kit_path,case,output,binary,mock,player):
@@ -69,7 +69,18 @@ def acceptance(kit_path,case,output,binary,mock,player):
         graph.stage=case+' candidate startup'
         graph.start('easyeffects',[binary,'--hide-window','--service-mode'])
         graph.until(lambda g:graph.node(g,'rog_audio_speaker_sink'))
-        if case=='route-before-node':
+        if case=='late-profile-binding':
+            graph.until(lambda _:observed_route('Speakers'))
+            sink=graph.start('late-binding-sink',[player,'--sink',node_name,str(device_id)],pipe=True)
+            physical=graph.until(lambda g:graph.node(g,node_name))
+            if 'card.profile.device' in physical['info']['props']:
+                raise GraphError('late-binding fixture profile already present')
+            graph.call(['wpctl','set-default',str(physical['id'])])
+            graph.until(lambda _:graph.preset(binary)==manifest['bypass_name'])
+            sink.stdin.write(b'profile\n');sink.stdin.flush()
+            graph.until(lambda g:str(graph.node(g,node_name)['info']['props'].get('card.profile.device'))=='0')
+            observations.append('node info learned profile0 after initial empty fallback')
+        elif case=='route-before-node':
             graph.until(lambda _:observed_route('Speakers'))
             if graph.node(graph.dump(),node_name):raise GraphError('physical fixture sink already exists')
             graph.preset(binary)  # Service round trip while there is still no sink.

@@ -1,7 +1,7 @@
 # Speaker autoload — recover the preset when the output device returns
 
-**Status:** native implementation compiled and packaged; independent review and
-focused acceptance pending · **Updated:** 2026-10-13.
+**Status:** initial runtime compiled; review fixes implemented and recompilation
+and focused acceptance pending · **Updated:** 2026-10-13.
 
 Companion to [speaker installation](SPEAKER_INSTALL.md), which owns installation
 and rollback. This document describes the native device-return fix and its
@@ -19,7 +19,10 @@ retains the current output route by PipeWire device ID and ALSA profile-device
 index. Sink arrival replays that route before preset notification. A single queued
 initialization reconciles a sink already discovered by Manager's registry sync
 before the effects object connected its signal handlers. A route
-arriving after the sink updates the same state. Device removal or route
+arriving after the sink updates the same state. Node info persists a newly
+learned `card.profile.device` in the model before delayed/current-node resolution,
+so a sink first observed without its profile can recover from the retained route.
+Device removal or route
 invalidation clears the cache and node route fields; a generation identifies
 scheduled work so older callbacks cannot replay superseded route descriptions.
 Notification history is keyed by sink ID/serial and device/profile binding. It
@@ -60,7 +63,11 @@ python3 scripts/build_easyeffects_runtime.py build \
   --container-engine podman
 ```
 
-`--container-engine docker` selects Docker with the same resource bounds.
+`--container-engine docker` requires Docker's legacy builder, selected only for
+the bounded build subprocess with `DOCKER_BUILDKIT=0`. Modern Buildx does not
+accept these legacy resource arguments. If the legacy backend is unavailable,
+the build fails with its log retained; it never falls back to an unbounded
+backend. Export commands and the caller's environment are unchanged.
 Podman builds use one job, a 100,000 µs CPU period and 200,000 µs quota,
 6 GiB memory and a 6 GiB total memory/swap limit. CMake compiles with one worker.
 Export/package containers use two CPUs, 6 GiB memory, at most 2,048 PIDs and
@@ -82,15 +89,17 @@ actual package/compiler versions with the inherited
 [compiler receipt](../evidence/speaker-runtime-build-2026-10-12.json); a new
 build receipt must record the versions actually used.
 
-The [new compiler/package receipt](../evidence/speaker-autoload-build-2026-10-13.json)
+The [initial compiler/package receipt](../evidence/speaker-autoload-build-2026-10-13.json)
 records GNU 15.3.0, Qt 6.11.2, the `8.2.8+rog2` package and exact final binary/source
-hashes. The final candidate reused the owned baseline build objects after full
+hashes. It is superseded by the review fix that persists late profile binding;
+its hashes and compiler history remain intact. That candidate reused the owned baseline build objects after full
 source-tree verification, then compiled and installed 181 affected Ninja tasks.
 That recorded incremental run used two compiler workers within the same two-CPU,
 6 GiB slot; the production recipe keeps one worker. Export verified all 711
 source files again, excluding only CMake-generated `src/.qmlls.ini`. The baseline
 and intermediate image IDs remain distinguishable. No units or runtime graph
-selectors ran during compilation; independent review and acceptance remain open.
+selectors ran during compilation; the corrected source must compile/export and
+clear focused re-review before acceptance starts.
 
 ## Regenerate kit metadata without changing tuning bytes
 
@@ -156,6 +165,8 @@ python3 scripts/check_speaker_autoload.py --case node-before-route \
   --kit SYNTHETIC_KIT --output NEW_PRIVATE_NODE_FIRST_RECEIPT
 python3 scripts/check_speaker_autoload.py --case device-return \
   --kit SYNTHETIC_KIT --output NEW_PRIVATE_RETURN_RECEIPT
+python3 scripts/check_speaker_autoload.py --case late-profile-binding \
+  --kit SYNTHETIC_KIT --output NEW_PRIVATE_LATE_BINDING_RECEIPT
 ```
 
 These graph cases start private PipeWire/WirePlumber and the real runtime, with
@@ -163,7 +174,9 @@ synthetic null sinks and generated PCM. They require the exact preset, actual
 IR/plugin loading, headphone fallback/ownership release and unchanged kit bytes.
 The returned sink has a new serial while the Device remains. Its case also
 requires an identical real Route re-enumeration to leave the native autoload
-log count unchanged. Each selector
+log count unchanged. The late-binding selector starts an exported null sink
+without its ALSA profile, observes empty fallback, then publishes profile0 through
+a real node-info property update and requires native preset recovery. Each selector
 writes its own receipt and retains its failing stage/graph; retry only failed
 or code-invalidated cases. Select a failed unit method with `--test-id`.
 The inherited ASUS/Lenovo loader-route graph selectors remain available for

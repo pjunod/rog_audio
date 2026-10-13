@@ -26,7 +26,7 @@ class RuntimeBuildTests(unittest.TestCase):
             for name,data in ((build.package.PACKAGE+'_'+build.package.VERSION+'_amd64.deb',deb),
                               ('runtime.json',json.dumps(manifest).encode())):
                 member=tarfile.TarInfo(name);member.size=len(data);tar.addfile(member,io.BytesIO(data))
-        calls=[];contexts=[]
+        calls=[];contexts=[];self.build_environments=[]
         def stage(source,destination):
             self.assertEqual(source,parent/'public-git')
             destination.mkdir();(destination/'LICENSE').write_text('Retained source licence')
@@ -35,6 +35,7 @@ class RuntimeBuildTests(unittest.TestCase):
             calls.append(argv)
             if argv[1:3]==['image','inspect']:return subprocess.CompletedProcess(argv,1,b'',b'')
             if argv[1]=='build':
+                self.build_environments.append(kwargs.get('env'))
                 contexts.append(Path(argv[-1]))
                 self.assertEqual(contexts[-1].parent,output)
                 self.assertTrue((contexts[-1]/'easyeffects/LICENSE').exists())
@@ -60,6 +61,7 @@ class RuntimeBuildTests(unittest.TestCase):
 
     def test_podman_native_build_and_export_are_bounded_and_durable(self):
         output,result,calls=self.fixture()
+        self.assertEqual(self.build_environments,[None])
         self.assertEqual(result['status'],'runtime-built')
         command=next(c for c in calls if c[1]=='build')
         self.assertEqual(command[command.index('--cpu-quota')+1],'200000')
@@ -78,7 +80,11 @@ class RuntimeBuildTests(unittest.TestCase):
         self.assertTrue((output/'source-manifest.json').exists())
 
     def test_docker_uses_the_same_bounds_without_podman_jobs(self):
-        _,result,calls=self.fixture(engine='docker')
+        with patch.dict(build.os.environ,{'DOCKER_BUILDKIT':'1','ROG_BUILD_SENTINEL':'retain'}):
+            _,result,calls=self.fixture(engine='docker')
+            self.assertEqual(build.os.environ['DOCKER_BUILDKIT'],'1')
+        self.assertEqual(self.build_environments[0]['DOCKER_BUILDKIT'],'0')
+        self.assertEqual(self.build_environments[0]['ROG_BUILD_SENTINEL'],'retain')
         self.assertEqual(result['status'],'runtime-built')
         self.assertNotIn('--jobs',next(c for c in calls if c[1]=='build'))
         self.assertTrue(all(c[0]=='docker' for c in calls))
