@@ -1,7 +1,8 @@
 # Lenovo speaker profile — exact first-generation ThinkPad preparation
 
 **Status:** original source published; three inactive Linux bundles built;
-review, units and isolated runtime passed; ready for coordinated installation · **Updated:** 2026-10-12.
+review, units and isolated runtime passed; installed in the authorized ThinkPad
+window with live loading/output checks and login startup enabled · **Updated:** 2026-10-12.
 
 Companion to [ThinkPad inventory](THINKPAD_AUDIO.md) (what this unit runs) and
 [speaker preparation](AUDIO_SPEAKER_BUILD.md) (the shared offline API). This is
@@ -134,7 +135,7 @@ labelling rejection. All 55 shared/importer cases passed after independent
 batch review; see [review](REVIEW.md). Use individual unittest IDs for
 failed-case retries; do not repeat unrelated passing first-batch checks.
 
-## Installation is ready; physical results remain open
+## Installed; physical results remain open
 
 The preparation tool produces files only. The separate reviewed
 [installation runtime](SPEAKER_INSTALL.md) implements exact internal-speaker
@@ -142,7 +143,11 @@ route matching and reversible installation/removal. Its Lenovo isolated graph
 passed with the delivered preset and IR. Coordinate live routing changes and
 audible tests.
 
-EasyEffects loader/plugin execution, acoustic response/distortion, subjective
-level-matched listening, physical latency, protection behaviour, hotplug,
-calls and resume remain unmeasured on this ThinkPad. No Mac comparison or
-Sonos acceptance is implied; Sonos Arc/eARC remains last.
+The authorized ThinkPad deployment verified live preset/IR loading, expected
+plugin nodes and the physical speaker output connection. Login startup is
+enabled with private rollback; see the
+[deployment receipt](../evidence/thinkpad-speaker-deployment-2026-10-12.json).
+Owner listening feedback, acoustic response/distortion, level-matched listening,
+physical latency, protection behaviour, hotplug, calls and resume remain
+pending. No Mac comparison or Sonos acceptance is implied; Sonos Arc/eARC
+remains last.

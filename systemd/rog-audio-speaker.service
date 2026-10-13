@@ -1,0 +1,18 @@
+[Unit]
+Description=ROG Audio internal speaker tuning
+Wants=pipewire.service wireplumber.service
+After=pipewire.service wireplumber.service
+
+[Service]
+Type=simple
+Environment=QT_QPA_PLATFORM=offscreen
+Environment=QT_QUICK_BACKEND=software
+Environment=ROG_AUDIO_STATE_DIR=%h/.local/state/rog-audio/easyeffects
+ExecStart=/usr/bin/rog-speaker-effects --hide-window --service-mode
+ExecStop=/usr/bin/rog-speaker-effects --quit
+Restart=on-failure
+RestartSec=3
+TimeoutStopSec=15
+
+[Install]
+WantedBy=default.target

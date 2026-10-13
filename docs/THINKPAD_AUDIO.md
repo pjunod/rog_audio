@@ -1,7 +1,7 @@
 # ThinkPad audio — first-generation X1 Extreme evidence and build contract
 
 **Inspected:** 2026-10-12 · **State:** read-only inventory and bounded WinRE
-index complete; reviewed kit and runtime ready for coordinated installation.
+index complete; model-specific v0.2.0 tuning active with login startup enabled.
 
 Companion to [ASUS hardware](AUDIO_HARDWARE.md),
 [implementation](AUDIO_IMPLEMENTATION.md) and [status](STATUS.md). The
@@ -101,7 +101,12 @@ distinct from recovery observations; no Windows installer ran for extraction.
    Keep stock protection intact; measure response, distortion, latency,
    power, hotplug and resume before claiming improvement.
 
-The ThinkPad kit is ready for coordinated installation. The shared units and
-its isolated runtime case passed; see [installation](SPEAKER_INSTALL.md). Live
-hotplug/resume, acoustic quality, protection behaviour and latency still need
+The ThinkPad kit is installed and active after the authorized deployment.
+Its actual preset, IR, plugins and physical output passed live checks, and
+login startup is enabled with durable private rollback. See the
+[deployment receipt](../evidence/thinkpad-speaker-deployment-2026-10-12.json)
+and [installation](SPEAKER_INSTALL.md). The shared units and isolated graph
+case remain inherited acceptance. Owner listening and actual post-reboot
+startup are pending observation. Live hotplug/resume, acoustic quality,
+protection behaviour and latency still need
 physical qualification.
