@@ -5,15 +5,16 @@ login startup configured; ROG stereo tuning restored after four-channel
 investigation; ROG restored to 2048 frames after reviewed rollback; ThinkPad
 retains its 256-frame request with recovery assets; its sustained check
 remains active; ROG stopped on error growth after 67.982
-seconds; a ROG post-session startup race is under
-offline investigation after restoration of its tuned preset.
+seconds; the native startup fix is implemented, with candidate compilation,
+independent review and focused acceptance pending. The installed tuned runtime
+remains the prior version.
 
 | Work | State | Next evidence |
 |---|---|---|
 | Hardware inventory | Both laptops inspected read-only | Refresh during installation |
 | ASUS speaker tuning | Full tuned path preserved after reviewed removal of failed 256-frame request; short 2048-frame observation retained | Review/test startup fix and 512-frame candidate; physical hotplug and measurements |
 | ThinkPad speaker tuning | Separate Lenovo music/balanced candidate running; live preset, IR, plugins and hardware output verified | Owner listening, physical hotplug and measurements |
-| Laptop installation runtime | Both tuned paths restored/active; ROG session-start autoload bypass observed and restored; inherited acceptance retained | Review/test permanent startup fix, actual post-reboot observation |
+| Laptop installation runtime | Installed tuned paths restored/active; additive startup fix implemented but candidate compile/acceptance pending | Complete candidate package, review and affected tests; actual post-reboot observation |
 | Diagnostics and latency | Both tuned drivers reduced from 42.667 to 5.333 ms in retained paired receipts; PRs 5–7 reviewed/tested | Complete sustained checks, then physical measurements |
 | Host Atmos | 15 tests and focused CI cleanup acceptance passed in PR 1 | Actual JOC reference media and physical qualification |
 | macOS comparison | M4 Air getter and silent-running snapshots complete; 16 summary tests passed in PR 5 | Matched Linux software observations, then physical comparison |
@@ -354,10 +355,17 @@ microphone. The nested signal's `playback_performed: false` describes its
 preparation stage; later operation entries describe actual playback. Those
 scopes do not qualify physical latency or calibrated sound quality.
 
-The runtime owner is preparing the startup correction in a separate offline
-source/build workspace. This integration batch currently contains documentation
-and progress evidence only. It will receive the runtime source and completed
-stability receipts before independent adversarial review and affected tests.
+The native builder's authored commit `d9a9cad7` is integrated with its
+additive route-cache patch, source/header pins, `+rog2` package/build contract,
+focused synthetic cases and [upgrade procedure](SPEAKER_AUTOLOAD.md).
+The original accepted patch bytes and licences are preserved. Candidate
+compilation/export and final stability receipts remain pending; independent
+adversarial review and affected acceptance follow the complete batch. No new
+unit or graph case has executed. The focused coverage comprises the extended
+source method, 13 actual-header autoload cases, 10 build-orchestration cases,
+three event-order graph selectors, the two existing ASUS/Lenovo loader-route
+selectors invalidated by the new runtime, and one new 512-frame lifecycle
+method. Unit method counts and graph selector counts remain separate.
 No candidate fix is installed and no active hour is interrupted for that work.
 Accepted unchanged units remain retained.
 

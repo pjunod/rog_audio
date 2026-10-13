@@ -224,7 +224,8 @@ automatically performed. The startup correction was not installed, and the
 cause of this later error growth remains unestablished.
 
 The operator diagnosed a separate session-start ordering race; its permanent
-runtime fix remains offline work. A successful timed run after manual
+runtime fix is implemented in the offline source; candidate compilation,
+review and focused acceptance remain pending. A successful timed run after manual
 restoration would not establish reliable automatic preset loading.
 
 The [scoped v3 receipt](../evidence/speaker-listening-stability-v3-2026-10-13.json)

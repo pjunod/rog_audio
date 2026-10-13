@@ -31,8 +31,8 @@ error growth after 67.982 seconds. Its owned 256-frame request was removed
 using the reviewed rollback; the full tuning now runs at the larger
 2048-frame period. Neither laptop has a completed-hour receipt yet. A ROG session restart exposed preset autoload
 bypass despite consistent tuning files; its exact tuned preset was restored
-without changing physical volume. The permanent startup correction is being
-built offline. [Current progress](docs/STATUS.md#startup-and-sustained-check-progress--2026-10-13)
+without changing physical volume. The native startup correction is implemented; its candidate build,
+independent review and focused acceptance remain pending. [Current progress](docs/STATUS.md#startup-and-sustained-check-progress--2026-10-13)
 keeps the interrupted attempts, restored live state and pending fix distinct.
 
 Display work remains in [rog_hdr_dv](https://github.com/pjunod/rog_hdr_dv).
@@ -47,6 +47,7 @@ Display work remains in [rog_hdr_dv](https://github.com/pjunod/rog_hdr_dv).
 - [Lenovo speaker preparation](docs/LENOVO_SPEAKER_PROFILE.md) — exact first-generation X1 Extreme source, identity and offline candidates.
 - [ASUS four-channel mapping](docs/ASUS_FOUR_CHANNEL.md) — why the investigated profile needs explicit rear-pair routing and stereo remains the working fallback.
 - [Speaker installation](docs/SPEAKER_INSTALL.md) — scoped runtime and reversible file kit.
+- [Speaker autoload](docs/SPEAKER_AUTOLOAD.md) — native device-return fix, bounded build and unchanged-tuning runtime upgrade.
 - [Latency build](docs/AUDIO_LATENCY_BUILD.md) — inspection, measurements and candidates.
 - [Linux tuned-path timing](docs/LINUX_AUDIO_PATH.md) — inspect the active processor and apply or remove one private latency request.
 - [CoreAudio timing](docs/COREAUDIO_LATENCY.md) — read-only Mac output terms, M4 Air observations and physical measurement limits.

@@ -225,8 +225,12 @@ exposed autoload bypass when device-route availability preceded node handling.
 The operator reported consistent tuning/route files and restored the exact
 native tuned preset, retaining physical volume. The full ASUS chain then
 passed bounded zero-PCM checks and entered a fresh hour. This demonstrates
-restoration, not reliable automatic startup. A permanent runtime correction
-is being developed offline; it is not installed during the active hour.
+restoration, not reliable automatic startup. The native runtime correction is implemented; candidate compilation and
+focused acceptance remain pending. It is not installed during the active hour.
+[Speaker autoload](SPEAKER_AUTOLOAD.md) owns the exact `+rog2` package contract,
+unchanged-tuning kit regeneration, retained rollback and coordinated upgrade
+steps. Use that procedure after review and affected acceptance; do not relax
+runtime/kit identity checks or duplicate a new migration path.
 [Progress and retained attempts](STATUS.md#startup-and-sustained-check-progress--2026-10-13)
 remain separate from this installation procedure and prior acceptance.
 

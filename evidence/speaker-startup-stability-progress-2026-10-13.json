@@ -125,7 +125,7 @@
     "restoration": "exact-native-tuned-preset-restored",
     "physical_volume_percent_preserved": 94,
     "bounded_post_restoration_sampled_errors": 0,
-    "permanent_runtime_fix": "offline-investigation-and-build-pending-review",
+    "permanent_runtime_fix": "implemented-candidate-compilation-review-and-focused-acceptance-pending",
     "active_hour_interrupted_for_fix": false
   },
   "limits": [
@@ -253,5 +253,15 @@
       "speaker_state_preserved": true,
       "temporary_input_gain": 0.2
     }
-  ]
+  ],
+  "source_candidate": {
+    "authored_commit": "d9a9cad7cd12e6d4d582162919a962b3d3745182",
+    "patch": "patches/easyeffects/0002-Retain-output-routes-for-device-return.patch",
+    "upstream_commit": "6d9b1220d3dcebb154ba759a05600662bc0af549",
+    "expected_package": "rog-audio-easyeffects_8.2.8+rog2_amd64.deb",
+    "candidate_compilation": "pending",
+    "focused_acceptance": "not-executed",
+    "live_deployment": "not-installed",
+    "method_document": "docs/SPEAKER_AUTOLOAD.md"
+  }
 }

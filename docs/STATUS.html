@@ -9,14 +9,15 @@ h1{font-size:2rem}h2{color:#91d7ee}a{color:#91d7ee}table{border-collapse:collaps
 <p>investigation; ROG restored to 2048 frames after reviewed rollback; ThinkPad</p>
 <p>retains its 256-frame request with recovery assets; its sustained check</p>
 <p>remains active; ROG stopped on error growth after 67.982</p>
-<p>seconds; a ROG post-session startup race is under</p>
-<p>offline investigation after restoration of its tuned preset.</p>
+<p>seconds; the native startup fix is implemented, with candidate compilation,</p>
+<p>independent review and focused acceptance pending. The installed tuned runtime</p>
+<p>remains the prior version.</p>
 <table>
 <tr><td>Work</td><td>State</td><td>Next evidence</td></tr>
 <tr><td>Hardware inventory</td><td>Both laptops inspected read-only</td><td>Refresh during installation</td></tr>
 <tr><td>ASUS speaker tuning</td><td>Full tuned path preserved after reviewed removal of failed 256-frame request; short 2048-frame observation retained</td><td>Review/test startup fix and 512-frame candidate; physical hotplug and measurements</td></tr>
 <tr><td>ThinkPad speaker tuning</td><td>Separate Lenovo music/balanced candidate running; live preset, IR, plugins and hardware output verified</td><td>Owner listening, physical hotplug and measurements</td></tr>
-<tr><td>Laptop installation runtime</td><td>Both tuned paths restored/active; ROG session-start autoload bypass observed and restored; inherited acceptance retained</td><td>Review/test permanent startup fix, actual post-reboot observation</td></tr>
+<tr><td>Laptop installation runtime</td><td>Installed tuned paths restored/active; additive startup fix implemented but candidate compile/acceptance pending</td><td>Complete candidate package, review and affected tests; actual post-reboot observation</td></tr>
 <tr><td>Diagnostics and latency</td><td>Both tuned drivers reduced from 42.667 to 5.333 ms in retained paired receipts; PRs 5–7 reviewed/tested</td><td>Complete sustained checks, then physical measurements</td></tr>
 <tr><td>Host Atmos</td><td>15 tests and focused CI cleanup acceptance passed in PR 1</td><td>Actual JOC reference media and physical qualification</td></tr>
 <tr><td>macOS comparison</td><td>M4 Air getter and silent-running snapshots complete; 16 summary tests passed in PR 5</td><td>Matched Linux software observations, then physical comparison</td></tr>
@@ -308,10 +309,17 @@ h1{font-size:2rem}h2{color:#91d7ee}a{color:#91d7ee}table{border-collapse:collaps
 <p>microphone. The nested signal&#x27;s `playback_performed: false` describes its</p>
 <p>preparation stage; later operation entries describe actual playback. Those</p>
 <p>scopes do not qualify physical latency or calibrated sound quality.</p>
-<p>The runtime owner is preparing the startup correction in a separate offline</p>
-<p>source/build workspace. This integration batch currently contains documentation</p>
-<p>and progress evidence only. It will receive the runtime source and completed</p>
-<p>stability receipts before independent adversarial review and affected tests.</p>
+<p>The native builder&#x27;s authored commit `d9a9cad7` is integrated with its</p>
+<p>additive route-cache patch, source/header pins, `+rog2` package/build contract,</p>
+<p>focused synthetic cases and [upgrade procedure](SPEAKER_AUTOLOAD.md).</p>
+<p>The original accepted patch bytes and licences are preserved. Candidate</p>
+<p>compilation/export and final stability receipts remain pending; independent</p>
+<p>adversarial review and affected acceptance follow the complete batch. No new</p>
+<p>unit or graph case has executed. The focused coverage comprises the extended</p>
+<p>source method, 13 actual-header autoload cases, 10 build-orchestration cases,</p>
+<p>three event-order graph selectors, the two existing ASUS/Lenovo loader-route</p>
+<p>selectors invalidated by the new runtime, and one new 512-frame lifecycle</p>
+<p>method. Unit method counts and graph selector counts remain separate.</p>
 <p>No candidate fix is installed and no active hour is interrupted for that work.</p>
 <p>Accepted unchanged units remain retained.</p>
 <p>The latency tool now also prepares a 512/48000 candidate (10.667 ms) while</p>
