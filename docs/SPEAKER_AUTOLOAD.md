@@ -1,7 +1,7 @@
 # Speaker autoload — recover the preset when the output device returns
 
-**Status:** reviewed native fixes compiled and packaged; final receipt review and
-focused acceptance pending · **Updated:** 2026-10-13.
+**Status:** adversarial review cleared; compiled runtime, 29 selected units and
+six isolated runtime graph selectors passed; physical session-return pending · **Updated:** 2026-10-13.
 
 Companion to [speaker installation](SPEAKER_INSTALL.md), which owns installation
 and rollback. This document describes the native device-return fix and its
@@ -98,15 +98,28 @@ That recorded incremental run used two compiler workers within the same two-CPU,
 6 GiB slot; the production recipe keeps one worker. Export verified all 711
 source files again, excluding only CMake-generated `src/.qmlls.ini`. The baseline
 and intermediate image IDs remain distinguishable. No units or runtime graph
-selectors ran during compilation; the corrected source must compile/export and
-clear focused re-review before acceptance starts.
+selectors ran during compilation. The corrected source subsequently compiled,
+exported and cleared focused re-review before acceptance started.
 
 The [corrected compiler/package receipt](../evidence/speaker-autoload-reviewed-build-2026-10-13.json)
 binds the reviewed model fix to the new binary and complete source. The exact
 model delta reused the preceding build objects and linked successfully within
 the same resource bounds. The synthetic late-binding sink helper also compiled;
-its runtime graph selector remains unexecuted pending final receipt review.
+its runtime graph selector passed after final receipt review.
 Both compiler receipts retain their actual hashes, timestamps and image parents.
+
+[Selective acceptance](../evidence/speaker-autoload-acceptance-2026-10-13.json)
+passed after source and artifact review: one source-preparation method on macOS;
+17 actual-header methods, ten build-contract methods and the one 512 lifecycle
+method in the bounded native Linux runner; four new autoload graph selectors
+and both original ASUS/Lenovo loader-route selectors. Every method and graph
+ran once with no skips or test failures. The first detached-container setup
+failed before any Linux method ran; an attached owned SSH session fixed its
+lifetime without host service changes. Logs and generated graph data are
+retained durably. Every graph receipt binds the final binary. The reviewed
+source is frozen at `b5dc408fbc91fda4e1ba846890597d245a6d8d3c`; subsequent integration
+changes were documentation/evidence only. This receipt remains separate from
+future laptop session-return, listening and latency measurements.
 
 ## Regenerate kit metadata without changing tuning bytes
 

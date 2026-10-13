@@ -1,0 +1,31 @@
+{
+  "acoustic_or_physical_latency_measurement": false,
+  "assertions": [
+    "automatic preset selected; unrelated route index preserved it",
+    "ordinary app processed",
+    "explicit HDMI preserved",
+    "explicit USB preserved",
+    "actual preset/IR/plugins loaded",
+    "default change preserved",
+    "route-event DSP bypass before 1000 ms autoload",
+    "stock startup/config/control isolated",
+    "graceful quit restored exact typed metadata pair",
+    "physical default remains USB"
+  ],
+  "binary_sha256": "5686f784a6de02e72a4fb6cb08ff9022e675eb3c61a67634ae6305a5597ca7c4",
+  "bypass_rms": 0.07071067690287594,
+  "case": "asus-loader-route",
+  "corrected_rms": 0.05405861482705702,
+  "evidence_kind": "isolated-synthetic-runtime",
+  "hardware": {
+    "amplifiers": "CS35L56",
+    "codec": "10ec0285",
+    "count": 2,
+    "speaker_id": 0,
+    "subsystem": "10431c63"
+  },
+  "physical_device_or_session_access": false,
+  "schema_version": 1,
+  "speaker_bundle_manifest_sha256": "9859c31d7e262268da6a062eb140fe29cbb299467c972ffd6df5dc9783f56ca7",
+  "status": "passed"
+}

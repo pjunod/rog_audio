@@ -1,0 +1,202 @@
+{
+  "acceptance_code_commit": "b5dc408fbc91fda4e1ba846890597d245a6d8d3c",
+  "acoustic_or_physical_latency_measurement": false,
+  "activation_state": "not-installed",
+  "binary_sha256": "5686f784a6de02e72a4fb6cb08ff9022e675eb3c61a67634ae6305a5597ca7c4",
+  "documentation_only_delta_preserves_tested_code": true,
+  "environment_setup_failures": [
+    {
+      "exit_code": 255,
+      "host_linger_or_service_changes": false,
+      "kind": "owned-container-lifetime-after-detached-SSH",
+      "linux_unit_methods_executed": 0,
+      "log_sha256": "b8e5bb9f3299b18b27f021d6901c95273a5573e75341e4acd3d138e62a490aac",
+      "resolution": "keep-owned-container-attached-to-active-SSH-during-acceptance"
+    }
+  ],
+  "evidence_kind": "reviewed-selective-units-and-isolated-synthetic-runtime",
+  "final_integration_documentation_commit": "53d610edd24ff5da0ab727f4cc903442f81c8581",
+  "owned_acceptance_cleanup": {
+    "container_removed": true,
+    "host_services_or_linger_changed": false,
+    "keeper_exit_code": 137,
+    "keeper_session_ended": true,
+    "receipts_retained_before_cleanup": true,
+    "runtime_image_retained": true,
+    "stop_signal_escalated_to": "SIGKILL",
+    "stop_timeout_seconds": 10
+  },
+  "package_sha256": "b24e9c97fa1d892c4f1eede22ab5f0bf2669f7b0d3cc5c7985cae4965bd0582a",
+  "physical_device_or_session_access": false,
+  "physical_session_return_acceptance": "pending separate operator window",
+  "retained_linux_receipt_archive_sha256": "94a2e08c7bf97fe2f2719e2fa4294e06a0418453ce05eec6c25365db7f2e2a90",
+  "review_order": "independent-adversarial-source-and-artifact-review-before-execution",
+  "reviewed_public_acceptance_payload_sha256": "7449072672e2c39d5f9bbbdc49680a435f4f50677eefcd44f582c990ce2afdc4",
+  "reviewed_source_archive_sha256": "bbe4fd84dba91beb7c84094c86c4f908e41f4230264c40c064e754b7dc54836a",
+  "runtime_environment": {
+    "cpu_period_us": 100000,
+    "cpu_quota_us": 200000,
+    "host_mounts": 0,
+    "memory_and_swap_bytes": 12884901888,
+    "memory_bytes": 6442450944,
+    "network": "none",
+    "pids_limit": 2048,
+    "platform": "Linux amd64",
+    "python_version": "Python 3.14.8"
+  },
+  "runtime_graph_count": 6,
+  "runtime_graph_failure_count": 0,
+  "runtime_graphs": [
+    {
+      "assertion_count": 10,
+      "attempts": 1,
+      "case": "asus-loader-route",
+      "receipt_sha256": "43a59de1eb0f5d77e7f81c51016f07108436b531583c51efce4e1896621dfe6f",
+      "status": "passed"
+    },
+    {
+      "assertion_count": 6,
+      "attempts": 1,
+      "case": "device-return",
+      "receipt_sha256": "f7989e685e211749c1cbe04112d4c730e3a137c03f724bbe357afaea54e98565",
+      "status": "passed"
+    },
+    {
+      "assertion_count": 5,
+      "attempts": 1,
+      "case": "late-profile-binding",
+      "receipt_sha256": "c304bf92ebdbd994d1ac69fea2c52fd5e27d668e095dc7a64e9c9a5027428318",
+      "status": "passed"
+    },
+    {
+      "assertion_count": 10,
+      "attempts": 1,
+      "case": "lenovo-loader-route",
+      "receipt_sha256": "4e5dca34a0d1122343f7ae275d5a91b113536f190f49851c39f9b196820d4155",
+      "status": "passed"
+    },
+    {
+      "assertion_count": 5,
+      "attempts": 1,
+      "case": "node-before-route",
+      "receipt_sha256": "cf989a7deedd5f395c10bce8bd16370e61d39c5f56fa8e3d9532c8231ab493b4",
+      "status": "passed"
+    },
+    {
+      "assertion_count": 5,
+      "attempts": 1,
+      "case": "route-before-node",
+      "receipt_sha256": "750910b1fb548a9e0298b30fb4825675614b8bb7638335c149215e55337c8dce",
+      "status": "passed"
+    }
+  ],
+  "schema_version": 1,
+  "skipped_count": 0,
+  "source_commit": "6d9b1220d3dcebb154ba759a05600662bc0af549",
+  "source_manifest_sha256": "b484ce170e1fc50b80b2e26f21d483c8ac078a1caf8faad856298b144a243d4d",
+  "source_unit_environment": {
+    "platform": "macOS",
+    "python_version": "3.14.7",
+    "scratch_kind": "owned-durable"
+  },
+  "status": "passed",
+  "synthetic_kit_bindings": {
+    "asus": {
+      "activation_state": "not-installed",
+      "binary_sha256": "5686f784a6de02e72a4fb6cb08ff9022e675eb3c61a67634ae6305a5597ca7c4",
+      "binding": "invented-alsa_output.test.analog-stereo-Speakers-profile0",
+      "impulse_sha256": "1d30e4445384b6a03af2eaa85fae6d73ce1bf1ff986d201cdb4162e4116d5661",
+      "kit_sha256": "f302a7c4621d76189b453760442f4e220ca23118928fc1167eee9f3bd0b16a75",
+      "preset_sha256": "f4e1d0d45ec0f25935816a0a2517db17fd7dae8d6a644488b21beb622a5e7c58",
+      "speaker_source_all_bytes_retained": true
+    },
+    "thinkpad": {
+      "activation_state": "not-installed",
+      "binary_sha256": "5686f784a6de02e72a4fb6cb08ff9022e675eb3c61a67634ae6305a5597ca7c4",
+      "binding": "invented-alsa_output.test.analog-stereo-Speakers-profile0",
+      "impulse_sha256": "2040c08e3d19489331ace93d2503431ea1a63425d99fb8ad6a80977e2ad8b058",
+      "kit_sha256": "480c06c2f0cf402d075a0638667ddcd1855a9533ee7a3c8dc53e4325ac15def6",
+      "preset_sha256": "b765f964beb72310451daa428f2acdf9919b78bcd431c240d7bc05e2ef1887f8",
+      "speaker_source_all_bytes_retained": true
+    }
+  },
+  "test_methods_repeated": false,
+  "unit_count": 29,
+  "unit_failure_count": 0,
+  "units": [
+    {
+      "executions_per_method": 1,
+      "log_sha256": "ecbc30041a833b71af89534955b08cea4f2c0b1af4e124db1d4967ab15ce6930",
+      "methods": [
+        "test_easyeffects_runtime.SourcePreparationTests.test_pinned_objects_exclude_working_tree_and_patches_apply_inside_git"
+      ],
+      "platform": "macOS",
+      "selection": "source",
+      "skipped_count": 0,
+      "status": "passed",
+      "test_count": 1
+    },
+    {
+      "executions_per_method": 1,
+      "log_sha256": "4c5a87723cab68177454a0b544afeac10b5c25adf92b292652458773acc69928",
+      "methods": [
+        "test_easyeffects_autoload.OutputAutoloadTests.test_binding_change",
+        "test_easyeffects_autoload.OutputAutoloadTests.test_description_change",
+        "test_easyeffects_autoload.OutputAutoloadTests.test_device_id_reuse",
+        "test_easyeffects_autoload.OutputAutoloadTests.test_duplicate_route_notification",
+        "test_easyeffects_autoload.OutputAutoloadTests.test_invalidation",
+        "test_easyeffects_autoload.OutputAutoloadTests.test_invalidation_same_route",
+        "test_easyeffects_autoload.OutputAutoloadTests.test_missing_profile",
+        "test_easyeffects_autoload.OutputAutoloadTests.test_node_before_route",
+        "test_easyeffects_autoload.OutputAutoloadTests.test_node_return",
+        "test_easyeffects_autoload.OutputAutoloadTests.test_notification_removal",
+        "test_easyeffects_autoload.OutputAutoloadTests.test_pending_invalidation_same_route",
+        "test_easyeffects_autoload.OutputAutoloadTests.test_profile_isolation",
+        "test_easyeffects_autoload.OutputAutoloadTests.test_queued_node_removal",
+        "test_easyeffects_autoload.OutputAutoloadTests.test_queued_node_reuse",
+        "test_easyeffects_autoload.OutputAutoloadTests.test_route_before_node",
+        "test_easyeffects_autoload.OutputAutoloadTests.test_stale_route",
+        "test_easyeffects_autoload.OutputAutoloadTests.test_volume_update"
+      ],
+      "platform": "Linux amd64",
+      "selection": "autoload",
+      "skipped_count": 0,
+      "status": "passed",
+      "test_count": 17
+    },
+    {
+      "executions_per_method": 1,
+      "log_sha256": "28b429b72f714c16a2623908fb442766de518ee6943c4aefe368b8031f2a72df",
+      "methods": [
+        "test_easyeffects_build.RuntimeBuildTests.test_compile_timeout_retains_partial_diagnostics",
+        "test_easyeffects_build.RuntimeBuildTests.test_docker_uses_the_same_bounds_without_podman_jobs",
+        "test_easyeffects_build.RuntimeBuildTests.test_existing_image_is_a_conflict_without_creating_output",
+        "test_easyeffects_build.RuntimeBuildTests.test_exported_binary_mismatch_fails_and_removes_owned_container",
+        "test_easyeffects_build.RuntimeBuildTests.test_exported_old_package_version_fails",
+        "test_easyeffects_build.RuntimeBuildTests.test_exported_package_mismatch_fails",
+        "test_easyeffects_build.RuntimeBuildTests.test_exported_source_manifest_mismatch_fails",
+        "test_easyeffects_build.RuntimeBuildTests.test_failed_compile_retains_source_log_and_cleans_only_owned_context",
+        "test_easyeffects_build.RuntimeBuildTests.test_podman_native_build_and_export_are_bounded_and_durable",
+        "test_easyeffects_build.RuntimeBuildTests.test_unknown_engine_cannot_execute_or_create_output"
+      ],
+      "platform": "Linux amd64",
+      "selection": "build",
+      "skipped_count": 0,
+      "status": "passed",
+      "test_count": 10
+    },
+    {
+      "executions_per_method": 1,
+      "log_sha256": "d5cd142bd7e9a5b929a641708a0db2ec9cb54ce3c370fce03d720b1c5c5e1248",
+      "methods": [
+        "test_audio_path_trial.TrialTests.test_512_cli_lifecycle_preserves_tuning_and_unrelated_config"
+      ],
+      "platform": "Linux amd64",
+      "selection": "trial-512",
+      "skipped_count": 0,
+      "status": "passed",
+      "test_count": 1
+    }
+  ],
+  "unrelated_accepted_suites_repeated": false
+}

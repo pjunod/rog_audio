@@ -1,6 +1,6 @@
 # EasyEffects runtime source series
 
-**Status:** additive device-return autoload fix implemented; rebuild/review pending ·
+**Status:** additive fix compiled; review, selected units and isolated graphs passed ·
 **Updated:** 2026-10-13.
 
 [The source manifest](source.json) pins upstream v8.2.8 and each patch hash.

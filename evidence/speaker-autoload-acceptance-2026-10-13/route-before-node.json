@@ -1,0 +1,19 @@
+{
+  "acoustic_or_physical_latency_measurement": false,
+  "assertions": [
+    "real Device route observed before its sink at zero autoload interval",
+    "exact bound speaker preset selected by native IPC",
+    "actual bound IR, plugins and speaker interception loaded",
+    "headphones selected empty fallback and released correction ownership",
+    "all kit payload bytes retained"
+  ],
+  "autoload_interval_ms": 0,
+  "binary_sha256": "5686f784a6de02e72a4fb6cb08ff9022e675eb3c61a67634ae6305a5597ca7c4",
+  "case": "route-before-node",
+  "evidence_kind": "isolated-synthetic-runtime",
+  "physical_device_or_session_access": false,
+  "schema_version": 1,
+  "source_commit": "6d9b1220d3dcebb154ba759a05600662bc0af549",
+  "speaker_bundle_manifest_sha256": "9859c31d7e262268da6a062eb140fe29cbb299467c972ffd6df5dc9783f56ca7",
+  "status": "passed"
+}
