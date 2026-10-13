@@ -293,14 +293,15 @@ units remain retained because their sources are unchanged.
 ## Startup and sustained-check progress — 2026-10-13
 
 The [progress record](../evidence/speaker-startup-stability-progress-2026-10-13.json)
-retains the sole live operator's reports. Both normal-use hours are active;
+binds the sole live operator's [sanitized interim receipt](../evidence/speaker-listening-stability-interim-2026-10-13.json)
+and private launch/helper hashes. Both normal-use hours are active;
 neither has a completed continuous-monitoring and final-preservation receipt.
 Expected finish times are targets, not observations of a pass.
 
 | System and attempt | Observed outcome | Separate next interval |
 |---|---|---|
 | ROG initial attempt | Aborted before the timed interval when startup driver errors increased above the retained baseline; owned test processes removed and failure evidence retained | A new session has its own counter baseline; the earlier failure remains recorded |
-| ThinkPad initial attempt | Stopped after 581.040 seconds on volume change from 20% to 74%; sampled driver count stayed at 1, sampled DSP/owned source counts stayed zero | Retry starts a fresh full hour and logs volume adjustments as normal-use conditions |
+| ThinkPad initial attempt | Stopped on volume change; attempt plus cleanup lasted 581.040 seconds from 20% to 74%; sampled driver count stayed at 1, sampled DSP/owned source counts stayed zero | Retry starts a fresh full hour and logs volume adjustments as normal-use conditions |
 | ThinkPad normal-use retry | Active from 10:02:02 Eastern; observed 74% starting volume preserved; full Lenovo chain at 256/48000 | Expected finish 11:02:02; final counter, continuity and preservation receipts pending |
 | ROG post-session normal-use run | Active from 10:09:39 Eastern after exact ASUS tuned-preset restoration; physical 94% volume preserved; sampled starting errors zero at 256/48000 | Expected finish 11:09:39; final counter, continuity and preservation receipts pending |
 

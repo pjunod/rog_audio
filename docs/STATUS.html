@@ -252,13 +252,14 @@ h1{font-size:2rem}h2{color:#91d7ee}a{color:#91d7ee}table{border-collapse:collaps
 <p>units remain retained because their sources are unchanged.</p>
 <h2>Startup and sustained-check progress — 2026-10-13</h2>
 <p>The [progress record](../evidence/speaker-startup-stability-progress-2026-10-13.json)</p>
-<p>retains the sole live operator&#x27;s reports. Both normal-use hours are active;</p>
+<p>binds the sole live operator&#x27;s [sanitized interim receipt](../evidence/speaker-listening-stability-interim-2026-10-13.json)</p>
+<p>and private launch/helper hashes. Both normal-use hours are active;</p>
 <p>neither has a completed continuous-monitoring and final-preservation receipt.</p>
 <p>Expected finish times are targets, not observations of a pass.</p>
 <table>
 <tr><td>System and attempt</td><td>Observed outcome</td><td>Separate next interval</td></tr>
 <tr><td>ROG initial attempt</td><td>Aborted before the timed interval when startup driver errors increased above the retained baseline; owned test processes removed and failure evidence retained</td><td>A new session has its own counter baseline; the earlier failure remains recorded</td></tr>
-<tr><td>ThinkPad initial attempt</td><td>Stopped after 581.040 seconds on volume change from 20% to 74%; sampled driver count stayed at 1, sampled DSP/owned source counts stayed zero</td><td>Retry starts a fresh full hour and logs volume adjustments as normal-use conditions</td></tr>
+<tr><td>ThinkPad initial attempt</td><td>Stopped on volume change; attempt plus cleanup lasted 581.040 seconds from 20% to 74%; sampled driver count stayed at 1, sampled DSP/owned source counts stayed zero</td><td>Retry starts a fresh full hour and logs volume adjustments as normal-use conditions</td></tr>
 <tr><td>ThinkPad normal-use retry</td><td>Active from 10:02:02 Eastern; observed 74% starting volume preserved; full Lenovo chain at 256/48000</td><td>Expected finish 11:02:02; final counter, continuity and preservation receipts pending</td></tr>
 <tr><td>ROG post-session normal-use run</td><td>Active from 10:09:39 Eastern after exact ASUS tuned-preset restoration; physical 94% volume preserved; sampled starting errors zero at 256/48000</td><td>Expected finish 11:09:39; final counter, continuity and preservation receipts pending</td></tr>
 </table>

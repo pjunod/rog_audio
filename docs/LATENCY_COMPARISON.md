@@ -203,7 +203,8 @@ Sonos Arc/eARC remains deferred until the internal-speaker work is qualified.
 The [progress receipt](../evidence/speaker-startup-stability-progress-2026-10-13.json)
 is an operator-reported snapshot, not a completed measurement. ROG's initial
 attempt stopped before timing on a startup counter increase. ThinkPad's first
-attempt stopped after 581.040 seconds when volume changed from 20% to 74%;
+attempt stopped when volume changed from 20% to 74%; its elapsed time of
+581.040 seconds includes cleanup, not exact uninterrupted active coverage;
 its sampled driver count stayed at 1 and DSP/source counts stayed zero.
 The revised normal-use method logs volume adjustments without writing volume,
 while retaining strict processing, routing, service, counter and continuity
