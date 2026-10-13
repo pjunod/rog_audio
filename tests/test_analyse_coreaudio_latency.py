@@ -101,6 +101,25 @@ class SummaryTests(unittest.TestCase):
         self.assertIsNone(result['default_route_stable_during_snapshot'])
         self.assertIsNone(result['devices'][0]['is_default_output'])
 
+    def test_stable_defaults_missing_from_output_inventory_remain_partial(self):
+        for missing in ('empty-inventory', 'default-output', 'system-output'):
+            with self.subTest(missing=missing):
+                raw = fixture()
+                if missing == 'empty-inventory':
+                    raw['devices']['value'] = []
+                elif missing == 'default-output':
+                    raw['devices']['value'][0]['object_id'] = 9
+                else:
+                    raw['system_output_before'] = property_value(9)
+                    raw['system_output_after'] = property_value(9)
+                result = coreaudio.summarise(raw, HASH)
+                self.assertEqual(result['collection_status'], 'partial')
+                self.assertTrue(result['default_route_stable_during_snapshot'])
+                self.assertEqual(len(result['devices']), 0 if missing == 'empty-inventory' else 1)
+                if result['devices']:
+                    self.assertEqual(result['devices'][0]['reported_properties']['buffer_frames']['value'], 480)
+                    self.assertEqual(result['devices'][0]['buffer_period_ms'], 10)
+
     def test_multiple_outputs_streams_and_unclassified_terminal_not_invented(self):
         raw = fixture()
         other = copy.deepcopy(raw['devices']['value'][0])

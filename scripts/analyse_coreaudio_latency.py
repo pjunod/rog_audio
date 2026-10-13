@@ -156,7 +156,9 @@ def summarise(capture, source_sha256):
                                'buffer_period_ms': frames_ms(integers['buffer_frames']['value'], nominal),
                                'reported_device_latency_ms': frames_ms(integers['output_device_latency_frames']['value'], nominal),
                                'safety_offset_ms': frames_ms(integers['output_safety_offset_frames']['value'], nominal)})
-    partial = device_list['status'] != 'ok' or stable is not True or any(
+    defaults_listed = all(value['value'] in seen_devices for value in defaults.values()
+                          if value['status'] == 'ok' and value['value'] != 0)
+    partial = device_list['status'] != 'ok' or stable is not True or not defaults_listed or any(
         device['output_streams_status'] != 'ok' or device['transport_status'] != 'ok' or
         device['reported_properties']['is_alive']['value'] == 0 or
         any(value['status'] != 'ok' for value in device['reported_properties'].values()) or
