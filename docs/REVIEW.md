@@ -189,3 +189,38 @@ were repeated. The [receipt](../evidence/audio-path-preset-list-acceptance-2026-
 records exact sources, method IDs and log hashes. The owned container was
 confirmed absent. Live activation and physical qualification remain separate
 from these synthetic regression results.
+
+## Physical interaction emitter — source review before focused acceptance
+
+Two independent adversarial reviews examined the PR 8 batch at `d70ab967`.
+They found two issues. A failed arm after waveform creation could overwrite
+the downloadable reference while leaving the prior session metadata. The
+emitter now holds that waveform locally and publishes it only with a
+successful session. The existing failure method now covers both an initial
+post-buffer failure and a later failure preserving the prior matching pair.
+
+The method also rejected valid negative click-to-chirp intervals, although
+switch actuation can precede the audible mechanical click. It now retains
+valid signed values. Any condition containing a negative value uses a signed
+summary of the whole condition; the existing nonnegative analyser receives
+no truncated subset, shifted values or replacement presses. Its source is
+unchanged.
+
+Both reviewers cleared exact source `66080621` before execution. All ten new
+methods passed once in 0.513 seconds, with zero failures or skips under
+Python 3.14.7 and Node v26.8.1. The [acceptance receipt](../evidence/physical-emitter-acceptance-2026-10-13.json)
+binds the five exact source/test hashes, reviewed source archive, method IDs
+and private log/result hashes. No unchanged analyser, native, speaker or
+CoreAudio methods were repeated. No browser or audio device was opened by
+the synthetic cases.
+
+Separate unarmed Chrome 155.0.8059.40 smoke passed at the same runtime
+source for local-file/CSP load, initial controls and diagnostic JSON download.
+It observed zero AudioContext creations, only three local page/script
+requests and no console errors. The private receipt, screenshot and script
+hashes are bound in the public acceptance receipt. Real-browser reference
+WAV download was not exercised because the page was never armed.
+
+Armed browser/device behaviour and actual physical captures remain separate
+acceptance work. The interrupted laptop stability attempts do not qualify
+the emitter or either full-hour check.
