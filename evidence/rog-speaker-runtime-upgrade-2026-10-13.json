@@ -1,0 +1,63 @@
+{
+  "end_to_end_latency_ms": null,
+  "evidence_kind": "live-software-operational-observation",
+  "finish_utc": "2026-10-13T16:49:53.948927+00:00",
+  "host": "lab5",
+  "kind": "speaker-runtime-upgrade-and-autoload",
+  "kit_sha256": "896418bea876af751fc3d32a1f61d39bc4d504f12755eda3551502acf5c68c6e",
+  "limits": [
+    "Native preset loading was observed during controlled service starts, not a new ROG reboot.",
+    "Source/isolated-test acceptance is inherited from merged PR9, not rerun during deployment.",
+    "This does not qualify physical hotplug, measured loudness, physical latency or a final-runtime hour."
+  ],
+  "login_target_link_valid": true,
+  "main_rc_changes": [
+    "Selected preset usage count5\u21926 persisted during controlled quit.",
+    "Installer emitted one additional trailing blank line.",
+    "A later native controlled save removed that trailing blank line and persisted count6\u21927; that later lifecycle is recorded in the 512 receipt."
+  ],
+  "main_rc_semantic_settings_preserved": true,
+  "manual_preset_restore_performed": false,
+  "native_tuned_preset_auto_loaded": true,
+  "new_unit_or_native_acceptance_tests_run": false,
+  "non_main_plugin_rc_byte_records_preserved": true,
+  "old_package_retained_and_verified": true,
+  "old_runtime_binary_sha256": "e5061dcc1e0b925933eceeacffb576536d24f609307166b97d0e159c0f1772d1",
+  "old_runtime_package_sha256": "089ae964c8e1b75281d589a6cd52a3a25d358f9443112162fea616b69b5904d7",
+  "owner_volume_changed_by_agent": false,
+  "package_scope": "one candidate package upgrade; no dependency additions, upgrades or removals",
+  "physical_and_virtual_owner_volume": 1.0,
+  "physical_latency_ms": null,
+  "pipewire_and_wireplumber_preserved": true,
+  "post_upgrade_silent_observation": {
+    "audible_signal_generated": false,
+    "driver_quantum_frames": 2048,
+    "driver_rate_hz": 48000,
+    "owned_player_elapsed_seconds": 12.107915163040161,
+    "recording_performed": false,
+    "startup_zero_quantum_placeholders_retained": true,
+    "usable_driver_error_counts": [
+      3,
+      3,
+      3,
+      3
+    ],
+    "usable_driver_samples": 4,
+    "zero_error_startup_claimed": false
+  },
+  "reviewed_tested_source_head": "31c211a",
+  "runtime_binary_sha256": "5686f784a6de02e72a4fb6cb08ff9022e675eb3c61a67634ae6305a5597ca7c4",
+  "runtime_package_bytes": 3742540,
+  "runtime_package_sha256": "b24e9c97fa1d892c4f1eede22ab5f0bf2669f7b0d3cc5c7985cae4965bd0582a",
+  "runtime_package_version": "8.2.8+rog2",
+  "runtime_release": "v0.2.1",
+  "runtime_rollback_snapshot_sha256": "7eb6a20ee8d3f836fdc57f1124cb963ffbf1c1c803aea05fc38cc6ff48ec8cf6",
+  "schema_version": 1,
+  "source_archive_sha256": "a65df3d7ed0833e7f975198dc31104cfd4887d42d113e99483695d0cb0708b6e",
+  "source_merge_commit": "30125c0d5769fbc43925012e00a0c3fc185f9c1a",
+  "source_operation_sha256": "c1f8c1cc8ac6106ea4248a4c2418dd9f5e17cdd13fedb05c4f6730de3cf0f321",
+  "speaker_startup_enabled": true,
+  "start_utc": "2026-10-13T16:49:39.267823+00:00",
+  "startup_unit_sha256": "6a6603dabd7188909d8dd7810f2af6dc8a622074da2b616bad64a474d8bb4b0a",
+  "tuning_payload_byte_records_preserved": true
+}

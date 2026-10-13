@@ -73,7 +73,7 @@ python3 scripts/audio_path_trial.py prepare \
 
 The default request remains 256/48000, or 5.333 ms per cycle if negotiated.
 The tool also prepares 128/48000 and 512/48000 requests for separate observed
-experiments. The 512-frame candidate adds processing time (10.667 ms at
+experiments. The 512-frame candidate offers a longer scheduling period (10.667 ms at
 48 kHz) after the ROG's 256-frame run stopped on monitored error growth; its
 live stability and physical latency remain unqualified. None of these requests
 forces the linked driver to that period. Do not infer physical performance
@@ -248,7 +248,7 @@ checks prove parser/file/rule behavior; they do not prove negotiated running
 latency, audible stability, physical hotplug, power cost or Mac parity.
 
 
-### 512-frame follow-up — source under review, not acceptance
+### 512-frame follow-up — focused file-lifecycle acceptance passed
 
 The expanded rule and CLI allowlists add 512 frames without changing the
 256-frame default or the file-only lifecycle. One new synthetic method,
@@ -258,8 +258,10 @@ install/status/remove, archived rule bytes and full restoration of tuning,
 runtime/kit identity and an unrelated config file with its mode. Unsupported
 values and types remain refused. No existing test treated 512 as invalid.
 
-Only Python syntax compilation has run for this change. Its focused method
-requires Linux `renameat2`; execute it in the isolated Linux environment after
-the complete startup/stability batch has cleared adversarial review. Retain
-accepted unchanged 128/256 and native/Mac/speaker evidence. This test proves
-scoped file behaviour, not real-driver negotiation or sustained stability.
+The focused method passed once using Linux `renameat2` after independent
+adversarial review, within PR 9's 29 affected unit methods and six separate
+isolated graph selectors. The [acceptance receipt](../evidence/speaker-autoload-acceptance-2026-10-13.json)
+retains exact method and log bindings. Accepted unchanged 128/256 and
+native/Mac/speaker evidence remains retained. This synthetic test proves
+scoped file behaviour. The later [live status](STATUS.md) records the separate
+ROG 512-frame short check; sustained and physical qualification remain open.
