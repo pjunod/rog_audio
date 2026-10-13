@@ -41,7 +41,7 @@ class TrialTests(unittest.TestCase):
         self.capture['speaker_before'] = state; self.capture['speaker_after'] = copy.deepcopy(state)
         return rc, text, kit['preset_name']
 
-    def test_512_cli_lifecycle_preserves_tuning_and_unrelated_config(self):
+    def period_cli_lifecycle(self, quantum):
         self.config.mkdir(parents=True, exist_ok=True)
         unrelated = self.config/'operator-existing.conf'
         unrelated.write_bytes(b'operator-config=preserved\n'); unrelated.chmod(0o640)
@@ -51,21 +51,21 @@ class TrialTests(unittest.TestCase):
         capture_file = self.root/'capture.json'
         capture_file.write_bytes(trial.speaker.encoded(self.capture))
         argv = ['audio_path_trial.py', 'prepare', '--capture', str(capture_file),
-                '--quantum', '512', '--output', str(self.bundle)]
+                '--quantum', str(quantum), '--output', str(self.bundle)]
         with mock.patch.object(sys, 'argv', argv), mock.patch('sys.stdout', new_callable=io.StringIO) as output:
             self.assertEqual(trial.main(), 0)
         self.assertEqual(json.loads(output.getvalue())['activation_state'], 'not-installed')
         self.assertFalse(self.target.exists())
         manifest = json.loads((self.bundle/'manifest.json').read_bytes())
-        self.assertEqual(manifest['quantum_frames'], 512)
+        self.assertEqual(manifest['quantum_frames'], quantum)
         self.assertEqual(manifest['rate_hz'], 48000)
-        self.assertAlmostEqual(manifest['requested_period_ms'], 512*1000/48000)
+        self.assertAlmostEqual(manifest['requested_period_ms'], quantum*1000/48000)
         self.assertEqual(manifest['validation_state'], 'source-derived-not-yet-native-validated')
         installed = self.install()
         self.assertEqual(installed['status'], 'installed-files')
         self.assertFalse(installed['runtime_started'])
         content = self.target.read_bytes()
-        self.assertIn(b'node.latency = "512/48000"', content)
+        self.assertIn(f'node.latency = "{quantum}/48000"'.encode(), content)
         self.assertNotIn(b'force-quantum', content)
         self.assertNotIn(b'stream.rules', content)
         self.assertEqual(trial.status(self.snapshot, self.env),
@@ -77,15 +77,26 @@ class TrialTests(unittest.TestCase):
         new_files = after['pipewire_config']['files']
         self.assertEqual(set(new_files), set(old_files) | {trial.FILE})
         self.assertEqual({name: value for name, value in new_files.items() if name != trial.FILE}, old_files)
-        removed = trial.remove(self.snapshot, self.root/'archive-512', self.inv, self.env)
+        removed = trial.remove(self.snapshot, self.root/f'archive-{quantum}', self.inv, self.env)
         self.assertEqual(removed['status'], 'removed-files')
         self.assertFalse(removed['runtime_started'])
         self.assertFalse(self.target.exists())
         self.assertEqual(trial.status(self.snapshot, self.env),
                          {'status': 'removed', 'owned_file': 'absent'})
-        self.assertEqual((self.root/'archive-512/quarantine/removed-rule.conf').read_bytes(), content)
+        self.assertEqual((self.root/f'archive-{quantum}/quarantine/removed-rule.conf').read_bytes(), content)
         self.assertEqual(trial.path.state_snapshot(self.kit, self.binary, self.env), baseline)
-        for unsupported in (True, '512', 64, 1024):
+
+    def test_512_cli_lifecycle_preserves_tuning_and_unrelated_config(self):
+        self.period_cli_lifecycle(512)
+
+    def test_1024_cli_lifecycle_preserves_tuning_and_unrelated_config(self):
+        self.period_cli_lifecycle(1024)
+
+    def test_2048_cli_lifecycle_preserves_tuning_and_unrelated_config(self):
+        self.period_cli_lifecycle(2048)
+
+    def test_period_requests_reject_noninteger_and_unsupported_sizes(self):
+        for unsupported in (True, '1024', 64, 768, 4096, None):
             with self.subTest(unsupported=unsupported), self.assertRaises(ValueError):
                 trial.rule(unsupported)
 

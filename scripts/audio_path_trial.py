@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 """Prepare/install/remove one private candidate filter latency request.
 
+Supported 48 kHz requests: 128, 256, 512, 1024 and 2048 frames.
+Larger requests support stability recovery; actual negotiation must be observed.
 File changes are explicit subcommands. No audio/service/session operation is run.
 """
 import argparse
@@ -18,6 +20,7 @@ import inspect_audio as inventory
 import inspect_audio_path as path
 import speaker_install as speaker
 
+SUPPORTED_QUANTA = (128, 256, 512, 1024, 2048)
 FILE = 'client.conf.d/90-rog-audio-latency-trial.conf'
 STATES = {'snapshot-complete', 'installing', 'installed', 'install-incomplete', 'removed'}
 
@@ -29,7 +32,7 @@ class RemovalConflict(ValueError):
 
 
 def rule(quantum):
-    if type(quantum) is not int or quantum not in (128, 256, 512):
+    if type(quantum) is not int or quantum not in SUPPORTED_QUANTA:
         raise ValueError('unsupported period request')
     return ('# One private output filter; a suggestion, never a forced graph period.\n'
             'filter.rules = [\n  { matches = [ {\n'
@@ -453,7 +456,8 @@ def main():
     parser = PrivateArgumentParser(description=__doc__)
     sub = parser.add_subparsers(dest='command', required=True)
     prepare_parser = sub.add_parser('prepare'); prepare_parser.add_argument('--capture', required=True)
-    prepare_parser.add_argument('--quantum', type=int, choices=(128, 256, 512), default=256)
+    prepare_parser.add_argument('--quantum', type=int, choices=SUPPORTED_QUANTA, default=256,
+                                help="48 kHz filter period request; actual negotiated period must be observed")
     prepare_parser.add_argument('--output', required=True)
     install_parser = sub.add_parser('install')
     for name in ('bundle', 'kit', 'runtime', 'snapshot'): install_parser.add_argument('--'+name, required=True)

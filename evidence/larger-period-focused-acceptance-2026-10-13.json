@@ -1,0 +1,82 @@
+{
+  "date": "2026-10-13",
+  "first_attempt": {
+    "error": "Linux renameat2 required by production atomic-quarantine removal guard",
+    "errored_methods": [
+      "test_audio_path_trial.TrialTests.test_512_cli_lifecycle_preserves_tuning_and_unrelated_config",
+      "test_audio_path_trial.TrialTests.test_1024_cli_lifecycle_preserves_tuning_and_unrelated_config",
+      "test_audio_path_trial.TrialTests.test_2048_cli_lifecycle_preserves_tuning_and_unrelated_config"
+    ],
+    "finish_utc": "2026-10-13T21:27:13.578513+00:00",
+    "log_bytes": 5529,
+    "log_sha256": "1e1f5be37a3d13204871b2e5ec00ca6683b7b5ef2f02a0305daf54f9089eaea2",
+    "passed_methods": [
+      "test_audio_path_trial.TrialTests.test_period_requests_reject_noninteger_and_unsupported_sizes"
+    ],
+    "platform": "macOS",
+    "returncode": 1,
+    "selectors": [
+      "test_audio_path_trial.TrialTests.test_512_cli_lifecycle_preserves_tuning_and_unrelated_config",
+      "test_audio_path_trial.TrialTests.test_1024_cli_lifecycle_preserves_tuning_and_unrelated_config",
+      "test_audio_path_trial.TrialTests.test_2048_cli_lifecycle_preserves_tuning_and_unrelated_config",
+      "test_audio_path_trial.TrialTests.test_period_requests_reject_noninteger_and_unsupported_sizes"
+    ],
+    "start_utc": "2026-10-13T21:27:13.115427+00:00"
+  },
+  "kind": "larger-period-focused-unit-acceptance",
+  "limits": [
+    "Synthetic file lifecycle and validation tests; no laptop activation, acoustic measurement or new sustained-hour result.",
+    "Scratch parent and logs retained privately; individual unittest fixtures clean themselves up."
+  ],
+  "linux_retry": {
+    "archive_sha256": "e8cb1b555958d051256342d03900e16d615bc5315478afa9e9ce3e1140efcc47",
+    "attempt": 2,
+    "elapsed_seconds": 1.691995544009842,
+    "finish_utc": "2026-10-13T21:35:50.263115+00:00",
+    "host_audio_session_device_mounts": false,
+    "image_sha256": "d75f27386d140602e579ead6165f6f9118a395e41429782c89921529781c81fb",
+    "kind": "larger-period-focused-linux-retry",
+    "laptop_operations": false,
+    "log_bytes": 674,
+    "log_sha256": "14cb1881f0e97c8b90dba8ecb864580d6284951055820cb11cbb8d7e9c3a7df0",
+    "native_or_programme_suites_repeated": false,
+    "owned_container_removed": true,
+    "owned_scratch_retained": true,
+    "passing_validation_method_repeated": false,
+    "pre_container_runner_refusal": "First Linux staging runner raised a Python Path/string TypeError before container creation or test execution; corrected runner only.",
+    "read_only_public_source": true,
+    "returncode": 0,
+    "reviewed_pr_head": "26cc384c5ae33683ccbbaa5eaccaab1bf5a79962",
+    "schema_version": 1,
+    "selectors": [
+      "test_audio_path_trial.TrialTests.test_512_cli_lifecycle_preserves_tuning_and_unrelated_config",
+      "test_audio_path_trial.TrialTests.test_1024_cli_lifecycle_preserves_tuning_and_unrelated_config",
+      "test_audio_path_trial.TrialTests.test_2048_cli_lifecycle_preserves_tuning_and_unrelated_config"
+    ],
+    "source_commit": "2c940fa2d3b56fc3cbb874781b77b72f9dfe827f",
+    "source_hashes_match_after_run": true,
+    "source_sha256": {
+      "scripts/audio_path_trial.py": "faf03f62a333ac667cfff7810a268af6859ed74f2fcbb79722c8b8304f4c72ea",
+      "tests/test_audio_path_trial.py": "36fe8fc2ed21da75a21bcdf98a0130982080eb0e6a15e99760f36dc52f2c8286"
+    },
+    "start_utc": "2026-10-13T21:35:48.571115+00:00",
+    "verified_bounds": {
+      "CpuPeriod": 100000,
+      "CpuQuota": 200000,
+      "Memory": 6442450944,
+      "MemorySwap": 6442450944,
+      "NetworkMode": "none",
+      "PidsLimit": 2048
+    }
+  },
+  "native_or_programme_suites_repeated": false,
+  "reviewed_pr_head": "26cc384c5ae33683ccbbaa5eaccaab1bf5a79962",
+  "schema_version": 1,
+  "source_changed_for_retry": false,
+  "source_commit": "2c940fa2d3b56fc3cbb874781b77b72f9dfe827f",
+  "source_sha256": {
+    "scripts/audio_path_trial.py": "faf03f62a333ac667cfff7810a268af6859ed74f2fcbb79722c8b8304f4c72ea",
+    "tests/test_audio_path_trial.py": "36fe8fc2ed21da75a21bcdf98a0130982080eb0e6a15e99760f36dc52f2c8286"
+  },
+  "unique_methods_accepted": 4
+}

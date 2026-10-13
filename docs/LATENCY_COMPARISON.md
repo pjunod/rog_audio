@@ -1,7 +1,7 @@
 # Latency comparison — tuned Linux laptops and the M4 Air
 
 **Status:** historical paired results retained; ThinkPad v0.2.0 hour complete
-at 256 frames; ROG corrected-runtime short check at 512 passed; final hours and physical tests pending ·
+at 256 frames; ROG short 512 pass retained but later 512 baseline failed; larger recovery requests and fresh hours pending ·
 **Written:** 2026-10-13 · **Executes:** latency phase in
 [implementation](AUDIO_IMPLEMENTATION.md).
 
@@ -162,11 +162,20 @@ driver during those paired trials. The later ROG failure and rollback
 restored 2048/48000; ThinkPad retains 256/48000. Section 8 records that
 subsequent state.
 
-| Host | Paired baseline | Final software period | Processing and error observations |
+| Host | Paired baseline | Observed paired software period | Processing and error observations |
 |---|---|---|---|
 | ROG | Driver 2048/48000 = 42.667 ms | Driver 256/48000 = 5.333 ms | Full ASUS chain and both hardware channels; all sampled driver/DSP error counters zero |
 | ThinkPad | Driver 2048/48000 = 42.667 ms | Driver 256/48000 = 5.333 ms | Full Lenovo chain and both hardware channels; startup reached driver count 1 in both runs, later five running samples stayed at 1 |
 | M4 Air | Separate getter reference, not a Linux-style paired trial | HAL buffer 512/48000 = 10.667 ms | Device-running false/true/false; no equivalent error counter collected |
+
+The identical Linux before/after entries are discrete negotiated driver
+periods under the same 100 ms client request, not independently timed physical
+latency averages. Both drivers selected the same integer sizes. Real stability
+later differed: ROG failed its 256-frame run, while ThinkPad completed its
+old-runtime hour. ROG's later 512-frame short pass also did not predict a
+subsequent six-second +rog2 baseline with driver ERR 3→4→4. That new failure
+preceded the gain update; do not rewrite the earlier bounded pass as a failure
+or combine either interval into an hour.
 
 The Linux scheduling period is one eighth of its paired baseline. That ratio
 does not describe acoustic delay. The Mac used `afplay` and reports a different
@@ -252,3 +261,28 @@ The owned all-zero stream and separate listening/recording overlaps do not
 substitute for a physical response-time distribution or absence of audible
 gaps. [Current status](STATUS.md#startup-and-sustained-check-progress--2026-10-13)
 records the later bounded observations and their separate remaining work.
+
+
+## Larger recovery requests — source implemented, live qualification pending
+
+The additive [trial-tool support](LINUX_AUDIO_PATH.md#prepare-an-inactive-filter-request)
+adds 1024/48000 (21.333 ms) and 2048/48000 (42.667 ms) to the existing guarded
+private request mechanism. Default 256, exact filter matching, protected tuning,
+rollback and environment/conflict checks remain unchanged. Final independent
+review cleared before the four affected methods: refactored 512 lifecycle,
+new 1024 and 2048 full API lifecycles with CLI preparation, and invalid-type/
+unsupported-size rejection. Validation passed first on macOS; the three
+Linux-only removal lifecycles passed after retrying only their platform errors.
+The [receipt](../evidence/larger-period-focused-acceptance-2026-10-13.json) retains both attempts. No native
+runtime rebuild or repeated programme/unchanged latency suites is needed.
+
+The ROG's private 512 fragment was removed. Its +rog2 shared graph actually
+negotiated 1024/48000 with a browser requesting that period: 11 samples, ERR
+4 unchanged, original tuning active. The expected historical 2048 period was
+not reproduced; that failed assertion does not show timing failure at 2048.
+A new guarded 1024 trial after tool merge and +rog3 update remain pending;
+recoverable 2048 is available if needed. ThinkPad's corrected +rog3 deployment
+passed a separate 20.162-second 256/48000 check, ERR 0 unchanged. Its independent
+256 request and original voicing are preserved. Fresh provisional-default
+hours follow the kept running settings, and do not establish everyday listening,
+physical delay, hotplug/resume, gaming load or power equivalence.

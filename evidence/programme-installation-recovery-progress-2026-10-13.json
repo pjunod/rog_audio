@@ -1,0 +1,61 @@
+{
+  "accepted_programme_source_commit": "589aec2f1a2ff7f20ff03f951ebffd6191abd7d9",
+  "date": "2026-10-13",
+  "kind": "final-programme-installation-and-recovery-progress",
+  "lab5": {
+    "512_frame_baseline": {
+      "driver_errors": [
+        3,
+        4,
+        4
+      ],
+      "observations": 3,
+      "rate_hz": 48000,
+      "result": "refused before package, settings or service changes"
+    },
+    "current_original_tuning_automatically_loaded": true,
+    "current_runtime_version": "8.2.8+rog2",
+    "directed_actual_negotiation": {
+      "driver_errors_final": 4,
+      "driver_errors_initial": 4,
+      "ordered_identical_fl_fr_chain_observed": true,
+      "quantum_frames": 1024,
+      "rate_hz": 48000,
+      "shared_graph_browser_request": "1024/48000",
+      "usable_observations": 11
+    },
+    "latency_request_fragment_removed": true,
+    "new_hour_completed": false,
+    "programme_runtime_installed": false,
+    "receipts": {
+      "512_refusal_sha256": "9df89d5988abb89746459484b299eebaa44b6f4e30878a6d4e489f0b1c22434a",
+      "directed_actual_negotiation_sha256": "6fddd602d08a5b57873a3634d25fda2e2d284c1764f4433d155bdf36c01e3147",
+      "fragment_removal_and_resume_sha256": "8bd4c8753d4a57ac2d692654e6553cb14e611adbae5a223e13c0787d76a3b86b"
+    },
+    "restored_request_state": "no private latency request fragment; previous 2048 physical negotiation was not reproduced"
+  },
+  "lab6": {
+    "current_latency_request_frames": 256,
+    "current_original_tuning_automatically_loaded": true,
+    "current_runtime_version": "8.2.8+rog1",
+    "dead_native_lock_modified_by_agent": false,
+    "enabled_login_startup_preserved": true,
+    "native_programme_preset_load_observed": true,
+    "new_hour_completed": false,
+    "owner_gain_stock_services_route_hardware_controls_preserved": true,
+    "programme_package_installed_then_recovered": true,
+    "recovery_guard_conflict": "only an inactive Qt lock contained the stopped candidate PID; all other settings, files and directories matched the snapshot",
+    "recovery_receipt_sha256": "41912007f144638098b8a3adf4ff78d4a2838e1b5cd1925fd1e808dd8d4f5daa",
+    "verification_failure": "preset diagnostic lacked offscreen environment; runtime log records successful autoload"
+  },
+  "limits": [
+    "progress only; neither final programme installation nor new sustained acceptance complete",
+    "driver counters and graph periods do not measure acoustic delay or listening quality",
+    "automatic service start is observed; no new reboot, resume or physical hotplug performed",
+    "Sonos untouched"
+  ],
+  "programme_binary_sha256": "3f110d6a2d1e2c743cc552b58930679acd0c00e45f5771a23d4b7702ca31206d",
+  "programme_package_sha256": "92349a51ba98c6659caabc505f57117b8db46b1c70c705d99ea3449ee16ab6a8",
+  "programme_package_version": "8.2.8+rog3",
+  "schema_version": 1
+}

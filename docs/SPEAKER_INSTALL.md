@@ -1,6 +1,6 @@
 # Speaker installation — exact route, reversible files
 
-**Status:** v0.2.1 published; +rog3 programme candidate accepted; v0.2.2 publication pending; live loudness/hours open ·
+**Status:** v0.2.2 published; +rog3 programme implementation accepted; live loudness/hours open ·
 **Updated:** 2026-10-13 · **Executes:** internal-speaker installation from
 [status](STATUS.md).
 
@@ -11,9 +11,11 @@ preserved preset/IR/autoload and non-main RC bytes, expected main-RC counter
 and formatting changes, retained rollback and unchanged owner volume/stock
 services. Its [short 512-frame check](../evidence/rog-speaker-latency512-short-trial-2026-10-13.json)
 passed separately; no new ROG reboot or full-hour pass is claimed. ThinkPad
-retains its original v0.2.0 runtime at 256 frames while its storage hold is
-resolved; its old-runtime hour and one separate post-boot observation remain
-scoped historical results.
+now runs +rog3 after a corrected retry following a procedural query failure
+and completed old-runtime recovery. Two automatic starts and a 20.162-second
+256-frame check passed, with original IR/non-AutoGain settings and protected
+state intact. Its new hour and everyday loudness acceptance remain pending. The old-runtime hour and one separate post-boot
+observation remain scoped historical results.
 
 The original [ROG](../evidence/rog-speaker-deployment-2026-10-12.json) and
 [ThinkPad](../evidence/thinkpad-speaker-deployment-2026-10-12.json) deployment
@@ -40,15 +42,15 @@ change the physical default sink, set amplifier controls, restart services,
 play audio or record sound. Coordinate the later runtime start and audible
 acceptance window separately.
 
-## Prepared v0.2.2 — publication pending, programme kits bound to +rog3
+## Download v0.2.2 — programme kits bound to +rog3
 
-The v0.2.2 runtime/source/notices archive and both ordinary programme kits are
-prepared privately. Publication is pending final repository validation, merge
-and asset review. The commands below apply after publication succeeds; they
-name this accepted `8.2.8+rog3` batch consistently.
+The [v0.2.2 release](https://github.com/pjunod/rog_audio/releases/tag/v0.2.2)
+contains the accepted `8.2.8+rog3` runtime/source/notices, both ordinary
+programme kits and checksums. Its tag, remote asset hashes and notes were
+verified after direct approval. The commands name this release consistently.
 
 ```bash
-# After v0.2.2 publication, obtain its matching tools and assets.
+# Obtain matching v0.2.2 tools and assets.
 audio_release_root="$HOME/.local/state/rog-audio/work"
 mkdir -p "$audio_release_root"
 git clone --branch v0.2.2 https://github.com/pjunod/rog_audio.git "$audio_release_root/rog-audio-0.2.2"
@@ -263,7 +265,7 @@ remain separate from this installation procedure and prior acceptance.
 ## 5. Build and deliver the usable runtime
 
 The extended source build emits `8.2.8+rog3`, accepted in the isolated
-28-unit/two-graph programme batch. v0.2.2 publication and actual laptop
+28-unit/two-graph programme batch, now published as v0.2.2. Actual laptop
 listening/stability remain pending; published v0.2.1 and its `+rog2` recovery
 artifacts remain unchanged. Read [programme loudness](PROGRAMME_LOUDNESS.md)
 for the independent controls, preserved voicing and source/build contract.
@@ -305,8 +307,8 @@ for `135c60f` is retained unchanged as history; it is superseded for this
 candidate. The separate [corrected +rog3 build receipt](../evidence/programme-loudness-reviewed-build-2026-10-13.json)
 binds 713 exact files and the new package. Its [28-unit/two-graph acceptance](../evidence/programme-loudness-acceptance-2026-10-13.json)
 retains the two first-attempt startup failures, reviewed raw-PCM correction and
-failed-selector-only retries. Final validation/merge, publication and live
-acceptance remain separately recorded in [status](STATUS.md).
+failed-selector-only retries. Its final validation/merge and publication passed; live
+acceptance remains separately recorded in [status](STATUS.md).
 The prerequisite report lists installed versions/providers and missing
 prerequisites without installing anything.
 

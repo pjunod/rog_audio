@@ -1,7 +1,7 @@
 # Physical latency method — record key click and speaker response on one phone
 
 **Status:** local emitter source-reviewed; ten synthetic methods passed once;
-unarmed Chrome smoke passed; manual capture pilot pending; no physical measurements collected · **Written:** 2026-10-13 · **Executes:**
+unarmed Chrome smoke passed on local M3; Firefox/emitter staged on actual M4; manual pilot pending; no physical measurements collected · **Written:** 2026-10-13 · **Executes:**
 physical comparison in [latency comparison](LATENCY_COMPARISON.md).
 
 Companion to [latency tooling](AUDIO_LATENCY_BUILD.md) (trial schema and
@@ -58,6 +58,18 @@ Loading the page creates no AudioContext. Two source-review findings were
 fixed and cleared; ten synthetic methods passed once. The current batch has
 emitted no laptop test sound.
 
+Matched Firefox 157.0.1 and the three pinned emitter files were subsequently
+staged on the actual remote MacBook Air with Apple M4. A host-bound private
+receipt records model identity, exact emitter hashes and browser package
+signature/notarization/quarantine checks. This was staging only: the browser
+was not launched, no AudioContext or playback started, and no new tests or
+physical samples were collected. An earlier private handoff had labelled local
+M3 preparation as M4 readiness; that label was corrected and retained in the
+handoff history. The separately collected M4 HAL observations remain valid.
+The earlier unarmed Chrome smoke is local M3 evidence, not a remote M4 browser
+or acoustic pass. Manual launch, armed output/route checks and the capture
+pilot remain pending. Raw remote receipts and host paths stay private.
+
 The repository also has [offline trial analysis](../scripts/analyse_audio_latency.py),
 [Linux inspection](../scripts/inspect_audio_path.py) and
 [Mac output inspection](../probes/coreaudio/output_inventory.c). Automatic
@@ -110,9 +122,14 @@ physical measurement acceptance.
 ## 3. Preserve the tuned state and coordinate the capture window
 
 Complete software qualification before the coordinated recording session.
-ROG 512 frames has passed one bounded corrected-runtime check; ThinkPad
-256 frames has completed the declared hour on its original runtime. Fresh
-final-configuration hours and the ThinkPad update remain open. Preserve each host's actually accepted
+ROG 512 frames passed one bounded corrected-runtime check but failed a later
+six-second baseline on driver error growth. The private 512 request was
+removed; the +rog2 shared graph negotiated 1024 with ERR 4 unchanged across
+11 samples. An explicit guarded 1024 trial and ROG +rog3 update remain pending;
+larger-request source review and four focused methods passed. ThinkPad's +rog3
+retry succeeded with two automatic starts and a short 256-frame ERR-0 check,
+retaining original voicing. Its old-runtime hour remains historical. Fresh
+provisional-default hours and everyday loudness acceptance remain open. Preserve each host's actually accepted
 runtime, timing and tuning bindings. Record the negotiated running driver
 quantum/rate for each physical capture; the request alone does not establish
 that condition. Keep different periods or runtime versions in separate

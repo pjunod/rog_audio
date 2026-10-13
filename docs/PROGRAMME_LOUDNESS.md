@@ -1,7 +1,7 @@
 # Programme loudness — adjustable makeup with original speaker voicing
 
 **Status:** corrected native source/artifacts reviewed; 28 affected units and
-both isolated model graphs passed; coordinated laptop acceptance pending · **Updated:** 2026-10-13.
+both isolated model graphs passed; ThinkPad deployment/short check passed, fresh hours and everyday listening pending · **Updated:** 2026-10-13.
 
 Companion to [speaker installation](SPEAKER_INSTALL.md) and
 [device-return autoload](SPEAKER_AUTOLOAD.md). This document describes the
@@ -158,8 +158,11 @@ PipeWire/WirePlumber, amplifier firmware or existing hardware protection.
 
 At preparation time, the ROG runs the accepted +rog2 runtime at 512 frames;
 the ThinkPad's existing condition is recorded separately in status. The +rog3
-candidate has not been installed. Final kept gain settings determine the
-subsequent full-hour stability condition. Sonos remains last, after both
+candidate had not been installed at preparation. A fresh full-hour software
+check may run on the reviewed provisional -20 LUFS/model-cap defaults before
+owner listening feedback. Its receipt binds that exact installed condition;
+passing software stability does not accept everyday loudness, and listening
+acceptance does not transfer across changed settings. Sonos remains last, after both
 laptops have accepted everyday loudness and sound quality.
 
 ## 3. Review and run only the affected acceptance selection
