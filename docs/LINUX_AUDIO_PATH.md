@@ -5,8 +5,8 @@ and native filter/config acceptance passed for PR 5; native environment and
 quit-save compatibility fixes passed review and 29 affected methods in PR 6.
 Retaining unchanged preset-use list entries passed independent review and
 eight affected/new methods in PR 7. Larger 1024/2048-frame request support
-is implemented in the current follow-up; final review and four focused
-methods precede acceptance. No larger-period live pass is claimed.
+cleared independent review and four unique focused methods; only three
+macOS platform errors were retried on Linux, where they passed. No larger-period live pass is claimed.
 
 Companion to [latency comparison](LATENCY_COMPARISON.md) (the experiment and
 Mac reference), [installation](SPEAKER_INSTALL.md) (the existing runtime), and
@@ -77,8 +77,9 @@ The default request remains 256/48000, or 5.333 ms per cycle if negotiated.
 The supported 48 kHz requests are 128, 256, 512, 1024 and 2048 frames. One
 shared integer set drives rule construction and CLI choices; bundle and
 snapshot validation reconstruct that same rule. The default remains 256.
-The additive 1024/2048 support is implemented but awaits final review and
-focused acceptance. Existing file/settings/environment/conflict guards are
+The additive 1024/2048 support passed final review and focused acceptance.
+Use the accepted post-v0.2.2 tool source after PR 11 merges; the unchanged
+v0.2.2 tag still has only 128/256/512 requests. Existing file/settings/environment/conflict guards are
 unchanged; these remain private requests, never forced global graph periods.
 
 | Requested frames | Nominal period at 48 kHz | Evidence boundary |
@@ -86,14 +87,15 @@ unchanged; these remain private requests, never forced global graph periods.
 | 128 | 2.667 ms | Existing preparer capability, not a laptop stability pass |
 | 256 | 5.333 ms | Historical paired observations; ROG later failed, ThinkPad old-runtime hour passed |
 | 512 | 10.667 ms | ROG short +rog2 check passed, but a later six-second baseline grew driver ERR 3→4→4 |
-| 1024 | 21.333 ms | New recovery candidate; source review/tests and actual negotiation remain pending |
+| 1024 | 21.333 ms | Source review/tests passed; shared 1024 observed on +rog2, explicit guarded trial pending |
 | 2048 | 42.667 ms | Recoverable prior default; explicit request support is new, not a new hour result |
 
 The latest 512 failure preceded any +rog3 package or gain-preset change. Keep
 it separate from the earlier 20.065-second short pass and the 256 failure.
-Restoration to 2048 is the directed recovery step, not yet a reported outcome
-in this source change. Try 1024 only after this coherent follow-up passes
-review/acceptance and merges; use 2048 if the actual trial fails. Preserve
+Removing the private 512 request restored the original tuning, but the shared
+graph negotiated 1024 with a browser requesting it; historical 2048 was not
+reproduced. This does not qualify an explicit 1024 request. Try that guarded
+request after this accepted follow-up merges; use recoverable 2048 if needed. Preserve
 every failed interval. Observe the running driver quantum/rate; neither the
 request nor its nominal period establishes physical delay or Mac parity.
 

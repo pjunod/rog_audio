@@ -269,13 +269,20 @@ The additive [trial-tool support](LINUX_AUDIO_PATH.md#prepare-an-inactive-filter
 adds 1024/48000 (21.333 ms) and 2048/48000 (42.667 ms) to the existing guarded
 private request mechanism. Default 256, exact filter matching, protected tuning,
 rollback and environment/conflict checks remain unchanged. Final independent
-review precedes the four affected methods: refactored 512 lifecycle, new 1024
-and 2048 full lifecycles, and invalid-type/unsupported-size rejection. No native
+review cleared before the four affected methods: refactored 512 lifecycle,
+new 1024 and 2048 full API lifecycles with CLI preparation, and invalid-type/
+unsupported-size rejection. Validation passed first on macOS; the three
+Linux-only removal lifecycles passed after retrying only their platform errors.
+The [receipt](../evidence/larger-period-focused-acceptance-2026-10-13.json) retains both attempts. No native
 runtime rebuild or repeated programme/unchanged latency suites is needed.
 
-The directed ROG sequence is recoverable 2048 for the +rog3 update, then one
-1024 trial after tool acceptance/merge; retain 2048 if it fails. ThinkPad keeps
-its independent 256 request. These are plans until operator-bound summaries
-record actual negotiated periods and preservation. Fresh provisional-default
+The ROG's private 512 fragment was removed. Its +rog2 shared graph actually
+negotiated 1024/48000 with a browser requesting that period: 11 samples, ERR
+4 unchanged, original tuning active. The expected historical 2048 period was
+not reproduced; that failed assertion does not show timing failure at 2048.
+A new guarded 1024 trial after tool merge and +rog3 update remain pending;
+recoverable 2048 is available if needed. ThinkPad's corrected +rog3 deployment
+passed a separate 20.162-second 256/48000 check, ERR 0 unchanged. Its independent
+256 request and original voicing are preserved. Fresh provisional-default
 hours follow the kept running settings, and do not establish everyday listening,
 physical delay, hotplug/resume, gaming load or power equivalence.

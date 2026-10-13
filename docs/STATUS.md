@@ -1,10 +1,10 @@
 # Status — implementation and physical acceptance
 
 **Updated:** 2026-10-13 · **State:** accepted programme runtime published;
-ThinkPad's original +rog1 package and preset restored after a procedural
-+rog3 first-start query failure; retry remains pending. ROG retains +rog2; its earlier 256 failure and short
+ThinkPad +rog3 installed on corrected retry with original voicing preserved;
+two automatic starts and a 20.162-second 256-frame check passed; new hour pending. ROG retains +rog2; its earlier 256 failure and short
 512 pass remain historical, with a later 512 baseline failing on counter growth.
-**Live state as of:** 2026-10-13 21:17 UTC.
+**Evidence update:** 2026-10-13 21:36 UTC; the dated receipts below retain separate attempts.
 
 All source/artifact findings cleared re-review; 29 affected unit methods and
 six isolated graph selectors passed once, with zero failures or skips. PR 9
@@ -14,8 +14,8 @@ is merged. Fresh final-configuration hours and physical measurements remain open
 |---|---|---|
 | Hardware inventory | Both laptops inspected read-only | Refresh during installation |
 | ASUS speaker tuning | Full tuned path restored; demo clarity feedback positive, everyday movie/show loudness unresolved | Reviewed startup fix installed, short 512 trial passed; final gain configuration, hour and physical checks |
-| ThinkPad speaker tuning | Targeted +rog1 recovery completed and original preset automatically loaded; +rog3 retry pending; old-runtime hour retained | Corrected private query/recovery procedure, then new gain settings and provisional-default hour |
-| Laptop installation runtime | ROG +rog2 unchanged; ThinkPad restored +rog1 with original tuning active | New successful +rog3 transitions and short checks, then fresh runtime/settings-bound hours |
+| ThinkPad speaker tuning | Corrected +rog3 retry succeeded; original IR/non-AutoGain settings preserved; short 256 check passed; old-runtime hour retained | Fresh provisional-default hour and everyday listening |
+| Laptop installation runtime | ROG +rog2 active on shared 1024 graph; ThinkPad +rog3 active with original tuning | Guarded ROG request/update, then fresh runtime/settings-bound hours |
 | Diagnostics and latency | ThinkPad old-runtime hour at 256 complete; ROG short check at 512 passed after 256 failure | Fresh final-configuration hours and physical measurements |
 | Programme loudness | Reviewed corrected `+rog3` build accepted: 28 units passed once; both model graphs passed after failed-selector-only retry | Coordinated deployment and fresh provisional-default software hours; owner listening separately accepts everyday loudness |
 | Host Atmos | 15 tests and focused CI cleanup acceptance passed in PR 1 | Actual JOC reference media and physical qualification |
@@ -675,19 +675,25 @@ suites. ThinkPad separately refused before changes because its older +rog1
 kit omitted package-version metadata; private compatibility review is separate.
 Raw captures and private deployment manifests remain outside Git.
 
-The trial tool now implements shared 128/256/512/1024/2048 integer request
+The trial tool implements shared 128/256/512/1024/2048 integer request
 validation, retaining default 256 and every protected-state/file/environment
-contract. Independent final review and four focused unit methods precede
-acceptance: refactored 512 lifecycle, new 1024 and 2048 prepare/install/status/
-remove lifecycles, and invalid-type/size rejection. No selected test is claimed
-executed yet, and no native code, package, original profile or patch changes.
+contract. Independent source/docs review cleared; four unique focused methods
+are accepted. The invalid-type/size method passed on macOS; three lifecycle
+methods errored only at Linux-only atomic quarantine removal, then passed in
+the retained isolated Linux image. Only those three failed methods were retried;
+reviewed source hashes stayed identical. [The acceptance receipt](../evidence/larger-period-focused-acceptance-2026-10-13.json)
+retains both attempts, exact selectors, log hashes and verified limits. Native
+code, packages, original profiles and patches are unchanged.
 
-The directed live sequence is ROG recovery to 2048, +rog3 update there, then a
-1024 trial after accepted tool merge; retain 2048 if it fails. ThinkPad's
-independent request remains 256. Actual restoration, deployment, negotiation
-and fresh provisional-default hours await operator-bound summaries. Their
-outcomes cannot be inferred from the implemented request choices or previously
-passed source/graph checks; physical latency remains unmeasured.
+[The dated progress receipt](../evidence/programme-installation-recovery-progress-2026-10-13.json)
+records removal of the ROG's private 512 fragment, original +rog2 tuning active,
+and actual shared 1024/48000 negotiation: 11 usable observations at unchanged
+driver ERR 4, with a browser requesting 1024/48000. Earlier 2048 negotiation
+was not reproduced; a private assertion expecting it failed. This is neither
+a new error at 2048 nor an explicit guarded 1024 trial. After accepted tool
+merge, the operator can request and qualify 1024 explicitly, with recoverable
+2048 available if necessary. No ROG +rog3 deployment or fresh hour is claimed.
+ThinkPad retains its independent 256 request. Physical delay remains unmeasured.
 
 
 ## ThinkPad programme-update attempt — query failure and completed recovery
@@ -708,8 +714,17 @@ Targeted recovery subsequently completed: exact original +rog1 was restored
 and the old Lenovo preset automatically loaded. Gains, route, persistent unit
 and target link, stock services and hardware controls were verified unchanged.
 That is restored working state, not a successful new programme deployment.
-The corrected +rog3 retry and provisional-default hour remain pending.
-Source/runtime unit and isolated graph acceptance retain their own evidence
-class. ROG +rog2 is unchanged; no ROG gain update is claimed. Raw locks,
-captures, manifests and recovery data remain private; operator-bound public
-restoration/deployment summaries will be imported after allowlist review.
+The [corrected retry receipt](../evidence/thinkpad-programme-runtime-live-2026-10-13.json)
+subsequently records successful +rog3 installation and two automatic starts.
+Native serialization verifies target −20 LUFS, cap 10.1375 dB, history 15 s,
+silence −50 dB and manual input/output gain 0 dB. The original IR and all
+non-AutoGain plugin settings remain identical. Fresh native IR loading and the
+ordered full stereo route were observed; a 20.162-second check yielded ten
+usable 256/48000 driver observations with ERR 0 unchanged. Owner gains,
+route, startup, stock services and protection were preserved; original +rog1
+rollback assets remain retained. The debug override was removed from the unit,
+while the current process retains its debug environment until normal restart.
+A new hour and ordinary programme listening are still pending. Source/runtime
+unit and isolated graph acceptance remain separate. ROG +rog2 is unchanged;
+no ROG gain update is claimed. Raw locks, captures, manifests and recovery
+data remain private.

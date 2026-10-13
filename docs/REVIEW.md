@@ -331,16 +331,27 @@ controller and actual laptop outcomes are later evidence, not new native
 code acceptance.
 
 
-## Guarded larger-period follow-up — four methods await final review
+## Guarded larger-period follow-up — review clear and four methods accepted
 
 Source commit `fff0936c` was imported with authorship preserved as `2c940fa2`.
 A shared 128/256/512/1024/2048 set drives rule and CLI validation; bundle and
 snapshot readers reconstruct the same rule. Default 256 and protected-state,
 file ownership, environment and rollback guards are unchanged. Four methods
 are selected after independent final source/docs review: the refactored 512
-lifecycle, new 1024/2048 full CLI lifecycles and invalid-type/size rejection.
-No methods or repository checker have executed for this follow-up. Native
-+rog3/source/patch/package bytes and earlier passing suites remain unchanged.
+lifecycle, new 1024/2048 CLI preparation and full API lifecycles, and
+invalid-type/size rejection.
+Independent adversarial review cleared the source/docs at `26cc384c`; its
+P3 wording correction states CLI preparation and full API lifecycles. Four
+unique methods are accepted: validation passed first on macOS; the three
+lifecycles errored at the unchanged Linux-only `renameat2` removal guard and
+passed on Linux retry. Only the errored selectors repeated. The bounded
+Linux image used 2 CPU, 6 GiB memory and total memory/swap, 2048 PIDs and no
+network, with read-only public source and owned scratch. Source hashes were
+identical before/after; the owned container was removed and logs retained.
+[The authentic receipt](../evidence/larger-period-focused-acceptance-2026-10-13.json)
+records both attempts and a staging-runner TypeError before container/test
+execution. No native/programme suites repeated. The final repository checker
+is reserved for integration. Native +rog3/source/patch/package bytes remain unchanged.
 
 The current ROG 512 baseline counter growth is real live timing evidence;
 wrong rollback-path/inventory-header refusals are procedural and pre-mutation.
@@ -348,7 +359,9 @@ The ThinkPad's later +rog3 query failure and initial lock-related recovery
 refusal are separate live evidence. Native logs confirmed the exact new preset
 automatically loaded despite the false query result. Targeted old+rog1 recovery
 then completed with original preset and protected controls/services verified;
-the corrected +rog3 retry remains pending.
-No source autoload regression, successful new deployment or fresh hour is
-inferred from these private-helper failures. Root-cleared public summaries
-will be imported unchanged; raw captures/manifests stay private.
+the corrected +rog3 retry subsequently succeeded, as its separately cleared
+public receipt records. Two automatic starts, native settings/original IR
+verification and a 20.162-second 256-frame ERR-0 check passed. No fresh hour
+is inferred. The two cleared public summaries are imported unchanged; raw
+captures/manifests stay private. ROG shared 1024 negotiation after fragment
+removal is distinct from an explicit guarded trial and remains on +rog2.

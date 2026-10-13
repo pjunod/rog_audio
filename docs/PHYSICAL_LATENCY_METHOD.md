@@ -123,10 +123,13 @@ physical measurement acceptance.
 
 Complete software qualification before the coordinated recording session.
 ROG 512 frames passed one bounded corrected-runtime check but failed a later
-six-second baseline on driver error growth. Recoverable 2048 restoration and
-a new 1024 trial are pending; the larger-request tool awaits review/tests.
-ThinkPad 256 completed the declared hour on its original runtime. Fresh
-provisional-default hours and the gain updates remain open. Preserve each host's actually accepted
+six-second baseline on driver error growth. The private 512 request was
+removed; the +rog2 shared graph negotiated 1024 with ERR 4 unchanged across
+11 samples. An explicit guarded 1024 trial and ROG +rog3 update remain pending;
+larger-request source review and four focused methods passed. ThinkPad's +rog3
+retry succeeded with two automatic starts and a short 256-frame ERR-0 check,
+retaining original voicing. Its old-runtime hour remains historical. Fresh
+provisional-default hours and everyday loudness acceptance remain open. Preserve each host's actually accepted
 runtime, timing and tuning bindings. Record the negotiated running driver
 quantum/rate for each physical capture; the request alone does not establish
 that condition. Keep different periods or runtime versions in separate

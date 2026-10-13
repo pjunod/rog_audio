@@ -1,7 +1,7 @@
 # Programme loudness — adjustable makeup with original speaker voicing
 
 **Status:** corrected native source/artifacts reviewed; 28 affected units and
-both isolated model graphs passed; coordinated laptop acceptance pending · **Updated:** 2026-10-13.
+both isolated model graphs passed; ThinkPad deployment/short check passed, fresh hours and everyday listening pending · **Updated:** 2026-10-13.
 
 Companion to [speaker installation](SPEAKER_INSTALL.md) and
 [device-return autoload](SPEAKER_AUTOLOAD.md). This document describes the

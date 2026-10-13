@@ -11,9 +11,10 @@ preserved preset/IR/autoload and non-main RC bytes, expected main-RC counter
 and formatting changes, retained rollback and unchanged owner volume/stock
 services. Its [short 512-frame check](../evidence/rog-speaker-latency512-short-trial-2026-10-13.json)
 passed separately; no new ROG reboot or full-hour pass is claimed. ThinkPad
-has recovered its original v0.2.0 runtime and tuning after a procedural +rog3
-first-start query failure. Its 256 request is preserved; a corrected programme
-retry remains pending. The old-runtime hour and one separate post-boot
+now runs +rog3 after a corrected retry following a procedural query failure
+and completed old-runtime recovery. Two automatic starts and a 20.162-second
+256-frame check passed, with original IR/non-AutoGain settings and protected
+state intact. Its new hour and everyday loudness acceptance remain pending. The old-runtime hour and one separate post-boot
 observation remain scoped historical results.
 
 The original [ROG](../evidence/rog-speaker-deployment-2026-10-12.json) and
