@@ -1,7 +1,8 @@
 # Linux audio path — inspect tuned playback and trial one latency request
 
 **Updated:** 2026-10-13 · **State:** reviewed; 30 Linux path/trial unit cases
-and native filter/config acceptance passed; live trial follows separately.
+and native filter/config acceptance passed for PR 5; native environment and
+quit-save compatibility fixes passed review and 29 affected methods in PR 6.
 
 Companion to [latency comparison](LATENCY_COMPARISON.md) (the experiment and
 Mac reference), [installation](SPEAKER_INSTALL.md) (the existing runtime), and
@@ -41,6 +42,10 @@ configuration preimage and environment evidence. Keep it out of Git. The public
 `audio-path-summary` is reconstructed from numeric/enumerated fields and hashes;
 it omits arbitrary client names, IDs, addresses, home paths and raw logs.
 Synthetic fixtures are explicitly labeled synthetic.
+New captures also retain the UTF-8 main settings file (`db/easyeffectsrc`),
+bound to its raw hash. Plugin settings remain exact hash records. These private
+preimages support the narrowly scoped controlled-quit comparison below; public
+summaries include neither settings text nor arbitrary environment values.
 
 **How to read it:** running driver quantum/rate gives the observed graph period.
 Follower values are requests, even when they appear beside the driver in
@@ -85,6 +90,17 @@ The PipeWire 1.6.8 implementation applies filter rules during `pw_filter_connect
 `PIPEWIRE_LATENCY` can supersede the request, while `PIPEWIRE_QUANTUM` introduces
 forced timing. The tool checks candidate, current, user-manager and service
 environments and reports unknown/overridden configuration as a conflict.
+The environment reader uses `systemctl --user show --all` for `Environment`
+and a read-only `busctl --user get-property` for the owned service's
+`EnvironmentFiles`. It accepts only a successful typed `a(sb) 0` response as
+proof of no environment files. Missing output, a nonempty array, a different
+type or an unavailable probe remains a conflict. The
+[systemd 261 formatter](https://github.com/systemd/systemd/blob/v261/src/systemctl/systemctl-show.c)
+prints each array entry and omits an empty array even with `--all`; its
+[D-Bus declaration](https://github.com/systemd/systemd/blob/v261/src/core/dbus-execute.c)
+retains the typed property. The owning user's session bus and `busctl` must be
+available; an unknown property or service remains unavailable, with no alias
+fallback.
 
 Preparation requires the inspected PipeWire 1.6.8/WirePlumber 0.5.17 versions,
 48 kHz graph configuration, unforced timing, consistent route and speaker
@@ -117,6 +133,20 @@ override introduced during snapshotting rejects the addition.
 The journal records incomplete installation if publication or persistence
 fails. No command starts playback or a service. Restart only the candidate
 through its established user service, then verify its exact tuning and links.
+
+A controlled quit can save the preset-use bookkeeping counter. Native evidence
+from 2026-10-13 showed only `[StreamOutputs] usedPresets` changing from the
+installed preset's count 1 to 2. Installation therefore permits only an
+increasing count for one exact `rog-speaker-<16 hex digits>` kit preset entry
+in that key. Every other main-settings byte, section/key, permission, plugin
+settings record, payload, runtime, route and PipeWire preimage must match.
+Different names, decreasing/malformed counts, lists of presets, added keys,
+`mostUsedPresets` changes and all other differences are conflicts. Earlier
+captures without hash-bound raw main-settings text require an exact match.
+The baseline capture retains the original raw text and the installation
+snapshot retains the stopped raw text and hashes. The tool rewrites no settings.
+After snapshotting the stopped state must still match exactly; this exception
+does not excuse concurrent changes or a counter change during capture.
 
 For the deployed laptops, transition from the original transient listener to
 the already-enabled `rog-audio-speaker.service` before collecting the fresh
@@ -177,6 +207,10 @@ file lifecycle. Other selectors cover compilation, native config parsing,
 the exact four-property match, each single-property mismatch and environment
 precedence. A failed unit method can be selected by its full ID. Skips, empty
 suites and invalid IDs do not count as acceptance.
+The follow-up source adds positive/missing/nonempty/malformed typed-property
+cases and controlled-quit counter acceptance/refusal/preimage cases in these
+two unit modules. Their new execution remains pending independent source
+review; previous PR 5 passes do not validate these changes.
 
 Keep the original 42-test latency receipt and accepted speaker graph receipts
 when their inputs remain unchanged. Record each new pass/failure once, retry

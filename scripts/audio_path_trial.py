@@ -9,6 +9,7 @@ import errno
 import json
 import os
 from pathlib import Path
+import re
 import stat
 import sys
 
@@ -156,6 +157,71 @@ def check_observation(observed, kit, versions):
         raise ValueError('graph forcing changed')
 
 
+def restart_state_equivalent(before, after, preset):
+    """Permit only the observed quit-save counter increment, never DSP drift.
+
+    Both raw main-RC preimages stay in the private capture/snapshot. Earlier
+    captures without that evidence can still match exactly, but cannot use
+    this exception. All other bytes and metadata must remain identical.
+    """
+    if before == after:
+        return True
+    main = 'db/easyeffectsrc'
+    if not isinstance(before, dict) or not isinstance(after, dict):
+        return False
+    # The only schema addition is this private preimage. An earlier capture
+    # may still match all its original records exactly; it cannot excuse a
+    # different RC hash, size or permission without its own retained text.
+    if 'main_rc_text' not in before and 'main_rc_text' in after:
+        return before == {key: value for key, value in after.items() if key != 'main_rc_text'}
+    if before.keys() != after.keys():
+        return False
+    if any(before[k] != after[k] for k in before if k not in ('rc', 'main_rc_text')):
+        return False
+    if not isinstance(preset, str) or not re.fullmatch(r'rog-speaker-[0-9a-f]{16}', preset):
+        return False
+    normalized, counts = [], []
+    for state in (before, after):
+        records = state.get('rc')
+        text = state.get('main_rc_text')
+        if not isinstance(records, dict) or main not in records or not isinstance(text, str):
+            return False
+        record = records[main]
+        raw = text.encode('utf-8')
+        if (not isinstance(record, dict) or set(record) != {'exists', 'sha256', 'size_bytes', 'mode'}
+                or record['exists'] is not True or record['sha256'] != speaker.sha(raw)
+                or record['size_bytes'] != len(raw) or len(raw) > speaker.MAX_FILE):
+            return False
+        # Require strict valid INI and a single exact, directly scoped key.
+        parser = path.configparser.ConfigParser(interpolation=None); parser.optionxform = str
+        try:
+            parser.read_string(text)
+        except path.configparser.Error:
+            return False
+        section, found, lines = None, False, []
+        for line in text.splitlines(keepends=True):
+            header = re.fullmatch(r'\[([^\]\r\n]+)\](?:\r?\n)?', line)
+            if line.lstrip().startswith('['):
+                section = header[1] if header else None
+            if section == 'StreamOutputs' and line.startswith('usedPresets='):
+                match = re.fullmatch(r'usedPresets=(rog-speaker-[0-9a-f]{16}):(0|[1-9][0-9]{0,9})(\r?\n)?', line)
+                if found or not match or match[1] != preset or int(match[2]) > 2**31-1:
+                    return False
+                counts.append(int(match[2])); found = True
+                lines.append('usedPresets='+preset+':<retained-counter>'+ (match[3] or ''))
+            else:
+                lines.append(line)
+        if not found:
+            return False
+        normalized.append(''.join(lines))
+    if before['rc'].keys() != after['rc'].keys():
+        return False
+    if any(before['rc'][key] != after['rc'][key] for key in before['rc'] if key != main):
+        return False
+    return (before['rc'][main]['mode'] == after['rc'][main]['mode']
+            and normalized[0] == normalized[1] and counts[1] > counts[0])
+
+
 def install(bundle, kit_path, runtime, snapshot, observed, overrides, environment=None,
             refresh_inventory=None, refresh_overrides=None):
     root, manifest, content = load_bundle(bundle)
@@ -164,7 +230,7 @@ def install(bundle, kit_path, runtime, snapshot, observed, overrides, environmen
     if not no_overrides(overrides):
         raise ValueError('unknown or overridden restart environment')
     current, config = current_state(kit_path, runtime, environment)
-    if current != manifest['baseline']:
+    if not restart_state_equivalent(manifest['baseline'], current, kit['preset_name']):
         raise ValueError('baseline settings or configuration changed')
     target = config/FILE
     if target.exists() or target.is_symlink():

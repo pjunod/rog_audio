@@ -6,16 +6,16 @@ h1{font-size:2rem}h2{color:#91d7ee}a{color:#91d7ee}table{border-collapse:collaps
 </style><main><h1>Status — implementation and physical acceptance</h1>
 <p>**Updated:** 2026-10-13 · **State:** both speaker candidates installed with</p>
 <p>login startup configured; ROG stereo tuning restored after four-channel</p>
-<p>investigation; latency comparison implementation is in progress.</p>
+<p>investigation; PR 5 merged and scoped latency trials are in progress.</p>
 <table>
 <tr><td>Work</td><td>State</td><td>Next evidence</td></tr>
 <tr><td>Hardware inventory</td><td>Both laptops inspected read-only</td><td>Refresh during installation</td></tr>
 <tr><td>ASUS speaker tuning</td><td>Validated stereo restored with full tuned path; prior owner feedback positive</td><td>Scoped latency trial, physical hotplug and measurements</td></tr>
 <tr><td>ThinkPad speaker tuning</td><td>Separate Lenovo music/balanced candidate running; live preset, IR, plugins and hardware output verified</td><td>Owner listening, physical hotplug and measurements</td></tr>
 <tr><td>Laptop installation runtime</td><td>Both active with private rollback and login startup; inherited 97 unit cases and both isolated graph cases passed</td><td>Actual post-reboot observation and physical qualification</td></tr>
-<tr><td>Diagnostics and latency</td><td>PR 5 source reviewed; 46 new unit cases and all native checks passed; prior 42 tests retained</td><td>Bounded 256-frame trials with tuning and rollback preserved</td></tr>
+<tr><td>Diagnostics and latency</td><td>PR 5 merged; 46 new unit cases and all native checks passed; prior 42 tests retained</td><td>Bounded 256-frame trials with tuning and rollback preserved</td></tr>
 <tr><td>Host Atmos</td><td>15 tests and focused CI cleanup acceptance passed in PR 1</td><td>Actual JOC reference media and physical qualification</td></tr>
-<tr><td>macOS comparison</td><td>M4 Air getter and silent-running snapshots complete; native probe compiled</td><td>Review and summary tests, then physical comparison</td></tr>
+<tr><td>macOS comparison</td><td>M4 Air getter and silent-running snapshots complete; 16 summary tests passed in PR 5</td><td>Matched Linux software observations, then physical comparison</td></tr>
 <tr><td>Sonos Arc/eARC</td><td>Deferred until internal audio work</td><td>TV route and actual received formats</td></tr>
 </table>
 <p>Companion to [installation](SPEAKER_INSTALL.md), [review](REVIEW.md) and</p>
@@ -152,7 +152,8 @@ h1{font-size:2rem}h2{color:#91d7ee}a{color:#91d7ee}table{border-collapse:collaps
 <p>relationship; measurement equipment is not yet established. No new latency</p>
 <p>improvement or Mac parity is claimed. Sonos Atmos remains last.</p>
 <p>[PR 5](https://github.com/pjunod/rog_audio/pull/5) contains the complete</p>
-<p>implementation and has received three independent adversarial reviews. All</p>
+<p>implementation, merged at `d02c07178bfaff0c5582cb253d10c8c1738d17c9`,</p>
+<p>and received three independent adversarial reviews. All</p>
 <p>four findings were fixed and source-cleared before 46 new unit cases passed</p>
 <p>once. Seven native filter cases passed; the config stage passed after one</p>
 <p>reviewed command correction and config-only retry. No passing case repeated. Existing speaker and unrelated Atmos passes remain retained.</p>
@@ -190,4 +191,25 @@ h1{font-size:2rem}h2{color:#91d7ee}a{color:#91d7ee}table{border-collapse:collaps
 <p>record the route investigation and restoration. The</p>
 <p>[Mac receipt](../evidence/m4-coreaudio-timing-2026-10-13.json) records its getter</p>
 <p>compilation and idle/running snapshots. None is unit or physical acceptance</p>
-<p>of the forthcoming latency request.</p><p><a href="https://github.com/pjunod/rog_audio/blob/main/docs/STATUS.md">GitHub progress ledger</a></p></main></html>
+<p>of the forthcoming latency request.</p>
+<h2>Scoped live latency trials</h2>
+<p>The ThinkPad has moved from the original transient process to the already</p>
+<p>enabled persistent user service. The controlled quit serialized the four</p>
+<p>previously absent plugin settings files through the runtime&#x27;s native save</p>
+<p>path. That serialization is recorded separately from payload preservation;</p>
+<p>the preset, IR, runtime, startup unit, default, volume and stock audio service</p>
+<p>process IDs were preserved. The reviewed settings snapshot now succeeds.</p>
+<p>A fresh baseline under the persistent service used an explicit 4800/48000</p>
+<p>client request and all-zero PCM. Its actual driver period remained 2048/48000</p>
+<p>with the full Lenovo processing chain connected on both channels. The scoped</p>
+<p>256-frame request has not yet been accepted on a live laptop. Preflight found</p>
+<p>two tool assumptions to correct: systemd&#x27;s formatted output omits an empty</p>
+<p>`EnvironmentFiles` property, and native controlled quit saves a preset-use</p>
+<p>counter. Typed D-Bus inspection proves the former is empty; the latter changed</p>
+<p>only `[StreamOutputs] usedPresets`, with no DSP setting change. The ThinkPad</p>
+<p>baseline was resumed and its full chain rechecked. Both listeners retain their</p>
+<p>working tuning. The complete correction batch passed adversarial review and</p>
+<p>29 affected unit methods; one failed test expectation was corrected and only</p>
+<p>that method rerun. The corrected live trial is next.</p>
+<p>The [preflight receipt](../evidence/speaker-lifecycle-preflight-2026-10-13.json)</p>
+<p>records both observations, raw-evidence hashes and the preserved startup state.</p><p><a href="https://github.com/pjunod/rog_audio/blob/main/docs/STATUS.md">GitHub progress ledger</a></p></main></html>

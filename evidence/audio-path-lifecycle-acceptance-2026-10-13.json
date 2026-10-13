@@ -1,0 +1,112 @@
+{
+  "adversarial_review": {
+    "finding": "Older exact-match captures were rejected solely because the new private main_rc_text field was absent.",
+    "fix_source_commit": "42b8fbe75a30a39eb4b251caf68763a872a39d94",
+    "initial_source_commit": "2fbe0d4df00e5c0a52cdf32709c214fe42c7eed7",
+    "source_cleared_before_execution": true,
+    "test_only_correction_source_cleared_before_retry": true
+  },
+  "affected_methods_passed": 29,
+  "attempts": [
+    {
+      "container_absent": true,
+      "failed_methods": 0,
+      "failed_test_ids": [],
+      "log_sha256": "880a6f6f4141f137182637331ea355ee76e29c1871c6b3bbc430b0d5ec111320",
+      "passed_methods": 6,
+      "result_sha256": "ab40b0bbc74ca6a45f00354ac920b7112f83cc94300c823fdd025abe68bfc0a7",
+      "source_archive_sha256": "c85caa3223d2693d7c83e69002b83c680d20c062457dd17f2e1afc4d54167b53",
+      "source_commit": "42b8fbe75a30a39eb4b251caf68763a872a39d94",
+      "stage": "unit-path",
+      "test_ids": [
+        "test_inspect_audio_path.PathTests.test_collection_uses_only_readers_and_unsupported_platform_does_nothing",
+        "test_inspect_audio_path.PathTests.test_main_settings_preimage_is_private_and_hash_bound",
+        "test_inspect_audio_path.PathTests.test_restart_environment_reads_selected_variables_only",
+        "test_inspect_audio_path.PathTests.test_restart_environment_requires_positive_typed_empty_array",
+        "test_inspect_audio_path.PathTests.test_restart_environment_nonempty_missing_wrong_type_or_error_refuses",
+        "test_inspect_audio_path.PathTests.test_restart_environment_missing_duplicate_or_malformed_environment_refuses"
+      ],
+      "tests_run": 6
+    },
+    {
+      "container_absent": true,
+      "failed_methods": 1,
+      "failed_test_ids": [
+        "test_audio_path_trial.TrialTests.test_quit_counter_wrong_preset_decrease_malformed_or_other_key_refuses"
+      ],
+      "log_sha256": "57ac362dac707acd13d42620a8016f4406a5e8abc3cf7b40ac6f0fb6577f6e3c",
+      "passed_methods": 22,
+      "result_sha256": "93eaf5ea3f120bc08c3d42d9c81b112cc01ccb66115820e48730cb1f10f28963",
+      "source_archive_sha256": "c85caa3223d2693d7c83e69002b83c680d20c062457dd17f2e1afc4d54167b53",
+      "source_commit": "42b8fbe75a30a39eb4b251caf68763a872a39d94",
+      "stage": "unit-trial",
+      "test_ids": [
+        "test_audio_path_trial.TrialTests.test_quit_counter_increment_preserves_raw_preimages_and_all_dsp",
+        "test_audio_path_trial.TrialTests.test_quit_counter_wrong_preset_decrease_malformed_or_other_key_refuses",
+        "test_audio_path_trial.TrialTests.test_quit_counter_plugin_or_mode_change_refuses",
+        "test_audio_path_trial.TrialTests.test_counter_exception_requires_hash_bound_private_raw_text",
+        "test_audio_path_trial.TrialTests.test_counter_change_during_snapshot_still_refuses",
+        "test_audio_path_trial.TrialTests.test_one_private_filter_changes_no_dsp_and_restores_absent_file",
+        "test_audio_path_trial.TrialTests.test_replacement_after_archive_is_restored_without_deleting_user_file",
+        "test_audio_path_trial.TrialTests.test_replacement_during_restore_preserves_both_user_inodes",
+        "test_audio_path_trial.TrialTests.test_retained_removed_inode_preserves_later_open_descriptor_writes",
+        "test_audio_path_trial.TrialTests.test_override_changed_during_snapshot_refuses_publication",
+        "test_audio_path_trial.TrialTests.test_candidate_restarted_during_snapshot_refuses_publication",
+        "test_audio_path_trial.TrialTests.test_preexisting_and_new_unrelated_config_survive",
+        "test_audio_path_trial.TrialTests.test_route_drift_or_runtime_change_refuses_installation",
+        "test_audio_path_trial.TrialTests.test_process_manager_unit_or_unknown_overrides_are_conflicts",
+        "test_audio_path_trial.TrialTests.test_occupied_path_and_racing_creation_are_never_overwritten",
+        "test_audio_path_trial.TrialTests.test_snapshot_fsync_failure_prevents_live_file_publication",
+        "test_audio_path_trial.TrialTests.test_incomplete_publication_journal_can_remove_exact_owned_file",
+        "test_audio_path_trial.TrialTests.test_edited_rule_or_archive_fsync_failure_preserves_live_bytes",
+        "test_audio_path_trial.TrialTests.test_bundle_rule_or_capture_tampering_is_refused",
+        "test_audio_path_trial.TrialTests.test_baseline_edit_and_active_candidate_refuse_installation",
+        "test_audio_path_trial.TrialTests.test_symlink_or_arbitrary_snapshot_scope_cannot_direct_removal",
+        "test_audio_path_trial.TrialTests.test_corrupt_lifecycle_is_rejected_without_echoing_payload",
+        "test_audio_path_trial.TrialTests.test_legacy_capture_allows_exact_state_but_refuses_counter_drift"
+      ],
+      "tests_run": 23
+    },
+    {
+      "container_absent": true,
+      "failed_methods": 0,
+      "failed_test_ids": [],
+      "log_sha256": "9ced2ce13d29454816844a192888093671dcb47ef5b8538da657d92430c8a2fa",
+      "passed_methods": 1,
+      "result_sha256": "690b260c24006883de22b67517d1a270251fb611eb9fd2898066a15d91e6d87c",
+      "source_archive_sha256": "809886a84761d1af8a0c23667eadd62521a3c6a44b2de50dfaad93506246a723",
+      "source_commit": "79ab1d0b2eefd4fa59dfdc287c493f13825da5bd",
+      "stage": "unit-trial",
+      "test_ids": [
+        "test_audio_path_trial.TrialTests.test_quit_counter_wrong_preset_decrease_malformed_or_other_key_refuses"
+      ],
+      "tests_run": 1
+    }
+  ],
+  "date": "2026-10-13",
+  "existing_methods_invalidated": 19,
+  "failure_and_retry": "One new method expected ValueError for duplicate INI sections/options; native configparser.Error already reaches generic CLI refusal. Only that test method was corrected; only that failed parent was retried. The other 28 passing methods were not repeated.",
+  "kind": "audio-path-lifecycle-acceptance",
+  "limits": [
+    "Synthetic unit acceptance; no physical latency or sustained-load qualification.",
+    "Live trial activation remains separate from this receipt."
+  ],
+  "new_methods": 10,
+  "retained_acceptance": {
+    "native_or_coreaudio_cases_rerun": 0,
+    "receipt": "evidence/audio-path-acceptance-2026-10-13.json",
+    "unchanged_coreaudio": true,
+    "unchanged_native_rule_and_harness": true,
+    "unchanged_selector_harness_methods": true
+  },
+  "reviewed_source_commit": "79ab1d0b2eefd4fa59dfdc287c493f13825da5bd",
+  "schema_version": 1,
+  "skipped": 0,
+  "source_sha256": {
+    "scripts/audio_path_trial.py": "13f8b7407de7c0885c9520cebaed67bedb741c4c63b70edb25053782bb895c85",
+    "scripts/inspect_audio_path.py": "6ee04f6cfaa420dbf91ec9df21e3289eb3cd381235e39c3bbcfb819c3c225e09",
+    "tests/test_audio_path_trial.py": "c71725579c754bb4c66d6a9d383f4ec1ee77b44d2ee4b844fe423ce7eb966465",
+    "tests/test_inspect_audio_path.py": "55ccff1abc9c7f5cc48de53bd274164c31852fa0c3ed0c385c2f7da8924936bc"
+  },
+  "status": "passed"
+}
