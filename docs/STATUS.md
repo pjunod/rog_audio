@@ -1,7 +1,7 @@
 # Status — implementation and physical acceptance
 
-**Updated:** 2026-10-12 · **State:** ROG v0.2.0 running with positive owner
-listening feedback; ThinkPad ready for listening; both have login startup enabled.
+**Updated:** 2026-10-13 · **State:** both speaker candidates installed with
+login startup; latency comparison against the M4 Air is in progress.
 
 | Work | State | Next evidence |
 |---|---|---|
@@ -9,9 +9,9 @@ listening feedback; ThinkPad ready for listening; both have login startup enable
 | ASUS speaker tuning | Music/balanced candidate running; owner reports substantial audible improvement | Physical hotplug and measurements |
 | ThinkPad speaker tuning | Separate Lenovo music/balanced candidate running; live preset, IR, plugins and hardware output verified | Owner listening, physical hotplug and measurements |
 | Laptop installation runtime | Both active with private rollback and login startup; inherited 97 unit cases and both isolated graph cases passed | Actual post-reboot observation and physical qualification |
-| Diagnostics and latency | 42 tests and native rule checks passed in PR 1 | Physical comparison and coordinated activation |
+| Diagnostics and latency | New read-only baselines and scoped latency implementation in progress; prior 42 tests retained | Review complete changes, then affected tests and bounded trials |
 | Host Atmos | 15 tests and focused CI cleanup acceptance passed in PR 1 | Actual JOC reference media and physical qualification |
-| macOS comparison | Pending physical measurements | M4 Air primary, M3 Max secondary |
+| macOS comparison | M4 Air read-only CoreAudio baseline in progress | Compare software timing separately from physical speaker delay |
 | Sonos Arc/eARC | Deferred until internal audio work | TV route and actual received formats |
 
 Companion to [installation](SPEAKER_INSTALL.md), [review](REVIEW.md) and
@@ -157,3 +157,25 @@ terms remain separate. Work uses owned clones outside the owner's code tree.
 Hosted CI is manual to avoid duplicating review-bound acceptance runs.
 Music/balanced speaker candidates are the delivery default; no Mac parity,
 Dolby certification or acoustic accuracy is claimed.
+
+## Latency comparison — 2026-10-13
+
+The owner requested latency improvements next, using both tuned laptops and
+the M4 Air reference. Fresh inventories will retain actual negotiated graph
+timing, client buffering, DSP latency, driver parameters and error counters.
+The Linux deployment session remains the only live audio configuration writer;
+the implementation sessions build tools in separate owned clones.
+
+Preserve the working model-specific presets, IR files, stock protection,
+physical default and automatic startup. Select one reversible candidate from
+the observed bottleneck, then verify its actual negotiated timing and error
+behaviour. No system-wide low-buffer setting or tuning bypass is presumed.
+
+CoreAudio device/buffer timing and PipeWire scheduling periods are software
+evidence. A physical comparison needs a documented capture path and clock
+relationship; measurement equipment is not yet established. No new latency
+improvement or Mac parity is claimed. Sonos Atmos remains last.
+
+Implementation will be batched into a PR, independently reviewed when ready,
+then validated with affected tests once. Only failed or invalidated cases
+will repeat. Existing speaker and unrelated Atmos passes remain retained.
