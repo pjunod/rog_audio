@@ -16,6 +16,13 @@ substantial audible improvement; physical hotplug and measurements remain
 pending. macOS-equivalent performance or
 Atmos fidelity has not been measured.
 
+Both tuned Linux paths now negotiate 256 frames at 48 kHz (5.333 ms), down from
+2048 frames (42.667 ms) in paired zero-PCM observations with the same client
+request. The M4 Air reports a 512-frame HAL buffer (10.667 ms); these are
+software timing terms, not measured speaker delay or proof of Mac parity.
+The [comparison and rollback](docs/LATENCY_COMPARISON.md#7-paired-256-frame-trials--both-tuned-paths-preserved)
+record the results and limits.
+
 Display work remains in [rog_hdr_dv](https://github.com/pjunod/rog_hdr_dv).
 
 ## Documentation
@@ -54,8 +61,9 @@ records the authorized installation and live operational checks. Its initial
 volume is 20%, with the original volume and private rollback snapshot retained.
 Both laptops now have [automatic startup after login](docs/SPEAKER_INSTALL.md#automatic-startup-after-login),
 with the startup unit and disable/remove procedure retained alongside rollback.
-The current listening process was preserved while future startup was enabled;
-an actual post-reboot run has not yet been observed.
+Initial startup enablement preserved the listening processes. Both subsequently
+moved to the persistent service during the latency trials; an actual post-reboot
+run has not yet been observed.
 The [ThinkPad deployment receipt](evidence/thinkpad-speaker-deployment-2026-10-12.json)
 records its separate model binding, 20% initial volume and retained rollback.
 
@@ -102,6 +110,7 @@ recovered vendor files and separately fetched dependencies.
 - [x] Build and validate reviewed speaker, latency and offline Atmos tools.
 - [x] Build reversible installation and pass both isolated runtime/routing cases.
 - [x] Install both model-specific candidates and enable automatic login startup.
+- [x] Reduce both tuned Linux graph periods to 256 frames and collect the M4 Air software reference.
 - [ ] Qualify physical headphone/HDMI routing and resume.
 - [ ] Measure built-in speaker quality and latency against the Macs.
 - [ ] Qualify Sonos Arc/eARC last.

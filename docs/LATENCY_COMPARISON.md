@@ -1,6 +1,6 @@
 # Latency comparison — tuned Linux laptops and the M4 Air
 
-**Status:** baseline collection and scoped implementation in progress ·
+**Status:** both tuned 256-frame trials active; physical comparison pending ·
 **Written:** 2026-10-13 · **Executes:** latency phase in
 [implementation](AUDIO_IMPLEMENTATION.md).
 
@@ -86,9 +86,8 @@ latency and Atmos passes when their sources are unchanged. Compiler execution
 while building establishes the native toolchain and is distinct from unit tests.
 Record every acceptance outcome, retry and limitation in [review](REVIEW.md).
 
-No new physical improvement or Mac parity has been established as of this plan.
-The comparison table will be populated only from collected, source-bound
-receipts; it will retain separate software and physical evidence labels.
+Software period reductions are recorded below from source-bound operational
+receipts. Physical improvement and Mac parity remain unmeasured.
 
 ## 6. Initial running observations — 2026-10-13
 
@@ -143,3 +142,52 @@ driver again ran at 2048/48000; all five running error-counter samples were
 zero. Volume was explicitly set to 20% for the restored output. Managed DSP
 files, startup configuration and all audio service process IDs were unchanged.
 This is the tuned stereo baseline for the forthcoming ROG trial.
+
+## 7. Paired 256-frame trials — both tuned paths preserved
+
+The [paired trial receipt](../evidence/linux-speaker-latency-trials-2026-10-13.json)
+records the final operational results. Both Linux pairs used the same explicit
+`pw-play` request of 4800/48000 (100 ms), all-zero PCM, the full model-specific
+DSP chain and the persistent user service. The four bounded observations lasted
+4.67–5.88 seconds; exact durations and startup sequences are in the
+receipt. The 256-frame output-filter request was observed on the actual linked
+driver, and remains active on both laptops.
+
+| Host | Paired baseline | Final software period | Processing and error observations |
+|---|---|---|---|
+| ROG | Driver 2048/48000 = 42.667 ms | Driver 256/48000 = 5.333 ms | Full ASUS chain and both hardware channels; all sampled driver/DSP error counters zero |
+| ThinkPad | Driver 2048/48000 = 42.667 ms | Driver 256/48000 = 5.333 ms | Full Lenovo chain and both hardware channels; startup reached driver count 1 in both runs, later five running samples stayed at 1 |
+| M4 Air | Separate getter reference, not a Linux-style paired trial | HAL buffer 512/48000 = 10.667 ms | Device-running false/true/false; no equivalent error counter collected |
+
+The Linux scheduling period is one eighth of its paired baseline. That ratio
+does not describe acoustic delay. The Mac used `afplay` and reports a different
+API quantity; its separate device-plus-stream accounting remains 27.917 ms
+and its safety offset 1 ms. No endpoint has a physical delay measurement.
+The short ThinkPad observation shows no counter increase over its baseline,
+but does not qualify zero-error startup. Neither laptop has completed the
+60-minute representative-load check, hotplug/resume qualification or power
+comparison. No microphone or audible probe was used.
+
+**Preservation:** runtime and kit bytes, preset/IR payloads, plugin settings,
+physical defaults and stock PipeWire/WirePlumber processes were unchanged
+within each pair. Only the private output-filter request was installed. The
+ROG's native shutdown incremented its selected preset-use counter while
+preserving the bypass entry; both raw preimages are retained. The final owner
+volumes were preserved at 86% on ROG and 20% on ThinkPad. Both persistent user
+services are active and enabled; actual post-reboot startup is still unobserved.
+
+**Rollback:** each host retains its exact accepted tools, bundle, snapshot and
+`ROLLBACK.json` beneath the private audio state directory. ROG uses deployment
+`latency-256-aff7fdb` and snapshot `latency256-lab5-aff7fdb`; ThinkPad uses
+`latency-256-90fea80` and snapshot `latency256-lab6-90fea80`. The recorded
+commands stop only `rog-audio-speaker.service`, remove the owned fragment
+through the guarded tool into a new retained archive, and restart that same
+service. The original package/tuning rollback remains available. Live fragment
+removal was not needed or exercised; synthetic lifecycle/race acceptance
+covers that implementation. See [file-level recovery](LINUX_AUDIO_PATH.md).
+
+The refused ROG attempt is retained separately: the earlier singleton counter
+check refused before any fragment or snapshot was created and the tuned
+baseline was resumed. The reviewed list correction passed all eight affected
+methods once before the successful retry. No failed evidence was discarded.
+Sonos Arc/eARC remains deferred until the internal-speaker work is qualified.

@@ -80,6 +80,76 @@ class TrialTests(unittest.TestCase):
                 self.assertFalse(self.target.exists())
                 self.assertFalse(self.snapshot.exists())
 
+    def test_quit_counter_list_retains_bypass_and_raw_preimages(self):
+        rc, text, preset = self.usage_baseline(2)
+        baseline = text.replace(preset+':2', preset+':2,'+preset+'-bypass:1')
+        rc.write_text(baseline)
+        state = trial.path.state_snapshot(self.kit, self.binary, self.env)
+        self.capture['speaker_before'] = state; self.capture['speaker_after'] = copy.deepcopy(state)
+        self.prepare(); stopped = baseline.replace(preset+':2', preset+':3'); rc.write_text(stopped)
+        self.assertEqual(self.install()['status'], 'installed-files')
+        self.assertEqual(rc.read_text(), stopped)
+        journal = json.loads((self.snapshot/'snapshot.json').read_bytes())
+        retained = json.loads((self.bundle/'baseline-capture.json').read_bytes())
+        self.assertEqual(retained['speaker_before']['main_rc_text'], baseline)
+        self.assertEqual(journal['baseline']['main_rc_text'], stopped)
+        self.assertEqual(journal['baseline']['payload'], state['payload'])
+        for name in state['rc']:
+            if name != 'db/easyeffectsrc': self.assertEqual(journal['baseline']['rc'][name], state['rc'][name])
+
+    def test_quit_counter_list_other_entry_mutation_addition_removal_or_order_refuses(self):
+        rc, text, preset = self.usage_baseline(2)
+        baseline = text.replace(preset+':2', preset+':2,'+preset+'-bypass:1')
+        rc.write_text(baseline)
+        state = trial.path.state_snapshot(self.kit, self.binary, self.env)
+        self.capture['speaker_before'] = state; self.capture['speaker_after'] = copy.deepcopy(state)
+        self.prepare()
+        alternatives = (preset+':3,'+preset+'-bypass:2',
+                        preset+':3,'+preset+'-bypass:0',
+                        preset+':3,renamed-preset:1',
+                        preset+':3',
+                        preset+':3,'+preset+'-bypass:1,extra:1',
+                        preset+'-bypass:1,'+preset+':3',
+                        preset+'-bypass:1')
+        for value in alternatives:
+            with self.subTest(value=value):
+                rc.write_text(text.replace(preset+':2', value))
+                with self.assertRaises(ValueError): self.install()
+                self.assertFalse(self.target.exists())
+                self.assertFalse(self.snapshot.exists())
+
+    def test_quit_counter_list_malformed_duplicate_or_missing_selected_refuses(self):
+        rc, text, preset = self.usage_baseline(2)
+        before = trial.path.state_snapshot(self.kit, self.binary, self.env)
+        values = (preset+':3,'+preset+':2', preset+':3,x:1,x:2',
+                  preset+':3,broken', preset+':3,x:01', preset+':3,x:-1',
+                  preset+':3,x:2147483648', preset+':3,', ','+preset+':3',
+                  preset+':3,,x:1', 'x:1', preset+':3,x\\,y:1',
+                  preset+':3,'+','.join('x'+str(i)+':1' for i in range(128)))
+        for value in values:
+            with self.subTest(value=value):
+                rc.write_text(text.replace(preset+':2', value))
+                after = trial.path.state_snapshot(self.kit, self.binary, self.env)
+                self.assertFalse(trial.restart_state_equivalent(before, after, preset))
+        # Invalid retained baseline data must also refuse a counter exception.
+        rc.write_text(text.replace(preset+':2', preset+':2,x:1,x:1'))
+        malformed_before = trial.path.state_snapshot(self.kit, self.binary, self.env)
+        rc.write_text(text.replace(preset+':2', preset+':3,x:1,x:1'))
+        after = trial.path.state_snapshot(self.kit, self.binary, self.env)
+        self.assertFalse(trial.restart_state_equivalent(malformed_before, after, preset))
+
+    def test_quit_counter_list_selected_position_is_retained(self):
+        rc, text, preset = self.usage_baseline(2)
+        baseline = text.replace(preset+':2', 'cached-preset:8,'+preset+'-bypass:1,'+preset+':2')
+        rc.write_text(baseline); before = trial.path.state_snapshot(self.kit, self.binary, self.env)
+        rc.write_text(baseline.replace(preset+':2', preset+':3'))
+        after = trial.path.state_snapshot(self.kit, self.binary, self.env)
+        self.assertTrue(trial.restart_state_equivalent(before, after, preset))
+        # The counter must increase even when every other entry is identical.
+        rc.write_text(baseline.replace(preset+':2', preset+':1'))
+        after = trial.path.state_snapshot(self.kit, self.binary, self.env)
+        self.assertFalse(trial.restart_state_equivalent(before, after, preset))
+
     def test_quit_counter_plugin_or_mode_change_refuses(self):
         rc, text, preset = self.usage_baseline()
         self.prepare(); rc.write_text(text.replace(preset+':1', preset+':2'))
