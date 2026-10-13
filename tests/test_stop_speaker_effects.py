@@ -2,6 +2,7 @@
 import contextlib
 import io
 import os
+import select
 from pathlib import Path
 import subprocess
 import sys
@@ -15,7 +16,12 @@ SERVER = """import socket,sys,time
 from pathlib import Path
 s=socket.socket(socket.AF_UNIX);s.bind(sys.argv[1]);s.listen(1)
 print('ready',flush=True)
-c,_=s.accept();data=c.recv(128);c.close();s.close()
+c,_=s.accept();data=b''
+while not data.endswith(b'\\n'):
+ chunk=c.recv(128)
+ if not chunk:break
+ data+=chunk
+c.close();s.close()
 if data==b'quit_app\\n':
  time.sleep(float(sys.argv[3]));Path(sys.argv[2]).write_text('saved-before-exit')
 """
@@ -29,6 +35,7 @@ class StopTests(unittest.TestCase):
     def child(self, delay=.05):
         p=subprocess.Popen([sys.executable,'-c',SERVER,str(self.socket),str(self.saved),str(delay)],stdout=subprocess.PIPE,stderr=subprocess.PIPE,text=True)
         self.addCleanup(self.close,p)
+        self.assertTrue(select.select([p.stdout],[],[],5)[0],'owned IPC fixture startup timed out')
         self.assertEqual(p.stdout.readline().strip(),'ready')
         return p
 
