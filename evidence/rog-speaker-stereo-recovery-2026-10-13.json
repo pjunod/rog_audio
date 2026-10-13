@@ -1,0 +1,1202 @@
+{
+  "authorization": {
+    "kind": "direct-owner-instruction",
+    "stereo_fallback_authorized": true,
+    "volume_initialization_coordinated": true
+  },
+  "changes": {
+    "audible_test_tone": false,
+    "candidate_service_restart": false,
+    "initial_restored_stereo_volume_fraction": 0.2,
+    "kernel_or_firmware_change": false,
+    "microphone_recording": false,
+    "pipewire_or_wireplumber_restart": false,
+    "previous_profile": "output:analog-surround-40+input:analog-stereo",
+    "prior_four_channel_volume_fraction": 1.0,
+    "restored_hardware_default": true,
+    "restored_profile": "output:analog-stereo+input:analog-stereo",
+    "restored_profile_saved": true,
+    "restored_route": "analog-output-speaker",
+    "restored_sink": "alsa_output.pci-0000_00_1f.3.analog-stereo"
+  },
+  "collection_method_sha256": {
+    "route_recovery": "c4ef8275320111b2abd274f08d1cefed1cc1135a80a560265a2db0bda173cf5b",
+    "silent_validation": "4257df55b7527f52c3574424d934052e91d870b6e4520927e6fcc47dd45de8f7"
+  },
+  "date": "2026-10-13",
+  "evidence_kind": "live-route-recovery-and-silent-operational-observation",
+  "host": "lab5",
+  "kind": "rog-speaker-stereo-recovery",
+  "limits": [
+    "The brief all-zero check confirms operational routing and reported graph timing, not acoustic response, representative load, perceptual latency or physical speaker channel separation.",
+    "The active driver ran at 2048/48000 under a client requesting 100ms; the 42.67ms graph period is not an event-to-speaker delay measurement.",
+    "All five running driver samples reported ERR0; this is not a long-duration stability or hotplug/resume qualification.",
+    "The existing enabled startup unit was preserved without reboot; actual startup after reboot remains unobserved.",
+    "Four-channel support would need a reviewed runtime mapping implementation and separate acceptance. Stereo is the recovered operating profile.",
+    "The Settings warnings and absent coredump entries do not establish why the owner saw a hang and close."
+  ],
+  "preserved": {
+    "all_managed_payload_hashes_match_kit": true,
+    "amp1_amp2_controls_unchanged": true,
+    "amp_controls_compared": 12,
+    "bounded_four_channel_reversal_instructions_retained": true,
+    "candidate_configuration_tree_unchanged": true,
+    "four_channel_profile_default_and_volume_preimage_retained": true,
+    "kit_sha256": "626c314c3c776af5ef7ad34a1a8d2e3291b0542f8e59772496df829db3ed8459",
+    "managed_payload_sha256": {
+      "data/autoload/output/alsa_output.pci-0000_00_1f.3.analog-stereo:Speakers.json": "7aa378c81e53e0e3cd62ba32ac06d7a438301b72baa1402e05bd24b26848c029",
+      "data/irs/speaker-0b005b1e77267d49.irs": "1d30e4445384b6a03af2eaa85fae6d73ce1bf1ff986d201cdb4162e4116d5661",
+      "data/output/rog-speaker-f4e1d0d45ec0f259-bypass.json": "15828ed995f4dc0a46191dd777084c98e198147ea3903dace29e69086b2bb1da",
+      "data/output/rog-speaker-f4e1d0d45ec0f259.json": "f4e1d0d45ec0f25935816a0a2517db17fd7dae8d6a644488b21beb622a5e7c58"
+    },
+    "original_package_and_configuration_rollback_retained": true,
+    "post_reboot_start_observed": false,
+    "runtime_binary_sha256": "e5061dcc1e0b925933eceeacffb576536d24f609307166b97d0e159c0f1772d1",
+    "runtime_matches_reviewed_release": true,
+    "service_states_and_process_ids_unchanged": true,
+    "startup_unit_sha256": "6a6603dabd7188909d8dd7810f2af6dc8a622074da2b616bad64a474d8bb4b0a",
+    "startup_unit_unchanged": true,
+    "user_login_startup_still_enabled": true
+  },
+  "private_receipt_sha256": {
+    "lab5-settings-log.json": "28ca9d9202c21f19436496dad2537650aaad6d880d7140723927008ee7cd0ed9",
+    "lab5-stereo-hashes.json": "770ece802a116d92bf72ace4297fce57ae26c0407795bdb9b2684d2edba80c2c",
+    "lab5-stereo-restoration.json": "9ce746dce0dc5db5980ca616595473727bb9f0d04709802f18521e9898e8107d",
+    "lab5-stereo-silent.json": "96f927cd096cff03cf2ee9767ff8c059d1a7eb49922cc9bd2129030943eda550"
+  },
+  "release": "v0.2.0",
+  "schema_version": 1,
+  "settings_application": {
+    "bounded_log_window_hours": 24,
+    "coredump_utility_available": false,
+    "crash_cause_proven": false,
+    "matching_coredump_journal_entries_found": false,
+    "owner_reported_hang_and_close": true,
+    "settings_warning_categories": [
+      "AdwSwitchRow container placement",
+      "duplicate GDK presentation timing"
+    ]
+  },
+  "status": "validated-stereo-route-restored",
+  "trigger": {
+    "current_stereo_engine_final_output_port_ids": [
+      0,
+      1
+    ],
+    "finding_kind": "source-and-live-software-inference",
+    "four_channel_sink_speaker_dac_channel_offset": 2,
+    "four_channel_speaker_associated_port_ids": [
+      2,
+      3
+    ],
+    "physical_multichannel_speaker_mapping_measured": false,
+    "selected_four_channel_profile_bypassed_exact_stereo_binding": true,
+    "simple_node_name_rebind_sufficient": false
+  },
+  "validation": {
+    "active_graph": {
+      "links": [
+        {
+          "input_channel": "FL",
+          "input_node": "rog_audio_soe_multiband_compressor#0",
+          "output_channel": "FL",
+          "output_node": "rog_audio_soe_convolver",
+          "state": "active"
+        },
+        {
+          "input_channel": "FR",
+          "input_node": "rog_audio_soe_multiband_compressor#0",
+          "output_channel": "FR",
+          "output_node": "rog_audio_soe_convolver",
+          "state": "active"
+        },
+        {
+          "input_channel": "FL",
+          "input_node": "rog_audio_soe_spectrum",
+          "output_channel": "FL",
+          "output_node": "rog_audio_soe_limiter",
+          "state": "active"
+        },
+        {
+          "input_channel": "FR",
+          "input_node": "rog_audio_soe_spectrum",
+          "output_channel": "FR",
+          "output_node": "rog_audio_soe_limiter",
+          "state": "active"
+        },
+        {
+          "input_channel": "FL",
+          "input_node": "rog_audio_soe_multiband_compressor#1",
+          "output_channel": "FL",
+          "output_node": "rog_audio_soe_multiband_compressor#0",
+          "state": "active"
+        },
+        {
+          "input_channel": "FR",
+          "input_node": "rog_audio_soe_multiband_compressor#1",
+          "output_channel": "FR",
+          "output_node": "rog_audio_soe_multiband_compressor#0",
+          "state": "active"
+        },
+        {
+          "input_channel": "FL",
+          "input_node": "rog_audio_soe_limiter",
+          "output_channel": "FL",
+          "output_node": "rog_audio_soe_multiband_compressor#1",
+          "state": "active"
+        },
+        {
+          "input_channel": "FR",
+          "input_node": "rog_audio_soe_limiter",
+          "output_channel": "FR",
+          "output_node": "rog_audio_soe_multiband_compressor#1",
+          "state": "active"
+        },
+        {
+          "input_channel": "FL",
+          "input_node": "alsa_output.pci-0000_00_1f.3.analog-stereo",
+          "output_channel": "FL",
+          "output_node": "rog_audio_soe_output_level",
+          "state": "active"
+        },
+        {
+          "input_channel": "FR",
+          "input_node": "alsa_output.pci-0000_00_1f.3.analog-stereo",
+          "output_channel": "FR",
+          "output_node": "rog_audio_soe_output_level",
+          "state": "active"
+        },
+        {
+          "input_channel": "FL",
+          "input_node": "rog_audio_soe_output_level",
+          "output_channel": "FL",
+          "output_node": "rog_audio_soe_spectrum",
+          "state": "active"
+        },
+        {
+          "input_channel": "FR",
+          "input_node": "rog_audio_soe_output_level",
+          "output_channel": "FR",
+          "output_node": "rog_audio_soe_spectrum",
+          "state": "active"
+        },
+        {
+          "input_channel": "FL",
+          "input_node": "rog_audio_soe_convolver",
+          "output_channel": "FL",
+          "output_node": "rog_audio_speaker_sink",
+          "state": "active"
+        },
+        {
+          "input_channel": "FR",
+          "input_node": "rog_audio_soe_convolver",
+          "output_channel": "FR",
+          "output_node": "rog_audio_speaker_sink",
+          "state": "active"
+        },
+        {
+          "input_channel": "FL",
+          "input_node": "rog_audio_speaker_sink",
+          "output_channel": "FL",
+          "output_node": "speaker_validation_zeros",
+          "state": "active"
+        },
+        {
+          "input_channel": "FR",
+          "input_node": "rog_audio_speaker_sink",
+          "output_channel": "FR",
+          "output_node": "speaker_validation_zeros",
+          "state": "active"
+        }
+      ],
+      "nodes": [
+        {
+          "active_format": [
+            {
+              "channels": 2,
+              "format": "S32LE",
+              "position": [
+                "FL",
+                "FR"
+              ],
+              "rate": 48000
+            }
+          ],
+          "api.alsa.headroom": 0,
+          "api.alsa.period-num": 32,
+          "api.alsa.period-size": 1024,
+          "audio.channels": 2,
+          "node": "alsa_output.pci-0000_00_1f.3.analog-stereo",
+          "reported_latency": [
+            {
+              "direction": "Input",
+              "maxNs": 0,
+              "maxQuantum": 1.0,
+              "maxRate": 0,
+              "minNs": 0,
+              "minQuantum": 1.0,
+              "minRate": 0
+            },
+            {
+              "direction": "Output",
+              "maxNs": 0,
+              "maxQuantum": 1.0,
+              "maxRate": 0,
+              "minNs": 0,
+              "minQuantum": 0.0,
+              "minRate": 0
+            }
+          ],
+          "reported_process_latency": [
+            {
+              "ns": 0,
+              "quantum": 0.0,
+              "rate": 0
+            }
+          ],
+          "state": "running"
+        },
+        {
+          "active_format": [],
+          "application_id": "org.rog_audio.SpeakerEffects",
+          "media_role": "DSP",
+          "node": "rog_audio_soe_convolver",
+          "node_group": "rog_audio_speaker_sink_group",
+          "reported_latency": [],
+          "reported_process_latency": [
+            {
+              "ns": 0,
+              "quantum": 0.0,
+              "rate": 0
+            }
+          ],
+          "state": "running"
+        },
+        {
+          "active_format": [],
+          "application_id": "org.rog_audio.SpeakerEffects",
+          "media_role": "DSP",
+          "node": "rog_audio_soe_limiter",
+          "node_group": "rog_audio_speaker_sink_group",
+          "reported_latency": [],
+          "reported_process_latency": [
+            {
+              "ns": 1000000,
+              "quantum": 0.0,
+              "rate": 0
+            }
+          ],
+          "state": "running"
+        },
+        {
+          "active_format": [],
+          "application_id": "org.rog_audio.SpeakerEffects",
+          "media_role": "DSP",
+          "node": "rog_audio_soe_multiband_compressor#0",
+          "node_group": "rog_audio_speaker_sink_group",
+          "reported_latency": [],
+          "reported_process_latency": [],
+          "state": "running"
+        },
+        {
+          "active_format": [],
+          "application_id": "org.rog_audio.SpeakerEffects",
+          "media_role": "DSP",
+          "node": "rog_audio_soe_multiband_compressor#1",
+          "node_group": "rog_audio_speaker_sink_group",
+          "reported_latency": [],
+          "reported_process_latency": [],
+          "state": "running"
+        },
+        {
+          "active_format": [],
+          "application_id": "org.rog_audio.SpeakerEffects",
+          "media_role": "DSP",
+          "node": "rog_audio_soe_output_level",
+          "node_group": "rog_audio_speaker_sink_group",
+          "reported_latency": [],
+          "reported_process_latency": [],
+          "state": "running"
+        },
+        {
+          "active_format": [],
+          "application_id": "org.rog_audio.SpeakerEffects",
+          "media_role": "DSP",
+          "node": "rog_audio_soe_spectrum",
+          "node_group": "rog_audio_speaker_sink_group",
+          "reported_latency": [],
+          "reported_process_latency": [],
+          "state": "running"
+        },
+        {
+          "active_format": [
+            {
+              "channels": 2,
+              "format": "F32P",
+              "position": [
+                "FL",
+                "FR"
+              ],
+              "rate": 48000
+            }
+          ],
+          "application_id": "org.rog_audio.SpeakerEffects",
+          "node": "rog_audio_speaker_sink",
+          "node_group": "rog_audio_speaker_sink_group",
+          "reported_latency": [],
+          "reported_process_latency": [],
+          "state": "running"
+        },
+        {
+          "active_format": [],
+          "application_id": "org.rog_audio.SpeakerEffects",
+          "node": "rog_audio_speaker_source",
+          "node_group": "rog_audio_speaker_source_group",
+          "reported_latency": [],
+          "reported_process_latency": [],
+          "state": "suspended"
+        },
+        {
+          "active_format": [
+            {
+              "channels": 2,
+              "format": "S16LE",
+              "position": [
+                "FL",
+                "FR"
+              ],
+              "rate": 48000
+            }
+          ],
+          "application_id": "org.rog_audio.SilentBaseline",
+          "media_role": "Music",
+          "node": "speaker_validation_zeros",
+          "reported_latency": [
+            {
+              "direction": "Input",
+              "maxNs": 0,
+              "maxQuantum": 1.0,
+              "maxRate": 0,
+              "minNs": 0,
+              "minQuantum": 1.0,
+              "minRate": 0
+            }
+          ],
+          "reported_process_latency": [],
+          "requested_node_latency": "4800/48000",
+          "state": "running"
+        }
+      ],
+      "port_latency_groups": [
+        {
+          "channels": [
+            "FL",
+            "FR"
+          ],
+          "direction": "in",
+          "node": "alsa_output.pci-0000_00_1f.3.analog-stereo",
+          "reported_latency": [
+            {
+              "direction": "Input",
+              "maxNs": 0,
+              "maxQuantum": 1.0,
+              "maxRate": 0,
+              "minNs": 0,
+              "minQuantum": 1.0,
+              "minRate": 0
+            },
+            {
+              "direction": "Output",
+              "maxNs": 0,
+              "maxQuantum": 1.0,
+              "maxRate": 0,
+              "minNs": 0,
+              "minQuantum": 0.0,
+              "minRate": 0
+            }
+          ],
+          "reported_process_latency": []
+        },
+        {
+          "channels": [
+            "FL",
+            "FR"
+          ],
+          "direction": "in",
+          "node": "rog_audio_soe_convolver",
+          "reported_latency": [
+            {
+              "direction": "Input",
+              "maxNs": 0,
+              "maxQuantum": 1.0,
+              "maxRate": 0,
+              "minNs": 0,
+              "minQuantum": 1.0,
+              "minRate": 0
+            },
+            {
+              "direction": "Output",
+              "maxNs": 0,
+              "maxQuantum": 1.0,
+              "maxRate": 0,
+              "minNs": 0,
+              "minQuantum": 1.0,
+              "minRate": 0
+            }
+          ],
+          "reported_process_latency": []
+        },
+        {
+          "channels": [
+            "FL",
+            "FR"
+          ],
+          "direction": "in",
+          "node": "rog_audio_soe_limiter",
+          "reported_latency": [
+            {
+              "direction": "Input",
+              "maxNs": 0,
+              "maxQuantum": 1.0,
+              "maxRate": 0,
+              "minNs": 0,
+              "minQuantum": 1.0,
+              "minRate": 0
+            },
+            {
+              "direction": "Output",
+              "maxNs": 0,
+              "maxQuantum": 1.0,
+              "maxRate": 0,
+              "minNs": 0,
+              "minQuantum": 0.0,
+              "minRate": 0
+            }
+          ],
+          "reported_process_latency": []
+        },
+        {
+          "channels": [
+            "FL",
+            "FR"
+          ],
+          "direction": "in",
+          "node": "rog_audio_soe_multiband_compressor#0",
+          "reported_latency": [
+            {
+              "direction": "Input",
+              "maxNs": 0,
+              "maxQuantum": 1.0,
+              "maxRate": 0,
+              "minNs": 0,
+              "minQuantum": 1.0,
+              "minRate": 0
+            },
+            {
+              "direction": "Output",
+              "maxNs": 0,
+              "maxQuantum": 1.0,
+              "maxRate": 0,
+              "minNs": 0,
+              "minQuantum": 1.0,
+              "minRate": 0
+            }
+          ],
+          "reported_process_latency": []
+        },
+        {
+          "channels": [
+            "FL",
+            "FR"
+          ],
+          "direction": "in",
+          "node": "rog_audio_soe_multiband_compressor#1",
+          "reported_latency": [
+            {
+              "direction": "Input",
+              "maxNs": 0,
+              "maxQuantum": 1.0,
+              "maxRate": 0,
+              "minNs": 0,
+              "minQuantum": 1.0,
+              "minRate": 0
+            },
+            {
+              "direction": "Output",
+              "maxNs": 0,
+              "maxQuantum": 1.0,
+              "maxRate": 0,
+              "minNs": 0,
+              "minQuantum": 0.0,
+              "minRate": 0
+            }
+          ],
+          "reported_process_latency": []
+        },
+        {
+          "channels": [
+            "FL",
+            "FR"
+          ],
+          "direction": "in",
+          "node": "rog_audio_soe_output_level",
+          "reported_latency": [
+            {
+              "direction": "Input",
+              "maxNs": 0,
+              "maxQuantum": 1.0,
+              "maxRate": 0,
+              "minNs": 0,
+              "minQuantum": 1.0,
+              "minRate": 0
+            },
+            {
+              "direction": "Output",
+              "maxNs": 0,
+              "maxQuantum": 1.0,
+              "maxRate": 0,
+              "minNs": 0,
+              "minQuantum": 0.0,
+              "minRate": 0
+            }
+          ],
+          "reported_process_latency": []
+        },
+        {
+          "channels": [
+            "FL",
+            "FR"
+          ],
+          "direction": "in",
+          "node": "rog_audio_soe_spectrum",
+          "reported_latency": [
+            {
+              "direction": "Input",
+              "maxNs": 0,
+              "maxQuantum": 1.0,
+              "maxRate": 0,
+              "minNs": 0,
+              "minQuantum": 1.0,
+              "minRate": 0
+            },
+            {
+              "direction": "Output",
+              "maxNs": 0,
+              "maxQuantum": 1.0,
+              "maxRate": 0,
+              "minNs": 0,
+              "minQuantum": 0.0,
+              "minRate": 0
+            }
+          ],
+          "reported_process_latency": []
+        },
+        {
+          "channels": [
+            "FL",
+            "FR"
+          ],
+          "direction": "in",
+          "node": "rog_audio_speaker_sink",
+          "reported_latency": [
+            {
+              "direction": "Input",
+              "maxNs": 0,
+              "maxQuantum": 0.0,
+              "maxRate": 0,
+              "minNs": 0,
+              "minQuantum": 0.0,
+              "minRate": 0
+            },
+            {
+              "direction": "Output",
+              "maxNs": 0,
+              "maxQuantum": 1.0,
+              "maxRate": 0,
+              "minNs": 0,
+              "minQuantum": 1.0,
+              "minRate": 0
+            }
+          ],
+          "reported_process_latency": []
+        },
+        {
+          "channels": [
+            "FL",
+            "FR"
+          ],
+          "direction": "in",
+          "node": "rog_audio_speaker_source",
+          "reported_latency": [
+            {
+              "direction": "Input",
+              "maxNs": 0,
+              "maxQuantum": 0.0,
+              "maxRate": 0,
+              "minNs": 0,
+              "minQuantum": 0.0,
+              "minRate": 0
+            },
+            {
+              "direction": "Output",
+              "maxNs": 0,
+              "maxQuantum": 0.0,
+              "maxRate": 0,
+              "minNs": 0,
+              "minQuantum": 0.0,
+              "minRate": 0
+            }
+          ],
+          "reported_process_latency": []
+        },
+        {
+          "channels": [
+            "FL",
+            "FR"
+          ],
+          "direction": "out",
+          "node": "alsa_output.pci-0000_00_1f.3.analog-stereo",
+          "reported_latency": [
+            {
+              "direction": "Input",
+              "maxNs": 0,
+              "maxQuantum": 0.0,
+              "maxRate": 0,
+              "minNs": 0,
+              "minQuantum": 0.0,
+              "minRate": 0
+            },
+            {
+              "direction": "Output",
+              "maxNs": 0,
+              "maxQuantum": 0.0,
+              "maxRate": 0,
+              "minNs": 0,
+              "minQuantum": 0.0,
+              "minRate": 0
+            }
+          ],
+          "reported_process_latency": []
+        },
+        {
+          "channels": [
+            "FL",
+            "FR"
+          ],
+          "direction": "out",
+          "node": "rog_audio_soe_convolver",
+          "reported_latency": [
+            {
+              "direction": "Input",
+              "maxNs": 0,
+              "maxQuantum": 1.0,
+              "maxRate": 0,
+              "minNs": 0,
+              "minQuantum": 1.0,
+              "minRate": 0
+            },
+            {
+              "direction": "Output",
+              "maxNs": 0,
+              "maxQuantum": 1.0,
+              "maxRate": 0,
+              "minNs": 0,
+              "minQuantum": 1.0,
+              "minRate": 0
+            }
+          ],
+          "reported_process_latency": []
+        },
+        {
+          "channels": [
+            "FL",
+            "FR"
+          ],
+          "direction": "out",
+          "node": "rog_audio_soe_limiter",
+          "reported_latency": [
+            {
+              "direction": "Input",
+              "maxNs": 0,
+              "maxQuantum": 1.0,
+              "maxRate": 0,
+              "minNs": 0,
+              "minQuantum": 1.0,
+              "minRate": 0
+            },
+            {
+              "direction": "Output",
+              "maxNs": 0,
+              "maxQuantum": 1.0,
+              "maxRate": 0,
+              "minNs": 0,
+              "minQuantum": 0.0,
+              "minRate": 0
+            }
+          ],
+          "reported_process_latency": []
+        },
+        {
+          "channels": [
+            "FL",
+            "FR"
+          ],
+          "direction": "out",
+          "node": "rog_audio_soe_multiband_compressor#0",
+          "reported_latency": [
+            {
+              "direction": "Input",
+              "maxNs": 0,
+              "maxQuantum": 1.0,
+              "maxRate": 0,
+              "minNs": 0,
+              "minQuantum": 1.0,
+              "minRate": 0
+            },
+            {
+              "direction": "Output",
+              "maxNs": 0,
+              "maxQuantum": 1.0,
+              "maxRate": 0,
+              "minNs": 0,
+              "minQuantum": 0.0,
+              "minRate": 0
+            }
+          ],
+          "reported_process_latency": []
+        },
+        {
+          "channels": [
+            "FL",
+            "FR"
+          ],
+          "direction": "out",
+          "node": "rog_audio_soe_multiband_compressor#1",
+          "reported_latency": [
+            {
+              "direction": "Input",
+              "maxNs": 0,
+              "maxQuantum": 1.0,
+              "maxRate": 0,
+              "minNs": 0,
+              "minQuantum": 1.0,
+              "minRate": 0
+            },
+            {
+              "direction": "Output",
+              "maxNs": 0,
+              "maxQuantum": 1.0,
+              "maxRate": 0,
+              "minNs": 0,
+              "minQuantum": 0.0,
+              "minRate": 0
+            }
+          ],
+          "reported_process_latency": []
+        },
+        {
+          "channels": [
+            "FL",
+            "FR"
+          ],
+          "direction": "out",
+          "node": "rog_audio_soe_output_level",
+          "reported_latency": [
+            {
+              "direction": "Input",
+              "maxNs": 0,
+              "maxQuantum": 1.0,
+              "maxRate": 0,
+              "minNs": 0,
+              "minQuantum": 1.0,
+              "minRate": 0
+            },
+            {
+              "direction": "Output",
+              "maxNs": 0,
+              "maxQuantum": 1.0,
+              "maxRate": 0,
+              "minNs": 0,
+              "minQuantum": 0.0,
+              "minRate": 0
+            }
+          ],
+          "reported_process_latency": []
+        },
+        {
+          "channels": [
+            "FL",
+            "FR"
+          ],
+          "direction": "out",
+          "node": "rog_audio_soe_spectrum",
+          "reported_latency": [
+            {
+              "direction": "Input",
+              "maxNs": 0,
+              "maxQuantum": 1.0,
+              "maxRate": 0,
+              "minNs": 0,
+              "minQuantum": 1.0,
+              "minRate": 0
+            },
+            {
+              "direction": "Output",
+              "maxNs": 0,
+              "maxQuantum": 1.0,
+              "maxRate": 0,
+              "minNs": 0,
+              "minQuantum": 0.0,
+              "minRate": 0
+            }
+          ],
+          "reported_process_latency": []
+        },
+        {
+          "channels": [
+            "FL",
+            "FR"
+          ],
+          "direction": "out",
+          "node": "rog_audio_speaker_sink",
+          "reported_latency": [
+            {
+              "direction": "Input",
+              "maxNs": 0,
+              "maxQuantum": 1.0,
+              "maxRate": 0,
+              "minNs": 0,
+              "minQuantum": 1.0,
+              "minRate": 0
+            },
+            {
+              "direction": "Output",
+              "maxNs": 0,
+              "maxQuantum": 1.0,
+              "maxRate": 0,
+              "minNs": 0,
+              "minQuantum": 1.0,
+              "minRate": 0
+            }
+          ],
+          "reported_process_latency": []
+        },
+        {
+          "channels": [
+            "FL",
+            "FR"
+          ],
+          "direction": "out",
+          "node": "rog_audio_speaker_source",
+          "reported_latency": [
+            {
+              "direction": "Input",
+              "maxNs": 0,
+              "maxQuantum": 0.0,
+              "maxRate": 0,
+              "minNs": 0,
+              "minQuantum": 0.0,
+              "minRate": 0
+            },
+            {
+              "direction": "Output",
+              "maxNs": 0,
+              "maxQuantum": 0.0,
+              "maxRate": 0,
+              "minNs": 0,
+              "minQuantum": 0.0,
+              "minRate": 0
+            }
+          ],
+          "reported_process_latency": []
+        },
+        {
+          "channels": [
+            "FL",
+            "FR"
+          ],
+          "direction": "out",
+          "node": "speaker_validation_zeros",
+          "reported_latency": [
+            {
+              "direction": "Input",
+              "maxNs": 0,
+              "maxQuantum": 1.0,
+              "maxRate": 0,
+              "minNs": 0,
+              "minQuantum": 1.0,
+              "minRate": 0
+            },
+            {
+              "direction": "Output",
+              "maxNs": 0,
+              "maxQuantum": 0.0,
+              "maxRate": 0,
+              "minNs": 0,
+              "minQuantum": 0.0,
+              "minRate": 0
+            }
+          ],
+          "reported_process_latency": []
+        }
+      ]
+    },
+    "active_preset": "rog-speaker-f4e1d0d45ec0f259",
+    "alsa_playback": [
+      {
+        "avail_min_frames": 1024,
+        "buffer_size": 32768,
+        "channels": 2,
+        "format": "S32_LE",
+        "period_size": 1024,
+        "rate_hz": 48000,
+        "single_unsynchronised_kernel_delay_frames": 2614,
+        "state": "RUNNING"
+      }
+    ],
+    "bass_speaker_pin_0x17_selected_connection": "0x02",
+    "both_stereo_channels_intercepted": true,
+    "client_default_requested_latency": "4800/48000",
+    "early_and_late_active_links_match": true,
+    "expected_plugin_order": [
+      "convolver#0",
+      "multiband_compressor#0",
+      "multiband_compressor#1",
+      "limiter#0"
+    ],
+    "full_dsp_to_hardware_links_active": true,
+    "owned_zero_wav_removed": true,
+    "public_compressor_instance_labels_follow_observed_chain_and_preset_order": true,
+    "pw_top": {
+      "frames_observed": 6,
+      "initial_collect_rows_are_not_running_samples": true,
+      "nodes": {
+        "alsa_output.pci-0000_00_1f.3.analog-stereo": {
+          "busy_microseconds_range": [
+            26.9,
+            45.8
+          ],
+          "distinct_nodes_sharing_name": 1,
+          "error_counter_first_running": 0,
+          "error_counter_last_running": 0,
+          "error_counter_max_running": 0,
+          "rows_observed": 6,
+          "running_quantum_frames": [
+            2048
+          ],
+          "running_rate_hz": [
+            48000
+          ],
+          "running_rows_observed": 5,
+          "states": [
+            "C",
+            "R"
+          ],
+          "wait_microseconds_range": [
+            213.1,
+            280.2
+          ]
+        },
+        "rog_audio_soe_convolver": {
+          "busy_microseconds_range": [
+            72.1,
+            115.4
+          ],
+          "distinct_nodes_sharing_name": 1,
+          "error_counter_first_running": 0,
+          "error_counter_last_running": 0,
+          "error_counter_max_running": 0,
+          "rows_observed": 6,
+          "running_quantum_frames": [
+            0
+          ],
+          "running_rate_hz": [
+            0
+          ],
+          "running_rows_observed": 5,
+          "states": [
+            "C",
+            "R"
+          ],
+          "wait_microseconds_range": [
+            15.5,
+            29.5
+          ]
+        },
+        "rog_audio_soe_limiter": {
+          "busy_microseconds_range": [
+            41.1,
+            59.2
+          ],
+          "distinct_nodes_sharing_name": 1,
+          "error_counter_first_running": 0,
+          "error_counter_last_running": 0,
+          "error_counter_max_running": 0,
+          "rows_observed": 6,
+          "running_quantum_frames": [
+            0
+          ],
+          "running_rate_hz": [
+            0
+          ],
+          "running_rows_observed": 5,
+          "states": [
+            "C",
+            "R"
+          ],
+          "wait_microseconds_range": [
+            1.4,
+            2.5
+          ]
+        },
+        "rog_audio_soe_multiband_compressor": {
+          "busy_microseconds_range": [
+            4.0,
+            10.9
+          ],
+          "distinct_nodes_sharing_name": 2,
+          "error_counter_first_running": 0,
+          "error_counter_last_running": 0,
+          "error_counter_max_running": 0,
+          "rows_observed": 12,
+          "running_quantum_frames": [
+            0
+          ],
+          "running_rate_hz": [
+            0
+          ],
+          "running_rows_observed": 10,
+          "states": [
+            "C",
+            "R"
+          ],
+          "wait_microseconds_range": [
+            1.5,
+            4.8
+          ]
+        },
+        "rog_audio_soe_output_level": {
+          "busy_microseconds_range": [
+            3.2,
+            6.0
+          ],
+          "distinct_nodes_sharing_name": 1,
+          "error_counter_first_running": 0,
+          "error_counter_last_running": 0,
+          "error_counter_max_running": 0,
+          "rows_observed": 6,
+          "running_quantum_frames": [
+            0
+          ],
+          "running_rate_hz": [
+            0
+          ],
+          "running_rows_observed": 5,
+          "states": [
+            "C",
+            "R"
+          ],
+          "wait_microseconds_range": [
+            1.5,
+            3.2
+          ]
+        },
+        "rog_audio_soe_spectrum": {
+          "busy_microseconds_range": [
+            13.7,
+            21.5
+          ],
+          "distinct_nodes_sharing_name": 1,
+          "error_counter_first_running": 0,
+          "error_counter_last_running": 0,
+          "error_counter_max_running": 0,
+          "rows_observed": 6,
+          "running_quantum_frames": [
+            0
+          ],
+          "running_rate_hz": [
+            0
+          ],
+          "running_rows_observed": 5,
+          "states": [
+            "C",
+            "R"
+          ],
+          "wait_microseconds_range": [
+            1.9,
+            2.9
+          ]
+        },
+        "rog_audio_speaker_sink": {
+          "busy_microseconds_range": [
+            7.4,
+            30.9
+          ],
+          "distinct_nodes_sharing_name": 1,
+          "error_counter_first_running": 0,
+          "error_counter_last_running": 0,
+          "error_counter_max_running": 0,
+          "rows_observed": 6,
+          "running_quantum_frames": [
+            0
+          ],
+          "running_rate_hz": [
+            0
+          ],
+          "running_rows_observed": 5,
+          "states": [
+            "C",
+            "R"
+          ],
+          "wait_microseconds_range": [
+            10.0,
+            18.9
+          ]
+        },
+        "rog_audio_speaker_source": {
+          "distinct_nodes_sharing_name": 1,
+          "max_reported_error_counter": 0,
+          "rows_observed": 6,
+          "running_rows_observed": 0,
+          "states": [
+            "C",
+            "S"
+          ]
+        },
+        "speaker_validation_zeros": {
+          "busy_microseconds_range": [
+            10.0,
+            24.9
+          ],
+          "distinct_nodes_sharing_name": 1,
+          "error_counter_first_running": 0,
+          "error_counter_last_running": 0,
+          "error_counter_max_running": 0,
+          "rows_observed": 6,
+          "running_quantum_frames": [
+            4800
+          ],
+          "running_rate_hz": [
+            48000
+          ],
+          "running_rows_observed": 5,
+          "states": [
+            "C",
+            "R"
+          ],
+          "wait_microseconds_range": [
+            12.7,
+            81.4
+          ]
+        }
+      }
+    },
+    "signal": "ten-seconds-of-all-zero-48khz-stereo-s16-pcm",
+    "speaker_dac_0x02": {
+      "channel": 0,
+      "stream": 1
+    },
+    "speaker_pin_0x14_connection": "0x02",
+    "stream_exit_code": 0
+  }
+}
