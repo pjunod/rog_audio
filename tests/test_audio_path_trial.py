@@ -67,13 +67,16 @@ class TrialTests(unittest.TestCase):
                         text.replace(preset+':2', preset+':2147483648'),
                         text.replace(preset+':2', preset+':3').replace('useDefaultOutputDevice=false', 'useDefaultOutputDevice=true'),
                         text.replace(preset+':2', preset+':3')+'\n[Unknown]\nnewKey=true\n',
-                        text.replace(preset+':2', preset+':3')+'\n[Presets]\nmostUsedPresets='+preset+'\n',
+                        text.replace(preset+':2', preset+':3').replace('[Presets]\n', '[Presets]\nmostUsedPresets='+preset+'\n'),
                         text.replace('usedPresets='+preset+':2\n', ''),
                         text.replace('[StreamOutputs]', '[StreamOutputs]\nusedPresets='+preset+':3'))
         for changed in alternatives:
             with self.subTest(changed=changed):
                 rc.write_text(changed)
-                with self.assertRaises(ValueError): self.install()
+                # Invalid INI is refused by state_snapshot before the drift
+                # comparator. Both public CLIs catch configparser.Error and
+                # print a fixed refusal, without echoing private settings.
+                with self.assertRaises((ValueError, trial.path.configparser.Error)): self.install()
                 self.assertFalse(self.target.exists())
                 self.assertFalse(self.snapshot.exists())
 
