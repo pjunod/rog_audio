@@ -309,7 +309,7 @@
     "upstream_commit": "6d9b1220d3dcebb154ba759a05600662bc0af549",
     "expected_package": "rog-audio-easyeffects_8.2.8+rog2_amd64.deb",
     "candidate_compilation": "review-fixed-source-compiled-and-exported",
-    "focused_acceptance": "not-executed",
+    "focused_acceptance": "single-native-runner-in-progress-results-pending",
     "live_deployment": "not-installed",
     "method_document": "docs/SPEAKER_AUTOLOAD.md",
     "latest_authored_commit": "b6d5f1e2dfc664ab21115a53aeeb64f3575177e6",
@@ -317,7 +317,6 @@
     "additive_patch_sha256": "94a9f45e7f843d728540a6083ea3e199b37bbbbf434889bb07b138af82673070",
     "planned_affected_unit_methods": 29,
     "planned_graph_selectors": 6,
-    "acceptance_executed": false,
     "intermediate_build_receipt": "evidence/speaker-autoload-build-2026-10-13.json",
     "source_review_status": "all-three-findings-fixed-and-cleared-by-two-independent-reviewers",
     "native_source_cleared_commit": "b6d5f1e2dfc664ab21115a53aeeb64f3575177e6",
@@ -327,7 +326,8 @@
     "binary_sha256": "5686f784a6de02e72a4fb6cb08ff9022e675eb3c61a67634ae6305a5597ca7c4",
     "package_sha256": "b24e9c97fa1d892c4f1eede22ab5f0bf2669f7b0d3cc5c7985cae4965bd0582a",
     "source_tree_manifest_sha256": "2b72c3600bfd2e6aaccaadbb40ba0e48ad1554fca69652f20b9ed6fa10290b1a",
-    "artifact_binding_review": "pending-final-receipt-check"
+    "artifact_binding_review": "independently-cleared-final5d50bc3",
+    "acceptance_execution_state": "running-results-pending"
   },
   "planned_release": {
     "tag": "v0.2.1",
@@ -370,5 +370,21 @@
       "topic": "current-build-rog2-install-doc-still-rog1",
       "status": "fixed-focused-re-review-cleared"
     }
-  ]
+  ],
+  "thinkpad_owner_listening_observation": {
+    "path": "evidence/thinkpad-owner-listening-2026-10-13.json",
+    "sha256": "a9cd7c3285d07f46f10af042c67a888453257848bb814f7279d1f148f06da7f3",
+    "driver_timing_sampled_during_demo": false,
+    "scope": "subjective-demo-clarity-everyday-loudness-unresolved"
+  },
+  "everyday_loudness": {
+    "systems": [
+      "rog",
+      "thinkpad"
+    ],
+    "accepted": false,
+    "owner_report": "Ordinary movies and shows are too quiet on both laptops at maximum volume.",
+    "investigation": "separate-next-coherent-gain-stage-batch",
+    "reviewed_startup_latency_code_changed_for_this_report": false
+  }
 }

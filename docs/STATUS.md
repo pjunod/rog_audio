@@ -4,14 +4,14 @@
 login startup configured; ThinkPad completed the declared hour at 256 frames
 on v0.2.0; ROG's 256-frame run failed and reviewed rollback restored 2048.
 The corrected native startup runtime is compiled/exported and all source
-findings cleared re-review. Artifact checks and focused acceptance remain
-pending. It is not deployed.
+findings cleared re-review. Final artifact review is clear; the single affected acceptance run is in
+progress and its results remain pending. It is not deployed.
 
 | Work | State | Next evidence |
 |---|---|---|
 | Hardware inventory | Both laptops inspected read-only | Refresh during installation |
-| ASUS speaker tuning | Full tuned path preserved after reviewed removal of failed 256-frame request; short 2048-frame observation retained | Review/test startup fix and 512-frame candidate; physical hotplug and measurements |
-| ThinkPad speaker tuning | Separate Lenovo music/balanced candidate running; live preset, IR, plugins and hardware output verified | Owner listening, physical hotplug and measurements |
+| ASUS speaker tuning | Full tuned path restored; demo clarity feedback positive, everyday movie/show loudness unresolved | Finish startup/512 acceptance; separate gain investigation and physical checks |
+| ThinkPad speaker tuning | Separate Lenovo candidate running; demo clarity positive, everyday loudness unresolved; old-runtime hour retained | Finish corrected-runtime acceptance; separate gain investigation and physical checks |
 | Laptop installation runtime | Installed tuned paths restored/active; review-fixed startup runtime compiled/exported; artifact checks/acceptance pending | Complete final artifact checks and affected tests; fresh deployed-runtime observations |
 | Diagnostics and latency | Historical paired 256-frame results retained; ThinkPad existing-runtime hour completed; ROG failed/reverted to 2048 | Review/test startup fix and 512 candidate; fresh ROG hour and physical measurements |
 | Host Atmos | 15 tests and focused CI cleanup acceptance passed in PR 1 | Actual JOC reference media and physical qualification |
@@ -364,6 +364,16 @@ claims neither a 256-frame listening pass nor sustained stability, microphone
 capture, calibrated quality or physical latency. Its source/private hashes
 are retained separately, without changing the frozen v4 receipt.
 
+The [ThinkPad demo receipt](../evidence/thinkpad-owner-listening-2026-10-13.json)
+records 45.871 seconds, exit 0, owner “sounded good” and preserved speaker
+state, services and virtual-sink volume. Its 256/48000 condition comes from
+the separate post-boot 6.086-second preflight; driver timing was not sampled
+during the demo. The subsequent owner report says ordinary movies/shows on
+both laptops are too quiet at maximum output, so everyday loudness acceptance
+remains unresolved. Positive demo clarity does not establish overall sound
+quality. A separate gain-stage investigation owns the next coherent change;
+this startup/latency batch and its tuning stay frozen.
+
 The completed ThinkPad retry baseline was 100% physical-default volume, not the
 74% final level of its earlier stopped attempt. The v3 launch receipt corrects
 that earlier progress report. The final receipt confirms driver count 1 throughout its sampled active
@@ -382,9 +392,9 @@ The original accepted patch bytes and licences are preserved. The
 [review-fixed compiler/export receipt](../evidence/speaker-autoload-reviewed-build-2026-10-13.json)
 binds `b6d5f1e`, final ELF/package hashes and 711 exact corresponding source
 files. The existing-runtime ThinkPad final receipt is integrated. All source
-findings cleared focused re-review; final artifact binding checks and affected
-acceptance follow this frozen batch. No new
-unit or graph case has executed. The focused coverage comprises the extended
+findings and final artifact bindings cleared independent focused re-review.
+The single Linux runner is executing the affected selection on frozen code;
+its acceptance results remain pending. The focused coverage comprises the extended
 source method, 17 actual-header autoload cases, 10 build-orchestration cases,
 four event-order/binding graph selectors, the two existing ASUS/Lenovo loader-route
 selectors invalidated by the new runtime, and one new 512-frame lifecycle
@@ -394,11 +404,11 @@ Two independent reviews found late profile-index storage, Docker backend
 compatibility and stale install-guide package names. The guide is corrected;
 native/model and Docker corrections at `b6d5f1e` and the guide at `3775486c`
 have all cleared focused re-review. The approved bounded corrective build
-compiled/exported successfully and its matching receipt is integrated; no
-tests have executed. The [intermediate receipt](../evidence/speaker-autoload-build-2026-10-13.json)
+compiled/exported successfully and its matching receipt is integrated.
+Tests have been released to the single native runner; this lane runs none. The [intermediate receipt](../evidence/speaker-autoload-build-2026-10-13.json)
 for `135c60f` remains unchanged and superseded. The final build used two compiler
 workers within two CPUs/6 GiB; the production CLI's one-worker default is
-unchanged. Artifact checks precede release of the held affected tests.
+unchanged. No duplicate test lane or unchanged passing suite is run.
 
 No candidate fix is installed and no active hour is interrupted for that work.
 Accepted unchanged units remain retained.

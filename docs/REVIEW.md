@@ -248,11 +248,12 @@ at integration `24a8feef`. They identified three P2 findings:
 
 The intermediate compiler/export receipt for source `135c60f` remains
 unchanged. It does not qualify the forthcoming corrected source or artifact.
-No unit or graph acceptance has executed. The planned affected selection is
+No affected acceptance result is claimed yet. The released selection is
 29 unit methods and six graph selectors (four new event-order/binding cases
 plus the ASUS and Lenovo loader-route regressions). Both reviewers cleared all three fixes before execution. The approved corrective build now has a [matching receipt](../evidence/speaker-autoload-reviewed-build-2026-10-13.json)
 for reviewed `b6d5f1e`, final ELF/package hashes and 711 exact source files.
-The earlier receipt remains historical. Final artifact binding/receipt checks
-precede release of the held 29 unit methods and six graph selectors.
+The earlier receipt remains historical. Final artifact binding/receipt checks also cleared independently. The single
+native runner is now executing the 29 unit methods and six graph selectors
+once; its results are pending. This integration lane executes none.
 Only failed or subsequently invalidated cases repeat; unrelated accepted
 speaker, latency, Mac and emitter suites remain retained.

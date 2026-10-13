@@ -1,0 +1,41 @@
+{
+  "buffer_condition": {
+    "driver_timing_sampled_during_this_demo": false,
+    "last_operator_verified_quantum_frames": 256,
+    "last_operator_verified_rate_hz": 48000,
+    "verification": "separate 6.086-second post-boot silent preflight; full tuned stereo path and three running driver samples at error count zero"
+  },
+  "content": "original speech-and-music listening demo",
+  "date": "2026-10-13",
+  "everyday_loudness_accepted": false,
+  "evidence_class": "owner-listening-observation",
+  "owner_feedback": "sounded good",
+  "playback": {
+    "elapsed_seconds": 45.87095403671265,
+    "finished_unix": 1791907540.085147,
+    "returncode": 0,
+    "started_unix": 1791907494.2141929,
+    "status": "completed"
+  },
+  "preservation": {
+    "services_preserved": true,
+    "speaker_state_preserved": true,
+    "virtual_sink_volume_preserved": true
+  },
+  "private_receipt_sha256": {
+    "after_state": "99d3613083855ded6408a534f630720cc992ca3a778c30a75840711fdedafda5",
+    "before_state": "6eef57b77ed75d08e9b7512212baadfd3aa4d13933d175ce1a99cd218a0ee4bf",
+    "owner_feedback": "aae007319d092cd3dba639cc075d71b909865dbf86341491bf78144696e1035d",
+    "playback": "9989513caa5fe8b17d16fb48b06ac01bb333706573d8505d3d805f977fd50107"
+  },
+  "schema_version": 1,
+  "scope": {
+    "calibrated_sound_quality_measured": false,
+    "microphone_capture_performed_for_this_demo": false,
+    "physical_latency_measured": false,
+    "sustained_stability_pass_claimed": false
+  },
+  "signal_sha256": "80c0a4693f49d21b9291d792ba7b3d268cf83a989e69b063f5c0586e1db07b80",
+  "subsequent_owner_report": "Ordinary movies and shows are too quiet on both laptops at maximum volume.",
+  "system_alias": "lab6"
+}

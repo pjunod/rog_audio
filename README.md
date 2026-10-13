@@ -12,8 +12,9 @@ tests and isolated runtime acceptance. The ROG now runs the v0.2.0 internal
 speaker candidate with its preset, IR, plugins and hardware output checked;
 the ThinkPad now runs its separate Lenovo candidate with the same live checks.
 Both have automatic startup enabled at user login after reboot. The owner reports
-substantial audible improvement; physical hotplug and measurements remain
-pending. macOS-equivalent performance or
+substantial audible improvement in clarity, but everyday movies/shows remain
+too quiet on both laptops at maximum output. Loudness acceptance, physical
+hotplug and measurements remain pending. macOS-equivalent performance or
 Atmos fidelity has not been measured.
 
 Historical paired zero-PCM observations reduced both tuned Linux driver
@@ -32,13 +33,19 @@ start, midpoint and end. The ROG's 256-frame attempt failed after 67.982
 seconds; reviewed rollback preserved its full tuning at 2048 frames. Neither
 result measures physical latency or qualifies the startup-fixed runtime.
 The corrected native runtime is compiled/exported and its source fixes
-cleared re-review; final artifact checks and focused acceptance remain pending. [Current results](docs/STATUS.md#startup-and-sustained-check-progress--2026-10-13)
+and final artifact bindings cleared re-review. The single Linux runner is
+executing the 29 affected unit methods and six graph selectors; results remain
+pending. [Current results](docs/STATUS.md#startup-and-sustained-check-progress--2026-10-13)
 keep those evidence classes distinct. A new `v0.2.1` release with package
 `8.2.8+rog2`, corresponding source and newly bound kits is planned after
 review, focused tests and merge; existing v0.2.0 assets remain unchanged.
 A later [ROG listening observation](evidence/rog-owner-listening-2026-10-13.json)
 records “Sounded good” with matching protected state; driver timing was not
 sampled during that demo, so it is separate from latency/stability results.
+The [ThinkPad listening receipt](evidence/thinkpad-owner-listening-2026-10-13.json)
+also records “sounded good” for the demo, while explicitly leaving everyday
+loudness unaccepted after the subsequent movies/shows report. A separate gain
+investigation will address that issue without changing this frozen batch.
 The ThinkPad runtime update is held pending a read-only storage-capacity
 audit after pilot-file staging reported `ENOSPC`; recovery assets stay retained.
 
