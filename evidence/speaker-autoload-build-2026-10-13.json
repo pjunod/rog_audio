@@ -1,0 +1,94 @@
+{
+  "activation_state": "not-installed",
+  "authored_source_commit": "135c60f",
+  "binary_sha256": "2af74703e9d6d7c09d75dcd3daa77f440e7f0025139e4546e5749e6c4b9dfc7a",
+  "build": {
+    "baseline_image_id": "6fd638bf473d055a8c4ef49ae28e3a6d82e0a6eb6fcd77f31f59c11d96279fbd",
+    "baseline_source_files": 710,
+    "build_end_utc": "2026-10-13T15:47:56Z",
+    "build_limits": {
+      "container_jobs": 1,
+      "cpu_period_us": 100000,
+      "cpu_quota_us": 200000,
+      "memory": "6g",
+      "memory_swap": "6g"
+    },
+    "build_log_sha256": "c0444cc32efd6e028e0950b3d05310db3834d63424b97b9c01c0cd3c249c4d81",
+    "build_start_utc": "2026-10-13T15:41:20Z",
+    "candidate_image_id": "02410d1df8c10b8b366c84fea30059afdc03dbcb1ebcecdb589d33b1a26fb672",
+    "compiler_workers": 2,
+    "container_engine": "podman",
+    "container_engine_version": "5.8.6",
+    "export_archive_sha256": "d44ac788a38d5c35ce02cb830f3c0a97a823fac33b45ec9df26d8ef3395d9e51",
+    "export_limits": {
+      "cpus": 2,
+      "memory": "6g",
+      "network": "none",
+      "pids_limit": 2048
+    },
+    "final_source_files": 711,
+    "generated_source_metadata_excluded": [
+      "src/.qmlls.ini"
+    ],
+    "incremental_parent_image_id": "52a6a2049102ae02c772cc3b8acc8eaa2c8596f58eddb05f528aac529a4ebcc1",
+    "incremental_recipe_sha256": "2a884d32e43e742e19d4d8def765681926e79a4f4ddd5124dcd3157eac4e2854",
+    "kind": "incremental-after-full-baseline",
+    "production_default_compiler_workers": 1,
+    "production_recipe_sha256": "2bae7249752f85fc673dacb11f5c150976bf5fafab0ba9d17aa9c8c3b5bf2ff7",
+    "source_transfer_archive_bytes": 133120,
+    "source_transfer_archive_sha256": "21db2ea2da57f2b3ab46ab0a7d8cfaf3fdddbdd0199858db756fcd4b3957860d",
+    "source_verification_after_export": true,
+    "source_verification_before_compile": true,
+    "status": "compiled-linked-installed-to-private-container-prefix-and-exported",
+    "warnings": [
+      "Inherited SPA macro missing-field-initializer warnings in synthetic Device helper",
+      "Inherited synthetic player misleading-indentation warnings"
+    ]
+  },
+  "compiler": {
+    "compiler_flags": [
+      "-O3",
+      "-DNDEBUG",
+      "-std=gnu++20"
+    ],
+    "compiler_version": "15.3.0",
+    "cpu_default_options": [
+      "-march=                     \t\tx86-64",
+      "-mtune=                     \t\tgeneric"
+    ],
+    "packages": {
+      "easyeffects": "8.2.8+ds-1build1",
+      "libqt6core6t64": "6.11.2+dfsg-4ubuntu2",
+      "libqt6qml6": "6.11.2+dfsg-2ubuntu1",
+      "pipewire": "1.6.8-1ubuntu4",
+      "wireplumber": "0.5.17-1ubuntu1"
+    }
+  },
+  "distribution": "Ubuntu 26.10",
+  "evidence_kind": "isolated-compiler-and-package",
+  "host_settings_or_services_changed": false,
+  "image_base": "ubuntu@sha256:ee126c2fa0249079a7e24ae3a3d29b04783ef93ab33c868751c9a1289d3fffff",
+  "package": "rog-audio-easyeffects_8.2.8+rog2_amd64.deb",
+  "package_sha256": "5c9cbd1d03e4f6a3158366617437dfd39061ebb926e8fc0853afa7eb21e88279",
+  "package_version": "8.2.8+rog2",
+  "patches_sha256": {
+    "0001-Scope-speaker-correction-to-device-route.patch": "e10f439698d353e52c58ec0190390107d68fd0ace4f429d89c996c4104d76ede",
+    "0002-Retain-output-routes-for-device-return.patch": "a72802db40779287da67cdf7d116df76adb37f44a101aa78947b5a50cf1bed5e",
+    "ubuntu/0001-Disable-echo-canceller.patch": "fc990509008860da01bc3b0719d2b7af173e16e6efd7aba26e3ad0f65282ba11",
+    "ubuntu/COPYRIGHT": "5ffb35e31945036cf81c7dd63b14c28af850213f4083279e9f3c2ef50e49e207"
+  },
+  "physical_device_or_session_access": false,
+  "physical_session_return_acceptance": "pending separate operator window",
+  "platform": "Linux amd64",
+  "runtime_graph_acceptance": "pending combined adversarial review",
+  "schema_version": 1,
+  "source_commit": "6d9b1220d3dcebb154ba759a05600662bc0af549",
+  "source_manifest_sha256": "c3216c89f313104bb2ca567433562abc4fdbeea9113acea5b3e3f2bbf3b63c7d",
+  "source_verification": {
+    "source_commit": "6d9b1220d3dcebb154ba759a05600662bc0af549",
+    "source_files": 711,
+    "source_tree_manifest_sha256": "273e04cfec842ae81d60fae321b3d15c1e6568446b0a19b695aa93ad1eff967b",
+    "status": "exact-source-tree-match"
+  },
+  "unit_tests_run": 0
+}

@@ -1,6 +1,6 @@
 # Speaker autoload — recover the preset when the output device returns
 
-**Status:** native implementation complete; compiler, independent review and
+**Status:** native implementation compiled and packaged; independent review and
 focused acceptance pending · **Updated:** 2026-10-13.
 
 Companion to [speaker installation](SPEAKER_INSTALL.md), which owns installation
@@ -81,6 +81,16 @@ Ubuntu 26.10 amd64, Qt 6.11.2 and the original upstream commit
 actual package/compiler versions with the inherited
 [compiler receipt](../evidence/speaker-runtime-build-2026-10-12.json); a new
 build receipt must record the versions actually used.
+
+The [new compiler/package receipt](../evidence/speaker-autoload-build-2026-10-13.json)
+records GNU 15.3.0, Qt 6.11.2, the `8.2.8+rog2` package and exact final binary/source
+hashes. The final candidate reused the owned baseline build objects after full
+source-tree verification, then compiled and installed 181 affected Ninja tasks.
+That recorded incremental run used two compiler workers within the same two-CPU,
+6 GiB slot; the production recipe keeps one worker. Export verified all 711
+source files again, excluding only CMake-generated `src/.qmlls.ini`. The baseline
+and intermediate image IDs remain distinguishable. No units or runtime graph
+selectors ran during compilation; independent review and acceptance remain open.
 
 ## Regenerate kit metadata without changing tuning bytes
 
