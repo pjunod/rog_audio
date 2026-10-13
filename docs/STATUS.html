@@ -13,7 +13,7 @@ h1{font-size:2rem}h2{color:#91d7ee}a{color:#91d7ee}table{border-collapse:collaps
 <tr><td>ASUS speaker tuning</td><td>Validated stereo restored with full tuned path; prior owner feedback positive</td><td>Scoped latency trial, physical hotplug and measurements</td></tr>
 <tr><td>ThinkPad speaker tuning</td><td>Separate Lenovo music/balanced candidate running; live preset, IR, plugins and hardware output verified</td><td>Owner listening, physical hotplug and measurements</td></tr>
 <tr><td>Laptop installation runtime</td><td>Both active with private rollback and login startup; inherited 97 unit cases and both isolated graph cases passed</td><td>Actual post-reboot observation and physical qualification</td></tr>
-<tr><td>Diagnostics and latency</td><td>New read-only baselines and scoped latency implementation in progress; prior 42 tests retained</td><td>Review complete changes, then affected tests and bounded trials</td></tr>
+<tr><td>Diagnostics and latency</td><td>PR 5 implemented and adversarially reviewed; four findings being resolved; prior 42 tests retained</td><td>Clear fixes, run affected tests once, then bounded trials</td></tr>
 <tr><td>Host Atmos</td><td>15 tests and focused CI cleanup acceptance passed in PR 1</td><td>Actual JOC reference media and physical qualification</td></tr>
 <tr><td>macOS comparison</td><td>M4 Air getter and silent-running snapshots complete; native probe compiled</td><td>Review and summary tests, then physical comparison</td></tr>
 <tr><td>Sonos Arc/eARC</td><td>Deferred until internal audio work</td><td>TV route and actual received formats</td></tr>
@@ -151,9 +151,11 @@ h1{font-size:2rem}h2{color:#91d7ee}a{color:#91d7ee}table{border-collapse:collaps
 <p>evidence. A physical comparison needs a documented capture path and clock</p>
 <p>relationship; measurement equipment is not yet established. No new latency</p>
 <p>improvement or Mac parity is claimed. Sonos Atmos remains last.</p>
-<p>Implementation will be batched into a PR, independently reviewed when ready,</p>
-<p>then validated with affected tests once. Only failed or invalidated cases</p>
-<p>will repeat. Existing speaker and unrelated Atmos passes remain retained.</p>
+<p>[PR 5](https://github.com/pjunod/rog_audio/pull/5) contains the complete</p>
+<p>implementation and has received three independent adversarial reviews. Two</p>
+<p>findings are source-cleared; the two file-lifecycle findings are being fixed</p>
+<p>before the new affected tests run. Only failed or invalidated cases will</p>
+<p>repeat. Existing speaker and unrelated Atmos passes remain retained.</p>
 <p>Fresh idle baselines show the ROG now exposes an Analog Surround 4.0 sink while</p>
 <p>its kit targets Analog Stereo. A remembered preset label does not prove active</p>
 <p>correction on that changed route. The owner selected four-channel output manually, reported the settings UI</p>
