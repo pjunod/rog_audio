@@ -1,0 +1,45 @@
+{
+  "authorization": "owner explicitly approved verified private retention and removal of exact cached installers plus one disabled browser revision",
+  "capacity": {
+    "additional_database_snapshot_journal_and_recovery_overhead_not_included": true,
+    "candidate_package_sha256": "b24e9c97fa1d892c4f1eede22ab5f0bf2669f7b0d3cc5c7985cae4965bd0582a",
+    "candidate_regular_block_rounded_bytes": 26226688,
+    "candidate_runtime": "8.2.8+rog2",
+    "conservative_two_payload_transient_bytes": 52453376,
+    "ordinary_available_bytes_after": 45326336,
+    "ordinary_available_bytes_before": 0
+  },
+  "cleanup": {
+    "active_browser_revision_preserved": 9036,
+    "audio_configuration_preserved": true,
+    "audio_services_and_processes_preserved": true,
+    "cached_installer_count_removed": 164,
+    "common_data_roots_preserved": true,
+    "disabled_browser_revision_removed": 8969,
+    "installed_package_ledger_preserved": true,
+    "no_unrelated_cleanup": true,
+    "owner_volume_preserved": true,
+    "recovery_seed_alias_preserved": true,
+    "verified_private_backup_before_removal": true
+  },
+  "date": "2026-10-13",
+  "evidence_class": "live maintenance observation, not acoustic or timing acceptance",
+  "host": "lab6",
+  "kind": "authorized-thinkpad-capacity-cleanup-and-runtime-hold",
+  "limits": [
+    "No corrected-runtime ThinkPad installation or qualification is claimed.",
+    "Earlier estimated reclamation is superseded by actual measured capacity.",
+    "Backup byte retention does not qualify instant inactive browser registration restoration.",
+    "No new hour, reboot, hotplug, acoustic or physical latency result is claimed.",
+    "The payload footprint belongs to +rog2; the forthcoming +rog3 footprint was not measured in this observation."
+  ],
+  "result": {
+    "corrected_runtime_upgrade": "held before staging; actual capacity below conservative transient payload budget",
+    "existing_latency_request": "256 frames at 48000 Hz preserved",
+    "existing_runtime": "8.2.8+rog1 remains active",
+    "partition_mount_reserved_block_or_boot_configuration_changed": false,
+    "rollback": "retained",
+    "sonos": "deferred"
+  },
+  "schema_version": 1
+}

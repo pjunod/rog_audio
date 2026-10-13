@@ -1,0 +1,41 @@
+{
+  "attempt_history": {
+    "first_attempt": "completion-status label assertion refused before quarantine, journal creation or removal",
+    "retry": "separate controller and journal used actual retained completion status; all preimage checks retained"
+  },
+  "capacity": {
+    "ordinary_available_bytes_after": 80625664,
+    "ordinary_available_bytes_before": 68898816
+  },
+  "cleanup": {
+    "audio_state_units_owner_volume_preserved": true,
+    "exact_preimages_and_exclusive_quarantine_verified": true,
+    "owner_os_seed_and_recovery_data_touched": false,
+    "removed_file_count": 2,
+    "removed_regular_bytes": 11722470
+  },
+  "date": "2026-10-13",
+  "evidence_class": "live maintenance observation; no new audio qualification",
+  "host": "lab6",
+  "kind": "thinkpad-retained-old-observer-capture-cleanup",
+  "limits": [
+    "Reclaiming retained observer copies does not alter or extend the historical hour result.",
+    "No final-runtime install, new hour, reboot, hotplug, acoustic or physical latency result is claimed."
+  ],
+  "previous_observation": "thinkpad-retained-agent-source-cleanup-2026-10-13.json",
+  "result": {
+    "existing_latency_request": "256 frames at48000Hz preserved",
+    "existing_runtime": "8.2.8+rog1 active",
+    "final_rog3_package": "not staged; final artifact, acceptance, merge and measured install/recovery budget remain separate gates",
+    "sonos": "deferred"
+  },
+  "retention": {
+    "all_ten_other_observation_files_preserved": true,
+    "archive_reopened_and_exact_two_file_hashes_verified": true,
+    "historical_hour_result_and_limits_preserved": true,
+    "onhost_rollback_packages_kits_tools_configuration_snapshots_preserved": true,
+    "private_archive_sha256": "c4dd122b343f1353adcd9643125ad190687dbce51b0e03413072143afd72fdd6"
+  },
+  "schema_version": 1,
+  "scope": "two completed old-runtime hour observer capture duplicates"
+}

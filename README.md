@@ -47,14 +47,20 @@ The [ThinkPad listening receipt](evidence/thinkpad-owner-listening-2026-10-13.js
 also records “sounded good” for the demo, while explicitly leaving everyday
 loudness unaccepted after the subsequent movies/shows report. A separate gain
 investigation will address that issue without changing this frozen batch.
-The ThinkPad runtime update remains held for capacity after pilot staging
-reported `ENOSPC`. Authorized cleanup completed with verified private backup,
-but actual available space is only 45,326,336 bytes (43.23 MiB). Recovery
-assets, installed packages and audio settings remain preserved.
+The ThinkPad runtime update remains held after pilot staging reported
+`ENOSPC`. Authorized backed-up cleanup and removal of verified offhost-retained
+agent copies left 80,625,664 bytes (76.89 MiB) available. Its recovery assets,
+installed packages and audio settings remain preserved; final installation
+and recovery budgeting are separate from those maintenance observations.
 A later [paired digital gain capture](evidence/both-laptop-digital-gain-transfer-2026-10-13.json)
 found speech attenuation consistent with the retained FIR filters (-0.343 dB
 ROG, -3.903/-3.783 dB ThinkPad), with no additional runtime gain loss for that
-low-level clip. Ordinary movie/show loudness remains unresolved.
+low-level clip. Ordinary movie/show loudness remains unresolved. The separate programme
+loudness batch has cleared review: 28 affected unit methods passed once and
+both isolated model graph checks passed after a reviewed raw-PCM runner fix.
+The accepted `+rog3` implementation preserves speaker voicing; laptop
+deployment, everyday loudness and fresh final-configuration hours remain open.
+v0.2.2 assets are prepared privately; publication is pending.
 
 Display work remains in [rog_hdr_dv](https://github.com/pjunod/rog_hdr_dv).
 
@@ -69,7 +75,7 @@ Display work remains in [rog_hdr_dv](https://github.com/pjunod/rog_hdr_dv).
 - [ASUS four-channel mapping](docs/ASUS_FOUR_CHANNEL.md) — why the investigated profile needs explicit rear-pair routing and stereo remains the working fallback.
 - [Speaker installation](docs/SPEAKER_INSTALL.md) — scoped runtime and reversible file kit.
 - [Speaker autoload](docs/SPEAKER_AUTOLOAD.md) — native device-return fix, bounded build and unchanged-tuning runtime upgrade.
-- [Programme loudness](docs/PROGRAMME_LOUDNESS.md) — adjustable bounded makeup, preserved voicing and the unresolved everyday-volume evidence.
+- [Programme loudness](docs/PROGRAMME_LOUDNESS.md) — adjustable makeup, preserved voicing and selective acceptance.
 - [Latency build](docs/AUDIO_LATENCY_BUILD.md) — inspection, measurements and candidates.
 - [Linux tuned-path timing](docs/LINUX_AUDIO_PATH.md) — inspect the active processor and apply or remove one private latency request.
 - [CoreAudio timing](docs/COREAUDIO_LATENCY.md) — read-only Mac output terms, M4 Air observations and physical measurement limits.
