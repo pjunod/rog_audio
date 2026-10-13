@@ -78,7 +78,7 @@ The supported 48 kHz requests are 128, 256, 512, 1024 and 2048 frames. One
 shared integer set drives rule construction and CLI choices; bundle and
 snapshot validation reconstruct that same rule. The default remains 256.
 The additive 1024/2048 support passed final review and focused acceptance.
-Use the accepted post-v0.2.2 tool source after PR 11 merges; the unchanged
+Use the accepted post-v0.2.2 tool source from merged PR 11; the unchanged
 v0.2.2 tag still has only 128/256/512 requests. Existing file/settings/environment/conflict guards are
 unchanged; these remain private requests, never forced global graph periods.
 
@@ -87,7 +87,7 @@ unchanged; these remain private requests, never forced global graph periods.
 | 128 | 2.667 ms | Existing preparer capability, not a laptop stability pass |
 | 256 | 5.333 ms | Historical paired observations; ROG later failed, ThinkPad old-runtime hour passed |
 | 512 | 10.667 ms | ROG short +rog2 check passed, but a later six-second baseline grew driver ERR 3→4→4 |
-| 1024 | 21.333 ms | Source review/tests passed; shared 1024 observed on +rog2, explicit guarded trial pending |
+| 1024 | 21.333 ms | Source review/tests and explicit +rog2 short trial passed; final programme hour pending |
 | 2048 | 42.667 ms | Recoverable prior default; explicit request support is new, not a new hour result |
 
 The latest 512 failure preceded any +rog3 package or gain-preset change. Keep
@@ -95,7 +95,7 @@ it separate from the earlier 20.065-second short pass and the 256 failure.
 Removing the private 512 request restored the original tuning, but the shared
 graph negotiated 1024 with a browser requesting it; historical 2048 was not
 reproduced. This does not qualify an explicit 1024 request. Try that guarded
-request after this accepted follow-up merges; use recoverable 2048 if needed. Preserve
+request using the accepted merged tool; use recoverable 2048 if needed. Preserve
 every failed interval. Observe the running driver quantum/rate; neither the
 request nor its nominal period establishes physical delay or Mac parity.
 

@@ -20,7 +20,10 @@ class RuntimeBuildTests(unittest.TestCase):
         manifest={'binary_sha256':build.sha(binary),'package':build.package.PACKAGE+'_'+build.package.VERSION+'_amd64.deb',
                   'package_version':build.package.VERSION,'package_sha256':build.sha(deb),
                   'source_manifest_sha256':build.sha((build.ROOT/'patches/easyeffects/source.json').read_bytes()),
-                  'programme_loudness_contract':'bounded-programme-makeup-v1'}
+                  'programme_loudness_contract':'bounded-programme-makeup-v1',
+                  'stop_contract':'owned-synchronous-exit-v1',
+                  'stop_helper_sha256':build.sha((build.ROOT/'scripts/stop_speaker_effects.py').read_bytes()),
+                  'stop_helper_license_sha256':build.sha((build.ROOT/'LICENSE').read_bytes())}
         if change:manifest.update(change)
         stream=io.BytesIO()
         with tarfile.open(fileobj=stream,mode='w') as tar:
@@ -50,7 +53,11 @@ class RuntimeBuildTests(unittest.TestCase):
             if argv[1]=='cp':
                 destination=Path(argv[-1]);(destination/'bin').mkdir(parents=True)
                 (destination/'bin/easyeffects').write_bytes(binary);return b''
-            if argv[1]=='run':return stream.getvalue()
+            if argv[1]=='run':
+                helper=(build.ROOT/'scripts/stop_speaker_effects.py').read_bytes()
+                self.assertIn(helper.hex().encode(), kwargs['input'])
+                self.assertIn((build.ROOT/'LICENSE').read_bytes().hex().encode(),kwargs['input'])
+                return stream.getvalue()
             raise AssertionError(argv)
         with patch.object(build,'source_snapshot',side_effect=stage),patch.object(build.subprocess,'run',side_effect=execute),patch.object(build,'run',side_effect=export):
             try:result=build.build(parent/'public-git',output,'owned-candidate',engine)
@@ -137,3 +144,14 @@ class RuntimeBuildTests(unittest.TestCase):
         _,result,calls=self.fixture(change={'programme_loudness_contract':None})
         self.assertEqual(str(result),'exported_programme_contract_mismatch')
         self.assertIn(['podman','rm','owned-export-id'],calls)
+
+    def test_exported_stop_contract_mismatch_fails(self):
+        _,result,calls=self.fixture(change={'stop_contract':None})
+        self.assertEqual(str(result),'exported_stop_contract_mismatch')
+        self.assertIn(['podman','rm','owned-export-id'],calls)
+
+    def test_exported_stop_helper_bytes_mismatch_fails(self):
+        for field in ('stop_helper_sha256','stop_helper_license_sha256'):
+            with self.subTest(field=field):
+                _,result,_=self.fixture(change={field:'0'*64})
+                self.assertEqual(str(result),'exported_stop_contract_mismatch')

@@ -1,0 +1,79 @@
+{
+  "archive_sha256": "b3f05c804db60a5e0b3251bf873b315b0529c76a845008fbdc6577661a153f0e",
+  "attempt": 1,
+  "elapsed_seconds": 0.7890579829690978,
+  "finish_utc": "2026-10-13T22:33:43.365128+00:00",
+  "host_audio_session_device_mounts": false,
+  "image_sha256": "d75f27386d140602e579ead6165f6f9118a395e41429782c89921529781c81fb",
+  "kind": "synchronous-speaker-stop-focused-unit-acceptance",
+  "laptop_operations": false,
+  "limits": [
+    "Linux file/process/IPC-fixture and mocked export cases only; actual native protocol integration is separate.",
+    "Individual unittest fixtures clean themselves up; retained scratch refers to their durable parent."
+  ],
+  "log_bytes": 2925,
+  "log_sha256": "097da7bf3d792432b5f68eaab52d3a4bcc2bc27283e443a8acf663c784540ab8",
+  "native_rebuild_or_old_suites_repeated": false,
+  "owned_container_removed": true,
+  "owned_scratch_parent_retained": true,
+  "read_only_public_source_and_invocation": true,
+  "result": {
+    "errors": 0,
+    "failed_test_ids": [],
+    "failures": 0,
+    "python_version": "3.14.8",
+    "selectors": [
+      "test_stop_speaker_effects.StopTests.test_authenticated_quit_waits_for_saved_state_and_actual_exit",
+      "test_stop_speaker_effects.StopTests.test_timeout_preserves_process_for_systemd_final_kill",
+      "test_stop_speaker_effects.StopTests.test_foreign_socket_peer_never_receives_quit",
+      "test_stop_speaker_effects.StopTests.test_foreign_executable_is_refused_before_socket_connect",
+      "test_stop_speaker_effects.StopTests.test_exited_pid_is_noop_without_socket",
+      "test_stop_speaker_effects.StopTests.test_dead_pinned_handle_never_contacts_replacement",
+      "test_stop_speaker_effects.UnitTests.test_unset_mainpid_is_noop_without_command_or_socket",
+      "test_stop_speaker_effects.UnitTests.test_unit_awaits_helper_and_retains_final_kill_deadline",
+      "test_easyeffects_build.RuntimeBuildTests.test_podman_native_build_and_export_are_bounded_and_durable",
+      "test_easyeffects_build.RuntimeBuildTests.test_exported_stop_contract_mismatch_fails",
+      "test_easyeffects_build.RuntimeBuildTests.test_exported_stop_helper_bytes_mismatch_fails"
+    ],
+    "skipped_count": 0,
+    "successful": true,
+    "system": "Linux",
+    "tests_run": 11
+  },
+  "returncode": 0,
+  "reviewed_pr_head": "8c2c234f39d943d5c7825badde80432b08a668af",
+  "runner_sha256": "d0f7518ce336e3551a4b09cc58f0f322a22d0418a9388b5dc46d8d586ae8ee69",
+  "schema_version": 1,
+  "selectors": [
+    "test_stop_speaker_effects.StopTests.test_authenticated_quit_waits_for_saved_state_and_actual_exit",
+    "test_stop_speaker_effects.StopTests.test_timeout_preserves_process_for_systemd_final_kill",
+    "test_stop_speaker_effects.StopTests.test_foreign_socket_peer_never_receives_quit",
+    "test_stop_speaker_effects.StopTests.test_foreign_executable_is_refused_before_socket_connect",
+    "test_stop_speaker_effects.StopTests.test_exited_pid_is_noop_without_socket",
+    "test_stop_speaker_effects.StopTests.test_dead_pinned_handle_never_contacts_replacement",
+    "test_stop_speaker_effects.UnitTests.test_unset_mainpid_is_noop_without_command_or_socket",
+    "test_stop_speaker_effects.UnitTests.test_unit_awaits_helper_and_retains_final_kill_deadline",
+    "test_easyeffects_build.RuntimeBuildTests.test_podman_native_build_and_export_are_bounded_and_durable",
+    "test_easyeffects_build.RuntimeBuildTests.test_exported_stop_contract_mismatch_fails",
+    "test_easyeffects_build.RuntimeBuildTests.test_exported_stop_helper_bytes_mismatch_fails"
+  ],
+  "source_hashes_match_after_run": true,
+  "source_sha256": {
+    "LICENSE": "b6dfebc63ca0515ea78c37829fb946125e2d5e708101c4685f36ac907527d066",
+    "scripts/build_easyeffects_runtime.py": "7f2dfe35603d7d7c7093038d539e345bda88bb0bc7fb9435adab85cf376bc051",
+    "scripts/package_easyeffects_runtime.py": "8f1ab47f9dfe7a1bcc57f8ea953f13daff1f864085feec45d3211bdcba9a2ef8",
+    "scripts/stop_speaker_effects.py": "ba8c4a6a103a03969879fab794c823438247eb173e7f227f29630c2585273d42",
+    "systemd/rog-audio-speaker.service": "65beb0fa15830f9204d9026c06e37ec14fc5bb1d33a4f9108eafce93d3a706dd",
+    "tests/test_easyeffects_build.py": "1f39b6d77642a49a47a76c777025697814fd804d369935022dc0124843baf967",
+    "tests/test_stop_speaker_effects.py": "44fb8a940f9d76df956081d374e7077b320d0906194467136a1d6983a7ae6df4"
+  },
+  "start_utc": "2026-10-13T22:33:42.576060+00:00",
+  "verified_bounds": {
+    "CpuPeriod": 100000,
+    "CpuQuota": 200000,
+    "Memory": 6442450944,
+    "MemorySwap": 6442450944,
+    "NetworkMode": "none",
+    "PidsLimit": 2048
+  }
+}

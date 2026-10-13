@@ -9,7 +9,7 @@ Environment=QT_QPA_PLATFORM=offscreen
 Environment=QT_QUICK_BACKEND=software
 Environment=ROG_AUDIO_STATE_DIR=%h/.local/state/rog-audio/easyeffects
 ExecStart=/usr/bin/rog-speaker-effects --hide-window --service-mode
-ExecStop=/usr/bin/rog-speaker-effects --quit
+ExecStop=/usr/lib/rog-audio/stop-speaker-effects --socket %t/RogAudioSpeakerEffectsServer
 Restart=on-failure
 RestartSec=3
 TimeoutStopSec=15

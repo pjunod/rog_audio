@@ -1,12 +1,16 @@
 # Status — implementation and physical acceptance
 
-**Updated:** 2026-10-13 · **State:** accepted programme runtime published;
-ThinkPad +rog3 installed on corrected retry with original voicing preserved;
-two automatic starts and a 20.162-second 256-frame check passed; new hour pending. ROG retains +rog2; its earlier 256 failure and short
-512 pass remain historical, with a later 512 baseline failing on counter growth.
-**Evidence update:** 2026-10-13 21:36 UTC; the dated receipts below retain separate attempts.
+**Updated:** 2026-10-13 · **State:** v0.2.2 published; ROG explicit 1024
+trial passed, but programme-update serialization failed and original +rog2
+tuning was restored. ThinkPad +rog3 remains active at 256; its −20 LUFS run
+ended explicitly after 1647.944 seconds for a planned louder candidate, not a
+stability failure or completed hour. A synchronous service-stop/package fix
+cleared independent review, eleven Linux units and actual helper-to-native
+integration. The final repository check and merge precede deployment. Fresh hours and physical measurements
+remain open.
+**Evidence update:** 2026-10-13 22:38 UTC; dated receipts retain separate attempts.
 
-All source/artifact findings cleared re-review; 29 affected unit methods and
+PR 9 startup source/artifact findings cleared re-review; 29 affected unit methods and
 six isolated graph selectors passed once, with zero failures or skips. PR 9
 is merged. Fresh final-configuration hours and physical measurements remain open.
 
@@ -14,9 +18,9 @@ is merged. Fresh final-configuration hours and physical measurements remain open
 |---|---|---|
 | Hardware inventory | Both laptops inspected read-only | Refresh during installation |
 | ASUS speaker tuning | Full tuned path restored; demo clarity feedback positive, everyday movie/show loudness unresolved | Reviewed startup fix installed, short 512 trial passed; final gain configuration, hour and physical checks |
-| ThinkPad speaker tuning | Corrected +rog3 retry succeeded; original IR/non-AutoGain settings preserved; short 256 check passed; old-runtime hour retained | Fresh provisional-default hour and everyday listening |
-| Laptop installation runtime | ROG +rog2 active on shared 1024 graph; ThinkPad +rog3 active with original tuning | Guarded ROG request/update, then fresh runtime/settings-bound hours |
-| Diagnostics and latency | ThinkPad old-runtime hour at 256 complete; ROG short check at 512 passed after 256 failure | Fresh final-configuration hours and physical measurements |
+| ThinkPad speaker tuning | Corrected +rog3 retry/short check passed; demo clear but too quiet; partial −20 run retained | Apply/assess −16 target and 14.1375 dB cap after stop fix; fresh hour |
+| Laptop installation runtime | ROG +rog2 recovered with explicit 1024 request; ThinkPad +rog3 active at 256 | Reviewed synchronous stop backport, ROG programme retry and louder ThinkPad trial |
+| Diagnostics and latency | ThinkPad old-runtime hour retained; new −20 run ended at 1647.944 s; ROG explicit 1024 short trial passed | Fresh hours on kept settings and physical measurements |
 | Programme loudness | Reviewed corrected `+rog3` build accepted: 28 units passed once; both model graphs passed after failed-selector-only retry | Coordinated deployment and fresh provisional-default software hours; owner listening separately accepts everyday loudness |
 | Host Atmos | 15 tests and focused CI cleanup acceptance passed in PR 1 | Actual JOC reference media and physical qualification |
 | macOS comparison | M4 Air getter and silent-running snapshots complete; 16 summary tests passed in PR 5 | Matched Linux software observations, then physical comparison |
@@ -728,3 +732,91 @@ A new hour and ordinary programme listening are still pending. Source/runtime
 unit and isolated graph acceptance remain separate. ROG +rog2 is unchanged;
 no ROG gain update is claimed. Raw locks, captures, manifests and recovery
 data remain private.
+
+
+## Accepted larger-request source and programme listening follow-up
+
+[PR 11](https://github.com/pjunod/rog_audio/pull/11) merged at
+2026-10-13 21:39:23 UTC as `5ce6205987c858a4e700ce5ac86486b6a13e5e25`,
+from accepted head `682aea9608df553929927f2194a43f0e6c14bf19`. The final
+repository checker passed once at 21:39:08 UTC; its retained output SHA256 is
+`09a0398419bb39417b3b8fdbda88fe42610055286a7fbcdc1f953104851455ad`.
+No passing unit methods were repeated for merge. The larger requests are now
+in accepted main source; the v0.2.2 tag and release bytes remain unchanged.
+
+[The ThinkPad programme demo receipt](../evidence/thinkpad-programme-owner-listening-2026-10-13.json)
+records 45 seconds of generated speech/music on +rog3, target −20 LUFS, cap
+10.1375 dB and 256/48000. Owner feedback was “Clear but still too quiet”: clarity
+accepted, everyday loudness unaccepted. The player did not measure physical
+or virtual volume or acoustic loudness. Protected files, preset and unit were
+unchanged; no settings change or microphone recording occurred. This remains
+separate from the active stability observation and any later gain condition.
+
+The [subsequent isolated comparison](../evidence/thinkpad-programme-target-comparison-2026-10-13.json)
+measured −21.8 LUFS at the current −20 target/10.1375 dB cap, −19.8 at
+−16/the same cap, and −17.9 at −16/a 14.1375 dB cap. The last two cases
+shared a −5.9 dBFS digital peak; all non-AutoGain stages and the final limiter
+were unchanged. The last case is a provisional listening candidate, not a
+live deployment, acoustic measurement or owner-accepted loudness result.
+These three device-free diagnostic cases are separate from acceptance units;
+no native build or passing unit suite repeated.
+
+## Synchronous service stop — review clear; eleven units and native integration passed
+
+[The explicit ROG 1024/recovery receipt](../evidence/rog-explicit1024-programme-recovery-2026-10-13.json)
+records eleven positive 1024/48000 observations at driver ERR 4 unchanged,
+full ordered stereo tuning and preserved final trial process identity. The
+subsequent +rog3 first automatic preset load succeeded, but user-service stop
+timed out and killed the runtime after settings saving began; new AutoGain
+settings were absent. Targeted original +rog2 recovery completed with automatic
+original-preset loading, explicit 1024 retained and owner gains, stock services,
+route, startup, hardware controls and firmware preserved. The retained inactive
+KConfig settings-write lock is distinct from the application single-instance
+lock; the agent did not edit it. This is recovery, not a ROG programme pass.
+
+[The ThinkPad partial-run receipt](../evidence/thinkpad-provisional-hour-ended-for-settings-2026-10-13.json)
+records 1647.944 seconds at −20 LUFS/cap 10.1375 dB, 256/48000, driver ERR 0
+unchanged and observed followers at zero. Two externally changed volume
+conditions were recorded; the agent made no volume changes. All owned player,
+monitor and graph nodes were independently confirmed gone after explicit stop.
+The agent chose a louder candidate in response to owner feedback; the owner
+did not select its exact target/cap. It was prepared offline only at this
+receipt. The partial run does not qualify that later condition.
+
+[The isolated shutdown diagnosis](../evidence/rog-speaker-shutdown-diagnosis-2026-10-13.json)
+reproduced the old service sequence: secondary quit followed immediately by
+SIGTERM hung at ten seconds and left AutoGain settings unsaved. Direct SIGTERM
+exited in 0.315 seconds; quit followed by awaiting primary exit in 0.440 seconds;
+both saved native settings. The exact internal lock mechanism remains unproven.
+The rejected archive containing private metadata was not transferred; the
+normal-approved diagnostic used the verified published preset/IR and a new
+minimal synthetic binding. No native source, build or unit suites changed for
+these diagnostics, and their exit times are not physical audio latency.
+
+The [service helper](SPEAKER_SERVICE.md) authenticates the exact owned runtime
+and Unix socket peer, pins its process lifetime, sends the native quit message
+directly and waits up to ten seconds for exit. It creates no secondary process
+and sends no signals; systemd retains its final kill policy and the public
+template's 15-second stop deadline. The native ELF and patch pins remain
+unchanged. Packaging +rog4 adds the helper, Python dependency, MIT notice and
+exact export contract; it is not a new native compiler or acceptance receipt.
+Live deployment will backport the exact reviewed helper and a reversible
+ExecStop change to existing +rog2/+rog3 packages, with their bindings reported
+separately; no unnecessary full package rewrite or OS cleanup is planned.
+
+The authored source `ecd2d9b` and fixture-only robustness follow-up `b5a0ad0c`
+were imported preserving authorship as `3b8ac6c` and `c8ec251`. Independent
+adversarial review cleared the combined source and final unsigned UID/GID
+correction before all eleven selected Linux unit methods passed once, with
+zero failures, errors or skips. [The authentic unit receipt](../evidence/synchronous-stop-unit-acceptance-2026-10-13.json)
+records the exact reviewed `8c2c234f` source, unchanged hashes, retained log
+and verified isolated two-CPU/6-GiB/2048-PID/network-none environment. The
+owned container was removed. The separately coordinated [actual helper-to-native integration](../evidence/speaker-stop-native-integration-2026-10-13.json)
+passed first execution: exact reviewed helper `ba8c4a6a` and accepted native
+ELF `3f110d6a`; helper and primary returned 0 in 0.321 seconds with expected
+ROG AutoGain settings saved, automatic preset/IR and full stereo route
+verified. No secondary native CLI or helper signals were used. This is an
+isolated native protocol result; live backport and final settings-bound hours
+remain pending. Earlier unchanged native/audio
+suites were not repeated; one changed export method was legitimately
+invalidated and re-executed. No native compiler pass is claimed.

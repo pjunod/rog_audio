@@ -12,8 +12,9 @@ tests and isolated runtime acceptance. The ROG now runs the corrected `8.2.8+rog
 IR, plugins and hardware output checked;
 the ThinkPad now runs +rog3 with its new programme settings and unchanged
 Lenovo voicing after a corrected retry. Two automatic starts and a 20.162-second
-256-frame check passed; its new hour remains pending. The original deployment and old-runtime
-hour remain scoped history.
+256-frame check passed. Its subsequent run ended explicitly after 1647.944
+seconds to prepare louder settings; it had no new driver errors, but is not
+a completed hour. The original deployment and old-runtime hour remain scoped history.
 Both have automatic startup enabled at user login after reboot. The owner reports
 substantial audible improvement in clarity, but everyday movies/shows remain
 too quiet on both laptops at maximum output. Loudness acceptance, physical
@@ -24,10 +25,14 @@ Historical paired zero-PCM observations reduced both tuned Linux driver
 periods from 2048 frames (42.667 ms) to 256 frames (5.333 ms) at 48 kHz with
 the same client request. The ROG later achieved a short 512-frame check (10.667 ms), but a fresh
 six-second baseline failed on driver error growth before its gain update.
-After removing the private 512 request, the ROG's shared graph negotiated
-1024/48000 with driver ERR 4 unchanged across 11 samples and original tuning
-active. This is not an explicit 1024 trial. Larger-request source review and
-four focused methods passed; a guarded trial follows tool merge. ThinkPad
+The later explicit 1024/48000 trial passed with driver ERR 4 unchanged across
+11 samples and original tuning intact. Its +rog3 update automatically loaded
+the new preset, but the service stop sequence hung during serialization.
+Original +rog2 tuning was recovered and automatically loaded, retaining the
+1024 request. A [synchronous service-stop fix](docs/SPEAKER_SERVICE.md) is
+independently reviewed; eleven focused Linux methods and one actual
+helper-to-native integration passed first execution. Final merge and live
+backport remain pending; no native engine rebuild is required. ThinkPad
 retains its independent 256 request. The M4 Air reports
 a 512-frame HAL buffer (10.667 ms). These are software timing terms, not
 measured speaker delay or proof of Mac parity.
@@ -87,6 +92,7 @@ Display work remains in [rog_hdr_dv](https://github.com/pjunod/rog_hdr_dv).
 - [Lenovo speaker preparation](docs/LENOVO_SPEAKER_PROFILE.md) — exact first-generation X1 Extreme source, identity and offline candidates.
 - [ASUS four-channel mapping](docs/ASUS_FOUR_CHANNEL.md) — why the investigated profile needs explicit rear-pair routing and stereo remains the working fallback.
 - [Speaker installation](docs/SPEAKER_INSTALL.md) — scoped runtime and reversible file kit.
+- [Speaker service shutdown](docs/SPEAKER_SERVICE.md) — authenticated quit, bounded exit wait and reversible unit backport.
 - [Speaker autoload](docs/SPEAKER_AUTOLOAD.md) — native device-return fix, bounded build and unchanged-tuning runtime upgrade.
 - [Programme loudness](docs/PROGRAMME_LOUDNESS.md) — adjustable makeup, preserved voicing and selective acceptance.
 - [Latency build](docs/AUDIO_LATENCY_BUILD.md) — inspection, measurements and candidates.
@@ -175,7 +181,8 @@ recovered vendor files and separately fetched dependencies.
 - [x] Build reversible installation and pass both isolated runtime/routing cases.
 - [x] Install both model-specific candidates and enable automatic login startup.
 - [x] Trial lower tuned Linux graph periods and collect the M4 Air software reference; retain distinct bounded passes and later ROG 256/512 failures.
-- [ ] Merge accepted guarded 1024/2048 requests, qualify the kept ROG request and complete fresh software hours on the programme settings.
+- [x] Merge guarded 1024/2048 requests and pass the explicit ROG 1024 short trial.
+- [ ] Review/test/deploy synchronous service stop, retry ROG programme settings, assess the louder ThinkPad candidate and complete fresh software hours.
 - [ ] Qualify physical headphone/HDMI routing and resume.
 - [ ] Measure built-in speaker quality and latency against the Macs.
 - [ ] Qualify Sonos Arc/eARC last.

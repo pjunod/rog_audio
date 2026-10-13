@@ -125,7 +125,9 @@ Complete software qualification before the coordinated recording session.
 ROG 512 frames passed one bounded corrected-runtime check but failed a later
 six-second baseline on driver error growth. The private 512 request was
 removed; the +rog2 shared graph negotiated 1024 with ERR 4 unchanged across
-11 samples. An explicit guarded 1024 trial and ROG +rog3 update remain pending;
+11 samples. A later explicit guarded 1024 trial passed, but the ROG +rog3
+update failed during shutdown/serialization; original +rog2 was recovered
+with 1024 retained. The service-stop fix and programme retry remain pending;
 larger-request source review and four focused methods passed. ThinkPad's +rog3
 retry succeeded with two automatic starts and a short 256-frame ERR-0 check,
 retaining original voicing. Its old-runtime hour remains historical. Fresh

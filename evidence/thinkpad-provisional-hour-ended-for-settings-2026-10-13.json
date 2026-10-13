@@ -1,0 +1,56 @@
+{
+  "actual_owned_active_seconds": 1647.9440280490016,
+  "agent_volume_changes": false,
+  "all_observed_follower_errors_zero": true,
+  "binary_sha256": "3f110d6a2d1e2c743cc552b58930679acd0c00e45f5771a23d4b7702ca31206d",
+  "condition": {
+    "maximum_gain_db": 10.137500000002703,
+    "quantum_frames": 256,
+    "rate_hz": 48000,
+    "target_lufs": -20
+  },
+  "date": "2026-10-13",
+  "demonstration_application_gain": {
+    "channel_volumes": [
+      1.0,
+      1.0
+    ],
+    "existing_observer_graph_samples": 4,
+    "limits": "actual application volume observations; not measured in-memory AutoGain port values or acoustics",
+    "mute": false,
+    "soft_mute": false,
+    "soft_volumes": [
+      1.0,
+      1.0
+    ],
+    "volume": 1.0
+  },
+  "driver_errors_final": 0,
+  "driver_errors_initial": 0,
+  "explicit_stop_receipt_sha256": "fe338f24827cdabb8cd162976170c2f4f704dc3471e3242569627c89faa1dc95",
+  "external_volume_condition_changes_recorded": 2,
+  "host": "lab6",
+  "independent_cleanup_receipt_sha256": "6a4c0fc9a3a64b798e0dd26f70ee50729c06b8f8c30c21207d81406a0ff77e38",
+  "kind": "thinkpad-provisional-hour-ended-for-requested-settings-change",
+  "limits": [
+    "partial software observation cannot qualify the later changed settings",
+    "ordinary listening feedback is separate from software counters and graph timing",
+    "no acoustic or amplifier headroom measurement; stock hardware protection preserved",
+    "new complete hour and physical gates remain open"
+  ],
+  "monitor_frames": 1657,
+  "next_provisional_settings": {
+    "maximum_gain_db": 14.137500000002703,
+    "new_settings_installed": false,
+    "target_lufs": -16
+  },
+  "owned_graph_node_absence_independently_observed": true,
+  "owned_player_and_monitor_stopped": true,
+  "owner_feedback": "Clear but still too quiet",
+  "receiver_receipt_sha256": "8089bddad6341fff3d3eee014aa0732a3bf1856e15f7370bb322b28d8d19e667",
+  "requested_active_seconds": 3600,
+  "result": "explicitly ended to prepare agent-selected louder settings in response to owner feedback; not a stability failure or completed hour",
+  "runtime_version": "8.2.8+rog3",
+  "schema_version": 1,
+  "stream_sha256": "d3aef24f0c3344de3cd03efe1939ddef2c32936b9b9ac6a4480f81cd8201b944"
+}

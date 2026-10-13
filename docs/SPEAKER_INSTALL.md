@@ -223,6 +223,11 @@ candidate's private state under `$HOME/.local/state/rog-audio/easyeffects`.
 `QT_QPA_PLATFORM=offscreen` supports background processing without opening a
 window. A custom candidate state location requires changing the unit's
 `ROG_AUDIO_STATE_DIR` to that same absolute location before validation.
+The updated template also requires `/usr/lib/rog-audio/stop-speaker-effects`,
+provided by packaging +rog4 after review/acceptance. Existing +rog2/+rog3
+packages require the explicit reversible [service-helper backport](SPEAKER_SERVICE.md)
+and a corresponding ExecStop path; validate its availability before replacing
+the unit. The checks below do not install that helper implicitly.
 
 ```bash
 # Validate the unit on the target host; retain any prior unit before replacement.
@@ -264,8 +269,12 @@ remain separate from this installation procedure and prior acceptance.
 
 ## 5. Build and deliver the usable runtime
 
-The extended source build emits `8.2.8+rog3`, accepted in the isolated
-28-unit/two-graph programme batch, now published as v0.2.2. Actual laptop
+The published v0.2.2 `8.2.8+rog3` native runtime passed the isolated
+28-unit/two-graph programme batch. The current packaging follow-up emits
+`8.2.8+rog4` with the same native ELF/source and an added authenticated
+service-stop helper; its separate source review, eleven units and one
+isolated native integration passed. No +rog4 artifact build/publication or
+laptop package replacement is claimed. Actual laptop
 listening/stability remain pending; published v0.2.1 and its `+rog2` recovery
 artifacts remain unchanged. Read [programme loudness](PROGRAMME_LOUDNESS.md)
 for the independent controls, preserved voicing and source/build contract.
