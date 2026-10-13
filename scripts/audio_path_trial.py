@@ -167,7 +167,14 @@ def restart_state_equivalent(before, after, preset):
     if before == after:
         return True
     main = 'db/easyeffectsrc'
-    if not isinstance(before, dict) or not isinstance(after, dict) or before.keys() != after.keys():
+    if not isinstance(before, dict) or not isinstance(after, dict):
+        return False
+    # The only schema addition is this private preimage. An earlier capture
+    # may still match all its original records exactly; it cannot excuse a
+    # different RC hash, size or permission without its own retained text.
+    if 'main_rc_text' not in before and 'main_rc_text' in after:
+        return before == {key: value for key, value in after.items() if key != 'main_rc_text'}
+    if before.keys() != after.keys():
         return False
     if any(before[k] != after[k] for k in before if k not in ('rc', 'main_rc_text')):
         return False

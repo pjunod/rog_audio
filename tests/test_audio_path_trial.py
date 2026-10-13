@@ -113,6 +113,33 @@ class TrialTests(unittest.TestCase):
             with self.assertRaises(ValueError): self.install()
         self.assertFalse(self.target.exists())
 
+    def test_legacy_capture_allows_exact_state_but_refuses_counter_drift(self):
+        for drift in (False, True):
+            with self.subTest(drift=drift):
+                root = self.root/('drift' if drift else 'exact'); root.mkdir()
+                kit, binary, env, inv, capture = setup(root)
+                _, manifest = trial.speaker.load_kit(kit)
+                rc = root/'state/config/easyeffects/db/easyeffectsrc'
+                text = rc.read_text().replace('[StreamOutputs]\n', '[StreamOutputs]\nusedPresets='+manifest['preset_name']+':1\n')
+                rc.write_text(text)
+                state = trial.path.state_snapshot(kit, binary, env); state.pop('main_rc_text')
+                capture['speaker_before'] = state; capture['speaker_after'] = copy.deepcopy(state)
+                bundle, snapshot = root/'trial', root/'trial-snapshot'
+                trial.prepare(capture, '0'*64, 256, bundle)
+                if drift: rc.write_text(text.replace(manifest['preset_name']+':1', manifest['preset_name']+':2'))
+                def install():
+                    return trial.install(bundle, kit, binary, snapshot, inv, self.overrides, env,
+                                         refresh_inventory=lambda: copy.deepcopy(inv),
+                                         refresh_overrides=lambda: copy.deepcopy(self.overrides))
+                target = root/'state/config/pipewire'/trial.FILE
+                if drift:
+                    with self.assertRaises(ValueError): install()
+                    self.assertFalse(target.exists())
+                    self.assertFalse(snapshot.exists())
+                else:
+                    self.assertEqual(install()['status'], 'installed-files')
+                    self.assertTrue(target.exists())
+
     def test_one_private_filter_changes_no_dsp_and_restores_absent_file(self):
         self.prepare()
         original = copy.deepcopy(self.capture['speaker_before'])
