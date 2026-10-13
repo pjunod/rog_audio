@@ -722,6 +722,10 @@ def verify(bundle):
     require(report["schema_version"] == 1 and report["complete_equivalence"] is False and
             isinstance(report["fields"], list) and report["fields"], "invalid_mapping_report")
     out = preset["output"]
+    programme_settings = manifest.get("programme_loudness")
+    if programme_settings is not None:
+        import programme_loudness
+        programme_loudness.validate(programme_settings, out, report)
     order = out["plugins_order"]
     require(isinstance(order, list) and len(order) == len(set(order)) and
             set(out) == set(order) | {"plugins_order", "blocklist"} and out["blocklist"] == [],
@@ -736,8 +740,11 @@ def verify(bundle):
         stage = out[name]
         require(type(stage["bypass"]) is bool and stage["input-gain"] == 0 and
                 stage["output-gain"] <= 0, "invalid_stage_gain")
-        require(stage["bypass"] == (name in ("equalizer#1", "autogain#0", "multiband_compressor#0",
-                                             "multiband_compressor#1")), "invalid_bypass_state")
+        expected_bypass = name in ("equalizer#1", "autogain#0", "multiband_compressor#0",
+                                   "multiband_compressor#1")
+        if name == "autogain#0" and programme_settings is not None:
+            expected_bypass = False
+        require(stage["bypass"] == expected_bypass, "invalid_bypass_state")
     require(report["stages"] == [{"name": n, "bypassed": out[n]["bypass"]} for n in order],
             "mapping_stage_inventory_mismatch")
     for field in report["fields"]:

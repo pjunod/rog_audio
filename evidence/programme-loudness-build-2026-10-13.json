@@ -1,0 +1,87 @@
+{
+  "acceptance": {
+    "laptop_installation": false,
+    "ordinary_media_loudness_accepted": false,
+    "physical_or_acoustic_measurement": false,
+    "runtime_graph_cases_executed": false,
+    "units_executed": false
+  },
+  "activation_state": "not-installed",
+  "build": {
+    "attempts": [
+      {
+        "attempt": 1,
+        "reason": "unsupported-build-pids-limit-argument",
+        "result": "setup-failed-before-compilation",
+        "retained": true,
+        "returncode": 125
+      },
+      {
+        "attempt": 2,
+        "compile_steps": 150,
+        "finish_unix_seconds": 1791911544.3544762,
+        "result": "compiled-and-exported",
+        "returncode": 0,
+        "start_unix_seconds": 1791911204.3435438
+      }
+    ],
+    "builder_pid_limit": "unverified-engine-default",
+    "candidate_image_id": "779339f99373522ffe7f7cc2245fef4f19766c7e5a0ab3691fa327cdb74a890d",
+    "compiler_workers": 1,
+    "cpu_period_us": 100000,
+    "cpu_quota_us": 200000,
+    "engine": "podman",
+    "export_pid_limit": 2048,
+    "memory_gib": 6,
+    "network": "none",
+    "parent_image_id": "b02a8e967b470f05d14061c90905e3b0f0368820513207aa06b3312a5bdd5762",
+    "payload_bytes": 40439,
+    "payload_scope": "six allowlisted public source/build files, no private capture or credentials",
+    "payload_sha256": "e4847e0ab95a87141fa5c275da89a885bbcbd7706f1fe43ffebab58ae78241f4",
+    "total_memory_swap_gib": 6
+  },
+  "date": "2026-10-13",
+  "kind": "programme-loudness-native-build",
+  "limits": [
+    "Candidate programme leveling is an improvement under evaluation, not a proven fix for the unresolved ROG everyday-media volume regression.",
+    "The paired low-level transfer measured ThinkPad static FIR loss and negligible additional native loss; bypassed AutoGain defects were not established causes of current quietness.",
+    "No package, preset, hardware gain, microphone or live audio service changed in this build.",
+    "Compilation and export do not establish runtime acceptance, calibrated acoustics or physical latency."
+  ],
+  "retention": {
+    "artifact_archive_bytes": 18866324,
+    "artifact_archive_sha256": "5fd806ea7fce149ee0bb5698de224538382041289e089dc0f0ecc443d8e113e3",
+    "compiled_runtime_and_corresponding_source_retained_off_host": true,
+    "parent_and_candidate_images_retained_for_review": true
+  },
+  "runtime": {
+    "binary_sha256": "5eb66708e8d84d204de9dadd9fef26c437e12b1f58f153ea66f48cdf561d290d",
+    "package": "rog-audio-easyeffects_8.2.8+rog3_amd64.deb",
+    "package_sha256": "57ddb62c953a8a06f72b02f9369a6ccbd5dc5424f8f878219ae42180826b76a8",
+    "package_version": "8.2.8+rog3",
+    "programme_loudness_contract": "bounded-programme-makeup-v1",
+    "routing_contract": "exact-device-route-v1"
+  },
+  "schema_version": 1,
+  "source": {
+    "additive_patch_sha256": "e9de5fe366da9121b51ee5f4b5df70e53c579c6bf43eee54f82fe356a0db974a",
+    "corresponding_source_files": 712,
+    "generated_file_excluded_from_original_source_map": "src/.qmlls.ini",
+    "native_makeup_header_sha256": "124e244d5d28833ba78f7eb316e8c9c0b3a6ab093efc00b79cb9864113323724",
+    "prior_patch_bytes_preserved": true,
+    "source_manifest_sha256": "776fac9095a9829d6cd360ad8ae60588a99df8fa4befb6aca8755fe3b425433f",
+    "source_tree_manifest_sha256": "0c5b0c6d6c8b7766678db3b372c5146a0bd1d1897744d94dd67ae0386be9dd0b",
+    "upstream_commit": "6d9b1220d3dcebb154ba759a05600662bc0af549",
+    "verification": "exact-source-tree-match"
+  },
+  "state": "compiled-review-and-acceptance-pending",
+  "toolchain": {
+    "cmake": "4.3.4-1ubuntu1",
+    "g++-15": "15.3.0-4ubuntu1",
+    "libebur128-dev": "1.2.6-2",
+    "pipewire-library": "1.6.8-1ubuntu4",
+    "qt6-base-dev": "6.11.2+dfsg-4ubuntu2",
+    "qt6-declarative-dev": "6.11.2+dfsg-2ubuntu1",
+    "wireplumber": "0.5.17-1ubuntu1"
+  }
+}

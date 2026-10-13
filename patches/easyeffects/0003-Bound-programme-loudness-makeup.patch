@@ -1,0 +1,232 @@
+diff --git a/src/autogain.cpp b/src/autogain.cpp
+--- a/src/autogain.cpp
++++ b/src/autogain.cpp
+@@ -86,6 +86,13 @@
+ }
+ 
+ void Autogain::clear_data() {
++  {
++    std::scoped_lock<std::mutex> lock(data_mutex);
++    makeup_gain.reset();
++    internal_output_gain = 1.0;
++    ebur128_ready = false;
++    old_rate = 0;
++  }
+   setup();
+ }
+ 
+@@ -175,6 +182,8 @@
+   std::scoped_lock<std::mutex> lock(data_mutex);
+ 
+   if (bypass) {
++    makeup_gain.reset();
++    internal_output_gain = 1.0;
+     std::ranges::copy(left_in, left_out.begin());
+     std::ranges::copy(right_in, right_out.begin());
+ 
+@@ -186,6 +195,8 @@
+   }
+ 
+   if (!ebur128_ready) {
++    makeup_gain.reset();
++    internal_output_gain = 1.0;
+     std::ranges::copy(left_in, left_out.begin());
+     std::ranges::copy(right_in, right_out.begin());
+ 
+@@ -220,6 +231,26 @@
+            (EBUR128_SUCCESS != ebur128_loudness_global(ebur_state, &global)) ||
+            (EBUR128_SUCCESS != ebur128_relative_threshold(ebur_state, &relative)) ||
+            (EBUR128_SUCCESS != ebur128_loudness_range(ebur_state, &range));
++
++  // Startup and silence can return successful calls with nonfinite levels.
++  // Track readiness before the upstream display fallbacks replace them.
++  const auto level_ready = [](double value) {
++    return std::isfinite(value) && value >= -100.0 && value <= 10.0;
++  };
++  const bool m_ready = level_ready(momentary);
++  const bool s_ready = level_ready(shortterm);
++  const bool i_ready = level_ready(global);
++  bool reference_ready = false;
++  switch (settings->reference()) {
++    case 0: reference_ready = m_ready; break;
++    case 1: reference_ready = s_ready; break;
++    case 2: reference_ready = i_ready; break;
++    case 3: reference_ready = m_ready && s_ready && i_ready; break;
++    case 4: reference_ready = m_ready && s_ready; break;
++    case 5: reference_ready = m_ready && i_ready; break;
++    case 6: reference_ready = s_ready && i_ready; break;
++    default: break;
++  }
+ 
+   if (std::isinf(momentary) || std::isnan(momentary)) {
+     /**
+@@ -255,7 +286,7 @@
+     global = momentary;
+   }
+ 
+-  if (momentary > settings->silenceThreshold() && !failed) {
++  if (m_ready && reference_ready && momentary > settings->silenceThreshold() && !failed) {
+     double peak_L = 0.0;
+     double peak_R = 0.0;
+ 
+@@ -321,22 +352,23 @@
+ 
+       const auto db_peak = util::linear_to_db(peak);
+ 
+-      if (db_peak > util::minimum_db_level) {
+-        if (gain * peak < 1.0) {
+-          // Smoothing the gain correction through a leaky integrator:
+-          // g[n]=α⋅g[n−1]+(1−α)⋅gtarget​[n]
+-
+-          // choose based on whether gain is rising or falling
+-          double alpha = (gain < prev_gain) ? attack_coeff : release_coeff;
+-
+-          internal_output_gain = (alpha * prev_gain) + ((1.0 - alpha) * gain);
+-
+-          prev_gain = internal_output_gain;
+-        }
+-      }
++      const bool valid = db_peak > util::minimum_db_level && std::isfinite(gain) &&
++                         std::isfinite(peak) && peak > 0.0;
++      // A peak-bound request must reduce gain, rather than leave stale gain
++      // unchanged when a new programme is louder. The final -1 dB limiter
++      // handles transients during the ordinary smoothed reduction.
++      const double desired = valid ? std::min(gain, util::db_to_linear(-1.0) / peak) : 1.0;
++      internal_output_gain = makeup_gain.update(desired, settings->maximumGain(),
++                                                attack_coeff, release_coeff, valid);
++
+     }
+-  } else if (settings->forceSilence()) {
+-    internal_output_gain = util::minimum_linear_d_level;
++  } else {
++    makeup_gain.reset();
++    internal_output_gain = settings->forceSilence() ? util::minimum_linear_d_level : 1.0;
++  }
++  if (failed) {
++    makeup_gain.reset();
++    internal_output_gain = 1.0;
+   }
+ 
+   std::ranges::copy(left_in, left_out.begin());
+diff --git a/src/autogain.hpp b/src/autogain.hpp
+--- a/src/autogain.hpp
++++ b/src/autogain.hpp
+@@ -30,6 +30,7 @@
+ #include "easyeffects_db_autogain.h"
+ #include "pipeline_type.hpp"
+ #include "plugin_base.hpp"
++#include "programme_makeup_gain.hpp"
+ #include "pw_manager.hpp"
+ 
+ class Autogain : public PluginBase {
+@@ -93,7 +94,7 @@
+   double range = 0.0;
+   double loudness = 0.0;
+   double internal_output_gain = 1.0;
+-  double prev_gain = 1.0;
++  programme_loudness::MakeupGain makeup_gain;
+   double block_time = 0.0;
+   double attack_time = 0.1;   // seconds
+   double release_time = 0.4;  // seconds
+diff --git a/src/autogain_preset.cpp b/src/autogain_preset.cpp
+--- a/src/autogain_preset.cpp
++++ b/src/autogain_preset.cpp
+@@ -39,6 +39,8 @@
+ 
+   json[section][instance_name]["target"] = settings->target();
+ 
++  json[section][instance_name]["maximum-gain"] = settings->maximumGain();
++
+   json[section][instance_name]["silence-threshold"] = settings->silenceThreshold();
+ 
+   json[section][instance_name]["maximum-history"] = settings->maximumHistory();
+@@ -54,6 +56,7 @@
+   UPDATE_PROPERTY("input-gain", InputGain);
+   UPDATE_PROPERTY("output-gain", OutputGain);
+   UPDATE_PROPERTY("target", Target);
++  UPDATE_PROPERTY("maximum-gain", MaximumGain);
+   UPDATE_PROPERTY("silence-threshold", SilenceThreshold);
+   UPDATE_PROPERTY("maximum-history", MaximumHistory);
+   UPDATE_PROPERTY("force-silence", ForceSilence);
+diff --git a/src/contents/kcfg/easyeffects_db_autogain.kcfg b/src/contents/kcfg/easyeffects_db_autogain.kcfg
+--- a/src/contents/kcfg/easyeffects_db_autogain.kcfg
++++ b/src/contents/kcfg/easyeffects_db_autogain.kcfg
+@@ -20,6 +20,12 @@
+         <entry name="outputGain" type="Double">
+             <label></label>
+             <min>-36</min>
++            <max>36</max>
++            <default>0</default>
++        </entry>
++        <entry name="maximumGain" type="Double">
++            <label>Maximum automatic makeup gain in dB</label>
++            <min>0</min>
+             <max>36</max>
+             <default>0</default>
+         </entry>
+diff --git a/src/contents/ui/Autogain.qml b/src/contents/ui/Autogain.qml
+--- a/src/contents/ui/Autogain.qml
++++ b/src/contents/ui/Autogain.qml
+@@ -99,6 +99,22 @@
+                 }
+ 
+                 EeSpinBox {
++                    id: maximumMakeup
++
++                    label: i18n("Maximum automatic makeup") // qmllint disable
++                    spinboxMaximumWidth: Kirigami.Units.gridUnit * 7
++                    from: autogainPage.pluginDB.getMinValue("maximumGain")
++                    to: autogainPage.pluginDB.getMaxValue("maximumGain")
++                    value: autogainPage.pluginDB.maximumGain
++                    decimals: 2
++                    stepSize: 0.1
++                    unit: Units.dB
++                    onValueModified: v => {
++                        autogainPage.pluginDB.maximumGain = v;
++                    }
++                }
++
++                EeSpinBox {
+                     id: silenceThreshold
+ 
+                     label: i18n("Silence") // qmllint disable
+diff --git a/src/programme_makeup_gain.hpp b/src/programme_makeup_gain.hpp
+new file mode 100644
+--- /dev/null
++++ b/src/programme_makeup_gain.hpp
+@@ -0,0 +1,35 @@
++// SPDX-License-Identifier: GPL-3.0-or-later
++#pragma once
++#include <algorithm>
++#include <cmath>
++
++namespace programme_loudness {
++// Maximum gain controls automatic makeup, separately from the LUFS target.
++// The final limiter handles peaks while this gain follows the existing
++// 100 ms attack / 400 ms release smoothing convention.
++class MakeupGain {
++ public:
++  void reset() { value_ = 1.0; }
++  double value() const { return value_; }
++  double update(double requested, double maximum_db, double attack,
++                double release, bool active) {
++    const double limit = std::isfinite(maximum_db)
++                             ? std::pow(10.0, std::clamp(maximum_db, 0.0, 36.0) / 20.0)
++                             : 1.0;
++    // An explicit lower cap takes effect before smoothing, so old state
++    // cannot retain makeup above the newly selected limit.
++    value_ = std::clamp(std::isfinite(value_) ? value_ : 1.0, 0.0, limit);
++    if (!active || !std::isfinite(requested) || requested < 0.0 ||
++        !std::isfinite(attack) || !std::isfinite(release)) {
++      reset();
++      return value_;
++    }
++    const double target = std::clamp(requested, 0.0, limit);
++    const double alpha = std::clamp(target < value_ ? attack : release, 0.0, 1.0);
++    value_ = std::clamp(alpha * value_ + (1.0 - alpha) * target, 0.0, limit);
++    return value_;
++  }
++ private:
++  double value_ = 1.0;
++};
++}  // namespace programme_loudness

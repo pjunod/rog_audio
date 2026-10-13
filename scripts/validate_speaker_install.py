@@ -12,6 +12,8 @@ MODULES = {
     'routing': 'test_speaker_routing',
     'autoload': 'test_easyeffects_autoload',
     'build': 'test_easyeffects_build',
+    'programme': 'test_programme_loudness',
+    'makeup': 'test_programme_makeup',
 }
 
 

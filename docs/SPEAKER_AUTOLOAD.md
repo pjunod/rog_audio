@@ -76,9 +76,12 @@ logs survive failures; disposable contexts live under the durable artifact
 output. Packaging scratch lives under `/build/rog-audio-package` inside the
 owned container. Cleanup removes only owned contexts/export containers.
 
-The artifact is `rog-audio-easyeffects_8.2.8+rog2_amd64.deb`, with
-`runtime.json`, full corresponding `source/`, `patches/`, source manifest and
-original licences. The exporter checks binary/package hashes, package version
+The accepted v0.2.1 artifact is
+`rog-audio-easyeffects_8.2.8+rog2_amd64.deb`. The extended programme-loudness
+series now builds `rog-audio-easyeffects_8.2.8+rog3_amd64.deb`; its review and
+acceptance remain separate, as described in [programme loudness](PROGRAMME_LOUDNESS.md).
+Both retain `runtime.json`, full corresponding `source/`, `patches/`, source
+manifest and original licences. The exporter checks binary/package hashes, package version
 and source-manifest binding before reporting `runtime-built`. Retain the named
 image for focused acceptance; remove only that image after artifacts and
 receipts are safely retained. The package has no activation scripts.
