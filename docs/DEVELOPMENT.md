@@ -84,3 +84,11 @@ Real EasyEffects graph acceptance has two separate selectors and uses the
 retained compiled image and source-built kits; see
 [speaker installation](SPEAKER_INSTALL.md). It is deliberately separate from
 the unit lane so a unit retry does not rebuild or rerun both runtime cases.
+
+
+The `coreaudio` lane runs only the offline Mac-summary tests on Linux; it does
+not require HAL access or repeat the native Mac compile/observation receipt.
+Set `test_ids` to a failed `test_analyse_coreaudio_latency.CLASS.test_METHOD`
+for a focused retry. Input is checked before unittest import, and skipped or
+empty acceptance is an error. The native probe is compiled on a Mac when its
+C source changes; that compiler receipt is distinct from these parser tests.

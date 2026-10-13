@@ -92,9 +92,10 @@ receipts; it will retain separate software and physical evidence labels.
 
 ## 6. Initial running observations — 2026-10-13
 
-These observations used approximately ten seconds of all-zero PCM. No microphone
-was opened and no audible probe was generated. Linux used `pw-play` with its
-100 ms client request; the Mac used `afplay`. They exercise different application
+Linux observations used approximately ten seconds of all-zero PCM. The Mac
+snapshot used a ten-second zero-PCM file, with its player stopped after the
+running snapshot. No microphone was opened and no audible probe was generated.
+Linux used `pw-play` with its 100 ms client request; the Mac used `afplay`. They exercise different application
 paths and do not establish equal application buffering.
 
 | Component | ROG, four-channel investigation | ThinkPad, tuned stereo | M4 Air, built-in output |
@@ -114,13 +115,15 @@ The ROG observation is route-diagnosis evidence and cannot be used as a tuned
 performance baseline. The ThinkPad observation cannot support a zero-error
 startup claim. Neither short run establishes sustained-load reliability.
 
-On the Mac, the device-running flag changed from false to true to false; its
+[On the Mac](COREAUDIO_LATENCY.md), the device-running flag changed from false
+to true to false; its
 reported timing components stayed constant. Device plus stream latency is
 1340 frames (27.917 ms) under the API's accounting. Keep that component separate
 from buffer size, safety offset and physical onset; do not compare it directly
 with a Linux graph period.
 
-The four-channel ROG stream assigned the speaker DAC to PCM channels 2/3 and
+[The four-channel investigation](ASUS_FOUR_CHANNEL.md) found the ROG stream
+assigned the speaker DAC to PCM channels 2/3 and
 the headphone DAC to channels 0/1. The installed processor would link its
 stereo output to ports 0/1. Correct rear-pair routing requires a runtime change;
 the owner-authorized fallback to the validated stereo profile is being used

@@ -6,7 +6,7 @@ on:
         description: 'Reviewed lane to run; do not repeat already passing lanes'
         required: true
         type: choice
-        options: [all, repository, speaker, installation, latency, atmos]
+        options: [all, repository, speaker, installation, latency, coreaudio, atmos]
         default: all
       selection:
         description: 'all, or a stage from the selected lane; use test_ids for failed cases'
@@ -111,3 +111,32 @@ jobs:
           args=()
           for id in "${ids[@]}"; do args+=(--test-id "$id"); done
           python3 scripts/validate_speaker_install.py --stage "$SELECTION" "${args[@]}"
+
+  coreaudio:
+    if: inputs.lane == 'all' || inputs.lane == 'coreaudio'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    env:
+      TEST_IDS: ${{ inputs.test_ids }}
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - name: Run selected offline CoreAudio summary tests
+        shell: bash
+        run: |
+          PYTHONPATH=scripts:tests python3 - <<'PYTEST'
+          import os
+          import re
+          import unittest
+          ids = os.environ['TEST_IDS'].split()
+          module = 'test_analyse_coreaudio_latency'
+          if len(ids) > 128 or len(set(ids)) != len(ids) or any(
+              not re.fullmatch(module + r'\.[A-Za-z_][A-Za-z0-9_]*\.test_[A-Za-z0-9_]+', item)
+              for item in ids
+          ):
+              raise SystemExit('Invalid CoreAudio test selection')
+          suite = unittest.defaultTestLoader.loadTestsFromNames(ids or [module])
+          result = unittest.TextTestRunner(verbosity=2).run(suite)
+          raise SystemExit(0 if result.wasSuccessful() and result.testsRun and not result.skipped else 1)
+          PYTEST
