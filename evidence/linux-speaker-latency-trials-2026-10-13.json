@@ -1,0 +1,1610 @@
+{
+  "date": "2026-10-13",
+  "evidence_kind": "live-silent-operational-observation",
+  "hosts": [
+    {
+      "baseline": {
+        "actual_zero_playback_seconds": 5.856134856992867,
+        "all_chain_nodes_running": true,
+        "chain_verified_in_two_active_graphs": true,
+        "full_channel_chains": {
+          "FL": [
+            "owned-native-zero-client",
+            "candidate-virtual-sink",
+            "convolver#0",
+            "autogain#0",
+            "multiband_compressor#1",
+            "limiter#0",
+            "spectrum",
+            "output_level",
+            "physical-stereo-speaker-output"
+          ],
+          "FR": [
+            "owned-native-zero-client",
+            "candidate-virtual-sink",
+            "convolver#0",
+            "autogain#0",
+            "multiband_compressor#1",
+            "limiter#0",
+            "spectrum",
+            "output_level",
+            "physical-stereo-speaker-output"
+          ]
+        },
+        "later_driver_sequence": [
+          {
+            "busy_ms": null,
+            "errors": 0,
+            "quantum_frames": 0,
+            "rate_hz": 0,
+            "sample_index": 0,
+            "state": "C",
+            "wait_ms": null
+          },
+          {
+            "busy_ms": 0.0588,
+            "errors": 1,
+            "quantum_frames": 2048,
+            "rate_hz": 48000,
+            "sample_index": 1,
+            "state": "R",
+            "wait_ms": 0.316
+          },
+          {
+            "busy_ms": 0.1205,
+            "errors": 1,
+            "quantum_frames": 2048,
+            "rate_hz": 48000,
+            "sample_index": 2,
+            "state": "R",
+            "wait_ms": 0.7602000000000001
+          },
+          {
+            "busy_ms": 0.1208,
+            "errors": 1,
+            "quantum_frames": 2048,
+            "rate_hz": 48000,
+            "sample_index": 3,
+            "state": "R",
+            "wait_ms": 0.7559
+          },
+          {
+            "busy_ms": 0.10840000000000001,
+            "errors": 1,
+            "quantum_frames": 2048,
+            "rate_hz": 48000,
+            "sample_index": 4,
+            "state": "R",
+            "wait_ms": 0.7156
+          },
+          {
+            "busy_ms": 0.1203,
+            "errors": 1,
+            "quantum_frames": 2048,
+            "rate_hz": 48000,
+            "sample_index": 5,
+            "state": "R",
+            "wait_ms": 0.7499
+          }
+        ],
+        "maximum_zero_source_seconds": 120,
+        "monitor_frames_requested": 6,
+        "observation_phase_elapsed_seconds": 6.766913890838623,
+        "owned_zero_wav_removed": true,
+        "player_exit_code": 1,
+        "private_capture_sha256": "01a444f0bc935d43abf42cc9ab01c3cfccf32a807b8f709d39713be7091f105c",
+        "private_operation_sha256": "320c8908388a8d2dc0f51bf52fbf146c2e7c81b8ebf40371397c26822912eda7",
+        "private_summary_sha256": "b6a76bfdf29ff899cbcc3df69ede84ab92c408353bceb1b61f971463acb4ba1b",
+        "reported_path_terms": {
+          "binary_sha256": "e5061dcc1e0b925933eceeacffb576536d24f609307166b97d0e159c0f1772d1",
+          "core_identity_consistent": true,
+          "end_to_end_latency_ms": null,
+          "error_deltas": [
+            {
+              "errors_delta": null,
+              "node_index": 4,
+              "status": "incomplete-or-reset"
+            },
+            {
+              "errors_delta": null,
+              "node_index": 9,
+              "status": "incomplete-or-reset"
+            },
+            {
+              "errors_delta": null,
+              "node_index": 11,
+              "status": "incomplete-or-reset"
+            },
+            {
+              "errors_delta": null,
+              "node_index": 12,
+              "status": "incomplete-or-reset"
+            },
+            {
+              "errors_delta": null,
+              "node_index": 13,
+              "status": "incomplete-or-reset"
+            },
+            {
+              "errors_delta": null,
+              "node_index": 14,
+              "status": "incomplete-or-reset"
+            },
+            {
+              "errors_delta": null,
+              "node_index": 16,
+              "status": "incomplete-or-reset"
+            },
+            {
+              "errors_delta": null,
+              "node_index": 18,
+              "status": "incomplete-or-reset"
+            },
+            {
+              "errors_delta": null,
+              "node_index": 19,
+              "status": "incomplete-or-reset"
+            }
+          ],
+          "filter_request": {
+            "denominator_rate_hz": null,
+            "match_count": 1,
+            "numerator_frames": null
+          },
+          "kit_sha256": "0b431577b22dbe014ec8185717e779673fc2f93825a9b8c9d835e3561f7c8a64",
+          "monitor_status": "ok",
+          "payload_sha256": [
+            "0740636ee45c76a23cc218248ab59ffb2d7c1beadae3077fb2bc20cda0be10b7",
+            "15828ed995f4dc0a46191dd777084c98e198147ea3903dace29e69086b2bb1da",
+            "2040c08e3d19489331ace93d2503431ea1a63425d99fb8ad6a80977e2ad8b058",
+            "b765f964beb72310451daa428f2acdf9919b78bcd431c240d7bc05e2ef1887f8"
+          ],
+          "physical_latency_ms": null,
+          "pulse_queues": [],
+          "pulse_status": "unavailable",
+          "rc_sha256": [
+            "21614bd34f28f37d9f395452b734dcea4da32130ded4e5a6960c26bca4130c93",
+            "b6fbb4d1aa8c99d0a425914839b74faeba3cf3d260cc3754bd98d3f8f53793d3",
+            "c84185b8121a8bb483859806ff5d2eec21df91422336e8467c6b32afef85ab9f",
+            "f966e80b017b8d7d96736967f68eebe7844f1f65b704d0dad28000a9664e7a7f",
+            "fddb252878ce0fba959be22fa39757207b264c1fe87edb7eed22013d726da43a"
+          ],
+          "reported_process_latency": [
+            {
+              "constant_ms": 0.0,
+              "ns": 0,
+              "plugin": null,
+              "quantum_periods": 0.0,
+              "rate_frames": 0,
+              "role": "physical-output"
+            },
+            {
+              "constant_ms": 0.0,
+              "ns": 0,
+              "plugin": "convolver",
+              "quantum_periods": 0.0,
+              "rate_frames": 0,
+              "role": "speaker-dsp"
+            }
+          ],
+          "route_consistent": true,
+          "running_driver_observed": true,
+          "source_sha256": "01a444f0bc935d43abf42cc9ab01c3cfccf32a807b8f709d39713be7091f105c",
+          "speaker_state_consistent": true,
+          "versions": {
+            "pipewire": "1.6.8",
+            "wireplumber": "0.5.17"
+          }
+        },
+        "requested_native_client_latency": "4800/48000",
+        "source_channels": 2,
+        "source_rate_hz": 48000,
+        "startup_driver_sequence": [
+          {
+            "errors": 0,
+            "quantum_frames": 0,
+            "rate_hz": 0,
+            "sample_index": 0,
+            "state": "C"
+          },
+          {
+            "errors": 0,
+            "quantum_frames": 0,
+            "rate_hz": 0,
+            "sample_index": 1,
+            "state": "S"
+          },
+          {
+            "errors": 1,
+            "quantum_frames": 2048,
+            "rate_hz": 48000,
+            "sample_index": 2,
+            "state": "R"
+          },
+          {
+            "errors": 1,
+            "quantum_frames": 2048,
+            "rate_hz": 48000,
+            "sample_index": 3,
+            "state": "R"
+          },
+          {
+            "errors": 1,
+            "quantum_frames": 2048,
+            "rate_hz": 48000,
+            "sample_index": 4,
+            "state": "R"
+          },
+          {
+            "errors": 1,
+            "quantum_frames": 2048,
+            "rate_hz": 48000,
+            "sample_index": 5,
+            "state": "R"
+          }
+        ],
+        "startup_dsp_error_histories": [
+          {
+            "component_index_within_observation": 0,
+            "errors": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "plugin": "output_level",
+            "states": [
+              "C",
+              "R",
+              "R",
+              "R",
+              "R",
+              "R"
+            ]
+          },
+          {
+            "component_index_within_observation": 1,
+            "errors": [
+              0,
+              0,
+              0
+            ],
+            "plugin": "convolver",
+            "states": [
+              "R",
+              "R",
+              "R"
+            ]
+          },
+          {
+            "component_index_within_observation": 2,
+            "errors": [
+              0,
+              0,
+              0
+            ],
+            "plugin": "multiband_compressor",
+            "states": [
+              "R",
+              "R",
+              "R"
+            ]
+          },
+          {
+            "component_index_within_observation": 3,
+            "errors": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "plugin": "spectrum",
+            "states": [
+              "C",
+              "R",
+              "R",
+              "R",
+              "R",
+              "R"
+            ]
+          },
+          {
+            "component_index_within_observation": 4,
+            "errors": [
+              0,
+              0,
+              0
+            ],
+            "plugin": "autogain",
+            "states": [
+              "R",
+              "R",
+              "R"
+            ]
+          },
+          {
+            "component_index_within_observation": 5,
+            "errors": [
+              0,
+              0,
+              0
+            ],
+            "plugin": "limiter",
+            "states": [
+              "R",
+              "R",
+              "R"
+            ]
+          }
+        ]
+      },
+      "candidate": {
+        "actual_zero_playback_seconds": 5.877911870018579,
+        "all_chain_nodes_running": true,
+        "chain_verified_in_two_active_graphs": true,
+        "full_channel_chains": {
+          "FL": [
+            "owned-native-zero-client",
+            "candidate-virtual-sink",
+            "convolver#0",
+            "autogain#0",
+            "multiband_compressor#1",
+            "limiter#0",
+            "spectrum",
+            "output_level",
+            "physical-stereo-speaker-output"
+          ],
+          "FR": [
+            "owned-native-zero-client",
+            "candidate-virtual-sink",
+            "convolver#0",
+            "autogain#0",
+            "multiband_compressor#1",
+            "limiter#0",
+            "spectrum",
+            "output_level",
+            "physical-stereo-speaker-output"
+          ]
+        },
+        "later_driver_sequence": [
+          {
+            "busy_ms": null,
+            "errors": 0,
+            "quantum_frames": 0,
+            "rate_hz": 0,
+            "sample_index": 0,
+            "state": "C",
+            "wait_ms": null
+          },
+          {
+            "busy_ms": 0.0165,
+            "errors": 1,
+            "quantum_frames": 256,
+            "rate_hz": 48000,
+            "sample_index": 1,
+            "state": "R",
+            "wait_ms": 0.19319999999999998
+          },
+          {
+            "busy_ms": 0.053899999999999997,
+            "errors": 1,
+            "quantum_frames": 256,
+            "rate_hz": 48000,
+            "sample_index": 2,
+            "state": "R",
+            "wait_ms": 0.5403
+          },
+          {
+            "busy_ms": 0.0544,
+            "errors": 1,
+            "quantum_frames": 256,
+            "rate_hz": 48000,
+            "sample_index": 3,
+            "state": "R",
+            "wait_ms": 0.5257000000000001
+          },
+          {
+            "busy_ms": 0.0529,
+            "errors": 1,
+            "quantum_frames": 256,
+            "rate_hz": 48000,
+            "sample_index": 4,
+            "state": "R",
+            "wait_ms": 0.5447000000000001
+          },
+          {
+            "busy_ms": 0.0535,
+            "errors": 1,
+            "quantum_frames": 256,
+            "rate_hz": 48000,
+            "sample_index": 5,
+            "state": "R",
+            "wait_ms": 0.5153
+          }
+        ],
+        "maximum_zero_source_seconds": 120,
+        "monitor_frames_requested": 6,
+        "observation_phase_elapsed_seconds": 6.705177307128906,
+        "owned_zero_wav_removed": true,
+        "player_exit_code": 1,
+        "private_capture_sha256": "9dd4b437fc2ae3cd902a7b384442fa5641f44d971c6ebcb8e0c4f11c910f41b4",
+        "private_operation_sha256": "bc0e148ff648f8699cc9473de536e54b161dc10b79546f8ff7448e999e47e65a",
+        "private_summary_sha256": "d35061bc28baed554390af7132d58d1f385339d62a2444f9929e015ad7438c38",
+        "reported_path_terms": {
+          "binary_sha256": "e5061dcc1e0b925933eceeacffb576536d24f609307166b97d0e159c0f1772d1",
+          "core_identity_consistent": true,
+          "end_to_end_latency_ms": null,
+          "error_deltas": [
+            {
+              "errors_delta": null,
+              "node_index": 4,
+              "status": "incomplete-or-reset"
+            },
+            {
+              "errors_delta": null,
+              "node_index": 8,
+              "status": "incomplete-or-reset"
+            },
+            {
+              "errors_delta": null,
+              "node_index": 9,
+              "status": "incomplete-or-reset"
+            },
+            {
+              "errors_delta": null,
+              "node_index": 11,
+              "status": "incomplete-or-reset"
+            },
+            {
+              "errors_delta": null,
+              "node_index": 13,
+              "status": "incomplete-or-reset"
+            },
+            {
+              "errors_delta": null,
+              "node_index": 15,
+              "status": "incomplete-or-reset"
+            },
+            {
+              "errors_delta": null,
+              "node_index": 16,
+              "status": "incomplete-or-reset"
+            },
+            {
+              "errors_delta": null,
+              "node_index": 18,
+              "status": "incomplete-or-reset"
+            },
+            {
+              "errors_delta": null,
+              "node_index": 19,
+              "status": "incomplete-or-reset"
+            }
+          ],
+          "filter_request": {
+            "denominator_rate_hz": 48000,
+            "match_count": 1,
+            "numerator_frames": 256
+          },
+          "kit_sha256": "0b431577b22dbe014ec8185717e779673fc2f93825a9b8c9d835e3561f7c8a64",
+          "monitor_status": "ok",
+          "payload_sha256": [
+            "0740636ee45c76a23cc218248ab59ffb2d7c1beadae3077fb2bc20cda0be10b7",
+            "15828ed995f4dc0a46191dd777084c98e198147ea3903dace29e69086b2bb1da",
+            "2040c08e3d19489331ace93d2503431ea1a63425d99fb8ad6a80977e2ad8b058",
+            "b765f964beb72310451daa428f2acdf9919b78bcd431c240d7bc05e2ef1887f8"
+          ],
+          "physical_latency_ms": null,
+          "pulse_queues": [],
+          "pulse_status": "unavailable",
+          "rc_sha256": [
+            "21614bd34f28f37d9f395452b734dcea4da32130ded4e5a6960c26bca4130c93",
+            "b6fbb4d1aa8c99d0a425914839b74faeba3cf3d260cc3754bd98d3f8f53793d3",
+            "c84185b8121a8bb483859806ff5d2eec21df91422336e8467c6b32afef85ab9f",
+            "f966e80b017b8d7d96736967f68eebe7844f1f65b704d0dad28000a9664e7a7f",
+            "fddb252878ce0fba959be22fa39757207b264c1fe87edb7eed22013d726da43a"
+          ],
+          "reported_process_latency": [
+            {
+              "constant_ms": 0.0,
+              "ns": 0,
+              "plugin": null,
+              "quantum_periods": 0.0,
+              "rate_frames": 0,
+              "role": "physical-output"
+            },
+            {
+              "constant_ms": 1.0,
+              "ns": 1000000,
+              "plugin": "limiter",
+              "quantum_periods": 0.0,
+              "rate_frames": 0,
+              "role": "speaker-dsp"
+            },
+            {
+              "constant_ms": 0.0,
+              "ns": 0,
+              "plugin": "convolver",
+              "quantum_periods": 0.0,
+              "rate_frames": 0,
+              "role": "speaker-dsp"
+            }
+          ],
+          "route_consistent": true,
+          "running_driver_observed": true,
+          "source_sha256": "9dd4b437fc2ae3cd902a7b384442fa5641f44d971c6ebcb8e0c4f11c910f41b4",
+          "speaker_state_consistent": true,
+          "versions": {
+            "pipewire": "1.6.8",
+            "wireplumber": "0.5.17"
+          }
+        },
+        "requested_native_client_latency": "4800/48000",
+        "source_channels": 2,
+        "source_rate_hz": 48000,
+        "startup_driver_sequence": [
+          {
+            "errors": 0,
+            "quantum_frames": 0,
+            "rate_hz": 0,
+            "sample_index": 0,
+            "state": "C"
+          },
+          {
+            "errors": 0,
+            "quantum_frames": 0,
+            "rate_hz": 0,
+            "sample_index": 1,
+            "state": "S"
+          },
+          {
+            "errors": 1,
+            "quantum_frames": 256,
+            "rate_hz": 48000,
+            "sample_index": 2,
+            "state": "R"
+          },
+          {
+            "errors": 1,
+            "quantum_frames": 256,
+            "rate_hz": 48000,
+            "sample_index": 3,
+            "state": "R"
+          },
+          {
+            "errors": 1,
+            "quantum_frames": 256,
+            "rate_hz": 48000,
+            "sample_index": 4,
+            "state": "R"
+          },
+          {
+            "errors": 1,
+            "quantum_frames": 256,
+            "rate_hz": 48000,
+            "sample_index": 5,
+            "state": "R"
+          }
+        ],
+        "startup_dsp_error_histories": [
+          {
+            "component_index_within_observation": 0,
+            "errors": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "plugin": "spectrum",
+            "states": [
+              "C",
+              "R",
+              "R",
+              "R",
+              "R",
+              "R"
+            ]
+          },
+          {
+            "component_index_within_observation": 1,
+            "errors": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "plugin": "output_level",
+            "states": [
+              "C",
+              "R",
+              "R",
+              "R",
+              "R",
+              "R"
+            ]
+          },
+          {
+            "component_index_within_observation": 2,
+            "errors": [
+              0
+            ],
+            "plugin": "autogain",
+            "states": [
+              "R"
+            ]
+          },
+          {
+            "component_index_within_observation": 3,
+            "errors": [
+              0,
+              0
+            ],
+            "plugin": "multiband_compressor",
+            "states": [
+              "R",
+              "R"
+            ]
+          },
+          {
+            "component_index_within_observation": 4,
+            "errors": [
+              0,
+              0,
+              0
+            ],
+            "plugin": "limiter",
+            "states": [
+              "R",
+              "R",
+              "R"
+            ]
+          }
+        ]
+      },
+      "host": "lab6",
+      "local_private_retention_manifest_sha256": "c88a974ddcb7610c350699b5c1a61c9c3b4bf33d7a8283446b55dd5e6432e413",
+      "persistent_transition": {
+        "controlled_transient_to_persistent": true,
+        "elapsed_seconds": 1.5903525352478027,
+        "native_main_rc_save_changed_bytes": true,
+        "native_plugin_rc_files_created": [
+          "db/autogainrc",
+          "db/convolverrc",
+          "db/limiterrc",
+          "db/multibandcompressorrc"
+        ],
+        "private_operation_sha256": "2987f2c0acbec9bba9216400d94d68b42b4130141a803e918112a7a6471a52a5",
+        "runtime_and_tuning_payload_preserved": true,
+        "stock_audio_services_preserved": true
+      },
+      "phase_seconds": {
+        "baseline": 6.766913890838623,
+        "candidate": 6.705177307128906,
+        "install": 17.440096855163574,
+        "prepare": 0.330549955368042,
+        "stage": 0.5594396591186523
+      },
+      "preserved": {
+        "binary_preserved": true,
+        "current_volume_fraction": 0.2,
+        "kit_sha256": "0b431577b22dbe014ec8185717e779673fc2f93825a9b8c9d835e3561f7c8a64",
+        "main_rc_sha256": "fddb252878ce0fba959be22fa39757207b264c1fe87edb7eed22013d726da43a",
+        "payload_preserved": true,
+        "payload_sha256": [
+          "0740636ee45c76a23cc218248ab59ffb2d7c1beadae3077fb2bc20cda0be10b7",
+          "15828ed995f4dc0a46191dd777084c98e198147ea3903dace29e69086b2bb1da",
+          "2040c08e3d19489331ace93d2503431ea1a63425d99fb8ad6a80977e2ad8b058",
+          "b765f964beb72310451daa428f2acdf9919b78bcd431c240d7bc05e2ef1887f8"
+        ],
+        "persistent_candidate_active": true,
+        "persistent_candidate_enabled": true,
+        "physical_default_preserved": true,
+        "post_reboot_start_observed": false,
+        "protected_plugin_rc_preserved": true,
+        "protected_plugin_rc_sha256": {
+          "db/autogainrc": "21614bd34f28f37d9f395452b734dcea4da32130ded4e5a6960c26bca4130c93",
+          "db/convolverrc": "c84185b8121a8bb483859806ff5d2eec21df91422336e8467c6b32afef85ab9f",
+          "db/limiterrc": "f966e80b017b8d7d96736967f68eebe7844f1f65b704d0dad28000a9664e7a7f",
+          "db/multibandcompressorrc": "b6fbb4d1aa8c99d0a425914839b74faeba3cf3d260cc3754bd98d3f8f53793d3"
+        },
+        "runtime_binary_sha256": "e5061dcc1e0b925933eceeacffb576536d24f609307166b97d0e159c0f1772d1",
+        "stock_audio_service_states_and_pids_preserved": true,
+        "unit_bytes_preserved": true,
+        "unit_sha256": "6a6603dabd7188909d8dd7810f2af6dc8a622074da2b616bad64a474d8bb4b0a",
+        "volume_preserved": true
+      },
+      "private_phase_operation_sha256": {
+        "baseline": "320c8908388a8d2dc0f51bf52fbf146c2e7c81b8ebf40371397c26822912eda7",
+        "candidate": "bc0e148ff648f8699cc9473de536e54b161dc10b79546f8ff7448e999e47e65a",
+        "install": "6f4ee139eb0dd3a1caf6691b68c007526fa0d62272fc267c09d2849085fe56ae",
+        "prepare": "bde788b18db083d04fdd7075a455991d4b74ab07c1fbfe7be979559106e1b69a",
+        "stage": "37dbbe48525a041ffcf431322fca4a35d9b2dcd216d00018c863535f102cb695"
+      },
+      "result": {
+        "baseline_graph_period_ms": 42.666666666666664,
+        "baseline_running_driver_quantum_frames": 2048,
+        "candidate_graph_period_ms": 5.333333333333333,
+        "candidate_running_driver_quantum_frames": 256,
+        "full_tuning_configuration_and_graph_preserved": true,
+        "later_driver_error_counter_increase_observed": false,
+        "matched_filter_request": {
+          "denominator_rate_hz": 48000,
+          "match_count": 1,
+          "numerator_frames": 256
+        },
+        "new_install_main_rc_hash_changed_by_native_save": false,
+        "rate_hz": 48000,
+        "raw_settings_equivalence_accepted_by_reviewed_guard": true,
+        "rollback_required": false,
+        "startup_driver_first_positive_quantum_errors": {
+          "baseline": 1,
+          "candidate": 1
+        },
+        "status": "256-request-active"
+      },
+      "reviewed_source_revision": "90fea80c6b8e6e9635a10327471ffb85ef1902d8",
+      "reviewed_source_sha256": {
+        "scripts/audio_common.py": "14a70e97a92a961a28df64d27af9cecf5a7044c3e6d97a8901ce6ed3fc7564ea",
+        "scripts/audio_path_trial.py": "13f8b7407de7c0885c9520cebaed67bedb741c4c63b70edb25053782bb895c85",
+        "scripts/inspect_audio.py": "60008887f538c161cd4581f1805b7fc8286bf0d0929d7f70edaa006e5f4e42bc",
+        "scripts/inspect_audio_path.py": "6ee04f6cfaa420dbf91ec9df21e3289eb3cd381235e39c3bbcfb819c3c225e09",
+        "scripts/inspect_speaker_runtime.py": "a009dae6b373f6ce907d313a10fa629aa8a7d5f3623183ed21213bb7ff17c78c",
+        "scripts/prepare_speaker_profile.py": "40038cab415aa8af712ad773532438b5dea7d678d318ae99c3a9f471ef32d466",
+        "scripts/speaker_install.py": "fef0094ca0b2624526e20717bebfd4638a98771e6233dc299a8e04c62d4009e0"
+      },
+      "rollback": {
+        "controlled_stop_then_guarded_remove_then_same_service_start_recipe_retained": true,
+        "live_request_removal_exercised": false,
+        "owned_fragment_relative_path": "config/pipewire/client.conf.d/90-rog-audio-latency-trial.conf",
+        "package_and_speaker_configuration_rollback_retained": true,
+        "removal_will_retain_actual_owned_inode_in_archive_quarantine": true,
+        "same_filesystem_snapshot_retained": true
+      }
+    },
+    {
+      "baseline": {
+        "actual_zero_playback_seconds": 5.6630546689848416,
+        "all_chain_nodes_running": true,
+        "chain_verified_in_two_active_graphs": true,
+        "full_channel_chains": {
+          "FL": [
+            "owned-native-zero-client",
+            "candidate-virtual-sink",
+            "convolver#0",
+            "multiband_compressor#0",
+            "multiband_compressor#1",
+            "limiter#0",
+            "spectrum",
+            "output_level",
+            "physical-stereo-speaker-output"
+          ],
+          "FR": [
+            "owned-native-zero-client",
+            "candidate-virtual-sink",
+            "convolver#0",
+            "multiband_compressor#0",
+            "multiband_compressor#1",
+            "limiter#0",
+            "spectrum",
+            "output_level",
+            "physical-stereo-speaker-output"
+          ]
+        },
+        "later_driver_sequence": [
+          {
+            "busy_ms": null,
+            "errors": 0,
+            "quantum_frames": 0,
+            "rate_hz": 0,
+            "sample_index": 0,
+            "state": "C",
+            "wait_ms": null
+          },
+          {
+            "busy_ms": 0.028399999999999998,
+            "errors": 0,
+            "quantum_frames": 2048,
+            "rate_hz": 48000,
+            "sample_index": 1,
+            "state": "R",
+            "wait_ms": 0.5702999999999999
+          },
+          {
+            "busy_ms": 0.011800000000000001,
+            "errors": 0,
+            "quantum_frames": 2048,
+            "rate_hz": 48000,
+            "sample_index": 2,
+            "state": "R",
+            "wait_ms": 0.22169999999999998
+          },
+          {
+            "busy_ms": 0.025500000000000002,
+            "errors": 0,
+            "quantum_frames": 2048,
+            "rate_hz": 48000,
+            "sample_index": 3,
+            "state": "R",
+            "wait_ms": 0.373
+          },
+          {
+            "busy_ms": 0.028800000000000003,
+            "errors": 0,
+            "quantum_frames": 2048,
+            "rate_hz": 48000,
+            "sample_index": 4,
+            "state": "R",
+            "wait_ms": 0.4716
+          },
+          {
+            "busy_ms": 0.0303,
+            "errors": 0,
+            "quantum_frames": 2048,
+            "rate_hz": 48000,
+            "sample_index": 5,
+            "state": "R",
+            "wait_ms": 0.5650000000000001
+          }
+        ],
+        "maximum_zero_source_seconds": 120,
+        "monitor_frames_requested": 6,
+        "observation_phase_elapsed_seconds": 6.331523895263672,
+        "owned_zero_wav_removed": true,
+        "player_exit_code": 1,
+        "private_capture_sha256": "e5db2c770b6cd93cd4d11b16b644f11466cbf8d2ee77d663a64e71178d9d7e39",
+        "private_operation_sha256": "66c4780ca9e67192c8501a80c29827c6345a547440dfe747668e985b43973bbb",
+        "private_summary_sha256": "ca7e4a13cb970260e4386f574f619306a10f3ad6996fd3724edd728da3468bb5",
+        "reported_path_terms": {
+          "binary_sha256": "e5061dcc1e0b925933eceeacffb576536d24f609307166b97d0e159c0f1772d1",
+          "core_identity_consistent": true,
+          "end_to_end_latency_ms": null,
+          "error_deltas": [
+            {
+              "errors_delta": null,
+              "node_index": 3,
+              "status": "incomplete-or-reset"
+            },
+            {
+              "errors_delta": null,
+              "node_index": 6,
+              "status": "incomplete-or-reset"
+            },
+            {
+              "errors_delta": null,
+              "node_index": 11,
+              "status": "incomplete-or-reset"
+            },
+            {
+              "errors_delta": null,
+              "node_index": 12,
+              "status": "incomplete-or-reset"
+            },
+            {
+              "errors_delta": null,
+              "node_index": 13,
+              "status": "incomplete-or-reset"
+            },
+            {
+              "errors_delta": null,
+              "node_index": 14,
+              "status": "incomplete-or-reset"
+            },
+            {
+              "errors_delta": null,
+              "node_index": 15,
+              "status": "incomplete-or-reset"
+            },
+            {
+              "errors_delta": null,
+              "node_index": 17,
+              "status": "incomplete-or-reset"
+            },
+            {
+              "errors_delta": null,
+              "node_index": 19,
+              "status": "incomplete-or-reset"
+            }
+          ],
+          "filter_request": {
+            "denominator_rate_hz": null,
+            "match_count": 1,
+            "numerator_frames": null
+          },
+          "kit_sha256": "626c314c3c776af5ef7ad34a1a8d2e3291b0542f8e59772496df829db3ed8459",
+          "monitor_status": "ok",
+          "payload_sha256": [
+            "15828ed995f4dc0a46191dd777084c98e198147ea3903dace29e69086b2bb1da",
+            "1d30e4445384b6a03af2eaa85fae6d73ce1bf1ff986d201cdb4162e4116d5661",
+            "7aa378c81e53e0e3cd62ba32ac06d7a438301b72baa1402e05bd24b26848c029",
+            "f4e1d0d45ec0f25935816a0a2517db17fd7dae8d6a644488b21beb622a5e7c58"
+          ],
+          "physical_latency_ms": null,
+          "pulse_queues": [],
+          "pulse_status": "unavailable",
+          "rc_sha256": [
+            "27ab53f2d322b49fed1b7809bfaf71519f644965534e35fc1a8e1e71fee60dd5",
+            "c824f117dec051ba8c41fa470f732fe14c759d9195aa82d830ebfaaa2338e3e4",
+            "dd680382599cd9f9090534b60a02d0a7375d7a65af0f050502d4d1de805f7eb3",
+            "f966e80b017b8d7d96736967f68eebe7844f1f65b704d0dad28000a9664e7a7f"
+          ],
+          "reported_process_latency": [
+            {
+              "constant_ms": 0.0,
+              "ns": 0,
+              "plugin": null,
+              "quantum_periods": 0.0,
+              "rate_frames": 0,
+              "role": "physical-output"
+            },
+            {
+              "constant_ms": 0.0,
+              "ns": 0,
+              "plugin": "convolver",
+              "quantum_periods": 0.0,
+              "rate_frames": 0,
+              "role": "speaker-dsp"
+            }
+          ],
+          "route_consistent": true,
+          "running_driver_observed": true,
+          "source_sha256": "e5db2c770b6cd93cd4d11b16b644f11466cbf8d2ee77d663a64e71178d9d7e39",
+          "speaker_state_consistent": true,
+          "versions": {
+            "pipewire": "1.6.8",
+            "wireplumber": "0.5.17"
+          }
+        },
+        "requested_native_client_latency": "4800/48000",
+        "source_channels": 2,
+        "source_rate_hz": 48000,
+        "startup_driver_sequence": [
+          {
+            "errors": 0,
+            "quantum_frames": 0,
+            "rate_hz": 0,
+            "sample_index": 0,
+            "state": "C"
+          },
+          {
+            "errors": 0,
+            "quantum_frames": 0,
+            "rate_hz": 0,
+            "sample_index": 1,
+            "state": "S"
+          },
+          {
+            "errors": 0,
+            "quantum_frames": 2048,
+            "rate_hz": 48000,
+            "sample_index": 2,
+            "state": "R"
+          },
+          {
+            "errors": 0,
+            "quantum_frames": 2048,
+            "rate_hz": 48000,
+            "sample_index": 3,
+            "state": "R"
+          },
+          {
+            "errors": 0,
+            "quantum_frames": 2048,
+            "rate_hz": 48000,
+            "sample_index": 4,
+            "state": "R"
+          },
+          {
+            "errors": 0,
+            "quantum_frames": 2048,
+            "rate_hz": 48000,
+            "sample_index": 5,
+            "state": "R"
+          }
+        ],
+        "startup_dsp_error_histories": [
+          {
+            "component_index_within_observation": 0,
+            "errors": [
+              0,
+              0,
+              0
+            ],
+            "plugin": "multiband_compressor",
+            "states": [
+              "R",
+              "R",
+              "R"
+            ]
+          },
+          {
+            "component_index_within_observation": 1,
+            "errors": [
+              0,
+              0,
+              0
+            ],
+            "plugin": "convolver",
+            "states": [
+              "R",
+              "R",
+              "R"
+            ]
+          },
+          {
+            "component_index_within_observation": 2,
+            "errors": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "plugin": "output_level",
+            "states": [
+              "C",
+              "R",
+              "R",
+              "R",
+              "R",
+              "R"
+            ]
+          },
+          {
+            "component_index_within_observation": 3,
+            "errors": [
+              0,
+              0,
+              0
+            ],
+            "plugin": "multiband_compressor",
+            "states": [
+              "R",
+              "R",
+              "R"
+            ]
+          },
+          {
+            "component_index_within_observation": 4,
+            "errors": [
+              0,
+              0,
+              0
+            ],
+            "plugin": "limiter",
+            "states": [
+              "R",
+              "R",
+              "R"
+            ]
+          },
+          {
+            "component_index_within_observation": 5,
+            "errors": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "plugin": "spectrum",
+            "states": [
+              "C",
+              "R",
+              "R",
+              "R",
+              "R",
+              "R"
+            ]
+          }
+        ]
+      },
+      "candidate": {
+        "actual_zero_playback_seconds": 4.673093536985107,
+        "all_chain_nodes_running": true,
+        "chain_verified_in_two_active_graphs": true,
+        "full_channel_chains": {
+          "FL": [
+            "owned-native-zero-client",
+            "candidate-virtual-sink",
+            "convolver#0",
+            "multiband_compressor#0",
+            "multiband_compressor#1",
+            "limiter#0",
+            "spectrum",
+            "output_level",
+            "physical-stereo-speaker-output"
+          ],
+          "FR": [
+            "owned-native-zero-client",
+            "candidate-virtual-sink",
+            "convolver#0",
+            "multiband_compressor#0",
+            "multiband_compressor#1",
+            "limiter#0",
+            "spectrum",
+            "output_level",
+            "physical-stereo-speaker-output"
+          ]
+        },
+        "later_driver_sequence": [
+          {
+            "busy_ms": null,
+            "errors": 0,
+            "quantum_frames": 0,
+            "rate_hz": 0,
+            "sample_index": 0,
+            "state": "C",
+            "wait_ms": null
+          },
+          {
+            "busy_ms": 0.0075,
+            "errors": 0,
+            "quantum_frames": 256,
+            "rate_hz": 48000,
+            "sample_index": 1,
+            "state": "R",
+            "wait_ms": 0.08009999999999999
+          },
+          {
+            "busy_ms": 0.0075,
+            "errors": 0,
+            "quantum_frames": 256,
+            "rate_hz": 48000,
+            "sample_index": 2,
+            "state": "R",
+            "wait_ms": 0.08009999999999999
+          },
+          {
+            "busy_ms": 0.0018000000000000002,
+            "errors": 0,
+            "quantum_frames": 256,
+            "rate_hz": 48000,
+            "sample_index": 3,
+            "state": "R",
+            "wait_ms": 0.2675
+          },
+          {
+            "busy_ms": 0.0249,
+            "errors": 0,
+            "quantum_frames": 256,
+            "rate_hz": 48000,
+            "sample_index": 4,
+            "state": "R",
+            "wait_ms": 0.5377000000000001
+          },
+          {
+            "busy_ms": 0.0021000000000000003,
+            "errors": 0,
+            "quantum_frames": 256,
+            "rate_hz": 48000,
+            "sample_index": 5,
+            "state": "R",
+            "wait_ms": 0.2509
+          }
+        ],
+        "maximum_zero_source_seconds": 120,
+        "monitor_frames_requested": 6,
+        "observation_phase_elapsed_seconds": 5.271068334579468,
+        "owned_zero_wav_removed": true,
+        "player_exit_code": 1,
+        "private_capture_sha256": "73d101ae83b43e4e983e08e35144f7df16889ad8492d23b6dcfe4cb5f83cf523",
+        "private_operation_sha256": "e336a9e90b255f9d111a93fba55d591c59bae43486a143c0e2d0f4edba97473e",
+        "private_summary_sha256": "cffd559f5007c5a047aa43602c77a65d0d0754de38ecc02dbbb6274633928726",
+        "reported_path_terms": {
+          "binary_sha256": "e5061dcc1e0b925933eceeacffb576536d24f609307166b97d0e159c0f1772d1",
+          "core_identity_consistent": true,
+          "end_to_end_latency_ms": null,
+          "error_deltas": [
+            {
+              "errors_delta": null,
+              "node_index": 5,
+              "status": "incomplete-or-reset"
+            },
+            {
+              "errors_delta": null,
+              "node_index": 8,
+              "status": "incomplete-or-reset"
+            },
+            {
+              "errors_delta": null,
+              "node_index": 9,
+              "status": "incomplete-or-reset"
+            },
+            {
+              "errors_delta": null,
+              "node_index": 11,
+              "status": "incomplete-or-reset"
+            },
+            {
+              "errors_delta": null,
+              "node_index": 12,
+              "status": "incomplete-or-reset"
+            },
+            {
+              "errors_delta": null,
+              "node_index": 13,
+              "status": "incomplete-or-reset"
+            },
+            {
+              "errors_delta": null,
+              "node_index": 15,
+              "status": "incomplete-or-reset"
+            },
+            {
+              "errors_delta": null,
+              "node_index": 16,
+              "status": "incomplete-or-reset"
+            },
+            {
+              "errors_delta": null,
+              "node_index": 18,
+              "status": "incomplete-or-reset"
+            }
+          ],
+          "filter_request": {
+            "denominator_rate_hz": 48000,
+            "match_count": 1,
+            "numerator_frames": 256
+          },
+          "kit_sha256": "626c314c3c776af5ef7ad34a1a8d2e3291b0542f8e59772496df829db3ed8459",
+          "monitor_status": "ok",
+          "payload_sha256": [
+            "15828ed995f4dc0a46191dd777084c98e198147ea3903dace29e69086b2bb1da",
+            "1d30e4445384b6a03af2eaa85fae6d73ce1bf1ff986d201cdb4162e4116d5661",
+            "7aa378c81e53e0e3cd62ba32ac06d7a438301b72baa1402e05bd24b26848c029",
+            "f4e1d0d45ec0f25935816a0a2517db17fd7dae8d6a644488b21beb622a5e7c58"
+          ],
+          "physical_latency_ms": null,
+          "pulse_queues": [],
+          "pulse_status": "unavailable",
+          "rc_sha256": [
+            "27ab53f2d322b49fed1b7809bfaf71519f644965534e35fc1a8e1e71fee60dd5",
+            "7e6e279e23fd142ffeb9d9e427833a203d81f4ef1a44cf37c906063ed99be836",
+            "dd680382599cd9f9090534b60a02d0a7375d7a65af0f050502d4d1de805f7eb3",
+            "f966e80b017b8d7d96736967f68eebe7844f1f65b704d0dad28000a9664e7a7f"
+          ],
+          "reported_process_latency": [
+            {
+              "constant_ms": 0.0,
+              "ns": 0,
+              "plugin": null,
+              "quantum_periods": 0.0,
+              "rate_frames": 0,
+              "role": "physical-output"
+            },
+            {
+              "constant_ms": 1.0,
+              "ns": 1000000,
+              "plugin": "limiter",
+              "quantum_periods": 0.0,
+              "rate_frames": 0,
+              "role": "speaker-dsp"
+            },
+            {
+              "constant_ms": 0.0,
+              "ns": 0,
+              "plugin": "convolver",
+              "quantum_periods": 0.0,
+              "rate_frames": 0,
+              "role": "speaker-dsp"
+            }
+          ],
+          "route_consistent": true,
+          "running_driver_observed": true,
+          "source_sha256": "73d101ae83b43e4e983e08e35144f7df16889ad8492d23b6dcfe4cb5f83cf523",
+          "speaker_state_consistent": true,
+          "versions": {
+            "pipewire": "1.6.8",
+            "wireplumber": "0.5.17"
+          }
+        },
+        "requested_native_client_latency": "4800/48000",
+        "source_channels": 2,
+        "source_rate_hz": 48000,
+        "startup_driver_sequence": [
+          {
+            "errors": 0,
+            "quantum_frames": 0,
+            "rate_hz": 0,
+            "sample_index": 0,
+            "state": "C"
+          },
+          {
+            "errors": 0,
+            "quantum_frames": 0,
+            "rate_hz": 0,
+            "sample_index": 1,
+            "state": "R"
+          },
+          {
+            "errors": 0,
+            "quantum_frames": 256,
+            "rate_hz": 48000,
+            "sample_index": 2,
+            "state": "R"
+          },
+          {
+            "errors": 0,
+            "quantum_frames": 256,
+            "rate_hz": 48000,
+            "sample_index": 3,
+            "state": "R"
+          },
+          {
+            "errors": 0,
+            "quantum_frames": 256,
+            "rate_hz": 48000,
+            "sample_index": 4,
+            "state": "R"
+          },
+          {
+            "errors": 0,
+            "quantum_frames": 256,
+            "rate_hz": 48000,
+            "sample_index": 5,
+            "state": "R"
+          }
+        ],
+        "startup_dsp_error_histories": [
+          {
+            "component_index_within_observation": 0,
+            "errors": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "plugin": "limiter",
+            "states": [
+              "C",
+              "R",
+              "R",
+              "R",
+              "R",
+              "R"
+            ]
+          },
+          {
+            "component_index_within_observation": 1,
+            "errors": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "plugin": "output_level",
+            "states": [
+              "C",
+              "R",
+              "R",
+              "R",
+              "R",
+              "R"
+            ]
+          },
+          {
+            "component_index_within_observation": 2,
+            "errors": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "plugin": "multiband_compressor",
+            "states": [
+              "C",
+              "R",
+              "R",
+              "R",
+              "R",
+              "R"
+            ]
+          },
+          {
+            "component_index_within_observation": 3,
+            "errors": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "plugin": "multiband_compressor",
+            "states": [
+              "C",
+              "R",
+              "R",
+              "R",
+              "R",
+              "R"
+            ]
+          },
+          {
+            "component_index_within_observation": 4,
+            "errors": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "plugin": "convolver",
+            "states": [
+              "C",
+              "R",
+              "R",
+              "R",
+              "R",
+              "R"
+            ]
+          },
+          {
+            "component_index_within_observation": 5,
+            "errors": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "plugin": "spectrum",
+            "states": [
+              "C",
+              "R",
+              "R",
+              "R",
+              "R",
+              "R"
+            ]
+          }
+        ]
+      },
+      "host": "lab5",
+      "local_private_retention_manifest_sha256": "8c8424a67c9d7f47f8e8ef4d6d4ce3ae3ef6829c57f19515f278cf788f7acd40",
+      "persistent_transition": {
+        "controlled_transient_to_persistent": true,
+        "elapsed_seconds": 1.688443660736084,
+        "native_main_rc_save_changed_bytes": true,
+        "native_plugin_rc_files_created": [
+          "db/convolverrc",
+          "db/limiterrc",
+          "db/multibandcompressorrc"
+        ],
+        "private_operation_sha256": "80d324c2087162a438ac63d96642673fafc8c528b157a9838241142d61ecf84c",
+        "runtime_and_tuning_payload_preserved": true,
+        "stock_audio_services_preserved": true
+      },
+      "phase_seconds": {
+        "baseline": 6.331523895263672,
+        "candidate": 5.271068334579468,
+        "install": 1.8906733989715576,
+        "prepare": 0.15732455253601074,
+        "stage": 0.5341253280639648
+      },
+      "preserved": {
+        "binary_preserved": true,
+        "current_volume_fraction": 0.86,
+        "kit_sha256": "626c314c3c776af5ef7ad34a1a8d2e3291b0542f8e59772496df829db3ed8459",
+        "main_rc_sha256": "7e6e279e23fd142ffeb9d9e427833a203d81f4ef1a44cf37c906063ed99be836",
+        "payload_preserved": true,
+        "payload_sha256": [
+          "15828ed995f4dc0a46191dd777084c98e198147ea3903dace29e69086b2bb1da",
+          "1d30e4445384b6a03af2eaa85fae6d73ce1bf1ff986d201cdb4162e4116d5661",
+          "7aa378c81e53e0e3cd62ba32ac06d7a438301b72baa1402e05bd24b26848c029",
+          "f4e1d0d45ec0f25935816a0a2517db17fd7dae8d6a644488b21beb622a5e7c58"
+        ],
+        "persistent_candidate_active": true,
+        "persistent_candidate_enabled": true,
+        "physical_default_preserved": true,
+        "post_reboot_start_observed": false,
+        "protected_plugin_rc_preserved": true,
+        "protected_plugin_rc_sha256": {
+          "db/convolverrc": "dd680382599cd9f9090534b60a02d0a7375d7a65af0f050502d4d1de805f7eb3",
+          "db/limiterrc": "f966e80b017b8d7d96736967f68eebe7844f1f65b704d0dad28000a9664e7a7f",
+          "db/multibandcompressorrc": "27ab53f2d322b49fed1b7809bfaf71519f644965534e35fc1a8e1e71fee60dd5"
+        },
+        "runtime_binary_sha256": "e5061dcc1e0b925933eceeacffb576536d24f609307166b97d0e159c0f1772d1",
+        "stock_audio_service_states_and_pids_preserved": true,
+        "unit_bytes_preserved": true,
+        "unit_sha256": "6a6603dabd7188909d8dd7810f2af6dc8a622074da2b616bad64a474d8bb4b0a",
+        "volume_preserved": true
+      },
+      "prior_guarded_refusal": {
+        "baseline_resumed_and_verified_before_reviewed_source_retry": true,
+        "changed_key": "StreamOutputs.usedPresets",
+        "changed_rc_paths": [
+          "db/easyeffectsrc"
+        ],
+        "existing_bypass_preset_entry_unchanged": true,
+        "fragment_published": false,
+        "guard_bypassed": false,
+        "private_exact_diff_sha256": "d788b4f29d7261108f61cce35ab42a1ee508eafee2154908ff669272dd4926a2",
+        "selected_preset_counter_incremented": true,
+        "snapshot_created": false,
+        "source_revision": "90fea80c6b8e6e9635a10327471ffb85ef1902d8"
+      },
+      "private_phase_operation_sha256": {
+        "baseline": "66c4780ca9e67192c8501a80c29827c6345a547440dfe747668e985b43973bbb",
+        "candidate": "e336a9e90b255f9d111a93fba55d591c59bae43486a143c0e2d0f4edba97473e",
+        "install": "83f776ee09f6ede5a8c7fb65494a05c0e121459a42aab2aa8764b0972123d242",
+        "prepare": "f5031847d97e57eb58827f4f9219d408f572e11c2e28051fbbf3213e7b94e061",
+        "stage": "a76baa20833a210d5924a826fab77460cc040f286082b7a750bba71657e2352f"
+      },
+      "result": {
+        "baseline_graph_period_ms": 42.666666666666664,
+        "baseline_running_driver_quantum_frames": 2048,
+        "candidate_graph_period_ms": 5.333333333333333,
+        "candidate_running_driver_quantum_frames": 256,
+        "full_tuning_configuration_and_graph_preserved": true,
+        "later_driver_error_counter_increase_observed": false,
+        "matched_filter_request": {
+          "denominator_rate_hz": 48000,
+          "match_count": 1,
+          "numerator_frames": 256
+        },
+        "new_install_main_rc_hash_changed_by_native_save": true,
+        "rate_hz": 48000,
+        "raw_settings_equivalence_accepted_by_reviewed_guard": true,
+        "rollback_required": false,
+        "startup_driver_first_positive_quantum_errors": {
+          "baseline": 0,
+          "candidate": 0
+        },
+        "status": "256-request-active"
+      },
+      "reviewed_source_revision": "aff7fdb01bfcf6d4770fd679b89ecc01c8f56109",
+      "reviewed_source_sha256": {
+        "scripts/audio_common.py": "14a70e97a92a961a28df64d27af9cecf5a7044c3e6d97a8901ce6ed3fc7564ea",
+        "scripts/audio_path_trial.py": "9ae515597a6c7dc5fc8ee535c0fe4524ffdbce2643662477e51e4ffedcfd5e76",
+        "scripts/inspect_audio.py": "60008887f538c161cd4581f1805b7fc8286bf0d0929d7f70edaa006e5f4e42bc",
+        "scripts/inspect_audio_path.py": "6ee04f6cfaa420dbf91ec9df21e3289eb3cd381235e39c3bbcfb819c3c225e09",
+        "scripts/inspect_speaker_runtime.py": "a009dae6b373f6ce907d313a10fa629aa8a7d5f3623183ed21213bb7ff17c78c",
+        "scripts/prepare_speaker_profile.py": "40038cab415aa8af712ad773532438b5dea7d678d318ae99c3a9f471ef32d466",
+        "scripts/speaker_install.py": "fef0094ca0b2624526e20717bebfd4638a98771e6233dc299a8e04c62d4009e0"
+      },
+      "rollback": {
+        "controlled_stop_then_guarded_remove_then_same_service_start_recipe_retained": true,
+        "live_request_removal_exercised": false,
+        "owned_fragment_relative_path": "config/pipewire/client.conf.d/90-rog-audio-latency-trial.conf",
+        "package_and_speaker_configuration_rollback_retained": true,
+        "removal_will_retain_actual_owned_inode_in_archive_quarantine": true,
+        "same_filesystem_snapshot_retained": true
+      }
+    }
+  ],
+  "kind": "linux-speaker-latency-trials",
+  "limits": [
+    "These are bounded all-zero PCM observations, not representative music/load or a sustained stability test.",
+    "A driver graph period is not physical speaker onset, round-trip or acoustic latency; physical and end-to-end latency remain unmeasured.",
+    "The identical native test client requested100ms in both paired states. Results characterize this observed graph, not every application.",
+    "Each collector requested six frames; total zero-playback duration differed with collection overhead and is retained exactly.",
+    "Startup histories retain initial zero-quantum/incomplete rows. ERR1 on ThinkPad is not relabeled a clean zero-error activation.",
+    "No microphone recording, audible test tone, volume/default/profile setter, firmware change or stock audio service restart occurred during these paired latency windows.",
+    "The processor was restarted explicitly in a coordinated window; persistent service startup was manually exercised, not reboot/login observed.",
+    "Configuration and active convolver/IR identity are preserved; no new post-restart IR-loader debug line or acoustic filter-response measurement is represented.",
+    "Physical hotplug, resume, power/load, listening and matched Mac latency remain separate acceptance work."
+  ],
+  "preceding_preflight_receipt": "speaker-lifecycle-preflight-2026-10-13.json",
+  "schema_version": 1,
+  "status": "256-request-active-on-both-laptops",
+  "unit_tests_repeated": false
+}

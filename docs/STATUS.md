@@ -2,7 +2,7 @@
 
 **Updated:** 2026-10-13 · **State:** both speaker candidates installed with
 login startup configured; ROG stereo tuning restored after four-channel
-investigation; ThinkPad 256-frame trial active, ROG trial in progress.
+investigation; both tuned 256-frame requests are active with rollback retained.
 
 | Work | State | Next evidence |
 |---|---|---|
@@ -10,7 +10,7 @@ investigation; ThinkPad 256-frame trial active, ROG trial in progress.
 | ASUS speaker tuning | Validated stereo restored with full tuned path; prior owner feedback positive | Scoped latency trial, physical hotplug and measurements |
 | ThinkPad speaker tuning | Separate Lenovo music/balanced candidate running; live preset, IR, plugins and hardware output verified | Owner listening, physical hotplug and measurements |
 | Laptop installation runtime | Both active with private rollback and login startup; inherited 97 unit cases and both isolated graph cases passed | Actual post-reboot observation and physical qualification |
-| Diagnostics and latency | PRs 5–6 merged; ThinkPad actual driver period reduced from 42.667 to 5.333 ms with tuning preserved | ROG paired trial, then sustained and physical measurements |
+| Diagnostics and latency | Both tuned drivers reduced from 42.667 to 5.333 ms; PRs 5–7 source reviewed and affected tests passed | Sustained-load and physical measurements |
 | Host Atmos | 15 tests and focused CI cleanup acceptance passed in PR 1 | Actual JOC reference media and physical qualification |
 | macOS comparison | M4 Air getter and silent-running snapshots complete; 16 summary tests passed in PR 5 | Matched Linux software observations, then physical comparison |
 | Sonos Arc/eARC | Deferred until internal audio work | TV route and actual received formats |
@@ -174,8 +174,8 @@ behaviour. No system-wide low-buffer setting or tuning bypass is presumed.
 
 CoreAudio device/buffer timing and PipeWire scheduling periods are software
 evidence. A physical comparison needs a documented capture path and clock
-relationship; measurement equipment is not yet established. No new latency
-improvement or Mac parity is claimed. Sonos Atmos remains last.
+relationship; measurement equipment is not yet established. The bounded software-period improvement is recorded below; physical
+latency and Mac parity remain unmeasured. Sonos Atmos remains last.
 
 [PR 5](https://github.com/pjunod/rog_audio/pull/5) contains the complete
 implementation, merged at `d02c07178bfaff0c5582cb253d10c8c1738d17c9`,
@@ -184,7 +184,7 @@ four findings were fixed and source-cleared before 46 new unit cases passed
 once. Seven native filter cases passed; the config stage passed after one
 reviewed command correction and config-only retry. No passing case repeated. Existing speaker and unrelated Atmos passes remain retained.
 
-Fresh idle baselines show the ROG now exposes an Analog Surround 4.0 sink while
+Initial idle baselines showed the ROG exposing an Analog Surround 4.0 sink while
 its kit targets Analog Stereo. A remembered preset label does not prove active
 correction on that changed route. The owner selected four-channel output manually, reported the settings UI
 closing, and requested that four-channel output remain selected while its
@@ -224,40 +224,34 @@ record the route investigation and restoration. The
 compilation and idle/running snapshots. None is unit or physical acceptance
 of the forthcoming latency request.
 
-## Scoped live latency trials
+## Scoped live latency trials — both candidates active
 
-The ThinkPad has moved from the original transient process to the already
-enabled persistent user service. The controlled quit serialized the four
-previously absent plugin settings files through the runtime's native save
-path. That serialization is recorded separately from payload preservation;
-the preset, IR, runtime, startup unit, default, volume and stock audio service
-process IDs were preserved. The reviewed settings snapshot now succeeds.
+Both laptops now run the full tuning chain under the enabled persistent user
+service with the exact 256/48000 output-filter request active. Paired all-zero
+PCM observations, each with the same 100 ms client request, showed their
+actual driver period changing from 2048/48000 (42.667 ms) to 256/48000
+(5.333 ms). ROG sampled driver/DSP error counters stayed zero. ThinkPad's
+driver reached count 1 at startup in both runs and stayed at 1 in the later
+samples; this is not a zero-error activation result.
 
-A fresh baseline under the persistent service used an explicit 4800/48000
-client request and all-zero PCM. Its actual driver period remained 2048/48000
-with the full Lenovo processing chain connected on both channels. The scoped
-256-frame request has not yet been accepted on a live laptop. Preflight found
-two tool assumptions to correct: systemd's formatted output omits an empty
-`EnvironmentFiles` property, and native controlled quit saves a preset-use
-counter. Typed D-Bus inspection proves the former is empty; the latter changed
-only `[StreamOutputs] usedPresets`, with no DSP setting change. The ThinkPad
-baseline was resumed and its full chain rechecked. Both listeners retain their
-working tuning. The complete correction batch passed adversarial review and
-29 affected unit methods; one failed test expectation was corrected and only
-that method rerun. The corrected live trial is next.
+Runtime, presets, IR, plugin settings, physical defaults and stock audio
+services were preserved. Final owner volume remained 86% on ROG and 20% on
+ThinkPad. Each has versioned tools, a private fragment snapshot and rollback
+commands; original tuning/package recovery is also retained. Both are ready
+for owner listening. Actual post-reboot startup, physical hotplug/resume,
+60-minute representative load, power and physical latency remain unqualified.
+
+The [paired result](../evidence/linux-speaker-latency-trials-2026-10-13.json)
+and [comparison](LATENCY_COMPARISON.md) retain durations, counters, preservation
+and the separate M4 Air HAL reference. The Mac's 10.667 ms buffer and Linux's
+5.333 ms graph period are different software quantities; neither establishes
+physical speaker delay or Mac parity.
+
 The [preflight receipt](../evidence/speaker-lifecycle-preflight-2026-10-13.json)
-records both observations, raw-evidence hashes and the preserved startup state.
-
-The corrected ThinkPad trial at merged `90fea80` negotiated 256/48000 on the
-actual driver, down from 2048/48000 in its paired baseline. Both observations
-used the same explicit 4800/48000 client request and all-zero PCM. The full
-Lenovo chain remained linked on both channels; the request is left active
-under the persistent service, with a durable fragment snapshot and rollback.
-Startup reached error count 1 in both runs; the five later running samples
-remained at 1. This establishes a bounded software-period improvement, not
-zero-error activation, sustained stability or physical/Mac parity. The ROG
-paired trial prepared successfully but refused installation before any fragment
-or snapshot was created: its native usage history also retains an unchanged
-bypass-preset entry. The original tuned baseline was resumed and rechecked
-at 2048/48000. A narrow multi-entry counter correction is being built; all
-other entries must remain byte-for-byte unchanged.
+records native serialization of the original transient processor's plugin
+settings and the initial systemd/counter assumptions. Typed environment
+inspection and exact native-counter handling passed review and 29 affected
+methods; the ROG list extension passed review and eight affected methods.
+Only one failed test expectation was retried. The refused ROG installation
+created no fragment or snapshot, resumed its working baseline, and retained
+its evidence before the corrected retry.

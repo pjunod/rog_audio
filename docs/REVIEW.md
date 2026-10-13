@@ -173,3 +173,19 @@ binds source, selected methods, attempts and logs. The
 [preflight receipt](../evidence/speaker-lifecycle-preflight-2026-10-13.json)
 separately records the persistent service transition and live blocker evidence.
 All owned acceptance containers were confirmed absent.
+
+## Preset-use list compatibility — eight affected cases passed once
+
+The ROG's native history retained both its selected preset and an unchanged
+bypass preset. The single-entry counter contract refused the installation
+before creating a fragment or snapshot. The complete list-support correction
+received independent adversarial review at `aff7fdb` with no actionable
+findings. It permits only the selected counter increase and preserves all
+other entries, order, settings and metadata exactly.
+
+Four new and four affected existing methods passed once, with zero skips or
+failures. No unchanged path, native, CoreAudio or exact-match lifecycle cases
+were repeated. The [receipt](../evidence/audio-path-preset-list-acceptance-2026-10-13.json)
+records exact sources, method IDs and log hashes. The owned container was
+confirmed absent. Live activation and physical qualification remain separate
+from these synthetic regression results.

@@ -1,21 +1,26 @@
 # Speaker installation — exact route, reversible files
 
 **Status:** reviewed compiler, 33 lane unit cases and both device graph cases passed ·
-**Updated:** 2026-10-12 · **Executes:** internal-speaker installation from
+**Updated:** 2026-10-13 · **Executes:** internal-speaker installation from
 [status](STATUS.md).
 
 Both laptops now run their separate authorized v0.2.0 candidates. The ROG's
 live preset, IR, plugins and physical output checks are recorded in
 [the deployment receipt](../evidence/rog-speaker-deployment-2026-10-12.json).
 The owner reports substantial audible improvement and requested automatic
-startup, now enabled for user login after reboot. The current listening process
-was preserved; actual post-reboot startup is pending observation. Initial
+startup, enabled for user login after reboot. Initial enablement preserved
+the listening process; actual post-reboot startup is pending observation. Initial
 deployment volume was 20%, and the prior volume, private snapshot and versioned
 recovery tools are retained. Physical hotplug/measurement acceptance is pending.
 The ThinkPad's separate Lenovo candidate has also passed its live loading and
 speaker output checks, with login startup enabled and rollback retained; see
 [its deployment receipt](../evidence/thinkpad-speaker-deployment-2026-10-12.json).
-Owner listening feedback on the ThinkPad remains pending.
+Owner listening feedback on the ThinkPad remains pending. Both candidates now
+run under the persistent service with the scoped 256-frame request active.
+Their [paired latency trials and rollback](LATENCY_COMPARISON.md#7-paired-256-frame-trials--both-tuned-paths-preserved)
+preserved tuning, physical defaults and current owner volume: 86% on the ROG,
+20% on the ThinkPad. These are the final observed volumes, distinct from the
+initial installation values.
 
 Read [speaker preparation](AUDIO_SPEAKER_BUILD.md) before using
 [the installation tool](../scripts/speaker_install.py). The input is an

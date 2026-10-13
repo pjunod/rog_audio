@@ -1,0 +1,44 @@
+{
+  "adversarial_review": {
+    "actionable_findings": 0,
+    "source_cleared_before_execution": true
+  },
+  "attempts": 1,
+  "container_absent": true,
+  "date": "2026-10-13",
+  "existing_invalidated_methods": 4,
+  "failures": 0,
+  "kind": "audio-path-preset-list-acceptance",
+  "limits": [
+    "This acceptance covers the changed counter parser; unchanged path, native, CoreAudio and exact-match lifecycle cases retain prior passes.",
+    "No physical latency or sustained-load qualification."
+  ],
+  "log_sha256": "f1ff76735adea5bc68999445b7c64dfd830479b0619de3d0fdc791d8be91f6c9",
+  "new_methods": 4,
+  "result_sha256": "5d34bf156837a304f7a4d3050238f320708ecbe3de4722b21c5431ca756c0a14",
+  "retained_acceptance": [
+    "evidence/audio-path-acceptance-2026-10-13.json",
+    "evidence/audio-path-lifecycle-acceptance-2026-10-13.json"
+  ],
+  "schema_version": 1,
+  "skipped": 0,
+  "source_archive_sha256": "818d7283267150ab9f316147df302d1b76b39dfce66a602cc9c42bfdfd50baf4",
+  "source_commit": "aff7fdb01bfcf6d4770fd679b89ecc01c8f56109",
+  "source_sha256": {
+    "scripts/audio_path_trial.py": "9ae515597a6c7dc5fc8ee535c0fe4524ffdbce2643662477e51e4ffedcfd5e76",
+    "scripts/inspect_audio_path.py": "6ee04f6cfaa420dbf91ec9df21e3289eb3cd381235e39c3bbcfb819c3c225e09",
+    "tests/test_audio_path_trial.py": "2ab1d7d622f32e224e021b73c601fbc575261eb3ee279f5323a06a90e7b23d17"
+  },
+  "status": "passed",
+  "test_ids": [
+    "test_audio_path_trial.TrialTests.test_quit_counter_increment_preserves_raw_preimages_and_all_dsp",
+    "test_audio_path_trial.TrialTests.test_quit_counter_wrong_preset_decrease_malformed_or_other_key_refuses",
+    "test_audio_path_trial.TrialTests.test_quit_counter_plugin_or_mode_change_refuses",
+    "test_audio_path_trial.TrialTests.test_counter_change_during_snapshot_still_refuses",
+    "test_audio_path_trial.TrialTests.test_quit_counter_list_retains_bypass_and_raw_preimages",
+    "test_audio_path_trial.TrialTests.test_quit_counter_list_other_entry_mutation_addition_removal_or_order_refuses",
+    "test_audio_path_trial.TrialTests.test_quit_counter_list_malformed_duplicate_or_missing_selected_refuses",
+    "test_audio_path_trial.TrialTests.test_quit_counter_list_selected_position_is_retained"
+  ],
+  "tests_run": 8
+}

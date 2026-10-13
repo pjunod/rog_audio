@@ -3,8 +3,8 @@
 **Updated:** 2026-10-13 · **State:** reviewed; 30 Linux path/trial unit cases
 and native filter/config acceptance passed for PR 5; native environment and
 quit-save compatibility fixes passed review and 29 affected methods in PR 6.
-Retaining unchanged preset-use list entries is a follow-up source correction
-awaiting review and affected unit acceptance.
+Retaining unchanged preset-use list entries passed independent review and
+eight affected/new methods in PR 7.
 
 Companion to [latency comparison](LATENCY_COMPARISON.md) (the experiment and
 Mac reference), [installation](SPEAKER_INSTALL.md) (the existing runtime), and
@@ -221,8 +221,10 @@ cases and controlled-quit counter acceptance/refusal/preimage cases in these
 two unit modules and passed 29 affected methods after source review. The
 preset-list follow-up adds selected-counter success with retained bypass,
 other-entry/ordering refusal, malformed/duplicate-entry refusal and selected
-position cases. These new cases and affected prior counter cases await source
-review and execution; PR 6 passes do not validate the list extension.
+position cases. These four new cases and four affected prior counter cases
+passed once at `aff7fdb`, with zero skips or failures. The
+[list-extension receipt](../evidence/audio-path-preset-list-acceptance-2026-10-13.json)
+binds the exact accepted source; unrelated passes were retained.
 
 Keep the original 42-test latency receipt and accepted speaker graph receipts
 when their inputs remain unchanged. Record each new pass/failure once, retry
