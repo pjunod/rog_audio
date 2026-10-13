@@ -84,3 +84,21 @@ Real EasyEffects graph acceptance has two separate selectors and uses the
 retained compiled image and source-built kits; see
 [speaker installation](SPEAKER_INSTALL.md). It is deliberately separate from
 the unit lane so a unit retry does not rebuild or rerun both runtime cases.
+
+
+The `coreaudio` lane runs only the offline Mac-summary tests on Linux; it does
+not require HAL access or repeat the native Mac compile/observation receipt.
+Set `test_ids` to a failed `test_analyse_coreaudio_latency.CLASS.test_METHOD`
+for a focused retry. Input is checked before unittest import, and skipped or
+empty acceptance is an error. The native probe is compiled on a Mac when its
+C source changes; that compiler receipt is distinct from these parser tests.
+
+
+The `audio-path` lane covers only the new tuned-path inspector, file-only trial
+lifecycle and inactive native filter rules. Its `all` selection runs `unit-path`,
+`unit-trial`, `compile`, `config`, `filter-match`, the four `filter-other-*`
+properties (`app`, `node`, `group`, `role`), `filter-env-latency` and
+`filter-env-quantum`. Select one failed stage for retry; unit stages additionally
+accept exact failed method IDs. Independent stages continue after a failure,
+so their passing results remain usable. This lane does not rerun the previous
+42 latency tests or either accepted speaker-runtime graph case.

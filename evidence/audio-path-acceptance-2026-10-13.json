@@ -1,0 +1,125 @@
+{
+  "all_owned_test_containers_confirmed_absent": true,
+  "compiler_receipt": "audio-path-compiler-2026-10-13.json",
+  "config": {
+    "attempts": 2,
+    "failure": "pw-config merge omitted the required section name",
+    "first_exit_code": 234,
+    "first_log_sha256": "ea451a66c01f912ca16d0eb605df0e31a1e2a0e6151e73088af34aa520208b63",
+    "fix_revision": "c3c7875af607411a5939b50625178f673448c8f0",
+    "passing_log_sha256": "b0d3a8ddbdcd45adb68381bea6338c53563b30dbb9dd2a3dcf2a91d7b733e75d",
+    "retry_exit_code": 0
+  },
+  "date": "2026-10-13",
+  "evidence_kind": "synthetic-unit-and-isolated-native",
+  "final_config_revision": "c3c7875af607411a5939b50625178f673448c8f0",
+  "image_id": "sha256:c6e1d7d5102d1271c287e1c3f4e03780ba9124cdab7ae10f7fa6d14cace8a920",
+  "kind": "reviewed-latency-path-acceptance",
+  "limits": [
+    "Native filters were inactive in isolated Linux containers without host sound devices/session sockets or network.",
+    "The config-only harness correction did not change the passing native branches, unit sources, runtime or trial rule.",
+    "CoreAudio tests ran offline on Linux; native Mac getter compilation and operational snapshots have separate receipts.",
+    "No live 256-frame candidate or physical latency measurement is represented by this acceptance receipt."
+  ],
+  "native_cases": [
+    {
+      "attempts": 1,
+      "log_sha256": "554b369087229cae87677b7d7e0cf04ae7ddfa4daa83dc6c4bede65d65f9d669",
+      "passed": true,
+      "stage": "filter-match"
+    },
+    {
+      "attempts": 1,
+      "log_sha256": "32720c2630b0bed872786365529bcd9895c92f6f90d56f6da00ffccb3e10df7d",
+      "passed": true,
+      "stage": "filter-other-app"
+    },
+    {
+      "attempts": 1,
+      "log_sha256": "b4ebc09a7c4466f077541796d8413242eaee9174b2abbd8cd41eee604d73e1ce",
+      "passed": true,
+      "stage": "filter-other-node"
+    },
+    {
+      "attempts": 1,
+      "log_sha256": "41627b28fc96e8a80b80cfd6870594ffdda80ccb816a7959ea94d866f84fc4d7",
+      "passed": true,
+      "stage": "filter-other-group"
+    },
+    {
+      "attempts": 1,
+      "log_sha256": "69953a55605fcb1c88e35dffd0207b94b340fbcae9bb7dc7b6502a6d219f0cd9",
+      "passed": true,
+      "stage": "filter-other-role"
+    },
+    {
+      "attempts": 1,
+      "log_sha256": "2e2720513dea88c6fc8191b63f966f7670306df3c2251f7b6bdf38f3fd958a2c",
+      "passed": true,
+      "stage": "filter-env-latency"
+    },
+    {
+      "attempts": 1,
+      "log_sha256": "0889814071c1fe7cf038157290510bfe782d4cba0eaecee1dfd6adcd17a8bcc5",
+      "passed": true,
+      "stage": "filter-env-quantum"
+    }
+  ],
+  "repeated_passing_test_cases": 0,
+  "retained_prior_acceptance": {
+    "atmos_unit_cases": 15,
+    "latency_unit_cases": 42,
+    "speaker_installation_unit_cases": 97,
+    "speaker_isolated_graph_cases": 2
+  },
+  "review": {
+    "additional_harness_failure_source_reviewed": true,
+    "findings_fixed": 4,
+    "independent_scopes": 3
+  },
+  "reviewed_unit_revision": "478ab3fd536c3cb838873774dc4748a35cf412e8",
+  "schema_version": 1,
+  "source_sha256": {
+    "probes/coreaudio/output_inventory.c": "51c6c631c576b43837f193183ab44c84a3ecacbc1a77f81ec0173dd1b0a03142",
+    "scripts/analyse_coreaudio_latency.py": "f6197ef2d2be470a1220b479512867fa97c17cb48c7dd3cb88d0b507ea48b197",
+    "scripts/audio_common.py": "14a70e97a92a961a28df64d27af9cecf5a7044c3e6d97a8901ce6ed3fc7564ea",
+    "scripts/audio_path_trial.py": "af7b47287815239bb885e9ca3115ee8a7108c65b2f70e2680d64861241f65fbb",
+    "scripts/inspect_audio.py": "60008887f538c161cd4581f1805b7fc8286bf0d0929d7f70edaa006e5f4e42bc",
+    "scripts/inspect_audio_path.py": "e5541e8456c9e1cd8c217b2901a672dea9a8df4572fe6554c5e414d6c523eff8",
+    "scripts/inspect_speaker_runtime.py": "a009dae6b373f6ce907d313a10fa629aa8a7d5f3623183ed21213bb7ff17c78c",
+    "scripts/prepare_speaker_profile.py": "40038cab415aa8af712ad773532438b5dea7d678d318ae99c3a9f471ef32d466",
+    "scripts/speaker_install.py": "fef0094ca0b2624526e20717bebfd4638a98771e6233dc299a8e04c62d4009e0",
+    "tests/audio/latency-path.Dockerfile": "9ad686cc7aad200ba0a4710394ee97593b31ae474729bbeac6dfe1944e79b3e9",
+    "tests/audio/linux-path-validation.sh": "5f5502b4d0d94ff293bb23044933b4c68a4d86845a6ca4847fc3f2eedb9126fa",
+    "tests/audio/run_path_units.py": "83b5148ea0edcaec0e1087bdc1dddaad0ae91c599048e4021693937fab1b4ca3",
+    "tests/audio/validate_filter_latency.c": "06c56e743511e6c7d9b49ffb6a610869f0fc6708ea1031566795f33248a1b729",
+    "tests/audio_path_fixture.py": "0546132a1557ec288422ca046d6c09e2843aa43c591997926fccee99166581df",
+    "tests/test_analyse_coreaudio_latency.py": "0fac57cb749ec4ac63752650b170aacbf48909075ac20af327288dd6bac2bcd9",
+    "tests/test_audio_path_trial.py": "4fa2544a120ca4967120f9ebeb85fa718372cc87493c773c3998437d405c9e16",
+    "tests/test_inspect_audio_path.py": "8f56c902d4f4e55a29297de9a8ee4726ecb86d3ce02ae5a717ce0c7096d3f92e"
+  },
+  "total_unit_cases_passed": 46,
+  "units": [
+    {
+      "attempts": 1,
+      "cases_passed": 11,
+      "log_sha256": "bf90741953160326deafebf9247579744bf105855ba0d7559462eae6178ddab7",
+      "module": "test_inspect_audio_path",
+      "skipped": 0
+    },
+    {
+      "attempts": 1,
+      "cases_passed": 19,
+      "log_sha256": "138a62569435392375e83dc02843c719cfbc201ea5252e2057c2bdb13235655e",
+      "module": "test_audio_path_trial",
+      "skipped": 0
+    },
+    {
+      "attempts": 1,
+      "cases_passed": 16,
+      "log_sha256": "b3ff6f231f8dd4cd602eb5eae672d05095e21156a0fde09cf491118bf5239bae",
+      "module": "test_analyse_coreaudio_latency",
+      "skipped": 0
+    }
+  ]
+}

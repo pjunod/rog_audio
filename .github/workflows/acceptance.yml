@@ -6,7 +6,7 @@ on:
         description: 'Reviewed lane to run; do not repeat already passing lanes'
         required: true
         type: choice
-        options: [all, repository, speaker, installation, latency, atmos]
+        options: [all, repository, speaker, installation, latency, coreaudio, audio-path, atmos]
         default: all
       selection:
         description: 'all, or a stage from the selected lane; use test_ids for failed cases'
@@ -111,3 +111,82 @@ jobs:
           args=()
           for id in "${ids[@]}"; do args+=(--test-id "$id"); done
           python3 scripts/validate_speaker_install.py --stage "$SELECTION" "${args[@]}"
+
+  coreaudio:
+    if: inputs.lane == 'all' || inputs.lane == 'coreaudio'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    env:
+      TEST_IDS: ${{ inputs.test_ids }}
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - name: Run selected offline CoreAudio summary tests
+        shell: bash
+        run: |
+          PYTHONPATH=scripts:tests python3 - <<'PYTEST'
+          import os
+          import re
+          import unittest
+          ids = os.environ['TEST_IDS'].split()
+          module = 'test_analyse_coreaudio_latency'
+          if len(ids) > 128 or len(set(ids)) != len(ids) or any(
+              not re.fullmatch(module + r'\.[A-Za-z_][A-Za-z0-9_]*\.test_[A-Za-z0-9_]+', item)
+              for item in ids
+          ):
+              raise SystemExit('Invalid CoreAudio test selection')
+          suite = unittest.defaultTestLoader.loadTestsFromNames(ids or [module])
+          result = unittest.TextTestRunner(verbosity=2).run(suite)
+          raise SystemExit(0 if result.wasSuccessful() and result.testsRun and not result.skipped else 1)
+          PYTEST
+
+  audio-path:
+    if: inputs.lane == 'all' || inputs.lane == 'audio-path'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    env:
+      SELECTION: ${{ inputs.selection }}
+      TEST_IDS: ${{ inputs.test_ids }}
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - name: Build isolated pinned filter environment
+        run: docker build --platform linux/amd64 -f tests/audio/latency-path.Dockerfile -t rog-audio-path-ci tests/audio
+      - name: Run selected new path checks
+        shell: bash
+        run: |
+          stages=(unit-path unit-trial compile config filter-match filter-other-app filter-other-node filter-other-group filter-other-role filter-env-latency filter-env-quantum)
+          if [[ "$SELECTION" != all ]]; then
+            found=false
+            for stage in "${stages[@]}"; do
+              if [[ "$stage" == "$SELECTION" ]]; then found=true; fi
+            done
+            "$found" || { echo 'Unknown audio-path stage'; exit 2; }
+            stages=("$SELECTION")
+          fi
+          read -r -a ids <<< "$TEST_IDS"
+          if [[ ${#ids[@]} -gt 0 && "$SELECTION" != unit-path && "$SELECTION" != unit-trial ]]; then
+            echo 'Failed test IDs require a single unit stage'; exit 2
+          fi
+          container="rog-audio-path-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+          cleanup() { docker rm -f "$container" >/dev/null 2>&1 || true; }
+          trap cleanup EXIT
+          trap 'exit 130' INT
+          trap 'exit 143' TERM
+          result=0
+          for stage in "${stages[@]}"; do
+            if docker run --rm --pull=never --platform linux/amd64 --name "$container" \
+              --network none --read-only --cap-drop ALL --security-opt no-new-privileges \
+              --tmpfs /tmp:rw,nosuid,nodev,exec,size=128m \
+              --env PYTHONDONTWRITEBYTECODE=1 \
+              --mount "type=bind,src=$PWD,dst=/repo,readonly" \
+              rog-audio-path-ci sh /repo/tests/audio/linux-path-validation.sh "$stage" "${ids[@]}"; then
+              echo "PASS $stage"
+            else
+              echo "FAIL $stage"
+              result=1
+            fi
+          done
+          exit "$result"

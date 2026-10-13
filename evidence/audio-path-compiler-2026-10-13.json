@@ -1,0 +1,49 @@
+{
+  "acceptance": "not-run-pending-combined-review",
+  "build_host": "macos-docker-emulated-amd64",
+  "compile_exit_code": 0,
+  "compiler": "GCC 15.3.0",
+  "date": "2026-10-13",
+  "evidence_kind": "compiler-only",
+  "flags": [
+    "-std=c11",
+    "-Wall",
+    "-Wextra",
+    "-Werror"
+  ],
+  "image_id": "sha256:c6e1d7d5102d1271c287e1c3f4e03780ba9124cdab7ae10f7fa6d14cace8a920",
+  "initial_compile_fixes": [
+    "install explicit libc6-dev in isolated image",
+    "enable GNU libc declarations before PipeWire headers"
+  ],
+  "live_audio_changes": false,
+  "native_cases_executed": 0,
+  "packages": {
+    "gcc": "4:15.2.0-5ubuntu1",
+    "libc6-dev:amd64": "2.44-1ubuntu2",
+    "libpipewire-0.3-dev:amd64": "1.6.8-1ubuntu4",
+    "pipewire:amd64": "1.6.8-1ubuntu4",
+    "python3": "3.14.7-3",
+    "wireplumber": "0.5.17-1ubuntu1"
+  },
+  "physical_or_software_timing_measurement": false,
+  "pipewire_headers": "1.6.8",
+  "platform": "linux/amd64",
+  "retained_log_sha256": {
+    "compiler-loop.log": "656e3ddc00ce89290045ff4b536b776751729428fa264d383d1a427f9adc298c",
+    "final-packages.log": "c2eb5d652c5c5e2b8d076f9be0c4420763623e504c78c456ded539554d0ac4c3",
+    "native-compile-final.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "native-compile-with-headers.log": "4311cd3cf13bd4fcba3a1c51eb14ba8e5cd90bf88abf551cdf6e92e3de7a9c56",
+    "native-compile.log": "915a31ad2dc04cebad52cda15632bf256c48c267421257291716071b777004c6"
+  },
+  "schema_version": 1,
+  "source_sha256": {
+    "tests/audio/latency-path.Dockerfile": "9ad686cc7aad200ba0a4710394ee97593b31ae474729bbeac6dfe1944e79b3e9",
+    "tests/audio/validate_filter_latency.c": "06c56e743511e6c7d9b49ffb6a610869f0fc6708ea1031566795f33248a1b729"
+  },
+  "unit_cases_defined": {
+    "test_audio_path_trial": 13,
+    "test_inspect_audio_path": 11
+  },
+  "unit_cases_executed": 0
+}

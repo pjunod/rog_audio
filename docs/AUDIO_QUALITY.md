@@ -1,7 +1,7 @@
 # Linux audio quality — speakers, latency and Dolby Atmos
 
-**Status:** hardware inspected and matching OEM tuning recovered; offline
-build contracts ready, physical audio qualification pending ·
+**Status:** both speaker candidates installed; latency implementation active;
+physical audio qualification pending ·
 **Written:** 2026-10-12.
 
 Companion to [hardware](AUDIO_HARDWARE.md), [status](STATUS.md) and
@@ -37,8 +37,11 @@ different physical limits, so compare both listening quality and measurements.
 **Evidence boundaries:** ASUS specifications describe intended hardware.
 Project READMEs describe candidate capabilities. Neither alone proves what
 this unit runs. The [audio inventory receipt](../evidence/audio-inventory-2026-10-12.json) now records actual
-read-only hardware/configuration findings. No listening, acoustic or Mac
-latency results have been obtained.
+read-only hardware/configuration findings. The owner subsequently reported
+substantial improvement on the tuned ROG. Both installations are recorded in
+[status](STATUS.md); acoustic measurements and physical Mac latency comparison
+remain absent. [Latency comparison](LATENCY_COMPARISON.md) separates the new
+running software observations from physical delay.
 
 ## 2. Inspect the actual speaker path before choosing DSP
 
@@ -49,9 +52,10 @@ That does not identify this unit's Linux codec, amplifier driver, firmware,
 DSP tuning or exposed PCM channels. Six physical drivers do not imply six
 independently addressable surround channels.
 
-Inspection now confirms both amps load matching firmware and the kernel
-reports calibration applied; no user-space filters were active. The remaining
-hypotheses include missing OEM processing and routing/quality gaps. Do not assume EQ will fix an inactive woofer, wrong
+The initial inspection confirmed both amps loaded matching firmware and the
+kernel reported calibration applied; no user-space filters were active then.
+The later installation adds the recovered OEM processing. Remaining work
+includes routing, reliability and measured quality. Do not assume EQ will fix an inactive woofer, wrong
 channel map or unloaded amplifier firmware. Establish the ALSA driver path,
 UCM profile, firmware/calibration loading and protection ownership first.
 

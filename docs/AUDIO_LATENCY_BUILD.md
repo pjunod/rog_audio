@@ -6,8 +6,9 @@
 
 Read [hardware](AUDIO_HARDWARE.md) and [audio quality](AUDIO_QUALITY.md).
 The ROG already has realtime data-loop scheduling. Build diagnostics and
-measurement tools first; do not solve a presumed scheduler problem or lower
-buffers on the live desktop. Sonos work is last and outside this lane.
+measurement tools first; do not solve a presumed scheduler problem. The
+subsequent [tuned-path comparison](LATENCY_COMPARISON.md) owns coordinated
+latency trials. Sonos work is last and outside this lane.
 
 ## 1. Build a reusable read-only inspector
 
@@ -241,9 +242,8 @@ parses `client.conf` with `pw-config`, compiles an inactive native stream
 probe with warnings as errors, and checks matching and nonmatching rules on
 an isolated PipeWire daemon. No host runtime/config sockets or `/dev/snd`
 are mounted. The probe uses no audio buffers and never activates the stream.
-The standalone parser passed on the matching Linux package versions. Full
-merge-code validation is pending in the dedicated audio repository; the
-subsequent run must include the synthetic evidence fixture as well as tests.
+The standalone parser passed on the matching Linux package versions. The final integrated run subsequently passed with the synthetic evidence
+fixture and tests; see §11. Retain that receipt for unchanged source.
 
 ## 9. Trial schema and statistics — preserve clocks and corrections
 
@@ -411,8 +411,8 @@ On 2026-10-12 the owner moved audio implementation to
 [rog_audio](https://github.com/pjunod/rog_audio). Import the lane files
 selectively; do not push inherited display history. The parent integration
 batch owns common README/status edits, final adversarial review and one final
-unit-test run. This lane's later identifier guards and validation packaging
-changes have not yet been run under that final workflow.
+unit-test run. This handoff is historical: the final integrated identifier
+guards and validation packaging passed the workflow recorded in §11.
 
 [The development receipt](../evidence/audio-latency-build-2026-10-12.json)
 records exact runtime packages/image and distinguishes earlier working-tree
@@ -498,7 +498,7 @@ cleanup/interrupt tests. `unit-validator` covers the packaging lifecycle without
 starting Docker/SSH. Tests were held until source re-review, then passed in
 the single final run below.
 
-## 9. Final reviewed Linux acceptance — 2026-10-12
+## 11. Final reviewed Linux acceptance — 2026-10-12
 
 The [final receipt](../evidence/audio-latency-validation-2026-10-12.json)
 records one post-review run on the integrated source: 42 tests passed, zero

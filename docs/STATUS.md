@@ -1,17 +1,18 @@
 # Status — implementation and physical acceptance
 
-**Updated:** 2026-10-12 · **State:** ROG v0.2.0 running with positive owner
-listening feedback; ThinkPad ready for listening; both have login startup enabled.
+**Updated:** 2026-10-13 · **State:** both speaker candidates installed with
+login startup configured; ROG stereo tuning restored after four-channel
+investigation; latency comparison implementation is in progress.
 
 | Work | State | Next evidence |
 |---|---|---|
 | Hardware inventory | Both laptops inspected read-only | Refresh during installation |
-| ASUS speaker tuning | Music/balanced candidate running; owner reports substantial audible improvement | Physical hotplug and measurements |
+| ASUS speaker tuning | Validated stereo restored with full tuned path; prior owner feedback positive | Scoped latency trial, physical hotplug and measurements |
 | ThinkPad speaker tuning | Separate Lenovo music/balanced candidate running; live preset, IR, plugins and hardware output verified | Owner listening, physical hotplug and measurements |
 | Laptop installation runtime | Both active with private rollback and login startup; inherited 97 unit cases and both isolated graph cases passed | Actual post-reboot observation and physical qualification |
-| Diagnostics and latency | 42 tests and native rule checks passed in PR 1 | Physical comparison and coordinated activation |
+| Diagnostics and latency | PR 5 source reviewed; 46 new unit cases and all native checks passed; prior 42 tests retained | Bounded 256-frame trials with tuning and rollback preserved |
 | Host Atmos | 15 tests and focused CI cleanup acceptance passed in PR 1 | Actual JOC reference media and physical qualification |
-| macOS comparison | Pending physical measurements | M4 Air primary, M3 Max secondary |
+| macOS comparison | M4 Air getter and silent-running snapshots complete; native probe compiled | Review and summary tests, then physical comparison |
 | Sonos Arc/eARC | Deferred until internal audio work | TV route and actual received formats |
 
 Companion to [installation](SPEAKER_INSTALL.md), [review](REVIEW.md) and
@@ -157,3 +158,67 @@ terms remain separate. Work uses owned clones outside the owner's code tree.
 Hosted CI is manual to avoid duplicating review-bound acceptance runs.
 Music/balanced speaker candidates are the delivery default; no Mac parity,
 Dolby certification or acoustic accuracy is claimed.
+
+## Latency comparison — 2026-10-13
+
+The owner requested latency improvements next, using both tuned laptops and
+the M4 Air reference. Fresh inventories will retain actual negotiated graph
+timing, client buffering, DSP latency, driver parameters and error counters.
+The Linux deployment session remains the only live audio configuration writer;
+the implementation sessions build tools in separate owned clones.
+
+Preserve the working model-specific presets, IR files, stock protection,
+physical default and automatic startup. Select one reversible candidate from
+the observed bottleneck, then verify its actual negotiated timing and error
+behaviour. No system-wide low-buffer setting or tuning bypass is presumed.
+
+CoreAudio device/buffer timing and PipeWire scheduling periods are software
+evidence. A physical comparison needs a documented capture path and clock
+relationship; measurement equipment is not yet established. No new latency
+improvement or Mac parity is claimed. Sonos Atmos remains last.
+
+[PR 5](https://github.com/pjunod/rog_audio/pull/5) contains the complete
+implementation and has received three independent adversarial reviews. All
+four findings were fixed and source-cleared before 46 new unit cases passed
+once. Seven native filter cases passed; the config stage passed after one
+reviewed command correction and config-only retry. No passing case repeated. Existing speaker and unrelated Atmos passes remain retained.
+
+Fresh idle baselines show the ROG now exposes an Analog Surround 4.0 sink while
+its kit targets Analog Stereo. A remembered preset label does not prove active
+correction on that changed route. The owner selected four-channel output manually, reported the settings UI
+closing, and requested that four-channel output remain selected while its
+compatibility is investigated. Active capture subsequently showed that the physical speaker DAC consumes
+channels 2/3 in this profile, while the installed stereo processor would feed
+ports 0/1. Correct four-channel routing needs a runtime extension. The owner
+authorized stereo fallback if needed. The validated stereo route was restored
+at 20% volume without restarting the candidate or stock audio services. The
+full ASUS pipeline and hardware FL/FR links were observed during ten seconds
+of silent PCM; the speaker DAC returned to channel 0 and all five running
+error-counter observations were zero. Startup, preset, IR and managed
+configuration hashes remained unchanged. The profile/default/volume preimage
+and reversal instructions are retained privately. The ThinkPad still matches its
+installed Lenovo route.
+
+The M4 Air retained a 512-frame buffer at 48 kHz during silent playback, with
+its device-running flag changing false/true/false. Separate device, stream and
+safety-offset values are retained. Both Linux endpoints ran at 2048/48000
+under the initial client's 100 ms request. The ThinkPad processed the full DSP
+chain; the ROG bypassed it because of route drift. ThinkPad's first active
+error counter was 1, then stable; this is not a zero-error startup pass.
+[The comparison](LATENCY_COMPARISON.md) records these bounded software
+observations separately from a physical benchmark.
+
+The original ASUS profile declares two output channels. The inspected upstream
+GU605 driver fixup shares the main and bass speaker DAC, and the current codec
+connection report is consistent with that mapping. A four-channel ACP profile
+label is not proof of four independent acoustic outputs. Source and active codec evidence ruled out simple kit rebinding as a correct
+four-channel solution. No production runtime patch or invented four-channel
+DSP coefficients were introduced.
+
+
+The [Linux baseline receipt](../evidence/linux-audio-latency-baselines-2026-10-13.json)
+and [ROG recovery receipt](../evidence/rog-speaker-stereo-recovery-2026-10-13.json)
+record the route investigation and restoration. The
+[Mac receipt](../evidence/m4-coreaudio-timing-2026-10-13.json) records its getter
+compilation and idle/running snapshots. None is unit or physical acceptance
+of the forthcoming latency request.

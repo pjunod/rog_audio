@@ -1,0 +1,546 @@
+{
+  "bounded_device_inventory": {
+    "builtin_input_channels": 1,
+    "builtin_output_channels": 2,
+    "external_output_devices_observed": 0,
+    "microphone_permission_or_capture_fidelity_established": false,
+    "source": "system_profiler SPAudioDataType -json"
+  },
+  "cleanup": {
+    "device_observed_idle_after_owned_player_stop": true,
+    "initial_native_workspace_removed": true,
+    "private_raw_receipts_retained": true,
+    "silent_source_binary_wav_workspace_removed": true
+  },
+  "compiler": {
+    "command": "xcrun clang -std=c11 -Wall -Wextra -Werror -Wpedantic -framework CoreAudio output_inventory.c -o probe",
+    "idle_binary_sha256": "ccc9534eb8497c91060e91a0650c8d1c46029ea36516c2a072bff6ba38cce14e",
+    "local_compile_exit_code": 0,
+    "native_idle_compile_exit_code": 0,
+    "native_silent_context_compile_exit_code": 0,
+    "sdk_header_sha256": {
+      "AudioHardware.h": "a699437248e079d9ebe47078ef3861492d8253fef1a6007e476031031d3535ca",
+      "AudioHardwareBase.h": "cbac54e8edb7ee99bf10c18a2db044e01c47645985b2f2824623f3f8371a7c4e"
+    },
+    "sdk_version": "27.0",
+    "silent_context_binary_sha256": "ccc9534eb8497c91060e91a0650c8d1c46029ea36516c2a072bff6ba38cce14e",
+    "target": "arm64-apple-darwin27.0.0",
+    "version": "Apple clang 21.0.0 (clang-2100.3.34.2)"
+  },
+  "date": "2026-10-13",
+  "evidence_kind": "live-read-only-properties-with-separately-authorized-silent-playback",
+  "host": "lab7",
+  "initial_idle_collection": {
+    "exit_code": 0,
+    "raw_sha256": "39cb5b51574e1ed22db2bf481c1accd3620764ca3b3bb321d320337c0c503d49"
+  },
+  "limits": [
+    "Driver/API reports are not calibrated physical output latency, an active-client queue trace or macOS-parity proof.",
+    "All-zero afplay context activates hardware but is not an audible or representative stress test.",
+    "Getters are sequential; default identity checks do not certify an atomic rate/buffer/topology snapshot.",
+    "Buffer, device, stream and safety terms remain distinct; no aggregate cross-OS total is inferred.",
+    "Terminal code was unclassified by SDK fourcc mapping; built-in speaker identity was separately corroborated privately.",
+    "Built-in acoustic loopback is design-only; normal permission and a separately authorized audible/capture window are still needed.",
+    "No Linux laptop DSP, Sonos, input path, audio settings, routing or services were changed by this lane."
+  ],
+  "model": {
+    "architecture": "arm64",
+    "chip_brand": "Apple M4",
+    "owner_designation": "M4 MacBook Air",
+    "reported_machine_model": "Mac16,13"
+  },
+  "observations": {
+    "after": {
+      "context": "idle-after-owned-player-stop",
+      "native_exit_code": 0,
+      "summary": {
+        "collection_status": "ok",
+        "default_property_statuses": {
+          "default_output_after": {
+            "os_status": 0,
+            "status": "ok"
+          },
+          "default_output_before": {
+            "os_status": 0,
+            "status": "ok"
+          },
+          "system_output_after": {
+            "os_status": 0,
+            "status": "ok"
+          },
+          "system_output_before": {
+            "os_status": 0,
+            "status": "ok"
+          }
+        },
+        "default_route_stable_during_snapshot": true,
+        "device_inventory_os_status": 0,
+        "device_inventory_status": "ok",
+        "devices": [
+          {
+            "alias": "output-1",
+            "buffer_period_ms": 10.666666666666666,
+            "is_default_output": true,
+            "is_system_output": true,
+            "output_streams_os_status": 0,
+            "output_streams_status": "ok",
+            "reported_device_latency_ms": 1.25,
+            "reported_properties": {
+              "actual_rate_hz": {
+                "os_status": 0,
+                "status": "ok",
+                "value": 48000
+              },
+              "buffer_frames": {
+                "os_status": 0,
+                "status": "ok",
+                "value": 512
+              },
+              "buffer_range_frames": {
+                "os_status": 0,
+                "status": "ok",
+                "value": [
+                  15,
+                  4096
+                ]
+              },
+              "is_alive": {
+                "os_status": 0,
+                "status": "ok",
+                "value": 1
+              },
+              "is_running": {
+                "os_status": 0,
+                "status": "ok",
+                "value": 0
+              },
+              "nominal_rate_hz": {
+                "os_status": 0,
+                "status": "ok",
+                "value": 48000
+              },
+              "output_device_latency_frames": {
+                "os_status": 0,
+                "status": "ok",
+                "value": 60
+              },
+              "output_safety_offset_frames": {
+                "os_status": 0,
+                "status": "ok",
+                "value": 48
+              }
+            },
+            "safety_offset_ms": 1.0,
+            "streams": [
+              {
+                "alias": "stream-1",
+                "formats_match_device_nominal_rate": true,
+                "is_active": {
+                  "os_status": 0,
+                  "status": "ok",
+                  "value": 1
+                },
+                "latency_frames": {
+                  "os_status": 0,
+                  "status": "ok",
+                  "value": 1280
+                },
+                "physical_format": {
+                  "os_status": 0,
+                  "status": "ok",
+                  "value": {
+                    "bits_per_channel": 32,
+                    "channels": 2,
+                    "encoding": "linear-pcm",
+                    "rate_hz": 48000
+                  }
+                },
+                "reported_device_plus_stream_latency_ms": 27.916666666666668,
+                "reported_stream_latency_ms": 26.666666666666668,
+                "terminal_type": {
+                  "kind": "unclassified",
+                  "os_status": 0,
+                  "status": "ok"
+                },
+                "virtual_format": {
+                  "os_status": 0,
+                  "status": "ok",
+                  "value": {
+                    "bits_per_channel": 32,
+                    "channels": 2,
+                    "encoding": "linear-pcm",
+                    "rate_hz": 48000
+                  }
+                }
+              }
+            ],
+            "transport": "built-in",
+            "transport_os_status": 0,
+            "transport_status": "ok"
+          }
+        ],
+        "evidence_kind": "reported-software-parameters",
+        "kind": "coreaudio-output-timing-summary",
+        "limits": [
+          "Sequential HAL getters are a snapshot, not an atomic or active-client timing measurement.",
+          "Buffer period and safety offset remain separate from reported device/stream latency.",
+          "Device-plus-stream latency is driver-reported with aligned format rates; it is not an acoustic delay.",
+          "No application queue, callback scheduling, arbitrary plugin or event-to-sound measurement is included.",
+          "Idle/running and enabled-stream states differ; nominal/actual rates are API reports, not clock calibration."
+        ],
+        "physical_latency_ms": null,
+        "schema_version": 1,
+        "settings_or_services_changed": false,
+        "source_sha256": "39cb5b51574e1ed22db2bf481c1accd3620764ca3b3bb321d320337c0c503d49"
+      }
+    },
+    "before": {
+      "context": "idle-before-owned-silent-player",
+      "native_exit_code": 0,
+      "summary": {
+        "collection_status": "ok",
+        "default_property_statuses": {
+          "default_output_after": {
+            "os_status": 0,
+            "status": "ok"
+          },
+          "default_output_before": {
+            "os_status": 0,
+            "status": "ok"
+          },
+          "system_output_after": {
+            "os_status": 0,
+            "status": "ok"
+          },
+          "system_output_before": {
+            "os_status": 0,
+            "status": "ok"
+          }
+        },
+        "default_route_stable_during_snapshot": true,
+        "device_inventory_os_status": 0,
+        "device_inventory_status": "ok",
+        "devices": [
+          {
+            "alias": "output-1",
+            "buffer_period_ms": 10.666666666666666,
+            "is_default_output": true,
+            "is_system_output": true,
+            "output_streams_os_status": 0,
+            "output_streams_status": "ok",
+            "reported_device_latency_ms": 1.25,
+            "reported_properties": {
+              "actual_rate_hz": {
+                "os_status": 0,
+                "status": "ok",
+                "value": 48000
+              },
+              "buffer_frames": {
+                "os_status": 0,
+                "status": "ok",
+                "value": 512
+              },
+              "buffer_range_frames": {
+                "os_status": 0,
+                "status": "ok",
+                "value": [
+                  15,
+                  4096
+                ]
+              },
+              "is_alive": {
+                "os_status": 0,
+                "status": "ok",
+                "value": 1
+              },
+              "is_running": {
+                "os_status": 0,
+                "status": "ok",
+                "value": 0
+              },
+              "nominal_rate_hz": {
+                "os_status": 0,
+                "status": "ok",
+                "value": 48000
+              },
+              "output_device_latency_frames": {
+                "os_status": 0,
+                "status": "ok",
+                "value": 60
+              },
+              "output_safety_offset_frames": {
+                "os_status": 0,
+                "status": "ok",
+                "value": 48
+              }
+            },
+            "safety_offset_ms": 1.0,
+            "streams": [
+              {
+                "alias": "stream-1",
+                "formats_match_device_nominal_rate": true,
+                "is_active": {
+                  "os_status": 0,
+                  "status": "ok",
+                  "value": 1
+                },
+                "latency_frames": {
+                  "os_status": 0,
+                  "status": "ok",
+                  "value": 1280
+                },
+                "physical_format": {
+                  "os_status": 0,
+                  "status": "ok",
+                  "value": {
+                    "bits_per_channel": 32,
+                    "channels": 2,
+                    "encoding": "linear-pcm",
+                    "rate_hz": 48000
+                  }
+                },
+                "reported_device_plus_stream_latency_ms": 27.916666666666668,
+                "reported_stream_latency_ms": 26.666666666666668,
+                "terminal_type": {
+                  "kind": "unclassified",
+                  "os_status": 0,
+                  "status": "ok"
+                },
+                "virtual_format": {
+                  "os_status": 0,
+                  "status": "ok",
+                  "value": {
+                    "bits_per_channel": 32,
+                    "channels": 2,
+                    "encoding": "linear-pcm",
+                    "rate_hz": 48000
+                  }
+                }
+              }
+            ],
+            "transport": "built-in",
+            "transport_os_status": 0,
+            "transport_status": "ok"
+          }
+        ],
+        "evidence_kind": "reported-software-parameters",
+        "kind": "coreaudio-output-timing-summary",
+        "limits": [
+          "Sequential HAL getters are a snapshot, not an atomic or active-client timing measurement.",
+          "Buffer period and safety offset remain separate from reported device/stream latency.",
+          "Device-plus-stream latency is driver-reported with aligned format rates; it is not an acoustic delay.",
+          "No application queue, callback scheduling, arbitrary plugin or event-to-sound measurement is included.",
+          "Idle/running and enabled-stream states differ; nominal/actual rates are API reports, not clock calibration."
+        ],
+        "physical_latency_ms": null,
+        "schema_version": 1,
+        "settings_or_services_changed": false,
+        "source_sha256": "39cb5b51574e1ed22db2bf481c1accd3620764ca3b3bb321d320337c0c503d49"
+      }
+    },
+    "during": {
+      "context": "owned-all-zero-pcm-running",
+      "native_exit_code": 0,
+      "summary": {
+        "collection_status": "ok",
+        "default_property_statuses": {
+          "default_output_after": {
+            "os_status": 0,
+            "status": "ok"
+          },
+          "default_output_before": {
+            "os_status": 0,
+            "status": "ok"
+          },
+          "system_output_after": {
+            "os_status": 0,
+            "status": "ok"
+          },
+          "system_output_before": {
+            "os_status": 0,
+            "status": "ok"
+          }
+        },
+        "default_route_stable_during_snapshot": true,
+        "device_inventory_os_status": 0,
+        "device_inventory_status": "ok",
+        "devices": [
+          {
+            "alias": "output-1",
+            "buffer_period_ms": 10.666666666666666,
+            "is_default_output": true,
+            "is_system_output": true,
+            "output_streams_os_status": 0,
+            "output_streams_status": "ok",
+            "reported_device_latency_ms": 1.25,
+            "reported_properties": {
+              "actual_rate_hz": {
+                "os_status": 0,
+                "status": "ok",
+                "value": 48000
+              },
+              "buffer_frames": {
+                "os_status": 0,
+                "status": "ok",
+                "value": 512
+              },
+              "buffer_range_frames": {
+                "os_status": 0,
+                "status": "ok",
+                "value": [
+                  15,
+                  4096
+                ]
+              },
+              "is_alive": {
+                "os_status": 0,
+                "status": "ok",
+                "value": 1
+              },
+              "is_running": {
+                "os_status": 0,
+                "status": "ok",
+                "value": 1
+              },
+              "nominal_rate_hz": {
+                "os_status": 0,
+                "status": "ok",
+                "value": 48000
+              },
+              "output_device_latency_frames": {
+                "os_status": 0,
+                "status": "ok",
+                "value": 60
+              },
+              "output_safety_offset_frames": {
+                "os_status": 0,
+                "status": "ok",
+                "value": 48
+              }
+            },
+            "safety_offset_ms": 1.0,
+            "streams": [
+              {
+                "alias": "stream-1",
+                "formats_match_device_nominal_rate": true,
+                "is_active": {
+                  "os_status": 0,
+                  "status": "ok",
+                  "value": 1
+                },
+                "latency_frames": {
+                  "os_status": 0,
+                  "status": "ok",
+                  "value": 1280
+                },
+                "physical_format": {
+                  "os_status": 0,
+                  "status": "ok",
+                  "value": {
+                    "bits_per_channel": 32,
+                    "channels": 2,
+                    "encoding": "linear-pcm",
+                    "rate_hz": 48000
+                  }
+                },
+                "reported_device_plus_stream_latency_ms": 27.916666666666668,
+                "reported_stream_latency_ms": 26.666666666666668,
+                "terminal_type": {
+                  "kind": "unclassified",
+                  "os_status": 0,
+                  "status": "ok"
+                },
+                "virtual_format": {
+                  "os_status": 0,
+                  "status": "ok",
+                  "value": {
+                    "bits_per_channel": 32,
+                    "channels": 2,
+                    "encoding": "linear-pcm",
+                    "rate_hz": 48000
+                  }
+                }
+              }
+            ],
+            "transport": "built-in",
+            "transport_os_status": 0,
+            "transport_status": "ok"
+          }
+        ],
+        "evidence_kind": "reported-software-parameters",
+        "kind": "coreaudio-output-timing-summary",
+        "limits": [
+          "Sequential HAL getters are a snapshot, not an atomic or active-client timing measurement.",
+          "Buffer period and safety offset remain separate from reported device/stream latency.",
+          "Device-plus-stream latency is driver-reported with aligned format rates; it is not an acoustic delay.",
+          "No application queue, callback scheduling, arbitrary plugin or event-to-sound measurement is included.",
+          "Idle/running and enabled-stream states differ; nominal/actual rates are API reports, not clock calibration."
+        ],
+        "physical_latency_ms": null,
+        "schema_version": 1,
+        "settings_or_services_changed": false,
+        "source_sha256": "11db9346ec7a961cf09c406372bb8cb73dd9e493247c577b7cb4a391a454d28a"
+      }
+    }
+  },
+  "operational_window": {
+    "audible_probe_signal": false,
+    "completed_utc": "2026-10-13T05:38:48.781307+00:00",
+    "default_output_preserved": true,
+    "file_duration_seconds": 10,
+    "format": "48000Hz stereo signed-16-bit PCM",
+    "hal_property_setters_called": false,
+    "input_recording": false,
+    "only_owned_player_stopped": true,
+    "permission_changes": false,
+    "player": "/usr/bin/afplay",
+    "service_restarts": false,
+    "signal": "all-zero samples",
+    "started_utc": "2026-10-13T05:38:43.327187+00:00",
+    "system_output_preserved": true,
+    "volume_configuration_actions": false,
+    "wav_sha256": "87d8420ddaf7d56d3f5068c6a74362451fc2859197445490d15e7b3d456fa22e"
+  },
+  "os": {
+    "build": "26A434",
+    "name": "macOS",
+    "version": "27.0.1"
+  },
+  "private_raw_hashes": {
+    "initial-model-os-audio-inventory.raw": "b8f70ac17133b73383097ffdeeb76fe0fc1b47d78df49dc5a2dc58e563885efd",
+    "native-cleanup.raw": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "native-collection-record.json": "510ff1daaf17d396974d4d786134002404eeb19bf5fd6f3144b3b48f7ff49b18",
+    "native-compile.raw": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "native-output.json": "39cb5b51574e1ed22db2bf481c1accd3620764ca3b3bb321d320337c0c503d49",
+    "native-stderr.raw": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "silent-afplay.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "silent-after.json": "39cb5b51574e1ed22db2bf481c1accd3620764ca3b3bb321d320337c0c503d49",
+    "silent-after.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "silent-before.json": "39cb5b51574e1ed22db2bf481c1accd3620764ca3b3bb321d320337c0c503d49",
+    "silent-before.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "silent-cleanup.raw": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "silent-compile.raw": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "silent-during.json": "11db9346ec7a961cf09c406372bb8cb73dd9e493247c577b7cb4a391a454d28a",
+    "silent-during.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "silent-record.json": "c34139c88a4c73f2aca6e2bf734eba6767f22d3fe86bbacfed6cd89de78ae114",
+    "toolchain-metadata.raw": "5ae68309d75fe7c05a440a9d484f66d8b0651c1372108ce28b02c6f44bb60c52"
+  },
+  "schema_version": 1,
+  "source_base_revision": "2cd7a5f6176fb8e47d4ab8aa0c6f0f8f869c3be4",
+  "source_hashes": {
+    "docs/COREAUDIO_LATENCY.md": "6f11665d39ee0d312c286a89bedc0cf3fc7ae5f8d9f0ea2965f84eb5f65eb18f",
+    "probes/coreaudio/output_inventory.c": "51c6c631c576b43837f193183ab44c84a3ecacbc1a77f81ec0173dd1b0a03142",
+    "scripts/analyse_coreaudio_latency.py": "5c99e3e0de73c1566288947afd373dda0d56af4343eb11e3b54cb94c8edf6cb2",
+    "scripts/audio_common.py": "14a70e97a92a961a28df64d27af9cecf5a7044c3e6d97a8901ce6ed3fc7564ea",
+    "tests/test_analyse_coreaudio_latency.py": "78e94bbbc50f79321409ebfa7eadd78e97e51edb8dc054f2ca80d4d1195c8349"
+  },
+  "validation": {
+    "batch_adversarial_review": "pending",
+    "native_warnings_as_errors_compilation": "passed",
+    "physical_trials": 0,
+    "python_source_and_test_syntax": "compiled",
+    "silent_window_class": "operational-observation-not-unit-or-physical-acceptance",
+    "synthetic_unit_methods_defined": 15,
+    "unit_tests_executed": false
+  }
+}

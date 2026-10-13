@@ -117,3 +117,33 @@ and privacy check before merge; accepted unit/runtime tests are not repeated.
 
 These results establish readiness for coordinated installation, not physical
 acoustic quality, protection, hotplug/resume or macOS-equivalent latency.
+
+## Latency comparison batch — review before acceptance
+
+Three independent agents reviewed the completed PR 5 batch at `768d40f`.
+All four findings subsequently cleared focused source re-review before the
+new unit acceptance runs.
+
+| Area | Finding | Disposition |
+|---|---|---|
+| Selective retries | Failed subtests emitted parameterized IDs that the retry selector rejects | Parent method IDs retained; failure and skipped-subtest regression added; source-cleared at `1e1e9ea` |
+| CoreAudio completeness | Stable default IDs absent from output inventory could still report complete | Missing default/system outputs yield partial while preserving records; source-cleared at `e419976` |
+| Trial removal | Path replacement after hash comparison could delete unarchived user bytes | Atomic retained-inode quarantine, no-overwrite conflict recovery and race regressions; source-cleared at `352762b` |
+| Trial installation | Snapshot interval could conceal changed restart environment or candidate restart | Fresh runtime/environment checks after snapshot and before publication, with mutation regressions; source-cleared at `352762b` |
+
+The [compiler-only receipt](../evidence/audio-path-compiler-2026-10-13.json)
+records GCC 15.3/PipeWire 1.6.8 compilation separately from native rule execution.
+The Mac receipt records the original getter and summary sources used for the
+operational snapshots. Its historical summary hash predates the completeness
+fix; the getter and collected values remain unchanged. Neither compiler nor
+silent operational evidence substitutes for the new post-review unit cases.
+
+
+The [final acceptance receipt](../evidence/audio-path-acceptance-2026-10-13.json)
+records 46 new unit cases passed once, zero skips: path inspection 11, trial
+lifecycle 19 and CoreAudio summary 16. Seven inactive native filter cases passed
+once. The config parser stage initially failed because `pw-config merge` needs
+a section name; the reviewed `filter.rules` correction passed its config-only
+retry. No passing unit/native case repeated. All owned test containers were
+confirmed absent. Existing accepted speaker, latency and Atmos source was
+unchanged and its passes were retained.
