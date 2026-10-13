@@ -4,9 +4,13 @@
 File changes are explicit subcommands. No audio/service/session operation is run.
 """
 import argparse
+import ctypes
+import errno
 import json
 import os
 from pathlib import Path
+import stat
+import sys
 
 from audio_common import PrivateArgumentParser, load_json, schema
 import inspect_audio as inventory
@@ -15,6 +19,12 @@ import speaker_install as speaker
 
 FILE = 'client.conf.d/90-rog-audio-latency-trial.conf'
 STATES = {'snapshot-complete', 'installing', 'installed', 'install-incomplete', 'removed'}
+
+
+class RemovalConflict(ValueError):
+    def __init__(self, recovery):
+        self.recovery = recovery
+        super().__init__('removal ownership changed; recovery evidence retained')
 
 
 def rule(quantum):
@@ -135,19 +145,24 @@ def current_state(kit, runtime, environment=None):
     return state, Path(state['state_root'])/'config/pipewire'
 
 
-def install(bundle, kit_path, runtime, snapshot, observed, overrides, environment=None):
-    root, manifest, content = load_bundle(bundle)
-    _, kit = speaker.load_kit(kit_path)
+def check_observation(observed, kit, versions):
     speaker.idle(observed)
     if speaker.observed_route(observed, kit['hardware']) != kit['binding']:
         raise ValueError('speaker path drift')
-    if not no_overrides(overrides):
-        raise ValueError('unknown or overridden restart environment')
-    if {k: inventory.version(observed, k) for k in ('pipewire', 'wireplumber')} != manifest['baseline_summary']['versions']:
+    if {k: inventory.version(observed, k) for k in ('pipewire', 'wireplumber')} != versions:
         raise ValueError('installed configuration versions changed')
     settings = inventory.public_summary(observed, '0'*64).get('graph_settings', {})
     if settings.get('force_quantum') != 0 or settings.get('force_rate') != 0:
         raise ValueError('graph forcing changed')
+
+
+def install(bundle, kit_path, runtime, snapshot, observed, overrides, environment=None,
+            refresh_inventory=None, refresh_overrides=None):
+    root, manifest, content = load_bundle(bundle)
+    _, kit = speaker.load_kit(kit_path)
+    check_observation(observed, kit, manifest['baseline_summary']['versions'])
+    if not no_overrides(overrides):
+        raise ValueError('unknown or overridden restart environment')
     current, config = current_state(kit_path, runtime, environment)
     if current != manifest['baseline']:
         raise ValueError('baseline settings or configuration changed')
@@ -165,6 +180,13 @@ def install(bundle, kit_path, runtime, snapshot, observed, overrides, environmen
     journal['state'] = 'installing'; speaker.replace(directory/'snapshot.json', speaker.encoded(journal))
     try:
         speaker.mkdir(target.parent)
+        # Snapshotting and persistence may take time. Do not reuse the earlier
+        # manager/unit state or graph when deciding whether to publish.
+        refreshed_overrides = (refresh_overrides or (lambda: override_context(environment=environment)))()
+        if not no_overrides(refreshed_overrides):
+            raise ValueError('restart environment changed during snapshot')
+        refreshed_inventory = (refresh_inventory or inventory.collect)()
+        check_observation(refreshed_inventory, kit, manifest['baseline_summary']['versions'])
         publish_absent(target, content)
         journal['state'] = 'installed'; speaker.replace(directory/'snapshot.json', speaker.encoded(journal))
     except BaseException:
@@ -206,6 +228,96 @@ def load_snapshot(directory, environment=None):
     return directory, journal, config, expected
 
 
+def rename_absent(source_parent, source_name, destination_parent, destination_name):
+    """Linux atomic rename with no destination replacement, on one filesystem."""
+    library = ctypes.CDLL(None, use_errno=True)
+    rename = getattr(library, 'renameat2', None)
+    if rename is None:
+        raise ValueError('atomic quarantine requires Linux renameat2')
+    rename.argtypes = (ctypes.c_int, ctypes.c_char_p, ctypes.c_int, ctypes.c_char_p, ctypes.c_uint)
+    rename.restype = ctypes.c_int
+    if rename(source_parent, os.fsencode(source_name), destination_parent,
+              os.fsencode(destination_name), 1) != 0:  # RENAME_NOREPLACE
+        code = ctypes.get_errno()
+        if code in (errno.ENOSYS, errno.EINVAL, errno.EOPNOTSUPP, errno.EXDEV):
+            raise ValueError('filesystem lacks atomic quarantine capability')
+        raise OSError(code, os.strerror(code))
+
+
+def descriptor_record(descriptor):
+    before = os.fstat(descriptor)
+    if not stat.S_ISREG(before.st_mode) or before.st_size > speaker.MAX_FILE:
+        raise ValueError('owned object is not a bounded regular file')
+    os.lseek(descriptor, 0, os.SEEK_SET)
+    data = bytearray()
+    while len(data) <= speaker.MAX_FILE:
+        chunk = os.read(descriptor, min(65536, speaker.MAX_FILE+1-len(data)))
+        if not chunk: break
+        data.extend(chunk)
+    after = os.fstat(descriptor)
+    if len(data) > speaker.MAX_FILE or before.st_size != after.st_size or len(data) != after.st_size or before.st_mtime_ns != after.st_mtime_ns or before.st_ctime_ns != after.st_ctime_ns:
+        raise ValueError('owned inode changed while reading')
+    return {'exists': True, 'sha256': speaker.sha(data),
+            'mode': stat.S_IMODE(after.st_mode), 'size_bytes': len(data)}
+
+
+def quarantine_rule(target, retained, original_descriptor, original_record):
+    """Retain the actual moved inode, including any later writes through open FDs.
+
+    Unexpected moved objects are restored only to an absent original name.
+    A concurrent new destination always wins; the moved object stays archived.
+    """
+    quarantine = speaker.exclusive_directory(retained/'quarantine')
+    with speaker.speaker.parent_fd(target) as (parent, name):
+        destination = os.open(quarantine, os.O_RDONLY|os.O_DIRECTORY|getattr(os, 'O_NOFOLLOW', 0))
+        try:
+            if os.fstat(parent).st_dev != os.fstat(destination).st_dev:
+                raise ValueError('removal archive must share the configuration filesystem')
+            info = os.fstat(original_descriptor)
+            receipt = {'schema_version': 1, 'kind': 'audio-path-removal-inode',
+                       'state': 'planned', 'device': info.st_dev, 'inode': info.st_ino,
+                       'relative_path': 'quarantine/removed-rule.conf',
+                       'expected': original_record}
+            speaker.durable_new_file(retained/'removal.json', speaker.encoded(receipt))
+            rename_absent(parent, name, destination, 'removed-rule.conf')
+            # Persist both directory entries before ownership verification.
+            os.fsync(destination); os.fsync(parent)
+            moved = os.stat('removed-rule.conf', dir_fd=destination, follow_symlinks=False)
+            matches = (moved.st_dev, moved.st_ino) == (info.st_dev, info.st_ino)
+            if matches:
+                try:
+                    matches = descriptor_record(original_descriptor) == original_record
+                    os.fsync(original_descriptor)
+                except (ValueError, OSError): matches = False
+            if not matches:
+                # Persist the unexpected inode when it is a readable regular
+                # file/directory. Symlinks are retained without following them.
+                receipt['inode_sync_status'] = 'directory-entry-retained'
+                if not stat.S_ISLNK(moved.st_mode):
+                    try:
+                        fd = os.open('removed-rule.conf', os.O_RDONLY|os.O_NONBLOCK|getattr(os, 'O_NOFOLLOW', 0), dir_fd=destination)
+                        try: os.fsync(fd)
+                        finally: os.close(fd)
+                        receipt['inode_sync_status'] = 'synced'
+                    except OSError:
+                        # A permission change must not prevent no-overwrite
+                        # restoration of the actual object that was moved.
+                        receipt['inode_sync_status'] = 'unavailable'
+                try:
+                    rename_absent(destination, 'removed-rule.conf', parent, name)
+                except FileExistsError:
+                    recovery = 'retained-in-archive'
+                else:
+                    recovery = 'restored-original-path'
+                os.fsync(destination); os.fsync(parent)
+                receipt['state'] = recovery
+                speaker.replace(retained/'removal.json', speaker.encoded(receipt))
+                raise RemovalConflict(recovery)
+            receipt['state'] = 'retained-owned-inode'
+            speaker.replace(retained/'removal.json', speaker.encoded(receipt))
+        finally: os.close(destination)
+
+
 def remove(snapshot, archive, observed, environment=None):
     directory, journal, config, content = load_snapshot(snapshot, environment)
     speaker.idle(observed)
@@ -215,15 +327,21 @@ def remove(snapshot, archive, observed, environment=None):
     if directory == archive or directory in archive.parents or archive in directory.parents:
         raise ValueError('archive overlaps snapshot')
     target = config/FILE
-    record = speaker.file_record(target)
-    if record['exists'] and record.get('sha256') != speaker.sha(content):
-        raise ValueError('owned file changed')
-    retained, _ = speaker.snapshot(archive, {'pipewire': config}, observed, journal['kit'])
-    if speaker.file_record(target) != record:
-        raise ValueError('owned file changed while archiving')
-    if record['exists']:
-        with speaker.speaker.parent_fd(target) as (parent, name):
-            os.unlink(name, dir_fd=parent); os.fsync(parent)
+    descriptor = None
+    try:
+        if target.exists() or target.is_symlink():
+            with speaker.speaker.parent_fd(target) as (parent, name):
+                descriptor = os.open(name, os.O_RDONLY|os.O_NONBLOCK|getattr(os, 'O_NOFOLLOW', 0), dir_fd=parent)
+            record = descriptor_record(descriptor)
+            if record['sha256'] != speaker.sha(content):
+                raise ValueError('owned file changed')
+        retained, _ = speaker.snapshot(archive, {'pipewire': config}, observed, journal['kit'])
+        if descriptor is not None:
+            quarantine_rule(target, retained, descriptor, record)
+        elif target.exists() or target.is_symlink():
+            raise ValueError('file appeared while archiving')
+    finally:
+        if descriptor is not None: os.close(descriptor)
     # Delete only empty directories that this single addition needed.
     for parent in (target.parent, config):
         relative = str(parent.relative_to(config))
@@ -272,6 +390,10 @@ def main():
                 result = install(args.bundle, args.kit, args.runtime, args.snapshot, observed, override_context())
             else: result = remove(args.snapshot, args.archive, observed)
         print(json.dumps(result, sort_keys=True)); return 0
+    except RemovalConflict as conflict:
+        print(json.dumps({'status': 'removal-conflict', 'recovery': conflict.recovery,
+                          'archive_retained': True, 'runtime_started': False}), file=sys.stderr)
+        return 2
     except (OSError, ValueError, TypeError, KeyError, RecursionError,
             speaker.InstallError, speaker.speaker.ProfileError, path.configparser.Error):
         parser.exit(2, 'audio trial refused: invalid input, changed preimage or missing capability\n')

@@ -109,6 +109,9 @@ python3 scripts/audio_path_trial.py status --snapshot PRIVATE_NEW_SNAPSHOT
 Installation rechecks the stopped candidate, fresh route, versions, graph
 forcing, restart environment and unchanged preimage. It stores a durable
 snapshot before publishing the complete fragment through an exclusive link.
+After snapshotting it queries manager/unit environment and fresh candidate
+idle/route/timing state again immediately before publication. A restart or
+override introduced during snapshotting rejects the addition.
 The journal records incomplete installation if publication or persistence
 fails. No command starts playback or a service. Restart only the candidate
 through its established user service, then verify its exact tuning and links.
@@ -138,6 +141,20 @@ The tool checks snapshot ownership/root, retained backup hashes and the exact
 owned rule. It preserves a user-edited fragment as a conflict instead of
 silently deleting it. Unrelated configuration and all DSP payloads remain
 untouched. Only empty directories introduced by the addition are removed.
+Removal requires Linux `renameat2` support and an archive on the configuration's
+filesystem. It atomically moves the live inode to
+`quarantine/removed-rule.conf` in that archive before verifying inode identity
+and content. The inode remains retained even on success, so later writes
+through an already-open descriptor are not lost. `removal.json` records the
+planned move and its outcome.
+
+If a replaced inode was moved, the tool restores it only when the original
+path remains absent. It never overwrites a concurrent replacement. Otherwise
+the moved object stays in the archive and exit 2 reports `removal-conflict`
+with recovery `restored-original-path` or `retained-in-archive`. The installation
+journal remains uncompleted on conflict. A persistence failure after the move
+also leaves the inode and planned recovery record available; inspect both
+locations before any manual restoration, and preserve a newer destination.
 Restart the same persistent candidate service and verify baseline timing and
 speaker tuning again. Preserve failed trial receipts; do not reset counters.
 

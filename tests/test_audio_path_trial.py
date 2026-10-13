@@ -26,7 +26,11 @@ class TrialTests(unittest.TestCase):
         self.overrides = {'status': 'ok', 'current': {}, 'manager': {}, 'unit': {}}
 
     def prepare(self): return trial.prepare(self.capture, '0'*64, 256, self.bundle)
-    def install(self): return trial.install(self.bundle, self.kit, self.binary, self.snapshot, self.inv, self.overrides, self.env)
+    def install(self):
+        return trial.install(self.bundle, self.kit, self.binary, self.snapshot,
+                             self.inv, self.overrides, self.env,
+                             refresh_inventory=lambda: copy.deepcopy(self.inv),
+                             refresh_overrides=lambda: copy.deepcopy(self.overrides))
 
     def test_one_private_filter_changes_no_dsp_and_restores_absent_file(self):
         self.prepare()
@@ -47,6 +51,86 @@ class TrialTests(unittest.TestCase):
         self.assertFalse(result['runtime_started'])
         self.assertFalse(self.target.exists())
         self.assertEqual(trial.status(self.snapshot, self.env)['status'], 'removed')
+        self.assertEqual((self.root/'archive/quarantine/removed-rule.conf').read_bytes(), content)
+
+    def test_replacement_after_archive_is_restored_without_deleting_user_file(self):
+        self.prepare(); self.install()
+        real = trial.rename_absent
+        replacement = self.root/'replacement'; replacement.write_bytes(b'new-user-rule')
+        changed = [False]
+        def swap(parent, name, destination, moved):
+            if not changed[0]:
+                changed[0] = True; replacement.replace(self.target)
+            return real(parent, name, destination, moved)
+        with mock.patch.object(trial, 'rename_absent', side_effect=swap):
+            with self.assertRaises(trial.RemovalConflict) as error:
+                trial.remove(self.snapshot, self.root/'archive', self.inv, self.env)
+        self.assertEqual(error.exception.recovery, 'restored-original-path')
+        self.assertEqual(self.target.read_bytes(), b'new-user-rule')
+        self.assertEqual(trial.status(self.snapshot, self.env)['status'], 'installed')
+
+    def test_replacement_during_restore_preserves_both_user_inodes(self):
+        self.prepare(); self.install()
+        real = trial.rename_absent
+        replacement = self.root/'replacement'; replacement.write_bytes(b'first-new-user-rule')
+        calls = [0]
+        def swap(parent, name, destination, moved):
+            calls[0] += 1
+            if calls[0] == 1: replacement.replace(self.target)
+            if calls[0] == 2: self.target.write_bytes(b'second-new-user-rule')
+            return real(parent, name, destination, moved)
+        with mock.patch.object(trial, 'rename_absent', side_effect=swap):
+            with self.assertRaises(trial.RemovalConflict) as error:
+                trial.remove(self.snapshot, self.root/'archive', self.inv, self.env)
+        self.assertEqual(error.exception.recovery, 'retained-in-archive')
+        self.assertEqual(self.target.read_bytes(), b'second-new-user-rule')
+        self.assertEqual((self.root/'archive/quarantine/removed-rule.conf').read_bytes(), b'first-new-user-rule')
+        self.assertEqual(json.loads((self.root/'archive/removal.json').read_bytes())['state'], 'retained-in-archive')
+
+    def test_retained_removed_inode_preserves_later_open_descriptor_writes(self):
+        self.prepare(); self.install()
+        with self.target.open('r+b', buffering=0) as writer:
+            original_inode = self.target.stat().st_ino
+            trial.remove(self.snapshot, self.root/'archive', self.inv, self.env)
+            writer.seek(0); writer.write(b'late-user-write'); writer.flush()
+        retained = self.root/'archive/quarantine/removed-rule.conf'
+        self.assertEqual(retained.stat().st_ino, original_inode)
+        self.assertTrue(retained.read_bytes().startswith(b'late-user-write'))
+        self.assertFalse(self.target.exists())
+
+    def test_override_changed_during_snapshot_refuses_publication(self):
+        for key, scope in (('PIPEWIRE_LATENCY', 'manager'), ('PIPEWIRE_QUANTUM', 'unit')):
+            with self.subTest(key=key):
+                root = self.root/key.lower(); root.mkdir()
+                kit, binary, env, inv, capture = setup(root)
+                bundle, snapshot = root/'trial', root/'trial-snapshot'
+                trial.prepare(capture, '0'*64, 256, bundle)
+                overrides = copy.deepcopy(self.overrides)
+                real = trial.speaker.snapshot
+                def mutate(*args, **kwargs):
+                    result = real(*args, **kwargs)
+                    overrides[scope][key] = '1024/48000'
+                    return result
+                with mock.patch.object(trial.speaker, 'snapshot', side_effect=mutate):
+                    with self.assertRaises(ValueError):
+                        trial.install(bundle, kit, binary, snapshot, inv, overrides, env,
+                                      refresh_inventory=lambda: copy.deepcopy(inv),
+                                      refresh_overrides=lambda: copy.deepcopy(overrides))
+                self.assertFalse((root/'state/config/pipewire'/trial.FILE).exists())
+                self.assertEqual(trial.status(snapshot, env)['status'], 'install-incomplete')
+
+    def test_candidate_restarted_during_snapshot_refuses_publication(self):
+        self.prepare(); real = trial.speaker.snapshot
+        def mutate(*args, **kwargs):
+            result = real(*args, **kwargs)
+            graph = json.loads(self.inv['probes']['graph']['stdout'])
+            graph.append({'type': 'PipeWire:Interface:Node', 'info': {'props': {'application.id': trial.path.APP}}})
+            self.inv['probes']['graph']['stdout'] = json.dumps(graph)
+            return result
+        with mock.patch.object(trial.speaker, 'snapshot', side_effect=mutate):
+            with self.assertRaises(trial.speaker.InstallError): self.install()
+        self.assertFalse(self.target.exists())
+        self.assertEqual(trial.status(self.snapshot, self.env)['status'], 'install-incomplete')
 
     def test_preexisting_and_new_unrelated_config_survive(self):
         self.config.mkdir(parents=True); (self.config/'stock.conf').write_bytes(b'stock=unchanged')
