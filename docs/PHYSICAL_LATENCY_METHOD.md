@@ -1,8 +1,8 @@
 # Physical latency method — record key click and speaker response on one phone
 
-**Status:** local emitter implemented; source review and focused acceptance
-pending; manual capture pilot not performed; no physical measurements
-collected · **Written:** 2026-10-13 · **Executes:**
+**Status:** local emitter implemented; two source-review findings addressed;
+focused re-review and acceptance pending; manual capture pilot not performed;
+no physical measurements collected · **Written:** 2026-10-13 · **Executes:**
 physical comparison in [latency comparison](LATENCY_COMPARISON.md).
 
 Companion to [latency tooling](AUDIO_LATENCY_BUILD.md) (trial schema and
@@ -197,11 +197,13 @@ the old 2048-frame configuration merely to create another baseline here.
 
 Retain every attempted press. Reject missing/ambiguous clicks or chirps,
 clipping, overlapping unrelated sounds, incomplete captures or an observed
-xrun affecting that interval. A chirp preceding the chosen click is evidence
-of an unsuitable click reference or annotation, not a zero-latency success.
-Keep rejected events and their reasons; collect replacements to reach the
-included count. If rejection rates or the method change substantially,
-report that and begin a new condition rather than hiding the old attempts.
+xrun affecting that interval. A confidently detected chirp preceding the
+chosen click is a valid signed interval: switch actuation can precede the
+mechanical click. Retain it with its original negative value; do not clip it
+to zero, reject it or collect a replacement solely because of its sign.
+Keep genuinely rejected events and their reasons; collect replacements to
+reach the included count. If rejection rates or the method change
+substantially, report that and begin a new condition rather than hiding the old attempts.
 
 **Acceptance:** each condition has the same declared detector and retained
 attempts, at least 100 included events, exclusion counts and verified tuning.
@@ -237,7 +239,7 @@ measurement bound, retain the annotated pilot and descriptive findings but
 do not invent zero uncertainty or call the result calibrated. Increasing
 the number of presses does not remove a fixed keyboard or recorder bias.
 
-## 7. Import actual annotations into the existing analyser
+## 7. Preserve signed annotations before choosing the analysis path
 
 Re-verify the exact schema against
 [the analyser](../scripts/analyse_audio_latency.py) and
@@ -246,11 +248,23 @@ at execution time. Keep raw indices, recordings and method detail in the
 private annotation receipt; the strict trial JSON has no arbitrary extra
 metadata fields. Use neutral aliases matching `[a-z][a-z0-9_-]{0,63}`.
 
+The current analyser accepts only nonnegative delays. It cannot represent a
+condition containing any valid negative click-to-chirp interval. Retain that
+whole condition as signed raw annotations and report signed min, median,
+nearest-rank p95 and max separately, with the same inclusion rules, counts
+and uncertainty. Do not feed only its nonnegative subset to the analyser,
+shift the values, replace negative presses or relabel valid values as invalid.
+Such changes would bias the fastest observations. This batch does not change
+the existing analyser. Use it only for a compatible method declared and
+validated during the pilot, when every included formal interval is
+representable; a later negative result requires the signed path for the
+whole condition rather than a post hoc change to the reference.
+
 | Trial field | Value for this method |
 |---|---|
 | `kind` | `event-to-output`, explicitly scoped to acoustic key click through speaker response. |
 | `method` | A neutral detector alias such as `phone-click-chirp-v1`; different detector revisions use different aliases. |
-| `delay`, `unit` | The measured nonnegative integer sample difference and `samples`; retain invalid/ambiguous attempts separately if no honest numeric interval can be formed. Never invent a number to satisfy the schema. |
+| `delay`, `unit` | The measured integer sample difference and `samples`, only if the whole condition is representable as described above. Keep every valid signed interval in the private annotations; never invent, clip or exclude a value to satisfy the nonnegative schema. |
 | `sample_rate_hz` | Actual recorder/export timebase; independent of the laptop's graph rate. |
 | `clock` | Exactly `{ "relationship": "same-clock" }` only when both indices are from one physical recording track. |
 | `uncertainty` | Exactly `{ "bound": <documented bound>, "unit": "ms" }`; numerical angle brackets are placeholders, not executable JSON or a measured value. |
@@ -269,8 +283,8 @@ python3 scripts/analyse_audio_latency.py \
   --input PRIVATE_TRIALS.json --output PRIVATE_NEW_RESULT.json  # Offline only.
 ```
 
-**How to read it:** report raw min, median, nearest-rank p95 and max, included
-and excluded counts, exclusion reasons, conservative measurement bounds and
+**How to read either analysis path:** report raw signed min, median,
+nearest-rank p95 and max, included and excluded counts, exclusion reasons, conservative measurement bounds and
 block order. P95 uses sorted index `ceil(0.95*n)-1`; 100 observations still
 provide a limited tail sample. The analyser reports sampling confidence as
 `not-estimated`; its statistic bounds cover declared measurement errors,

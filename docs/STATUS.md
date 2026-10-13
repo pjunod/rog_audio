@@ -269,28 +269,43 @@ The plan records pilot validation, 100 included events per condition,
 median/tail statistics, uncertainty and private raw annotations. It does
 not claim pure audio-output latency, calibrated accuracy or Mac parity.
 
-The existing offline analyser accepts annotated physical trials. The new
-local browser emitter requires explicit arming and a trusted, non-repeat
+The existing offline analyser accepts nonnegative annotated physical trials.
+A condition containing any valid negative click-to-chirp interval needs a
+separate signed summary of the whole condition; no presses are removed solely
+because of their sign. The new local browser emitter requires explicit arming and a trusted, non-repeat
 Space press for a bounded ramped chirp. It exports private diagnostics and a
 reference waveform, opens no microphone and uses no network. Its continuously
 warm silent source is not an idle-power baseline. Automatic waveform detection
 is not implemented; the external recording needs manual pilot annotations.
-Source review, ten new synthetic methods and repository validation remain
-pending integration. No new unit, live playback or capture ran in this batch. The
-coordinated listening and 60-minute stability outcomes will be recorded in
+Two independent source reviews found waveform/session mismatch after a failed
+arm and biased rejection of valid negative interaction intervals. Both fixes
+are implemented; focused source re-review, ten new synthetic methods and
+repository validation remain pending integration. No new unit, live playback
+or capture ran in this batch. The coordinated listening and 60-minute stability outcomes will be recorded in
 their own receipts; this plan does not mark either check passed. Accepted
 units remain retained because their sources are unchanged.
 
 ## Sustained software check start — 2026-10-13
 
-The sole live audio operator reported the ThinkPad silent 60-minute run
-started at 09:45:38 Eastern, with an expected finish at 10:45:38. All-zero
-stereo PCM uses the same 100 ms client request and full Lenovo tuning at
-256/48000. No artificial CPU load or microphone capture was added. Start
-evidence retains the prior startup error count of 1; actual completion,
-continuous monitoring and final preservation receipts are still pending.
-This is a silent-processing check under its declared workload, not audible
-gap or representative gaming-load acceptance.
+The sole live audio operator reported the ThinkPad silent 60-minute attempt
+started at 09:45:38 Eastern and stopped after 581.040 seconds when observed
+volume changed from 20% to 74%. Sampled driver error count stayed at its
+prior startup baseline of 1; sampled DSP and owned source counts stayed zero.
+This is a protocol stop on volume change, not an established DSP regression
+or a completed 60-minute pass. The operator preserved the chosen volume,
+removed only owned test processes and retained the failure evidence. The
+authorized retry will log volume adjustments as listening conditions while
+keeping processing identity, routing, services and counter checks strict.
+Its new full-hour interval started at 10:02:02 Eastern after the audible
+check, with an expected finish at 11:02:02. The observed 74% starting volume
+was preserved; no audio volume was written by the test. This is a separate
+attempt, not accumulated time from the first interval. Completion is pending.
+
+All-zero stereo PCM uses the same 100 ms client request and full Lenovo tuning
+at 256/48000. No artificial CPU load or microphone capture was added. This
+is a silent-processing check under its declared workload, not audible-gap
+or representative gaming-load acceptance. Completion and final preservation
+receipts remain pending.
 
 The ROG attempt was aborted before its timed interval when a startup error
 counter exceeded the retained baseline. Its owned test processes were

@@ -159,6 +159,36 @@ const cases = {
     const f = fixture(bad); assert.equal(await f.emitter.arm(trustedClick(), -60, metadata), false);
     assert.equal(bad.closed, true); assert.equal(bad.warms.length, 0);
     assert.ok(!JSON.stringify(f.emitter.exportLog()).includes('synthetic private payload'));
+    assert.equal(f.emitter.exportReference(), null);
+    assert.equal(f.emitter.exportLog().sessions.length, 0);
+    const failAfterBuffer = rate => {
+      const context = new FakeContext(rate);
+      context.createConstantSource = () => {
+        const node = new FakeNode();
+        node.start = () => { throw new Error('synthetic warm start failure'); };
+        context.warms.push(node); return node;
+      };
+      return context;
+    };
+    const initialWarmFailure = failAfterBuffer(44100);
+    f.emitter.makeContext = () => initialWarmFailure;
+    assert.equal(await f.emitter.arm(trustedClick(), -30, metadata), false);
+    assert.equal(f.emitter.exportReference(), null);
+    assert.equal(f.emitter.exportLog().sessions.length, 0);
+    assert.equal(initialWarmFailure.closed, true);
+    assert.ok(initialWarmFailure.warms.every(x => x.stopped && !x.connected));
+    const prior = new FakeContext(); f.emitter.makeContext = () => prior;
+    assert.equal(await f.emitter.arm(trustedClick(), -60, metadata), true);
+    const priorReference = f.emitter.exportReference();
+    const priorSessions = f.emitter.exportLog().sessions;
+    await f.emitter.stop();
+    const laterWarmFailure = failAfterBuffer(44100);
+    f.emitter.makeContext = () => laterWarmFailure;
+    assert.equal(await f.emitter.arm(trustedClick(), -30, {...metadata, systemAlias: 'thinkpad'}), false);
+    assert.deepEqual(f.emitter.exportReference(), priorReference);
+    assert.deepEqual(f.emitter.exportLog().sessions, priorSessions);
+    assert.equal(laterWarmFailure.closed, true);
+    assert.ok(laterWarmFailure.warms.every(x => x.stopped && !x.connected));
     const good = new FakeContext(); good.createBufferSource = () => {
       const node = new FakeNode(); node.start = () => { throw new Error('synthetic failure'); }; good.sources.push(node); return node;
     };

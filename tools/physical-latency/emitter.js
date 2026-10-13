@@ -106,7 +106,7 @@
         buffer.copyToChannel(samples, 0);
         buffer.copyToChannel(samples, 1);
         this.buffer = buffer;
-        this.reference = referenceWave(samples, context.sampleRate);
+        const candidateReference = referenceWave(samples, context.sampleRate);
         const warm = context.createConstantSource();
         this.warm = warm;
         warm.offset.value = 0;
@@ -124,6 +124,7 @@
           outputLatencySeconds: finite(context.outputLatency),
           outputRoute: 'existing-default-not-programmatically-verified',
           timingScope: 'browser-diagnostic-estimates-not-physical-delay'});
+        this.reference = candidateReference;
         this.state = 'armed';
         context.onstatechange = () => {
           if (this.context === context && this.state === 'armed' && context.state !== 'running') this.stop('context-not-running');

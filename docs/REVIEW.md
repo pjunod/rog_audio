@@ -189,3 +189,24 @@ were repeated. The [receipt](../evidence/audio-path-preset-list-acceptance-2026-
 records exact sources, method IDs and log hashes. The owned container was
 confirmed absent. Live activation and physical qualification remain separate
 from these synthetic regression results.
+
+## Physical interaction emitter — source review before focused acceptance
+
+Two independent adversarial reviews examined the PR 8 batch at `d70ab967`.
+They found two issues. A failed arm after waveform creation could overwrite
+the downloadable reference while leaving the prior session metadata. The
+emitter now holds that waveform locally and publishes it only with a
+successful session. The existing failure method now covers both an initial
+post-buffer failure and a later failure preserving the prior matching pair.
+
+The method also rejected valid negative click-to-chirp intervals, although
+switch actuation can precede the audible mechanical click. It now retains
+valid signed values. Any condition containing a negative value uses a signed
+summary of the whole condition; the existing nonnegative analyser receives
+no truncated subset, shifted values or replacement presses. Its source is
+unchanged.
+
+Focused source re-review and the ten new synthetic methods remain pending.
+No unit case has executed in this batch. Browser/device behaviour and actual
+physical captures remain separate acceptance work. The interrupted laptop
+stability attempts do not qualify the emitter or either full-hour check.
