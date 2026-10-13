@@ -20,12 +20,14 @@ A separate authorized player must already be running to observe active timing.
 ```bash
 export ROG_AUDIO_STATE_DIR="$HOME/.local/state/rog-audio/easyeffects"
 python3 scripts/inspect_audio_path.py \
-  --kit PRIVATE_KIT --runtime /usr/bin/rog-speaker-effects \
+  --kit PRIVATE_KIT --runtime /opt/rog-audio/easyeffects/bin/easyeffects \
   --samples 6 --output PRIVATE_CAPTURE.json
 python3 scripts/inspect_audio_path.py \
   --from-capture PRIVATE_CAPTURE.json --public-summary PRIVATE_SUMMARY.json
 ```
 
+`--runtime` names the raw installed ELF whose hash is in the kit; the
+`/usr/bin/rog-speaker-effects` launcher is a wrapper and is not that artifact.
 Use the owning user's existing session bus and runtime directory. Do not invent
 a UID, node number or device target. The exact kit binds the model, codec,
 subsystem, physical sink and speaker route. Outputs must be new private files;
@@ -102,7 +104,7 @@ volume, exact runtime/preset/IR hashes and the startup unit before proceeding.
 ```bash
 python3 scripts/audio_path_trial.py install \
   --bundle PRIVATE_TRIAL --kit PRIVATE_KIT \
-  --runtime /usr/bin/rog-speaker-effects --snapshot PRIVATE_NEW_SNAPSHOT
+  --runtime /opt/rog-audio/easyeffects/bin/easyeffects --snapshot PRIVATE_NEW_SNAPSHOT
 python3 scripts/audio_path_trial.py status --snapshot PRIVATE_NEW_SNAPSHOT
 ```
 
