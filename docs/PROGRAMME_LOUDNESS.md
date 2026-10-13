@@ -129,7 +129,10 @@ The original bundle, source reports and IR remain available for rollback.
 
 ## 2. Bind the bundle to a capable runtime and retain recovery
 
-The new candidate package is `8.2.8+rog3`. Its runtime manifest declares
+The published programme package is `8.2.8+rog3`; the packaging-only service
+follow-up emits `8.2.8+rog4` with the same native ELF/source and an added
+[stop helper](SPEAKER_SERVICE.md). Its independent review/acceptance remains
+separate. The programme runtime manifest declares
 `programme_loudness_contract: bounded-programme-makeup-v1`. Kit preparation
 and loading refuse a programme bundle against an older runtime because the
 older preset loader ignores the cap. This is a format/capability contract;
@@ -164,6 +167,37 @@ owner listening feedback. Its receipt binds that exact installed condition;
 passing software stability does not accept everyday loudness, and listening
 acceptance does not transfer across changed settings. Sonos remains last, after both
 laptops have accepted everyday loudness and sound quality.
+
+## Provisional ThinkPad adjustment after the first programme demo
+
+The [first +rog3 programme demo](../evidence/thinkpad-programme-owner-listening-2026-10-13.json)
+used −20 LUFS and the original 10.1375 dB cap. Owner feedback was “Clear but
+still too quiet.” This does not accept everyday loudness.
+
+[Three isolated digital comparisons](../evidence/thinkpad-programme-target-comparison-2026-10-13.json)
+then ran the accepted native binary on the same 45-second generated clip and
+original ThinkPad IR, with two seconds of capture-alignment padding at each
+end. Both ordered channels, all non-AutoGain stages and the final −1 dB
+limiter were unchanged; no laptop devices or live settings were accessed.
+
+| Target LUFS | Makeup cap dB | Measured integrated LUFS | Measured digital peak dBFS |
+|---|---:|---:|---:|
+| −20 | 10.1375 | −21.8 | −9.9 |
+| −16 | 10.1375 | −19.8 | −5.9 |
+| −16 | 14.1375 | −17.9 | −5.9 |
+
+The last case added 3.9 LU overall relative to the first without raising
+this clip's loudest peak above the middle case. It was selected for a
+provisional ThinkPad listening trial, with live adjustment and owner
+acceptance still pending at the diagnostic receipt. It does not change the
+public preparer's defaults or the v0.2.2 release assets. Any new software hour
+must bind the actually installed settings.
+
+The initial cap compensates common FIR normalization attenuation; it is not
+an OEM loudness ceiling or measured speaker headroom. These digital results
+do not establish acoustic loudness, speaker safety, calibration or ordinary
+media quality. No audition or gain/limiter usage-counter capture occurred in
+the isolated comparison, and no unit suites or native builds were repeated.
 
 ## 3. Review and run only the affected acceptance selection
 

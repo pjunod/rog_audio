@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "scope": "Owner listening to generated speech/music; no acoustic calibration or output loudness measurement",
+  "date": "2026-10-13",
+  "system": "ThinkPad",
+  "runtime_binary_sha256": "3f110d6a2d1e2c743cc552b58930679acd0c00e45f5771a23d4b7702ca31206d",
+  "programme_target_lufs": -20,
+  "maximum_makeup_db": 10.137500000002703,
+  "buffer_frames": 256,
+  "rate_hz": 48000,
+  "generated_signal_sha256": "80c0a4693f49d21b9291d792ba7b3d268cf83a989e69b063f5c0586e1db07b80",
+  "nominal_duration_seconds": 45,
+  "elapsed_seconds": 46.3333899974823,
+  "playback_returncode": 0,
+  "owner_feedback": "Clear but still too quiet",
+  "clarity_accepted": true,
+  "everyday_loudness_accepted": false,
+  "before_after_protected_files_preset_unit_unchanged": true,
+  "settings_changed": false,
+  "microphone_recording": false,
+  "physical_or_virtual_volume_not_measured_by_player": true,
+  "sustained_observation_separate": true
+}

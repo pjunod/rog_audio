@@ -78,8 +78,12 @@ owned container. Cleanup removes only owned contexts/export containers.
 
 The accepted v0.2.1 artifact is
 `rog-audio-easyeffects_8.2.8+rog2_amd64.deb`. The extended programme-loudness
-series now builds `rog-audio-easyeffects_8.2.8+rog3_amd64.deb`; its review and
+series published `rog-audio-easyeffects_8.2.8+rog3_amd64.deb`; its review and
 acceptance remain separate, as described in [programme loudness](PROGRAMME_LOUDNESS.md).
+The current packaging-only [service-stop follow-up](SPEAKER_SERVICE.md) emits
+`8.2.8+rog4`, adding an authenticated helper and MIT notice while retaining
+the same native ELF/source. Its focused acceptance is separate; no new native
+compiler pass or changed patch pin is claimed.
 Both retain `runtime.json`, full corresponding `source/`, `patches/`, source
 manifest and original licences. The exporter checks binary/package hashes, package version
 and source-manifest binding before reporting `runtime-built`. Retain the named

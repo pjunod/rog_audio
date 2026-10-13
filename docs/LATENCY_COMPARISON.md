@@ -280,8 +280,13 @@ The ROG's private 512 fragment was removed. Its +rog2 shared graph actually
 negotiated 1024/48000 with a browser requesting that period: 11 samples, ERR
 4 unchanged, original tuning active. The expected historical 2048 period was
 not reproduced; that failed assertion does not show timing failure at 2048.
-A new guarded 1024 trial after tool merge and +rog3 update remain pending;
-recoverable 2048 is available if needed. ThinkPad's corrected +rog3 deployment
+A later explicit guarded 1024 trial passed eleven observations at ERR 4
+unchanged, preserving full tuning and final process identity. Its subsequent
++rog3 update loaded the new preset but failed settings serialization during
+service shutdown; original +rog2 was recovered with explicit 1024 retained.
+[The receipt](../evidence/rog-explicit1024-programme-recovery-2026-10-13.json)
+keeps that successful timing trial separate from the failed gain update.
+The synchronous service-stop fix precedes another gain retry. ThinkPad's corrected +rog3 deployment
 passed a separate 20.162-second 256/48000 check, ERR 0 unchanged. Its independent
 256 request and original voicing are preserved. Fresh provisional-default
 hours follow the kept running settings, and do not establish everyday listening,

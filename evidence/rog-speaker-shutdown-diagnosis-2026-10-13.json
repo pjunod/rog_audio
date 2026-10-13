@@ -1,0 +1,60 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-13",
+  "system": "ROG",
+  "scope": "Accepted native runtime isolated device-free shutdown diagnosis; generated source only",
+  "binary_sha256": "3f110d6a2d1e2c743cc552b58930679acd0c00e45f5771a23d4b7702ca31206d",
+  "preset_sha256": "78dba4c0ea3a6e68227f4f48e7a9534359c3a3ecce21d308b1bfaf03e32ffcc4",
+  "ir_sha256": "1d30e4445384b6a03af2eaa85fae6d73ce1bf1ff986d201cdb4162e4116d5661",
+  "public_fixture_provenance_sha256": "b1a5b63d33fb69101f61ade86c6a8e867b6cf61442da32cda16325102d830b56",
+  "cases": [
+    {
+      "method": "direct SIGTERM",
+      "result": "exited-within-deadline",
+      "primary_returncode": 0,
+      "elapsed_seconds": 0.3147411929676309,
+      "native_autogain_settings_saved": true,
+      "secondary_returncode": null,
+      "sigterm_after_secondary": null,
+      "receipt_sha256": "92c2d04b50d8a226a7c14f512742d7e84cdac0796f1866a077b13049e6644f14",
+      "ordered_both_channel_chain_verified": true
+    },
+    {
+      "method": "IPC quit then immediate SIGTERM",
+      "result": "hung-at-10-second-deadline",
+      "primary_returncode": -9,
+      "elapsed_seconds": 10.252953868941404,
+      "native_autogain_settings_saved": false,
+      "secondary_returncode": 0,
+      "sigterm_after_secondary": true,
+      "receipt_sha256": "f247b6a99fb51c6d21c51ad29c1f8aa80e8b21cc26c571d4793484c1b0c96b49",
+      "ordered_both_channel_chain_verified": true
+    },
+    {
+      "method": "IPC quit then await primary exit",
+      "result": "exited-within-deadline",
+      "primary_returncode": 0,
+      "elapsed_seconds": 0.4403685260331258,
+      "native_autogain_settings_saved": true,
+      "secondary_returncode": 0,
+      "sigterm_after_secondary": false,
+      "receipt_sha256": "17a4bc6bc94c6bc5f566d3e6cae1feeb2e81d7ea176a60ce1fcd8d205e70fbd1",
+      "ordered_both_channel_chain_verified": true
+    }
+  ],
+  "observed_trigger": "Asynchronous IPC quit returns before primary exit; immediate SIGTERM reproduced hang and unsaved settings. Awaiting exit avoided the observed failure.",
+  "internal_lock_mechanism_unproven": true,
+  "detailed_native_backtrace_available": false,
+  "backtrace_limits": "gdb unavailable; owned /proc kernel stack access denied; thread wait channels retained privately",
+  "service_fix": "Bounded synchronous exact-process IPC quit and pidfd exit wait; preserve systemd final kill safety",
+  "physical_devices_accessed": false,
+  "native_source_changed": false,
+  "tests_repeated": false,
+  "limits": [
+    "An isolated positive result does not rule out additional hardware/service-specific failure.",
+    "Diagnostic exit timing is not physical audio latency or acoustic quality.",
+    "Repeated Saving settings log lines alone do not prove a deadlock."
+  ],
+  "rejected_private_archive_transferred": false,
+  "reduced_public_fixture_normal_approval_succeeded": true
+}

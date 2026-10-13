@@ -1,0 +1,83 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-13",
+  "system": "ThinkPad",
+  "scope": "Actual accepted native DSP on isolated device-free Linux graph; generated audio only",
+  "binary_sha256": "3f110d6a2d1e2c743cc552b58930679acd0c00e45f5771a23d4b7702ca31206d",
+  "generated_signal_sha256": "80c0a4693f49d21b9291d792ba7b3d268cf83a989e69b063f5c0586e1db07b80",
+  "ir_sha256": "2040c08e3d19489331ace93d2503431ea1a63425d99fb8ad6a80977e2ad8b058",
+  "source_seconds": 45,
+  "capture_alignment_padding_seconds_each_end": 2,
+  "rate_hz": 48000,
+  "channels": 2,
+  "non_autogain_stages_unchanged": true,
+  "final_limiter_db": -1,
+  "cases": [
+    {
+      "target_lufs": -20,
+      "maximum_gain_db": 10.137500000002703,
+      "integrated_lufs": -21.8,
+      "true_peak_dbfs": -9.9,
+      "sample_peak_dbfs": -9.890706955451773,
+      "rms_channels": [
+        0.0576976101090912,
+        0.05746170035324825
+      ],
+      "receipt_sha256": "fa943d2c64cdfe0a91a24bee925dc308f12597b390446a20f77b3a86697b7bf0",
+      "output_sha256": "586f219cddf6e831023e695cae75d3546d17634e8dcb4f4bf8c50a5167c04c55",
+      "source_player_returncode": 0,
+      "diagnostic_preset_sha256": "ac4627710adf8b3c926fe18219c04d2d372e8d5bafcdcff8ffc76d7bb8070e92",
+      "source_preset_sha256": "7220525a0db116baaccb404f3ba20afd8826343296dff01c533a4b64ac56fe74",
+      "ordered_both_channel_chain_verified": true
+    },
+    {
+      "target_lufs": -16,
+      "maximum_gain_db": 10.137500000002703,
+      "integrated_lufs": -19.8,
+      "true_peak_dbfs": -5.9,
+      "sample_peak_dbfs": -5.890194853089091,
+      "rms_channels": [
+        0.07322241928135532,
+        0.07318957967340246
+      ],
+      "receipt_sha256": "25db6a640e1020570e94bc1c2e27e9806a11c644573e20d8407010a842618c56",
+      "output_sha256": "ce022da543528275d2be25044bfd40a7112d3992a4cddd2183661e25a4b79482",
+      "source_player_returncode": 0,
+      "diagnostic_preset_sha256": "9f2b0dbddc10f0a691617537e16836961387fb28e435ede7966ec28cdcea52e4",
+      "source_preset_sha256": "7220525a0db116baaccb404f3ba20afd8826343296dff01c533a4b64ac56fe74",
+      "ordered_both_channel_chain_verified": true
+    },
+    {
+      "target_lufs": -16,
+      "maximum_gain_db": 14.137500000002703,
+      "integrated_lufs": -17.9,
+      "true_peak_dbfs": -5.9,
+      "sample_peak_dbfs": -5.890194853089091,
+      "receipt_sha256": "e23d4387563133bdadd2000d5e8e6906b653acd85c380f0d796ac28318a91edd",
+      "output_sha256": "025e56ee8df4e5ffcd8fccb080afa9d042ba45f212c966a1b3dc6b967b038bb8",
+      "diagnostic_preset_sha256": "c526302858668ce69c21c4777e2e95fb28c94ffd0aa9b02a29c9a9a0fd9c1996",
+      "source_preset_sha256": "7220525a0db116baaccb404f3ba20afd8826343296dff01c533a4b64ac56fe74",
+      "source_player_returncode": 0,
+      "ordered_both_channel_chain_verified": true
+    }
+  ],
+  "selected_provisional_candidate": {
+    "target_lufs": -16,
+    "maximum_gain_db": 14.137500000002703,
+    "realised_increase_lu_vs_current": 3.9,
+    "owner_acceptance_pending": true
+  },
+  "normalization_cap_derivation": "Common FIR attenuation max(0, maximum designed frequency gain); makeup cap initially recovers this scaling. It is not an OEM loudness ceiling or measured speaker headroom.",
+  "limits": [
+    "Digital loudness and peak values do not establish acoustic loudness, speaker safety, calibration or everyday media acceptance.",
+    "No audition performed; no audible-quality claim.",
+    "Automatic gain/limiter usage counters were not captured.",
+    "Two targets and one additional cap case only; no unit suites or native builds repeated."
+  ],
+  "physical_devices_accessed": false,
+  "live_settings_changed": false,
+  "archives_sha256": [
+    "32274845c14c61674feb49bc156ecea69fcd1718e274332d52610229ad4f04c2",
+    "5d49607279add2ed4ae3d7b297dd5debf114cb72b8083f52812ff6192533b36c"
+  ]
+}

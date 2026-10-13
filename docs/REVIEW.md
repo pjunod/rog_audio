@@ -351,7 +351,7 @@ identical before/after; the owned container was removed and logs retained.
 [The authentic receipt](../evidence/larger-period-focused-acceptance-2026-10-13.json)
 records both attempts and a staging-runner TypeError before container/test
 execution. No native/programme suites repeated. The final repository checker
-is reserved for integration. Native +rog3/source/patch/package bytes remain unchanged.
+passed once before PR 11 merged as `5ce62059`. Native +rog3/source/patch/package bytes remain unchanged.
 
 The current ROG 512 baseline counter growth is real live timing evidence;
 wrong rollback-path/inventory-header refusals are procedural and pre-mutation.
@@ -365,3 +365,30 @@ verification and a 20.162-second 256-frame ERR-0 check passed. No fresh hour
 is inferred. The two cleared public summaries are imported unchanged; raw
 captures/manifests stay private. ROG shared 1024 negotiation after fragment
 removal is distinct from an explicit guarded trial and remains on +rog2.
+
+
+## Progress-page presentation follow-up
+
+The HTML ledger now renders inline links, bold text and code safely and joins
+wrapped source paragraphs. Its headings/table remain readable, with horizontal
+scrolling for the table on narrow screens. Static generated-HTML inspection
+confirmed anchors, formatting and paragraph grouping; the in-app browser's
+file-URL policy prevented a visual preview. No workaround or duplicate audio
+test was used for this reversible presentation change.
+
+## Synchronous service stop — implemented, final review pending
+
+Authored commits `ecd2d9b` and test-only `b5a0ad0c` were imported as `3b8ac6c`
+and `c8ec251`, preserving author identity. The helper, service template and
+packaging +rog4 changes are combined with the progress renderer and exact
+cleared listening, diagnostic, partial-run and recovery summaries. The native
+ELF, corresponding native source, patch bytes and earlier receipts are unchanged.
+
+After independent review clears, one executor will run eleven Linux methods:
+six helper process/peer/timeout/exit cases, two MAINPID/unit cases and three
+affected export cases. One separately coordinated device-free native integration
+must prove that the exact reviewed helper reaches the accepted ROG runtime's
+actual LocalServer protocol, saves expected settings and awaits real exit.
+Fixture-child tests alone do not establish that native contract. No affected
+methods or final repository checker have executed for this batch. The reversible
+renderer change uses static generated-HTML inspection; no cosmetic unit tests.
