@@ -54,7 +54,7 @@ def stop_process(pid, socket_path, timeout=10.0, binary=BINARY):
         with socket.socket(socket.AF_UNIX, socket.SOCK_STREAM) as client:
             client.settimeout(max(0.001, deadline-time.monotonic()))
             client.connect(str(socket_path))
-            peer_pid, peer_uid, _ = struct.unpack('3i', client.getsockopt(socket.SOL_SOCKET, socket.SO_PEERCRED, 12))
+            peer_pid, peer_uid, _ = struct.unpack('iII', client.getsockopt(socket.SOL_SOCKET, socket.SO_PEERCRED, 12))
             if peer_pid != pid or peer_uid != os.geteuid():
                 raise StopError('foreign or replacement socket peer')
             if poller.poll(0):
