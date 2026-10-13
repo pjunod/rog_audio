@@ -156,11 +156,17 @@ h1{font-size:2rem}h2{color:#91d7ee}a{color:#91d7ee}table{border-collapse:collaps
 <p>will repeat. Existing speaker and unrelated Atmos passes remain retained.</p>
 <p>Fresh idle baselines show the ROG now exposes an Analog Surround 4.0 sink while</p>
 <p>its kit targets Analog Stereo. A remembered preset label does not prove active</p>
-<p>correction on that changed route. The owner has been asked whether to restore</p>
-<p>the validated stereo path or investigate four-channel output. No profile is</p>
-<p>silently changed. The ThinkPad still matches its installed Lenovo route.</p>
+<p>correction on that changed route. The owner selected four-channel output manually, reported the settings UI</p>
+<p>closing, and requested that four-channel output remain selected while its</p>
+<p>compatibility is investigated. The stereo profile will not be restored silently. The ThinkPad still matches its installed Lenovo route.</p>
 <p>The M4 Air native read-only snapshot reports a 512-frame buffer at 48 kHz;</p>
 <p>separate device, stream and safety-offset values are being retained. Its initial</p>
 <p>device-running flag is false. Short silent-stream observations on the ThinkPad</p>
 <p>and Mac will establish running software timing without audible tones, input</p>
-<p>recording or volume changes. They remain distinct from a physical benchmark.</p><p><a href="https://github.com/pjunod/rog_audio/blob/main/docs/STATUS.md">GitHub progress ledger</a></p></main></html>
+<p>recording or volume changes. They remain distinct from a physical benchmark.</p>
+<p>The original ASUS profile declares two output channels. The inspected upstream</p>
+<p>GU605 driver fixup shares the main and bass speaker DAC, and the current codec</p>
+<p>connection report is consistent with that mapping. A four-channel ACP profile</p>
+<p>label is not proof of four independent acoustic outputs. A focused implementation</p>
+<p>lane is investigating exact route rebinding and isolated channel-link acceptance</p>
+<p>while preserving the original stereo DSP coefficients.</p><p><a href="https://github.com/pjunod/rog_audio/blob/main/docs/STATUS.md">GitHub progress ledger</a></p></main></html>

@@ -183,12 +183,19 @@ will repeat. Existing speaker and unrelated Atmos passes remain retained.
 
 Fresh idle baselines show the ROG now exposes an Analog Surround 4.0 sink while
 its kit targets Analog Stereo. A remembered preset label does not prove active
-correction on that changed route. The owner has been asked whether to restore
-the validated stereo path or investigate four-channel output. No profile is
-silently changed. The ThinkPad still matches its installed Lenovo route.
+correction on that changed route. The owner selected four-channel output manually, reported the settings UI
+closing, and requested that four-channel output remain selected while its
+compatibility is investigated. The stereo profile will not be restored silently. The ThinkPad still matches its installed Lenovo route.
 
 The M4 Air native read-only snapshot reports a 512-frame buffer at 48 kHz;
 separate device, stream and safety-offset values are being retained. Its initial
 device-running flag is false. Short silent-stream observations on the ThinkPad
 and Mac will establish running software timing without audible tones, input
 recording or volume changes. They remain distinct from a physical benchmark.
+
+The original ASUS profile declares two output channels. The inspected upstream
+GU605 driver fixup shares the main and bass speaker DAC, and the current codec
+connection report is consistent with that mapping. A four-channel ACP profile
+label is not proof of four independent acoustic outputs. A focused implementation
+lane is investigating exact route rebinding and isolated channel-link acceptance
+while preserving the original stereo DSP coefficients.
