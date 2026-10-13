@@ -4,13 +4,18 @@
 **Updated:** 2026-10-12 · **Executes:** internal-speaker installation from
 [status](STATUS.md).
 
-The ROG now runs the authorized v0.2.0 candidate; its live preset, IR, plugins
-and physical output checks are recorded in
+Both laptops now run their separate authorized v0.2.0 candidates. The ROG's
+live preset, IR, plugins and physical output checks are recorded in
 [the deployment receipt](../evidence/rog-speaker-deployment-2026-10-12.json).
-It uses a transient user service with no reboot autostart. Initial volume is
-20%, and the prior volume, private snapshot and versioned recovery tools are
-retained. Owner listening and physical hotplug/measurement acceptance are
-pending. The ThinkPad has not been installed.
+The owner reports substantial audible improvement and requested automatic
+startup, now enabled for user login after reboot. The current listening process
+was preserved; actual post-reboot startup is pending observation. Initial
+deployment volume was 20%, and the prior volume, private snapshot and versioned
+recovery tools are retained. Physical hotplug/measurement acceptance is pending.
+The ThinkPad's separate Lenovo candidate has also passed its live loading and
+speaker output checks, with login startup enabled and rollback retained; see
+[its deployment receipt](../evidence/thinkpad-speaker-deployment-2026-10-12.json).
+Owner listening feedback on the ThinkPad remains pending.
 
 Read [speaker preparation](AUDIO_SPEAKER_BUILD.md) before using
 [the installation tool](../scripts/speaker_install.py). The input is an
@@ -140,6 +145,20 @@ The new runtime's target-aware policy is required for these settings.
 
 ## 4. Remove and retain post-install state
 
+If login startup was enabled, first disable it and stop the managed service.
+The final controlled quit also handles a still-running initial deployment
+process. This prevents a later login from relaunching a removed candidate.
+
+```bash
+systemctl --user disable --now rog-audio-speaker.service
+QT_QPA_PLATFORM=offscreen rog-speaker-effects --quit
+rm -- "$HOME/.config/systemd/user/rog-audio-speaker.service"
+systemctl --user daemon-reload
+```
+
+On both inspected laptops the prior unit was absent. If replacing an existing unit
+elsewhere, retain and restore its original bytes and enablement instead.
+
 ```bash
 # Explicit later removal; EasyEffects must be closed.
 python3 scripts/speaker_install.py remove \
@@ -161,6 +180,37 @@ Original target metadata is held in memory; forced termination does not provide
 that controlled restoration. The session manager handles disappearing virtual
 nodes. Physical restart/resume and forced-termination behaviour remain acceptance
 work, and the file journal is a filesystem recovery receipt.
+
+### Automatic startup after login
+
+[The user unit](../systemd/rog-audio-speaker.service) starts the installed
+runtime when the user manager reaches `default.target`, including login after
+reboot. It orders startup after PipeWire and WirePlumber and uses the installed
+candidate's private state under `$HOME/.local/state/rog-audio/easyeffects`.
+`QT_QPA_PLATFORM=offscreen` supports background processing without opening a
+window. A custom candidate state location requires changing the unit's
+`ROG_AUDIO_STATE_DIR` to that same absolute location before validation.
+
+```bash
+# Validate the unit on the target host; retain any prior unit before replacement.
+systemd-analyze --user verify systemd/rog-audio-speaker.service
+install -D -m 0644 systemd/rog-audio-speaker.service \
+  "$HOME/.config/systemd/user/rog-audio-speaker.service"
+systemctl --user daemon-reload
+# Enable future login startup without interrupting an existing listening run.
+systemctl --user enable rog-audio-speaker.service
+systemctl --user is-enabled rog-audio-speaker.service
+```
+
+Both laptops' unit validation, manager properties and resolved login-target
+links passed. Their current deployment-session processes stayed unchanged.
+The persistent service takes over at the next normal user-manager startup;
+no reboot was performed for this configuration change. See
+[the startup receipt](../evidence/rog-speaker-startup-2026-10-12.json).
+The same checks are retained in the ThinkPad deployment receipt above.
+Immediate bypass remains `rog-speaker-effects --quit`; permanent startup
+rollback uses the disable/stop procedure above. Stock amplifier controls,
+physical default selection and operator volume are not set by this unit.
 
 ## 5. Build and deliver the usable runtime
 

@@ -10,8 +10,10 @@ Read [status](docs/STATUS.md) for progress and evidence boundaries.
 The speaker runtime and separate ASUS/ThinkPad kits have passed review, unit
 tests and isolated runtime acceptance. The ROG now runs the v0.2.0 internal
 speaker candidate with its preset, IR, plugins and hardware output checked;
-the ThinkPad remains ready for coordinated installation. Physical listening,
-hotplug and measurements remain pending. macOS-equivalent performance or
+the ThinkPad now runs its separate Lenovo candidate with the same live checks.
+Both have automatic startup enabled at user login after reboot. The owner reports
+substantial audible improvement; physical hotplug and measurements remain
+pending. macOS-equivalent performance or
 Atmos fidelity has not been measured.
 
 Display work remains in [rog_hdr_dv](https://github.com/pjunod/rog_hdr_dv).
@@ -46,7 +48,12 @@ resume, acoustic quality and latency still need measurement.
 The [ROG deployment receipt](evidence/rog-speaker-deployment-2026-10-12.json)
 records the authorized installation and live operational checks. Its initial
 volume is 20%, with the original volume and private rollback snapshot retained.
-The current runtime is a transient user service; reboot autostart is not enabled.
+Both laptops now have [automatic startup after login](docs/SPEAKER_INSTALL.md#automatic-startup-after-login),
+with the startup unit and disable/remove procedure retained alongside rollback.
+The current listening process was preserved while future startup was enabled;
+an actual post-reboot run has not yet been observed.
+The [ThinkPad deployment receipt](evidence/thinkpad-speaker-deployment-2026-10-12.json)
+records its separate model binding, 20% initial volume and retained rollback.
 
 ## Install and use the diagnostics
 
@@ -78,6 +85,7 @@ recovered vendor files and separately fetched dependencies.
 ## Layout
 
 - `scripts/` — offline tooling and repository validation.
+- `systemd/` — optional user-login startup for the installed speaker runtime.
 - `probes/atmos/` — isolated spatial-audio build and CLI.
 - `tests/` — generated, redistributable regression cases.
 - `profiles/` — original ASUS and Lenovo tuning with matching hardware maps.
@@ -89,6 +97,7 @@ recovered vendor files and separately fetched dependencies.
 - [x] Inspect ASUS hardware and publish matching OEM tuning.
 - [x] Build and validate reviewed speaker, latency and offline Atmos tools.
 - [x] Build reversible installation and pass both isolated runtime/routing cases.
-- [ ] Install on the laptops and qualify physical headphone/HDMI routing and resume.
+- [x] Install both model-specific candidates and enable automatic login startup.
+- [ ] Qualify physical headphone/HDMI routing and resume.
 - [ ] Measure built-in speaker quality and latency against the Macs.
 - [ ] Qualify Sonos Arc/eARC last.

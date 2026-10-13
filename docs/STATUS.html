@@ -4,14 +4,14 @@
 body{font:16px/1.55 system-ui,sans-serif;margin:3rem auto;padding:0 1.5rem;max-width:1050px;background:#101823;color:#edf2f7}
 h1{font-size:2rem}h2{color:#91d7ee}a{color:#91d7ee}table{border-collapse:collapse;width:100%;margin:2rem 0}td{border-bottom:1px solid #3b4b60;padding:.8rem;vertical-align:top}tr:first-child{font-weight:700;background:#1e3047}p{margin:.5rem 0}
 </style><main><h1>Status — implementation and physical acceptance</h1>
-<p>**Updated:** 2026-10-12 · **State:** ROG v0.2.0 installed and running, ready for</p>
-<p>owner listening; ThinkPad installation pending.</p>
+<p>**Updated:** 2026-10-12 · **State:** ROG v0.2.0 running with positive owner</p>
+<p>listening feedback; ThinkPad ready for listening; both have login startup enabled.</p>
 <table>
 <tr><td>Work</td><td>State</td><td>Next evidence</td></tr>
 <tr><td>Hardware inventory</td><td>Both laptops inspected read-only</td><td>Refresh during installation</td></tr>
-<tr><td>ASUS speaker tuning</td><td>Music/balanced candidate installed; live preset, IR, plugins and hardware output verified</td><td>Owner listening, physical hotplug and measurements</td></tr>
-<tr><td>ThinkPad speaker tuning</td><td>Exact Lenovo XML/INF published; three bundles built</td><td>Physical listening and measurements</td></tr>
-<tr><td>Laptop installation runtime</td><td>ROG active with private rollback; ThinkPad kit ready; inherited 97 unit cases and both isolated graph cases passed</td><td>ThinkPad coordinated install and physical qualification</td></tr>
+<tr><td>ASUS speaker tuning</td><td>Music/balanced candidate running; owner reports substantial audible improvement</td><td>Physical hotplug and measurements</td></tr>
+<tr><td>ThinkPad speaker tuning</td><td>Separate Lenovo music/balanced candidate running; live preset, IR, plugins and hardware output verified</td><td>Owner listening, physical hotplug and measurements</td></tr>
+<tr><td>Laptop installation runtime</td><td>Both active with private rollback and login startup; inherited 97 unit cases and both isolated graph cases passed</td><td>Actual post-reboot observation and physical qualification</td></tr>
 <tr><td>Diagnostics and latency</td><td>42 tests and native rule checks passed in PR 1</td><td>Physical comparison and coordinated activation</td></tr>
 <tr><td>Host Atmos</td><td>15 tests and focused CI cleanup acceptance passed in PR 1</td><td>Actual JOC reference media and physical qualification</td></tr>
 <tr><td>macOS comparison</td><td>Pending physical measurements</td><td>M4 Air primary, M3 Max secondary</td></tr>
@@ -23,8 +23,8 @@ h1{font-size:2rem}h2{color:#91d7ee}a{color:#91d7ee}table{border-collapse:collaps
 <h2>Installation readiness</h2>
 <p>Both model-specific kits passed their isolated loader/plugin/routing case</p>
 <p>with ten assertions. The ASUS ROG GU605MZ is now installed and active on</p>
-<p>Ubuntu 26.10 amd64. The ThinkPad X1 Extreme Gen 1 remains ready for a separately</p>
-<p>coordinated installation; no package or profile has been activated there.</p>
+<p>Ubuntu 26.10 amd64. The ThinkPad X1 Extreme Gen 1 was subsequently installed and</p>
+<p>activated in its own authorized window using the separate Lenovo candidate.</p>
 <p>The package preserves stock EasyEffects configuration and uses a separate</p>
 <p>application identity and data roots. Installation/removal has a durable file</p>
 <p>snapshot and conflict detection. Controlled quit restores owned stream targets;</p>
@@ -50,17 +50,58 @@ h1{font-size:2rem}h2{color:#91d7ee}a{color:#91d7ee}table{border-collapse:collaps
 <p>preserved. The initial speaker volume was reduced from 76% to 20%; its prior</p>
 <p>value is retained. No deployment-generated playback or recording occurred.</p>
 <p>Stock PipeWire/WirePlumber process IDs, amplifier controls and Cirrus firmware</p>
-<p>hashes were unchanged. The candidate runs as a transient user service without</p>
-<p>reboot autostart. Versioned recovery tools, corresponding source, logs and the</p>
+<p>hashes were unchanged. The initial deployment used a transient user service;</p>
+<p>login startup was enabled subsequently without interrupting it. Versioned</p>
+<p>recovery tools, corresponding source, logs and the</p>
 <p>rollback snapshot are retained privately outside temporary storage. Immediate</p>
 <p>bypass uses controlled quit; removal restores managed files and retains the</p>
 <p>post-install state. Newly installed dependencies are retained on candidate</p>
 <p>removal; no automatic dependency cleanup is part of rollback.</p>
 <p>[The deployment receipt](../evidence/rog-speaker-deployment-2026-10-12.json)</p>
 <p>records live operational checks. The inherited unit and isolated graph passes</p>
-<p>were not repeated. Listening preference, headphone/HDMI hotplug, resume, calls,</p>
-<p>power, calibrated response/distortion and physical latency remain unmeasured.</p>
+<p>were not repeated. The owner subsequently reported substantial audible</p>
+<p>improvement. That subjective listening feedback is distinct from measurement.</p>
+<p>Headphone/HDMI hotplug, resume, calls, power, calibrated response/distortion and</p>
+<p>physical latency remain unmeasured.</p>
 <p>ThinkPad and Sonos were not changed in this window.</p>
+<h2>ROG automatic startup</h2>
+<p>The owner requested that the tuning persist after reboot. The installed</p>
+<p>`rog-audio-speaker.service` is enabled under the user&#x27;s `default.target`, starts</p>
+<p>after PipeWire and WirePlumber, and uses the existing candidate settings and</p>
+<p>verified runtime without a visible window. Its stop action requests controlled</p>
+<p>quit; restart on failure handles process crashes. No system audio service was</p>
+<p>restarted while enabling it, and the current listening process and selected</p>
+<p>preset were unchanged.</p>
+<p>[The startup receipt](../evidence/rog-speaker-startup-2026-10-12.json) records</p>
+<p>successful native unit validation, enabled state and the resolved login-target</p>
+<p>link. No reboot or session restart was performed, so actual post-reboot startup</p>
+<p>is pending observation. The prior absent unit state and updated rollback</p>
+<p>instructions are retained privately. Rollback disables future startup before</p>
+<p>stopping the candidate, removing its owned unit and restoring managed files.</p>
+<h2>ThinkPad live deployment and startup</h2>
+<p>The owner separately authorized ThinkPad installation, activation and automatic</p>
+<p>startup. Fresh model, codec/subsystem and current route checks matched its</p>
+<p>Lenovo kit. The exact v0.2.0 package installed with 136 new packages and no</p>
+<p>existing-package upgrades or removals. Its installed binary hash matches the</p>
+<p>reviewed runtime, and all dependency groups are satisfied. Five managed files</p>
+<p>were verified against the kit and retained with a durable rollback snapshot.</p>
+<p>The Lenovo music/balanced preset and IR loaded. All expected plugin nodes</p>
+<p>appeared, the effects output connected to the physical speakers, and the</p>
+<p>speaker route and hardware default stayed selected. Stock audio process IDs</p>
+<p>and Auto-Mute mode were preserved. Initial volume was reduced from 40% to</p>
+<p>20%; the prior value is retained. No agent-generated playback or recording</p>
+<p>occurred. The amplifier implementation remains unknown; this is not a</p>
+<p>protection or acoustic qualification receipt.</p>
+<p>The same user-login startup unit passed native validation and is enabled with</p>
+<p>its resolved `default.target` link. Enabling it preserved the active listening</p>
+<p>process. No reboot was performed; actual startup after reboot is pending</p>
+<p>observation. Its recovery tools, original source/notices, baseline, startup</p>
+<p>preimage and snapshot are retained privately on the ThinkPad and locally.</p>
+<p>The ROG and Sonos were unchanged during this window.</p>
+<p>[The ThinkPad receipt](../evidence/thinkpad-speaker-deployment-2026-10-12.json)</p>
+<p>records these live operational checks. Owner listening feedback, physical</p>
+<p>hotplug/resume, calls, power, acoustics and latency remain pending. Accepted</p>
+<p>unit and isolated graph cases were not repeated for deployment.</p>
 <h2>Review and acceptance</h2>
 <p>The completed PR 2 batch received three independent adversarial reviews.</p>
 <p>All seven findings were fixed and cleared focused source re-review before</p>

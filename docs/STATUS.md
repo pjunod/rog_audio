@@ -1,14 +1,14 @@
 # Status — implementation and physical acceptance
 
-**Updated:** 2026-10-12 · **State:** ROG v0.2.0 installed and running, ready for
-owner listening; ThinkPad installation pending.
+**Updated:** 2026-10-12 · **State:** ROG v0.2.0 running with positive owner
+listening feedback; ThinkPad ready for listening; both have login startup enabled.
 
 | Work | State | Next evidence |
 |---|---|---|
 | Hardware inventory | Both laptops inspected read-only | Refresh during installation |
-| ASUS speaker tuning | Music/balanced candidate installed; live preset, IR, plugins and hardware output verified | Owner listening, physical hotplug and measurements |
-| ThinkPad speaker tuning | Exact Lenovo XML/INF published; three bundles built | Physical listening and measurements |
-| Laptop installation runtime | ROG active with private rollback; ThinkPad kit ready; inherited 97 unit cases and both isolated graph cases passed | ThinkPad coordinated install and physical qualification |
+| ASUS speaker tuning | Music/balanced candidate running; owner reports substantial audible improvement | Physical hotplug and measurements |
+| ThinkPad speaker tuning | Separate Lenovo music/balanced candidate running; live preset, IR, plugins and hardware output verified | Owner listening, physical hotplug and measurements |
+| Laptop installation runtime | Both active with private rollback and login startup; inherited 97 unit cases and both isolated graph cases passed | Actual post-reboot observation and physical qualification |
 | Diagnostics and latency | 42 tests and native rule checks passed in PR 1 | Physical comparison and coordinated activation |
 | Host Atmos | 15 tests and focused CI cleanup acceptance passed in PR 1 | Actual JOC reference media and physical qualification |
 | macOS comparison | Pending physical measurements | M4 Air primary, M3 Max secondary |
@@ -22,8 +22,8 @@ installation and measured performance remain separate claims.
 
 Both model-specific kits passed their isolated loader/plugin/routing case
 with ten assertions. The ASUS ROG GU605MZ is now installed and active on
-Ubuntu 26.10 amd64. The ThinkPad X1 Extreme Gen 1 remains ready for a separately
-coordinated installation; no package or profile has been activated there.
+Ubuntu 26.10 amd64. The ThinkPad X1 Extreme Gen 1 was subsequently installed and
+activated in its own authorized window using the separate Lenovo candidate.
 
 The package preserves stock EasyEffects configuration and uses a separate
 application identity and data roots. Installation/removal has a durable file
@@ -55,8 +55,9 @@ preserved. The initial speaker volume was reduced from 76% to 20%; its prior
 value is retained. No deployment-generated playback or recording occurred.
 
 Stock PipeWire/WirePlumber process IDs, amplifier controls and Cirrus firmware
-hashes were unchanged. The candidate runs as a transient user service without
-reboot autostart. Versioned recovery tools, corresponding source, logs and the
+hashes were unchanged. The initial deployment used a transient user service;
+login startup was enabled subsequently without interrupting it. Versioned
+recovery tools, corresponding source, logs and the
 rollback snapshot are retained privately outside temporary storage. Immediate
 bypass uses controlled quit; removal restores managed files and retains the
 post-install state. Newly installed dependencies are retained on candidate
@@ -64,9 +65,57 @@ removal; no automatic dependency cleanup is part of rollback.
 
 [The deployment receipt](../evidence/rog-speaker-deployment-2026-10-12.json)
 records live operational checks. The inherited unit and isolated graph passes
-were not repeated. Listening preference, headphone/HDMI hotplug, resume, calls,
-power, calibrated response/distortion and physical latency remain unmeasured.
+were not repeated. The owner subsequently reported substantial audible
+improvement. That subjective listening feedback is distinct from measurement.
+Headphone/HDMI hotplug, resume, calls, power, calibrated response/distortion and
+physical latency remain unmeasured.
 ThinkPad and Sonos were not changed in this window.
+
+## ROG automatic startup
+
+The owner requested that the tuning persist after reboot. The installed
+`rog-audio-speaker.service` is enabled under the user's `default.target`, starts
+after PipeWire and WirePlumber, and uses the existing candidate settings and
+verified runtime without a visible window. Its stop action requests controlled
+quit; restart on failure handles process crashes. No system audio service was
+restarted while enabling it, and the current listening process and selected
+preset were unchanged.
+
+[The startup receipt](../evidence/rog-speaker-startup-2026-10-12.json) records
+successful native unit validation, enabled state and the resolved login-target
+link. No reboot or session restart was performed, so actual post-reboot startup
+is pending observation. The prior absent unit state and updated rollback
+instructions are retained privately. Rollback disables future startup before
+stopping the candidate, removing its owned unit and restoring managed files.
+
+## ThinkPad live deployment and startup
+
+The owner separately authorized ThinkPad installation, activation and automatic
+startup. Fresh model, codec/subsystem and current route checks matched its
+Lenovo kit. The exact v0.2.0 package installed with 136 new packages and no
+existing-package upgrades or removals. Its installed binary hash matches the
+reviewed runtime, and all dependency groups are satisfied. Five managed files
+were verified against the kit and retained with a durable rollback snapshot.
+
+The Lenovo music/balanced preset and IR loaded. All expected plugin nodes
+appeared, the effects output connected to the physical speakers, and the
+speaker route and hardware default stayed selected. Stock audio process IDs
+and Auto-Mute mode were preserved. Initial volume was reduced from 40% to
+20%; the prior value is retained. No agent-generated playback or recording
+occurred. The amplifier implementation remains unknown; this is not a
+protection or acoustic qualification receipt.
+
+The same user-login startup unit passed native validation and is enabled with
+its resolved `default.target` link. Enabling it preserved the active listening
+process. No reboot was performed; actual startup after reboot is pending
+observation. Its recovery tools, original source/notices, baseline, startup
+preimage and snapshot are retained privately on the ThinkPad and locally.
+The ROG and Sonos were unchanged during this window.
+
+[The ThinkPad receipt](../evidence/thinkpad-speaker-deployment-2026-10-12.json)
+records these live operational checks. Owner listening feedback, physical
+hotplug/resume, calls, power, acoustics and latency remain pending. Accepted
+unit and isolated graph cases were not repeated for deployment.
 
 ## Review and acceptance
 

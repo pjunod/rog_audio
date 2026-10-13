@@ -1,0 +1,100 @@
+{
+  "agent_generated_playback": false,
+  "amplifier_identification": "unknown",
+  "auto_mute_mode_preserved": true,
+  "binary_sha256": "e5061dcc1e0b925933eceeacffb576536d24f609307166b97d0e159c0f1772d1",
+  "date": "2026-10-12",
+  "hardware": {
+    "amplifier_identification": "unknown",
+    "codec": "10ec0285",
+    "machine_type": "20MF",
+    "subsystem": "17aa2276"
+  },
+  "host": "lab6",
+  "inherited_acceptance": "97 affected unit cases and both isolated graph cases passed before release; not rerun for deployment",
+  "ir_loader_confirmed": true,
+  "kind": "thinkpad-speaker-live-deployment",
+  "limits": [
+    "Operational loading and graph links do not establish calibrated acoustic quality, physical latency or amplifier protection.",
+    "No generated playback, recording, reboot or session restart was performed.",
+    "Actual post-reboot startup and physical hotplug/resume remain pending observation."
+  ],
+  "managed_files_verified": 5,
+  "owner_listening_feedback_received": false,
+  "package_sha256": "089ae964c8e1b75281d589a6cd52a3a25d358f9443112162fea616b69b5904d7",
+  "package_transaction": {
+    "dependencies_satisfied": true,
+    "existing_package_removals": 0,
+    "existing_package_upgrades": 0,
+    "new_packages": 136
+  },
+  "physical_default_preserved": true,
+  "physical_measurements": {
+    "acoustic_quality": false,
+    "calls": false,
+    "headphone_hdmi_hotplug": false,
+    "physical_latency": false,
+    "power": false,
+    "resume": false
+  },
+  "physical_output_connected": true,
+  "physical_route_verified": true,
+  "plugin_nodes_present": [
+    "autogain",
+    "convolver",
+    "limiter",
+    "multiband_compressor"
+  ],
+  "preparation_note": "The first private baseline helper failed on a Python module-name collision before collection; renaming it resolved the issue before installation.",
+  "preset_loaded": true,
+  "preset_name": "rog-speaker-b765f964beb72310",
+  "prior_volume": 0.4,
+  "private_receipt_sha256": {
+    "compatibility-installed.json": "9941bca97fc2809850fc5c4f7525b3a5b265b8b5000d28f0fba22f64e5322203",
+    "config-result.json": "3f751395859b23b61b5830938c6c7791777f48d8058f0d42e682036bc3e0a082",
+    "deployment-before.json": "416f2a92b99df50f17a8242cd95641194680c337c12325ab61223e2a7cd950d0",
+    "live-inventory.json": "c16d3ee86d5ee6f684d924d98348115132c51d6a4219e8a2863e0583a88cce28",
+    "live-summary.json": "b13cf1e2a3e6c6eff02bf79b6925a5e4fa479b3da725bff6419b6cb78defef65",
+    "package-result.json": "1067ef4f6df3ffb8f015f7696dc6db208996b18e24babbcb452c9d364177ba77",
+    "runtime-journal.json": "b0f0ca2453251388976ead52decd741b2adf4e857321f0d37a42aac54012c8f9",
+    "startup-properties.json": "1250b25fc0b9df557c0b4c8e539e4eb410b181747e7929ec897f46c9a4373c9c",
+    "startup-summary.json": "c731e32741bf9e56c4866edaecb8e0bad08164bdffcdcab3e3259d42fb0b4939",
+    "startup-unit-validation.json": "83395cbaf5cbebe654f352914cdd7b569643698a8b687ae84b6ea7e5b6f4dd9e"
+  },
+  "recording_performed": false,
+  "release": "v0.2.0",
+  "rog_changed_in_this_window": false,
+  "rollback": {
+    "automatic_dependency_cleanup": false,
+    "controlled_quit_command": "rog-speaker-effects --quit",
+    "durable_private_snapshot_retained": true,
+    "live_removal_exercised": false,
+    "local_private_copy_retained": true,
+    "post_install_archive_path_prepared": true,
+    "prior_unit_enabled": false,
+    "prior_unit_present": false,
+    "startup_disable_command": "systemctl --user disable --now rog-audio-speaker.service",
+    "versioned_recovery_tools_and_corresponding_source_retained": true
+  },
+  "runtime_source_commit": "15a8da33d156a7e3e2253c807546ad21b881525a",
+  "schema_version": 1,
+  "selection": {
+    "profile": "music",
+    "voicing": "balanced"
+  },
+  "sonos_state": "deferred",
+  "starting_volume": 0.2,
+  "startup": {
+    "current_runtime_pid_unchanged": true,
+    "default_target_link_verified": true,
+    "post_reboot_start_observed": false,
+    "reboot_performed": false,
+    "status": "enabled-for-user-login",
+    "unit": "rog-audio-speaker.service",
+    "unit_file_enabled": true,
+    "unit_sha256": "6a6603dabd7188909d8dd7810f2af6dc8a622074da2b616bad64a474d8bb4b0a",
+    "unit_syntax_verified": true
+  },
+  "status": "ready-for-owner-listening",
+  "stock_audio_service_pids_unchanged": true
+}

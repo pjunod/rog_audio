@@ -1,0 +1,53 @@
+{
+  "audio_services_restarted": false,
+  "controlled_stop": true,
+  "date": "2026-10-12",
+  "default_target_link_verified": true,
+  "existing_preset_verified": true,
+  "existing_runtime_pid_unchanged": true,
+  "host": "lab5",
+  "kind": "rog-speaker-startup",
+  "limits": [
+    "Configuration and enablement are verified; actual post-reboot startup has not been observed.",
+    "Existing tuning was preserved; no audible test, recording, reboot or session restart was performed.",
+    "Physical hotplug/resume and calibrated acoustic/latency qualification remain pending."
+  ],
+  "owner_listening_feedback": {
+    "acoustic_measurement": false,
+    "kind": "subjective-owner-report",
+    "substantial_audible_improvement": true
+  },
+  "playback_generated": false,
+  "post_reboot_start_observed": false,
+  "private_receipt_sha256": {
+    "before.json": "6dae611b8cfdb1e0f2d5844588509afd6188d6aa5d4a8229a5677406845aa61d",
+    "persistent-unit-properties.json": "2a8bfc177700298e9444cb5d1012230595ecfe3115115d8e3a6fcdc346277756",
+    "summary.json": "6d44e1cb2f1dabd7c44969590c7c21403af0b783a0b39a223a88f63f06c4cc2f",
+    "unit-validation.json": "83395cbaf5cbebe654f352914cdd7b569643698a8b687ae84b6ea7e5b6f4dd9e"
+  },
+  "reboot_performed": false,
+  "release": "v0.2.0",
+  "restart_policy": "on-failure",
+  "rollback": {
+    "controlled_quit_command": "rog-speaker-effects --quit",
+    "disable_command": "systemctl --user disable --now rog-audio-speaker.service",
+    "live_startup_removal_exercised": false,
+    "owned_unit_removed_on_rollback": true,
+    "prior_unit_enabled": false,
+    "prior_unit_present": false,
+    "private_snapshot_retained": true
+  },
+  "rollback_unit_preimage_retained": true,
+  "runtime_binary_sha256": "e5061dcc1e0b925933eceeacffb576536d24f609307166b97d0e159c0f1772d1",
+  "schema_version": 1,
+  "startup_after": [
+    "pipewire.service",
+    "wireplumber.service"
+  ],
+  "startup_target": "default.target",
+  "status": "enabled-for-user-login",
+  "unit": "rog-audio-speaker.service",
+  "unit_file_enabled": true,
+  "unit_sha256": "6a6603dabd7188909d8dd7810f2af6dc8a622074da2b616bad64a474d8bb4b0a",
+  "unit_syntax_verified": true
+}
