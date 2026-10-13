@@ -15,7 +15,7 @@ import tempfile
 PREFIX=Path('/opt/rog-audio/easyeffects')
 PIN='6d9b1220d3dcebb154ba759a05600662bc0af549'
 PACKAGE='rog-audio-easyeffects'
-VERSION='8.2.8+rog2'
+VERSION='8.2.8+rog3'
 SCRATCH=Path('/build/rog-audio-package')
 
 def command(argv):return subprocess.check_output(argv,text=True).strip()
@@ -55,6 +55,7 @@ def main():
         manifest={'schema_version':1,'source_commit':PIN,'routing_contract':'exact-device-route-v1',
                   'source_manifest_sha256':hashlib.sha256(source_bytes).hexdigest(),
                   'patches_sha256':json.loads(source_bytes)['files'],
+                  'programme_loudness_contract':json.loads(source_bytes)['programme_loudness_contract'],
                   'binary_sha256':hashlib.sha256((PREFIX/'bin/easyeffects').read_bytes()).hexdigest(),
                   'package':artifact.name,'package_version':VERSION,'package_sha256':hashlib.sha256(artifact.read_bytes()).hexdigest(),
                   'runtime_prefix':str(PREFIX),'distribution':'Ubuntu 26.10','architecture':'amd64',

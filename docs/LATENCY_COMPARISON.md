@@ -1,7 +1,7 @@
 # Latency comparison — tuned Linux laptops and the M4 Air
 
 **Status:** historical paired results retained; ThinkPad v0.2.0 hour complete
-at 256 frames, ROG fallback 2048; corrected-runtime/512 and physical tests pending ·
+at 256 frames; ROG corrected-runtime short check at 512 passed; final hours and physical tests pending ·
 **Written:** 2026-10-13 · **Executes:** latency phase in
 [implementation](AUDIO_IMPLEMENTATION.md).
 
@@ -78,7 +78,7 @@ read-only and never record microphones, play a signal or alter privacy settings.
 The owner has laptops, phones and tablets. The
 [phone-recorded interaction method](PHYSICAL_LATENCY_METHOD.md) proposes a
 same-track key-click/chirp comparison with those devices. Its local browser
-emitter is implemented with source review and synthetic acceptance pending;
+emitter passed source review and ten focused synthetic methods once;
 the manual capture pilot has not run. This interaction metric cannot isolate
 pure output latency from keyboard/application delay.
 Physical capture needs a concrete method, uncertainty budget and coordinated
@@ -226,10 +226,13 @@ were removed and the failure archive retained. No counter reset or retry was
 automatically performed. The startup correction was not installed, and the
 cause of this later error growth remains unestablished.
 
-The operator diagnosed a separate session-start ordering race; its permanent
-runtime fix is implemented in the offline source; candidate compilation,
-review and focused acceptance remain pending. A successful timed run after manual
-restoration would not establish reliable automatic preset loading.
+The operator diagnosed a separate session-start ordering race. Its permanent
+runtime fix subsequently passed compilation, independent source/artifact
+review and focused acceptance, then automatically loaded the original ROG
+tuning after deployment. This later controlled startup observation remains
+separate from the earlier manual restoration and does not establish repeated
+reboot/resume qualification. [Current status](STATUS.md) records the new
+runtime and short 512-frame observation.
 
 The [scoped v3 receipt](../evidence/speaker-listening-stability-v3-2026-10-13.json)
 also records reviewed ROG rollback: the owned 256-frame rule was quarantined,
@@ -248,4 +251,4 @@ need fresh continuous coverage, endpoint checks, counter deltas and preservation
 The owned all-zero stream and separate listening/recording overlaps do not
 substitute for a physical response-time distribution or absence of audible
 gaps. [Current status](STATUS.md#startup-and-sustained-check-progress--2026-10-13)
-will record actual outcomes when the receipts arrive.
+records the later bounded observations and their separate remaining work.

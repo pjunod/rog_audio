@@ -263,3 +263,62 @@ changed. This integration lane executed no units. Physical startup, actual
 ROG 512 negotiation and fresh final-configuration hours remain separate.
 Only failed or subsequently invalidated cases repeat; unrelated accepted
 speaker, latency, Mac and emitter suites remain retained.
+
+
+PR 9 merged as `30125c0d5769fbc43925012e00a0c3fc185f9c1a` from accepted head
+`31c211a04aea64290c7ac3d6c61fe5e9bd289e26`. The final repository check passed
+once; no already-passing units were repeated for merge. The next loudness
+implementation and its affected validation remain a separate coherent batch.
+The [digital diagnosis receipt](../evidence/both-laptop-digital-gain-transfer-2026-10-13.json)
+provides a low-level speech baseline, not acceptance of louder programme,
+a new gain implementation, acoustics or physical latency. The PR 9 release was subsequently authorized directly and published as
+v0.2.1 with its reviewed archives and notes unchanged. Its tag target,
+three remote asset hashes/sizes and preserved v0.2.0 digests were verified
+without repeating unit tests; see the [publication receipt](../evidence/speaker-runtime-v021-publication-2026-10-13.json).
+
+
+A follow-up documentation review found that a current download-hash replacement
+had also changed the historical PR 2 acceptance hash. Correction `af706406`
+restored that historical v0.2.0 identity and explicitly separated its receipt
+from current v0.2.1 acceptance. Focused re-review cleared the correction before
+a release-body update changed only the installation-guide URL to that immutable
+corrected document. The [link-correction receipt](../evidence/speaker-runtime-v021-guide-correction-2026-10-13.json)
+retains original/new notes hashes and verified unchanged tag/three assets.
+No code, patch, runtime or test result was changed, and no units repeated.
+
+
+## Programme loudness batch — corrected build accepted, live checks open
+
+Two independent adversarial reviews found six issues in analyser lifetime,
+reset/error handling, preparation output ownership and graph-chain evidence.
+The corrected source and harness cleared focused re-review. The
+[reviewed build receipt](../evidence/programme-loudness-reviewed-build-2026-10-13.json)
+binds 713 exact source files to native `1db1e9f`, ELF `3f110d6a…` and package
+`92349a51…`; final source/artifact/model bindings cleared review. The initial
+712-file build remains superseded and immutable. Three source-staging refusals
+from missing new-file patch metadata remain retained; the metadata correction
+did not alter native source bytes.
+
+All 28 affected unit methods passed on first execution, with zero failures or
+skips: eight makeup, four threaded analyser, twelve profile, one source and
+three export methods. Both model graph selectors failed initially before gain
+assertions because raw PCM was not explicitly selected in `pw-cat`. The small
+harness-only `--raw` and owned-pipe shutdown correction at `a624b54` cleared
+focused review. Only the two failed selectors repeated; both passed on attempt
+two with eight assertions each. No unit or unchanged accepted suite repeated.
+The [acceptance receipt](../evidence/programme-loudness-acceptance-2026-10-13.json)
+retains exact log/graph bindings, failure history and isolated-runner bounds.
+Generated -12 LUFS and float overdrive conditions test native caps and the
+existing limiter; they do not qualify laptop defaults or acoustic output.
+The ingestion-failure shim is absent from the production package.
+
+The measured ThinkPad FIR contribution, unresolved ROG ordinary-media loss
+and bypassed installed AutoGain remain distinct from prospective gain-policy
+improvements. No new laptop gain installation, everyday-loudness acceptance
+or final-configuration hour is claimed. Three chronological sanitized ThinkPad
+maintenance receipts record backed-up cleanup and retained duplicate removal,
+ending at 80,625,664 available bytes; old packages, tuning, owner levels and
+recovery remain preserved. Raw maintenance records stay private. See
+[status](STATUS.md) for those separate live observations. v0.2.2 assets are
+prepared privately, with publication pending. Final repository validation and
+merge follow this coherent accepted batch; prior releases remain unchanged.

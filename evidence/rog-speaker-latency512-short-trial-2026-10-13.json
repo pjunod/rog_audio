@@ -1,0 +1,109 @@
+{
+  "actual_driver_period_ms": 10.666666666666666,
+  "actual_driver_quantum_frames": 512,
+  "attempt_history": [
+    {
+      "failure": "Orchestrator incorrectly treated parse_top frames as a tuple.",
+      "kind": "wrapper-preflight-only-failure",
+      "prepare_or_live_changes_performed": false,
+      "source_receipt_sha256": "290b0d1f581208fdf020d7b31844e66ee20b86f7e5bc1d14b5fec236bf1346ab"
+    },
+    {
+      "candidate_resumed_and_tuned_auto_loaded": true,
+      "failure": "First native save removed installer trailing blank line; exact baseline guard refused this byte drift.",
+      "guard_changed": false,
+      "kind": "prepared-bundle-installation-refused",
+      "latency_fragment_or_snapshot_published": false,
+      "source_receipt_sha256": "b4411f789586b47b5144895092431216d7d6c5265222b71ebb1a1052b8987416"
+    },
+    {
+      "guard_changed": false,
+      "kind": "fresh-canonical-baseline-distinct-attempt",
+      "qualified": true
+    },
+    {
+      "corrected_fence_qualified": true,
+      "failure": "Different collector record shape added a status field; actual command evidence was identical.",
+      "kind": "readonly-fence-wrapper-only-failure",
+      "live_changes_performed": false,
+      "source_receipt_sha256": "5685ca4db6cffbb71abc15900aea24e965eb2112b814245ed22f2ba96f9b8793"
+    }
+  ],
+  "audible_signal_generated": false,
+  "driver_error_growth_or_reset_observed": false,
+  "driver_rate_hz": 48000,
+  "end_to_end_latency_ms": null,
+  "evidence_kind": "live-software-operational-observation",
+  "final_readonly_fence_sha256": "2b2c93c6420f68a7dc2ca9045144e6cf69c3d9456884e279e3fdfa98ff5ccf81",
+  "finish_utc": "2026-10-13T17:02:44.915025+00:00",
+  "full_hour_started": false,
+  "full_stereo_tuning_chain_observed": true,
+  "host": "lab5",
+  "kind": "speaker-512-short-trial",
+  "kit_sha256": "896418bea876af751fc3d32a1f61d39bc4d504f12755eda3551502acf5c68c6e",
+  "latency_snapshot_sha256": "c1a81d16605d3da25c0d2bcf1c38d5db6c1078ce1872660f01d1b9d22c26658e",
+  "latency_snapshot_status": {
+    "owned_file": "expected",
+    "status": "installed"
+  },
+  "limits": [
+    "20-second silent processing with sampled software counters is not final-runtime sustained stability or audible-gap acceptance.",
+    "First zero-quantum monitor placeholders are excluded from usable timing/counter comparisons, retained in private raw captures.",
+    "Physical speaker delay, calibrated acoustics, macOS parity and post-fix ROG reboot remain unmeasured.",
+    "Everyday movie/show loudness remains a separate unresolved owner report."
+  ],
+  "manual_preset_restore_performed": false,
+  "native_tuned_preset_auto_loaded": true,
+  "new_unit_or_native_acceptance_tests_run": false,
+  "old_runtime_package_retained": true,
+  "owned_player_elapsed_seconds": 20.06544256210327,
+  "owned_probe_nodes_gone": true,
+  "owner_volume_changed_by_agent": false,
+  "owner_volumes_preserved": true,
+  "physical_latency_ms": null,
+  "pipewire_and_wireplumber_preserved": true,
+  "post_silent_state_and_units_preserved": true,
+  "pre_activation_baseline": {
+    "actual_quantum_frames": 2048,
+    "core_and_physical_node_identity_preserved": true,
+    "driver_errors": 3,
+    "owned_player_elapsed_seconds": 8.177036762237549,
+    "rate_hz": 48000,
+    "raw_capture_sha256": "82c5c6d08556349302cbaea5d16bc72e51d3ac1bf76ff4005961f89b48165f7c",
+    "source_receipt_sha256": "a896fad897ca25417d87c99debd36737a959c69d51a92357b8ace118bf19e965",
+    "usable_driver_samples": 4
+  },
+  "recording_performed": false,
+  "requested_quantum_frames": 512,
+  "reviewed_tested_source_head": "31c211a",
+  "runtime_binary_sha256": "5686f784a6de02e72a4fb6cb08ff9022e675eb3c61a67634ae6305a5597ca7c4",
+  "runtime_package_bytes": 3742540,
+  "runtime_package_sha256": "b24e9c97fa1d892c4f1eede22ab5f0bf2669f7b0d3cc5c7985cae4965bd0582a",
+  "runtime_package_version": "8.2.8+rog2",
+  "runtime_release": "v0.2.1",
+  "runtime_rollback_snapshot_retained": true,
+  "schema_version": 1,
+  "scope": "one private output-filter latency suggestion; no system-wide forced quantum",
+  "source_archive_sha256": "a65df3d7ed0833e7f975198dc31104cfd4887d42d113e99483695d0cb0708b6e",
+  "source_merge_commit": "30125c0d5769fbc43925012e00a0c3fc185f9c1a",
+  "source_operation_sha256": "5cbed3f2aeee3c1aa74f83d35924b7a7d53338418796c598617735da25a2dc70",
+  "start_utc": "2026-10-13T17:02:23.006776+00:00",
+  "startup_unit_preserved_and_enabled": true,
+  "tuning_payload_preserved": true,
+  "usable_driver_error_counts": [
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3
+  ],
+  "usable_driver_samples": 12,
+  "zero_error_startup_claimed": false
+}

@@ -1,6 +1,6 @@
 # EasyEffects runtime source series
 
-**Status:** additive fix compiled; review, selected units and isolated graphs passed ·
+**Status:** device-return fix accepted; programme-loudness corrections reviewed, 28 affected units and two isolated graphs passed ·
 **Updated:** 2026-10-13.
 
 [The source manifest](source.json) pins upstream v8.2.8 and each patch hash.
@@ -24,10 +24,17 @@ Apply in this order to commit
    invalidation generations, persistent late profile bindings and current-node
    validation for queued events.
 
-Upstream code and the local routing header are GPL-3.0-or-later. The original
+4. [Bounded programme makeup](0003-Bound-programme-loudness-makeup.patch),
+   local: independent 0–36 dB automatic makeup limit, retained-state clamping,
+   silence/readiness resets, synchronized analyser ownership and history,
+   ingestion-error resets, louder-source reduction and preset/UI controls.
+   This reviewed candidate is distinct from the published device-return
+   runtime; laptop gain/listening acceptance remains separate.
+
+Upstream code and the local routing and makeup headers are GPL-3.0-or-later. The original
 copyright headers are retained. Ubuntu packaging attribution and CC0-1.0 terms
 are in [COPYRIGHT](ubuntu/COPYRIGHT). Full corresponding upstream source with
-both patches is retained beside every exported binary package.
+the complete additive series is retained beside every exported binary package.
 
 Use [the source/build tool](../../scripts/build_easyeffects_runtime.py) so patch
 application cannot silently skip paths when the output sits inside another Git
@@ -38,3 +45,8 @@ The [device-return contract](../../docs/SPEAKER_AUTOLOAD.md) describes the new
 additive fix, bounded native build and kit metadata regeneration. The prior
 accepted/imported patch bytes remain unchanged; checksums were deliberately
 extended for the additive patch and route-cache header pin.
+
+[Programme loudness](../../docs/PROGRAMME_LOUDNESS.md) describes the native
+capability contract and preserved model-bundle preparation. SHA256SUMS was
+deliberately extended for patch3 and the makeup header; original imported and
+accepted patch hashes are unchanged. Compilation does not imply acceptance.

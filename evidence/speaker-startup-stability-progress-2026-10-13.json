@@ -310,7 +310,7 @@
     "expected_package": "rog-audio-easyeffects_8.2.8+rog2_amd64.deb",
     "candidate_compilation": "review-fixed-source-compiled-and-exported",
     "focused_acceptance": "29-unit-methods-and-six-isolated-graphs-passed-first-execution",
-    "live_deployment": "not-installed",
+    "live_deployment": "ROG-installed-ThinkPad-old-runtime-retained-storage-hold",
     "method_document": "docs/SPEAKER_AUTOLOAD.md",
     "latest_authored_commit": "b6d5f1e2dfc664ab21115a53aeeb64f3575177e6",
     "source_manifest_sha256": "b484ce170e1fc50b80b2e26f21d483c8ac078a1caf8faad856298b144a243d4d",
@@ -333,14 +333,20 @@
     "passed_unit_methods": 29,
     "passed_graph_selectors": 6,
     "unit_and_graph_failures": 0,
-    "unit_skips": 0
+    "unit_skips": 0,
+    "merge_commit": "30125c0d5769fbc43925012e00a0c3fc185f9c1a"
   },
   "planned_release": {
     "tag": "v0.2.1",
     "package_version": "8.2.8+rog2",
-    "status": "planned-after-combined-review-focused-acceptance-and-merge",
+    "status": "published-after-direct-payload-authorization-remote-tag-and-assets-verified",
     "assets": "corrected-runtime-exact-corresponding-source-newly-bound-ASUS-and-Lenovo-kits",
-    "prior_release": "v0.2.0-assets-retained-unchanged"
+    "prior_release": "v0.2.0-assets-retained-unchanged",
+    "publication_receipt": "evidence/speaker-runtime-v021-publication-2026-10-13.json",
+    "publication_receipt_sha256": "ef20f5f43f349b259a8578f0017d50e5d3073e61e5612ac3f624287828ee6e30",
+    "url": "https://github.com/pjunod/rog_audio/releases/tag/v0.2.1",
+    "guide_correction_receipt": "evidence/speaker-runtime-v021-guide-correction-2026-10-13.json",
+    "guide_correction_receipt_sha256": "f96016ab5179d1c3a8467a04f389ddb497cb460903675052ccd0df232bc14e17"
   },
   "deployment_holds": {
     "thinkpad": {
@@ -391,12 +397,34 @@
     "accepted": false,
     "owner_report": "Ordinary movies and shows are too quiet on both laptops at maximum volume.",
     "investigation": "separate-next-coherent-gain-stage-batch",
-    "reviewed_startup_latency_code_changed_for_this_report": false
+    "reviewed_startup_latency_code_changed_for_this_report": false,
+    "rog_root_cause": "unresolved-beyond-small-measured-speech-filter-loss",
+    "thinkpad_measured_contribution": "existing-FIR-speech-attenuation-about-four-dB",
+    "prospective_leveler_accepted_or_deployed": false
   },
   "thinkpad_postboot_observation": {
     "path": "evidence/thinkpad-postboot-observation-v1-2026-10-13.json",
     "sha256": "fc0773c5e76d72e4af5178725e553478ecf205e2b4833122b77e61841db3ea7b",
     "runtime_release": "v0.2.0",
     "scope": "one-external-boot-and-separate-bounded-check-not-repeated-startup-or-corrected-runtime"
+  },
+  "rog_corrected_runtime_observation": {
+    "path": "evidence/rog-speaker-runtime-upgrade-2026-10-13.json",
+    "sha256": "60a853f7dd0af3de08aa6c609503c21f0ce604c798ed2df49c031322654aa939",
+    "scope": "controlled-startup-and-12-second-silent-check-not-reboot-or-hour"
+  },
+  "rog_512_short_observation": {
+    "path": "evidence/rog-speaker-latency512-short-trial-2026-10-13.json",
+    "sha256": "a63bb3395c5ef5acc18d7708e2af66c6b6a8b888026b0afb8b79b1a0d764eba8",
+    "scope": "20-second-negotiated-silent-check-not-hour-or-physical-delay",
+    "requested_and_observed_quantum_frames": 512,
+    "driver_rate_hz": 48000,
+    "cumulative_driver_error_baseline": 3,
+    "error_growth_or_reset_observed": false
+  },
+  "digital_loudness_diagnosis": {
+    "path": "evidence/both-laptop-digital-gain-transfer-2026-10-13.json",
+    "sha256": "cfe6c4ac929a1f25af3ffe525391a510f12df210c01103f1190d456175021f3d",
+    "scope": "one-prepared-low-level-speech-clip-not-ordinary-programme-or-acoustics"
   }
 }

@@ -24,7 +24,8 @@ ROOT=Path(__file__).resolve().parents[1]
 PIN='6d9b1220d3dcebb154ba759a05600662bc0af549'
 SERIES=('ubuntu/0001-Disable-echo-canceller.patch',
         '0001-Scope-speaker-correction-to-device-route.patch',
-        '0002-Retain-output-routes-for-device-return.patch')
+        '0002-Retain-output-routes-for-device-return.patch',
+        '0003-Bound-programme-loudness-makeup.patch')
 MAX_ARCHIVE=128*1024*1024
 
 class BuildError(Exception):pass
@@ -62,6 +63,8 @@ def source_snapshot(source,output):
         pins=json.loads((ROOT/'patches/easyeffects/source.json').read_text())
         if sha((output/'src/speaker_routing.hpp').read_bytes())!=pins['routing_header_sha256']:raise BuildError('routing_header_pin_mismatch')
         if sha((output/'src/output_route_cache.hpp').read_bytes())!=pins['output_route_header_sha256']:raise BuildError('output_route_header_pin_mismatch')
+        if sha((output/'src/programme_makeup_gain.hpp').read_bytes())!=pins['programme_makeup_header_sha256']:raise BuildError('programme_makeup_header_pin_mismatch')
+        if sha((output/'src/programme_analyser_state.hpp').read_bytes())!=pins['programme_analyser_header_sha256']:raise BuildError('programme_analyser_header_pin_mismatch')
         if 'org.rog_audio.SpeakerEffects' not in (output/'src/tags_app.hpp').read_text():raise BuildError('candidate_namespace_not_applied')
     except BaseException:
         shutil.rmtree(output);raise
@@ -121,6 +124,7 @@ def build(source,output,image_tag=None,engine='docker'):
         if manifest.get('package_version')!=package.VERSION or manifest.get('package')!=expected_package:raise BuildError('exported_package_version_mismatch')
         if sha((output/expected_package).read_bytes())!=manifest['package_sha256']:raise BuildError('exported_package_mismatch')
         if sha((ROOT/'patches/easyeffects/source.json').read_bytes())!=manifest['source_manifest_sha256']:raise BuildError('exported_source_manifest_mismatch')
+        if manifest.get('programme_loudness_contract')!='bounded-programme-makeup-v1':raise BuildError('exported_programme_contract_mismatch')
         manifest['image']=image
         (output/'runtime.json').write_text(json.dumps(manifest,indent=2,sort_keys=True)+'\n')
         # Full upstream source and copyright travel with the built artifact.

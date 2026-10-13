@@ -1,35 +1,36 @@
 # Speaker installation — exact route, reversible files
 
-**Status:** reviewed compiler, 33 lane unit cases and both device graph cases passed ·
+**Status:** v0.2.1 published; +rog3 programme candidate accepted; v0.2.2 publication pending; live loudness/hours open ·
 **Updated:** 2026-10-13 · **Executes:** internal-speaker installation from
 [status](STATUS.md).
 
-Both laptops now run their separate authorized v0.2.0 candidates. The ROG's
-live preset, IR, plugins and physical output checks are recorded in
-[the deployment receipt](../evidence/rog-speaker-deployment-2026-10-12.json).
-The owner reports substantial audible improvement and requested automatic
-startup, enabled for user login after reboot. Initial enablement preserved
-the listening process; actual post-reboot startup is pending observation. Initial
-deployment volume was 20%, and the prior volume, private snapshot and versioned
-recovery tools are retained. Physical hotplug/measurement acceptance is pending.
-The ThinkPad's separate Lenovo candidate has also passed its live loading and
-speaker output checks, with login startup enabled and rollback retained; see
-[its deployment receipt](../evidence/thinkpad-speaker-deployment-2026-10-12.json).
-Owner listening feedback on the ThinkPad remains pending. Both candidates
-use the persistent service. ThinkPad retains the 256-frame request; ROG now
-uses the 2048-frame baseline after reviewed removal of its failed request.
-Their [paired latency trials and rollback](LATENCY_COMPARISON.md#7-paired-256-frame-trials--both-tuned-paths-preserved)
-preserved tuning, physical defaults and the volume observed in that paired
-window: 86% on the ROG, 20% on the ThinkPad. Those values are historical,
-distinct from initial installation and later owner adjustments. The current
-normal-use attempt starts at 94% on ROG and 100% on ThinkPad; tests preserve the
-chosen level and record later adjustments.
+The ROG now runs corrected `8.2.8+rog2` with its original speaker tuning;
+[the upgrade receipt](../evidence/rog-speaker-runtime-upgrade-2026-10-13.json)
+records automatic tuned-preset loading during a controlled service start,
+preserved preset/IR/autoload and non-main RC bytes, expected main-RC counter
+and formatting changes, retained rollback and unchanged owner volume/stock
+services. Its [short 512-frame check](../evidence/rog-speaker-latency512-short-trial-2026-10-13.json)
+passed separately; no new ROG reboot or full-hour pass is claimed. ThinkPad
+retains its original v0.2.0 runtime at 256 frames while its storage hold is
+resolved; its old-runtime hour and one separate post-boot observation remain
+scoped historical results.
 
-The corrected runtime is planned for `v0.2.1` (package `8.2.8+rog2`) after
-combined review, focused acceptance and merge. Its newly bound kits must retain
-exact preset/IR bytes; existing v0.2.0 assets and private rollback remain
-available. See [the upgrade contract](SPEAKER_AUTOLOAD.md). Publication and
-fresh deployed-runtime stability are still pending.
+The original [ROG](../evidence/rog-speaker-deployment-2026-10-12.json) and
+[ThinkPad](../evidence/thinkpad-speaker-deployment-2026-10-12.json) deployment
+receipts retain initial 20% volume, private recovery snapshots and startup
+history. Later owner-selected levels are test conditions, not installation
+instructions. The owner reports positive demo clarity but ordinary movies/shows
+remain too quiet on both; everyday loudness and physical quality acceptance
+are unresolved. Both persistent login services remain enabled. Keep the
+original filters, limiter and stock amplifier protection intact.
+
+The published [v0.2.1 release](https://github.com/pjunod/rog_audio/releases/tag/v0.2.1)
+contains the corrected runtime, exact corresponding source/notices and newly
+runtime-bound kits retaining original preset/IR payload bytes. The original
+[v0.2.0 release](https://github.com/pjunod/rog_audio/releases/tag/v0.2.0) and
+private rollback remain available. See [the upgrade contract](SPEAKER_AUTOLOAD.md)
+for an existing installation. Release publication does not qualify sustained
+or physical behaviour.
 
 Read [speaker preparation](AUDIO_SPEAKER_BUILD.md) before using
 [the installation tool](../scripts/speaker_install.py). The input is an
@@ -39,35 +40,51 @@ change the physical default sink, set amplifier controls, restart services,
 play audio or record sound. Coordinate the later runtime start and audible
 acceptance window separately.
 
-## Download v0.2.0 and select your kit
+## Prepared v0.2.2 — publication pending, programme kits bound to +rog3
 
-The [v0.2.0 release](https://github.com/pjunod/rog_audio/releases/tag/v0.2.0)
-contains the reviewed runtime package with corresponding source, two kits and
-SHA256 checksums. Use an owned directory outside any existing checkout.
+The v0.2.2 runtime/source/notices archive and both ordinary programme kits are
+prepared privately. Publication is pending final repository validation, merge
+and asset review. The commands below apply after publication succeeds; they
+name this accepted `8.2.8+rog3` batch consistently.
 
 ```bash
-# Obtain versioned tools and matching assets; requires GitHub CLI.
-git clone --branch v0.2.0 https://github.com/pjunod/rog_audio.git rog-audio-0.2.0
-cd rog-audio-0.2.0
+# After v0.2.2 publication, obtain its matching tools and assets.
+audio_release_root="$HOME/.local/state/rog-audio/work"
+mkdir -p "$audio_release_root"
+git clone --branch v0.2.2 https://github.com/pjunod/rog_audio.git "$audio_release_root/rog-audio-0.2.2"
+cd "$audio_release_root/rog-audio-0.2.2"
 mkdir delivery
-gh release download v0.2.0 --repo pjunod/rog_audio --dir delivery \
+gh release download v0.2.2 --repo pjunod/rog_audio --dir delivery \
   --pattern 'rog-audio-speaker-*.tar.gz' --pattern SHA256SUMS
 (cd delivery && sha256sum --check SHA256SUMS)
-tar -xzf delivery/rog-audio-speaker-runtime-0.2.0.tar.gz -C delivery
-tar -xzf delivery/rog-audio-speaker-kits-0.2.0.tar.gz -C delivery
+tar -xzf delivery/rog-audio-speaker-runtime-0.2.2.tar.gz -C delivery
+tar -xzf delivery/rog-audio-speaker-kits-0.2.2.tar.gz -C delivery
 ```
 
-Both checksum entries must report `OK`. The runtime directory is
-`delivery/runtime`. Choose `delivery/kits/asus` for the GU605MZ or
-`delivery/kits/thinkpad` for the first-generation X1 Extreme. These are separate
-music/balanced candidates bound to the inspected device and route. Use those
-paths in place of `RUNTIME_ARTIFACT` and `KIT` below. The `.deb` SHA256 is
-`089ae964c8e1b75281d589a6cd52a3a25d358f9443112162fea616b69b5904d7`.
+Both checksum entries must report `OK`. Use `delivery/runtime` for
+`RUNTIME_ARTIFACT` and `delivery/kits/asus` or `delivery/kits/thinkpad` for the
+matching `KIT`. The new package is
+`rog-audio-easyeffects_8.2.8+rog3_amd64.deb`, SHA256
+`92349a51ba98c6659caabc505f57117b8db46b1c70c705d99ea3449ee16ab6a8`.
+These ordinary model kits preserve the original FIR and non-AutoGain stages,
+with a separate -20 LUFS programme leveler before the original final limiter.
+Their adjustable maximum makeup defaults are 2.6475 dB ROG and 10.1375 dB
+ThinkPad; they are engineering budgets, not accepted acoustic headroom.
+
+Published [v0.2.1](https://github.com/pjunod/rog_audio/releases/tag/v0.2.1)
+remains available with its original-filter kits and `8.2.8+rog2` runtime.
+Its assets are `rog-audio-speaker-runtime-0.2.1.tar.gz` and
+`rog-audio-speaker-kits-0.2.1.tar.gz`; its package SHA256 remains
+`b24e9c97fa1d892c4f1eede22ab5f0bf2669f7b0d3cc5c7985cae4965bd0582a`.
+For that retained release use its own tagged tools, kits and `+rog2` package,
+rather than combining an old runtime with a programme kit.
 
 Run the read-only prerequisite inspection in §5 and retain the fresh inventory
-from §2 before the coordinated install. The kits and package do not start audio
-automatically. Read §3–4 before installation so the private snapshot and removal
-commands are ready. Keep the corresponding source and notices with the package.
+from §2 before a coordinated install. Packages/kits do not start audio
+implicitly. Read §3–4 first so the private snapshot and removal commands are
+ready. Keep corresponding source and notices with each package. The new
+implementation's passing isolated tests do not qualify everyday loudness or
+the subsequent full-hour laptop checks.
 
 ## 1. Bind the hardware and runtime
 
@@ -231,8 +248,11 @@ exposed autoload bypass when device-route availability preceded node handling.
 The operator reported consistent tuning/route files and restored the exact
 native tuned preset, retaining physical volume. The full ASUS chain then
 passed bounded zero-PCM checks and entered a fresh hour. This demonstrates
-restoration, not reliable automatic startup. The corrected native runtime is compiled/exported with cleared source fixes;
-final artifact checks and focused acceptance remain pending. It is not installed during the active hour.
+restoration, not reliable automatic startup. The corrected +rog2 startup
+runtime subsequently passed review and 29-unit/six-graph acceptance, merged,
+and was installed on the ROG with automatic original-preset loading and a
+separate short 512-frame pass. That history remains distinct from a new
+post-reboot or final-configuration hour.
 [Speaker autoload](SPEAKER_AUTOLOAD.md) owns the exact `+rog2` package contract,
 unchanged-tuning kit regeneration, retained rollback and coordinated upgrade
 steps. Use that procedure after review and affected acceptance; do not relax
@@ -242,7 +262,12 @@ remain separate from this installation procedure and prior acceptance.
 
 ## 5. Build and deliver the usable runtime
 
-The current source build emits package `8.2.8+rog2`. Follow the focused
+The extended source build emits `8.2.8+rog3`, accepted in the isolated
+28-unit/two-graph programme batch. v0.2.2 publication and actual laptop
+listening/stability remain pending; published v0.2.1 and its `+rog2` recovery
+artifacts remain unchanged. Read [programme loudness](PROGRAMME_LOUDNESS.md)
+for the independent controls, preserved voicing and source/build contract.
+Follow the focused
 [autoload build and unchanged-tuning upgrade contract](SPEAKER_AUTOLOAD.md)
 for bounded native builds, corresponding source, new runtime/kit binding and
 retained rollback. The v0.2.0 `+rog1` release and its receipt remain historical
@@ -262,7 +287,7 @@ python3 scripts/inspect_speaker_runtime.py \
   --manifest RUNTIME_ARTIFACT/runtime.json --output PRIVATE_COMPATIBILITY.json
 ```
 
-The current `rog-audio-easyeffects_8.2.8+rog2_amd64.deb` installs only its
+The current `rog-audio-easyeffects_8.2.8+rog3_amd64.deb` installs only its
 private prefix, launcher, desktop entry and licence/source notices. It has no
 service scripts or autostart activation. Dependencies derive from Ubuntu's
 EasyEffects `8.2.8+ds-1build1` package plus required LSP LV2 plugins. The runtime
@@ -274,10 +299,14 @@ both laptops' amd64 processors. Shared libraries retain Ubuntu's package ABI.
 The historical [v0.2.0 compiler receipt](../evidence/speaker-runtime-build-2026-10-12.json)
 binds its 22 modified source files and `+rog1` artifact. The
 [review-fixed compiler/export receipt](../evidence/speaker-autoload-reviewed-build-2026-10-13.json)
-binds corrected `b6d5f1e` source, the `+rog2` artifact and all 711 corresponding
+binds corrected `b6d5f1e` source, the accepted `+rog2` artifact and all 711 corresponding
 source files. The earlier [intermediate receipt](../evidence/speaker-autoload-build-2026-10-13.json)
 for `135c60f` is retained unchanged as history; it is superseded for this
-candidate. Final artifact checks and affected acceptance still precede use. The current final review/tests/rebuild state is in [status](STATUS.md).
+candidate. The separate [corrected +rog3 build receipt](../evidence/programme-loudness-reviewed-build-2026-10-13.json)
+binds 713 exact files and the new package. Its [28-unit/two-graph acceptance](../evidence/programme-loudness-acceptance-2026-10-13.json)
+retains the two first-attempt startup failures, reviewed raw-PCM correction and
+failed-selector-only retries. Final validation/merge, publication and live
+acceptance remain separately recorded in [status](STATUS.md).
 The prerequisite report lists installed versions/providers and missing
 prerequisites without installing anything.
 
@@ -293,7 +322,7 @@ Use the delivered per-device kit and a new private snapshot directory.
 
 ```bash
 # Coordinated package/dependency installation on the selected laptop.
-sudo apt install ./RUNTIME_ARTIFACT/rog-audio-easyeffects_8.2.8+rog2_amd64.deb
+sudo apt install ./RUNTIME_ARTIFACT/rog-audio-easyeffects_8.2.8+rog3_amd64.deb
 mkdir -p "${XDG_STATE_HOME:-$HOME/.local/state}/rog-audio/snapshots"
 python3 scripts/speaker_install.py install \
   --kit KIT --runtime /opt/rog-audio/easyeffects/bin/easyeffects \
@@ -316,6 +345,10 @@ preserved. No display or session restart belongs to this procedure.
 
 ## 6. Review-bound isolated acceptance
 
+The receipts immediately below are inherited v0.2.0 acceptance from PR 2.
+The current v0.2.1 startup runtime has a separate [29-unit/six-graph receipt](../evidence/speaker-autoload-acceptance-2026-10-13.json);
+those passes do not rewrite the older package or test identities.
+
 Run these tests only after independent adversarial review and fixes.
 [The unit receipt](../evidence/speaker-installation-unit-validation-2026-10-12.json)
 records one source, 12 installer and 20 native routing cases passing against
@@ -327,7 +360,7 @@ records both device cases passing all 10 assertions against integrated
 `ca0e755`, with their separate verified tuning bundles. Only the failed ASUS
 case was retried after focused fixture review; the ThinkPad case passed on its
 first run. The graph helper was rebuilt separately, and both image IDs and
-helper hashes are recorded. The production package remained
+helper hashes are recorded. The historical v0.2.0 production package remained
 `089ae964c8e1b75281d589a6cd52a3a25d358f9443112162fea616b69b5904d7`.
 Each selector can be retried independently.
 

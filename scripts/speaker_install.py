@@ -207,6 +207,9 @@ def prepare(bundle,inventory,output,runtime_manifest):
             runtime.get('routing_contract')=='exact-device-route-v1' and
             isinstance(runtime.get('binary_sha256'),str) and DIGEST.fullmatch(runtime['binary_sha256']),
             'unsupported_runtime_contract',3)
+    if manifest.get('programme_loudness') is not None:
+        require(runtime.get('programme_loudness_contract')=='bounded-programme-makeup-v1',
+                'runtime_lacks_bounded_programme_makeup',3)
     manifest=document(bundle/'manifest.json');preset=read(bundle/'preset.json')
     stem='rog-speaker-'+sha(preset)[:16]
     bypass=stem+'-bypass'
@@ -248,6 +251,10 @@ def load_kit(path):
     require(isinstance(binding,dict) and binding.get('codec')=='10ec0285' and binding.get('subsystem') in ('10431c63','17aa2276') and binding.get('route_name')=='analog-output-speaker','invalid_kit_binding')
     source_manifest=document(root/'speaker-source/manifest.json')
     require(kit.get('hardware')==source_manifest['hardware'] and kit.get('selection')==source_manifest['selection'] and binding.get('codec')==source_manifest['hardware']['codec'] and binding.get('subsystem')==source_manifest['hardware']['subsystem'],'kit_hardware_or_selection_mismatch')
+    if source_manifest.get('programme_loudness') is not None:
+        require(isinstance(kit.get('runtime'),dict) and
+                kit['runtime'].get('programme_loudness_contract')=='bounded-programme-makeup-v1',
+                'runtime_lacks_bounded_programme_makeup',3)
     source_preset=read(root/'speaker-source/preset.json')
     stem='rog-speaker-'+sha(source_preset)[:16]
     require(kit.get('preset_name')==stem and kit.get('bypass_name')==stem+'-bypass','invalid_preset_identity')

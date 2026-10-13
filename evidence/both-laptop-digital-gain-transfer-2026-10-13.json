@@ -1,0 +1,99 @@
+{
+  "schema_version": 1,
+  "kind": "both-laptop-digital-gain-transfer",
+  "quality_acceptance": {
+    "everyday_loudness": "unresolved",
+    "gain_fix_applied": false,
+    "sonos": "deferred"
+  },
+  "scope": "10-second prepared speech clip; 20-second paired digital sink-monitor recordings, not an acoustic or physical-latency measurement",
+  "hosts": {
+    "lab5": {
+      "installed_runtime_sha256": "e5061dcc1e0b925933eceeacffb576536d24f609307166b97d0e159c0f1772d1",
+      "signal_sha256": "80c0a4693f49d21b9291d792ba7b3d268cf83a989e69b063f5c0586e1db07b80",
+      "ir_sha256": "1d30e4445384b6a03af2eaa85fae6d73ce1bf1ff986d201cdb4162e4116d5661",
+      "full_stereo_chain_observations": 19,
+      "capture_frames_per_channel": 960000,
+      "sample_rate_hz": 48000,
+      "capture_bytes_per_stream": {
+        "input": 7680000,
+        "output": 7680000
+      },
+      "source_input_gain_db": [
+        0.0,
+        0.0
+      ],
+      "output_extra_gain_vs_exact_fir_db": [
+        -1e-06,
+        -1e-06
+      ],
+      "measured_speech_fir_transfer_db": [
+        -0.342967,
+        -0.342967
+      ],
+      "native_sample_limit_exit_codes": {
+        "player": 1,
+        "captures": {
+          "input": 1,
+          "output": 1
+        }
+      },
+      "preservation": {
+        "protected_state_preserved": true,
+        "units_preserved": true,
+        "volumes_preserved": true,
+        "owned_nodes_gone": true
+      },
+      "private_receipt_sha256": "94749d01dc19030b258ac2cfd7e881c293dc1940818403f3322d2955fde38863",
+      "private_analysis_sha256": "7cb086f9eb03037648ee2c8e01db9af0422a386071fccbd62c5a8d611a4c86df"
+    },
+    "lab6": {
+      "installed_runtime_sha256": "e5061dcc1e0b925933eceeacffb576536d24f609307166b97d0e159c0f1772d1",
+      "signal_sha256": "80c0a4693f49d21b9291d792ba7b3d268cf83a989e69b063f5c0586e1db07b80",
+      "ir_sha256": "2040c08e3d19489331ace93d2503431ea1a63425d99fb8ad6a80977e2ad8b058",
+      "full_stereo_chain_observations": 19,
+      "capture_frames_per_channel": 960000,
+      "sample_rate_hz": 48000,
+      "capture_bytes_per_stream": {
+        "input": 7680000,
+        "output": 7680000
+      },
+      "source_input_gain_db": [
+        0.0,
+        0.0
+      ],
+      "output_extra_gain_vs_exact_fir_db": [
+        -0.0,
+        -0.0
+      ],
+      "measured_speech_fir_transfer_db": [
+        -3.90323,
+        -3.783139
+      ],
+      "native_sample_limit_exit_codes": {
+        "player": 1,
+        "captures": {
+          "input": 1,
+          "output": 1
+        }
+      },
+      "preservation": {
+        "protected_state_preserved": true,
+        "units_preserved": true,
+        "volumes_preserved": true,
+        "owned_nodes_gone": true
+      },
+      "private_receipt_sha256": "0424a53353cc15df3573ebffacc3793d5990f69fc8352a1040d1d7e4aed2a5e1",
+      "private_analysis_sha256": "f2a7ff597ede3f8b85135b7e06d2ca01dfa6cd64f03b6741a5f141718d275f30"
+    }
+  },
+  "limits": [
+    "Low-level prepared clip only; ordinary movie programme and level-dependent behavior remain unmeasured.",
+    "Digital alignment is not measured speaker latency.",
+    "Existing amplifier firmware/protection and speaker tuning were preserved; acoustic output was not calibrated."
+  ],
+  "failed_preplayback_attempts": {
+    "lab5": 2,
+    "audible_playback_started": false
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "kind": "github-release-publication",
+  "tag": "v0.2.1",
+  "url": "https://github.com/pjunod/rog_audio/releases/tag/v0.2.1",
+  "published_utc": "2026-10-13T17:23:58Z",
+  "tag_commit": "30125c0d5769fbc43925012e00a0c3fc185f9c1a",
+  "latest_tag_verified": "v0.2.1",
+  "assets": [
+    {
+      "name": "rog-audio-speaker-kits-0.2.1.tar.gz",
+      "bytes": 127991,
+      "sha256": "41efeecf2fc7b6db8b656cabd344c10a5d6bec39843d0ad7d923ca6e7c739492",
+      "state": "uploaded"
+    },
+    {
+      "name": "rog-audio-speaker-runtime-0.2.1.tar.gz",
+      "bytes": 9536941,
+      "sha256": "aabe2d5af8e3f759cc21b34e54cda73f8230e3aa4b6ee677f4f5c1203c8ec125",
+      "state": "uploaded"
+    },
+    {
+      "name": "SHA256SUMS",
+      "bytes": 207,
+      "sha256": "ebf1f5947e908f0c7bb1b651430fc75faeb138cd120631068ab8afa29485a44d",
+      "state": "uploaded"
+    }
+  ],
+  "notes_file_sha256": "8959ff55766ba8355fd5c55c26738009bb22813973d37eca1f93c6a0970b99ff",
+  "remote_notes_match_ignoring_trailing_newlines": true,
+  "prior_release_runtime_and_kits_hashes_preserved": true,
+  "private_recordings_inventories_or_keys_uploaded": false,
+  "new_tests_run_for_publication": false
+}

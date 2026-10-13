@@ -8,8 +8,8 @@ Atmos is last.
 
 Read [status](docs/STATUS.md) for progress and evidence boundaries.
 The speaker runtime and separate ASUS/ThinkPad kits have passed review, unit
-tests and isolated runtime acceptance. The ROG now runs the v0.2.0 internal
-speaker candidate with its preset, IR, plugins and hardware output checked;
+tests and isolated runtime acceptance. The ROG now runs the corrected `8.2.8+rog2` runtime with its original preset,
+IR, plugins and hardware output checked;
 the ThinkPad now runs its separate Lenovo candidate with the same live checks.
 Both have automatic startup enabled at user login after reboot. The owner reports
 substantial audible improvement in clarity, but everyday movies/shows remain
@@ -19,8 +19,8 @@ Atmos fidelity has not been measured.
 
 Historical paired zero-PCM observations reduced both tuned Linux driver
 periods from 2048 frames (42.667 ms) to 256 frames (5.333 ms) at 48 kHz with
-the same client request. The ROG is currently restored to 2048 frames after
-its 256-frame stability failure; ThinkPad remains at 256. The M4 Air reports
+the same client request. The ROG now runs at 512 frames (10.667 ms) after its 256-frame stability
+failure and a separate successful short trial; ThinkPad remains at 256. The M4 Air reports
 a 512-frame HAL buffer (10.667 ms). These are software timing terms, not
 measured speaker delay or proof of Mac parity.
 The [comparison and rollback](docs/LATENCY_COMPARISON.md#7-paired-256-frame-trials--both-tuned-paths-preserved)
@@ -32,13 +32,14 @@ startup value of 1, followers stayed zero and protected state matched at
 start, midpoint and end. The ROG's 256-frame attempt failed after 67.982
 seconds; reviewed rollback preserved its full tuning at 2048 frames. Neither
 result measures physical latency or qualifies the startup-fixed runtime.
-The corrected native runtime is compiled/exported and its source fixes
-and final artifact bindings cleared re-review. All 29 affected unit methods and six isolated graph selectors passed once,
+The corrected native runtime and final artifact bindings cleared re-review,
+PR 9 merged, and the ROG upgrade automatically loaded the unchanged tuning. All 29 affected unit methods and six isolated graph selectors passed once,
 with zero failures or skips. The [acceptance receipt](evidence/speaker-autoload-acceptance-2026-10-13.json)
 binds the reviewed source, runtime and retained logs. [Current results](docs/STATUS.md#startup-and-sustained-check-progress--2026-10-13)
-keep those evidence classes distinct. A new `v0.2.1` release with package
-`8.2.8+rog2`, corresponding source and newly bound kits is planned after
-review, focused tests and merge; existing v0.2.0 assets remain unchanged.
+keep those evidence classes distinct. The [published v0.2.1 release](https://github.com/pjunod/rog_audio/releases/tag/v0.2.1)
+contains package `8.2.8+rog2`, corresponding source/notices, both newly bound
+kits and checksums. Its tag and remote asset hashes were verified; existing
+v0.2.0 assets remain unchanged.
 A later [ROG listening observation](evidence/rog-owner-listening-2026-10-13.json)
 records “Sounded good” with matching protected state; driver timing was not
 sampled during that demo, so it is separate from latency/stability results.
@@ -46,8 +47,20 @@ The [ThinkPad listening receipt](evidence/thinkpad-owner-listening-2026-10-13.js
 also records “sounded good” for the demo, while explicitly leaving everyday
 loudness unaccepted after the subsequent movies/shows report. A separate gain
 investigation will address that issue without changing this frozen batch.
-The ThinkPad runtime update is held pending a read-only storage-capacity
-audit after pilot-file staging reported `ENOSPC`; recovery assets stay retained.
+The ThinkPad runtime update remains held after pilot staging reported
+`ENOSPC`. Authorized backed-up cleanup and removal of verified offhost-retained
+agent copies left 80,625,664 bytes (76.89 MiB) available. Its recovery assets,
+installed packages and audio settings remain preserved; final installation
+and recovery budgeting are separate from those maintenance observations.
+A later [paired digital gain capture](evidence/both-laptop-digital-gain-transfer-2026-10-13.json)
+found speech attenuation consistent with the retained FIR filters (-0.343 dB
+ROG, -3.903/-3.783 dB ThinkPad), with no additional runtime gain loss for that
+low-level clip. Ordinary movie/show loudness remains unresolved. The separate programme
+loudness batch has cleared review: 28 affected unit methods passed once and
+both isolated model graph checks passed after a reviewed raw-PCM runner fix.
+The accepted `+rog3` implementation preserves speaker voicing; laptop
+deployment, everyday loudness and fresh final-configuration hours remain open.
+v0.2.2 assets are prepared privately; publication is pending.
 
 Display work remains in [rog_hdr_dv](https://github.com/pjunod/rog_hdr_dv).
 
@@ -62,6 +75,7 @@ Display work remains in [rog_hdr_dv](https://github.com/pjunod/rog_hdr_dv).
 - [ASUS four-channel mapping](docs/ASUS_FOUR_CHANNEL.md) — why the investigated profile needs explicit rear-pair routing and stereo remains the working fallback.
 - [Speaker installation](docs/SPEAKER_INSTALL.md) — scoped runtime and reversible file kit.
 - [Speaker autoload](docs/SPEAKER_AUTOLOAD.md) — native device-return fix, bounded build and unchanged-tuning runtime upgrade.
+- [Programme loudness](docs/PROGRAMME_LOUDNESS.md) — adjustable makeup, preserved voicing and selective acceptance.
 - [Latency build](docs/AUDIO_LATENCY_BUILD.md) — inspection, measurements and candidates.
 - [Linux tuned-path timing](docs/LINUX_AUDIO_PATH.md) — inspect the active processor and apply or remove one private latency request.
 - [CoreAudio timing](docs/COREAUDIO_LATENCY.md) — read-only Mac output terms, M4 Air observations and physical measurement limits.
@@ -147,7 +161,7 @@ recovered vendor files and separately fetched dependencies.
 - [x] Build and validate reviewed speaker, latency and offline Atmos tools.
 - [x] Build reversible installation and pass both isolated runtime/routing cases.
 - [x] Install both model-specific candidates and enable automatic login startup.
-- [x] Reduce both tuned Linux graph periods to 256 frames and collect the M4 Air software reference.
+- [x] Trial lower tuned Linux graph periods and collect the M4 Air software reference; ROG now 512, ThinkPad 256.
 - [ ] Qualify physical headphone/HDMI routing and resume.
 - [ ] Measure built-in speaker quality and latency against the Macs.
 - [ ] Qualify Sonos Arc/eARC last.

@@ -25,6 +25,10 @@ class SourcePreparationTests(unittest.TestCase):
             self.assertIn('RogAudioSpeakerEffectsServer',(source/'src/tags_local_server.hpp').read_text())
             self.assertTrue((source/'src/speaker_routing.hpp').is_file())
             self.assertTrue((source/'src/output_route_cache.hpp').is_file())
+            self.assertTrue((source/'src/programme_makeup_gain.hpp').is_file())
+            self.assertTrue((source/'src/programme_analyser_state.hpp').is_file())
+            self.assertIn('settings->maximumGain()', (source/'src/autogain.cpp').read_text())
+            self.assertIn('maximum-gain', (source/'src/autogain_preset.cpp').read_text())
             self.assertIn('current_output_node',(source/'src/stream_output_effects.cpp').read_text())
             self.assertIn('list[row].profile_device = new_info.profile_device;',
                           (source/'src/pw_model_nodes.cpp').read_text())

@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "kind": "release-installation-guide-link-correction",
+  "release_url": "https://github.com/pjunod/rog_audio/releases/tag/v0.2.1",
+  "tag_commit": "30125c0d5769fbc43925012e00a0c3fc185f9c1a",
+  "change_scope": "installation-guide-URL-only",
+  "old_guide_url": "https://github.com/pjunod/rog_audio/blob/v0.2.1/docs/SPEAKER_INSTALL.md",
+  "new_guide_url": "https://github.com/pjunod/rog_audio/blob/af70640658d4baa0c1b9cd52e2c69d3568b748b9/docs/SPEAKER_INSTALL.md",
+  "guide_commit": "af70640658d4baa0c1b9cd52e2c69d3568b748b9",
+  "original_notes_sha256": "8959ff55766ba8355fd5c55c26738009bb22813973d37eca1f93c6a0970b99ff",
+  "new_notes_sha256": "051b0cca669d6661d7881e91bf4afdb33e5c9889c34b6927a54e7f9cbd1dd357",
+  "remote_body_matches_new_notes": true,
+  "all_three_asset_sizes_and_digests_unchanged": true,
+  "tag_unchanged": true,
+  "new_tests_run": false
+}

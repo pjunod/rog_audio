@@ -19,7 +19,8 @@ class RuntimeBuildTests(unittest.TestCase):
         binary=b'compiled native binary';deb=b'packaged native binary'
         manifest={'binary_sha256':build.sha(binary),'package':build.package.PACKAGE+'_'+build.package.VERSION+'_amd64.deb',
                   'package_version':build.package.VERSION,'package_sha256':build.sha(deb),
-                  'source_manifest_sha256':build.sha((build.ROOT/'patches/easyeffects/source.json').read_bytes())}
+                  'source_manifest_sha256':build.sha((build.ROOT/'patches/easyeffects/source.json').read_bytes()),
+                  'programme_loudness_contract':'bounded-programme-makeup-v1'}
         if change:manifest.update(change)
         stream=io.BytesIO()
         with tarfile.open(fileobj=stream,mode='w') as tar:
@@ -131,3 +132,8 @@ class RuntimeBuildTests(unittest.TestCase):
     def test_exported_source_manifest_mismatch_fails(self):
         _,result,_=self.fixture(change={'source_manifest_sha256':'0'*64})
         self.assertEqual(str(result),'exported_source_manifest_mismatch')
+
+    def test_exported_programme_contract_mismatch_fails(self):
+        _,result,calls=self.fixture(change={'programme_loudness_contract':None})
+        self.assertEqual(str(result),'exported_programme_contract_mismatch')
+        self.assertIn(['podman','rm','owned-export-id'],calls)
