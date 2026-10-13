@@ -1,7 +1,7 @@
 # Speaker autoload — recover the preset when the output device returns
 
-**Status:** initial runtime compiled; review fixes implemented and recompilation
-and focused acceptance pending · **Updated:** 2026-10-13.
+**Status:** reviewed native fixes compiled and packaged; final receipt review and
+focused acceptance pending · **Updated:** 2026-10-13.
 
 Companion to [speaker installation](SPEAKER_INSTALL.md), which owns installation
 and rollback. This document describes the native device-return fix and its
@@ -100,6 +100,13 @@ source files again, excluding only CMake-generated `src/.qmlls.ini`. The baselin
 and intermediate image IDs remain distinguishable. No units or runtime graph
 selectors ran during compilation; the corrected source must compile/export and
 clear focused re-review before acceptance starts.
+
+The [corrected compiler/package receipt](../evidence/speaker-autoload-reviewed-build-2026-10-13.json)
+binds the reviewed model fix to the new binary and complete source. The exact
+model delta reused the preceding build objects and linked successfully within
+the same resource bounds. The synthetic late-binding sink helper also compiled;
+its runtime graph selector remains unexecuted pending final receipt review.
+Both compiler receipts retain their actual hashes, timestamps and image parents.
 
 ## Regenerate kit metadata without changing tuning bytes
 
