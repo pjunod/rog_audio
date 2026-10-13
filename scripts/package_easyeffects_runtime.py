@@ -15,15 +15,18 @@ import tempfile
 PREFIX=Path('/opt/rog-audio/easyeffects')
 PIN='6d9b1220d3dcebb154ba759a05600662bc0af549'
 PACKAGE='rog-audio-easyeffects'
+VERSION='8.2.8+rog2'
+SCRATCH=Path('/build/rog-audio-package')
 
 def command(argv):return subprocess.check_output(argv,text=True).strip()
 
 def main():
-    with tempfile.TemporaryDirectory(prefix='rog-ee-package-') as temporary:
+    SCRATCH.mkdir(mode=0o700,parents=True,exist_ok=True)
+    with tempfile.TemporaryDirectory(prefix='rog-ee-package-',dir=SCRATCH) as temporary:
         base=Path(temporary);package=base/'root';control=package/'DEBIAN';control.mkdir(parents=True)
         dependencies=command(['dpkg-query','-W','-f=${Depends}','easyeffects'])+', lsp-plugins-lv2 (>= 1.2.10)'
         shutil.copytree(PREFIX,package/'opt/rog-audio/easyeffects',symlinks=True)
-        (control/'control').write_text('Package: '+PACKAGE+'\nVersion: 8.2.8+rog1\nArchitecture: amd64\n'
+        (control/'control').write_text('Package: '+PACKAGE+'\nVersion: '+VERSION+'\nArchitecture: amd64\n'
             'Maintainer: rog_audio contributors <agent@example.invalid>\n'
             'Section: sound\nPriority: optional\nDepends: '+dependencies+'\n'
             'Description: Exact-route internal-speaker EasyEffects runtime\n'
@@ -39,7 +42,7 @@ def main():
         shutil.copy2('/usr/share/doc/easyeffects/copyright',notices/'copyright')
         source_bytes=Path('/opt/rog-audio/easyeffects-source.json').read_bytes()
         shutil.copy2('/opt/rog-audio/easyeffects-source.json',notices/'source.json')
-        artifact=base/(PACKAGE+'_8.2.8+rog1_amd64.deb')
+        artifact=base/(PACKAGE+'_'+VERSION+'_amd64.deb')
         subprocess.run(['dpkg-deb','--root-owner-group','--build',str(package),str(artifact)],check=True,stdout=subprocess.DEVNULL)
         ldd=command(['ldd',str(PREFIX/'bin/easyeffects')])
         libraries=[]
@@ -53,7 +56,7 @@ def main():
                   'source_manifest_sha256':hashlib.sha256(source_bytes).hexdigest(),
                   'patches_sha256':json.loads(source_bytes)['files'],
                   'binary_sha256':hashlib.sha256((PREFIX/'bin/easyeffects').read_bytes()).hexdigest(),
-                  'package':artifact.name,'package_sha256':hashlib.sha256(artifact.read_bytes()).hexdigest(),
+                  'package':artifact.name,'package_version':VERSION,'package_sha256':hashlib.sha256(artifact.read_bytes()).hexdigest(),
                   'runtime_prefix':str(PREFIX),'distribution':'Ubuntu 26.10','architecture':'amd64',
                   'dependencies':dependencies,'build_package_versions':versions,'elf_libraries':sorted(libraries),
                   'activation_state':'not-installed','qualification':'isolated-build; physical/acoustic acceptance pending'}

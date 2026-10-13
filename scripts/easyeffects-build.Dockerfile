@@ -12,8 +12,8 @@ COPY easyeffects/ /src/easyeffects/
 COPY source.json /opt/rog-audio/easyeffects-source.json
 RUN cmake -S /src/easyeffects -B /build/easyeffects -G Ninja \
       -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/opt/rog-audio/easyeffects \
- && cmake --build /build/easyeffects --parallel 4 \
+ && cmake --build /build/easyeffects --parallel 1 \
  && cmake --install /build/easyeffects
-COPY probes/ /tmp/probes/
-RUN c++ -std=c++20 -Wall -Wextra /tmp/probes/mock_device.cpp $(pkg-config --cflags --libs libpipewire-0.3) -o /opt/rog-audio/mock-device \
- && cc -std=c11 -Wall -Wextra /tmp/probes/synthetic_player.c $(pkg-config --cflags --libs libpipewire-0.3) -lm -o /opt/rog-audio/synthetic-player
+COPY probes/ /src/probes/
+RUN c++ -std=c++20 -Wall -Wextra /src/probes/mock_device.cpp $(pkg-config --cflags --libs libpipewire-0.3) -o /opt/rog-audio/mock-device \
+ && cc -std=c11 -Wall -Wextra /src/probes/synthetic_player.c $(pkg-config --cflags --libs libpipewire-0.3) -lm -o /opt/rog-audio/synthetic-player

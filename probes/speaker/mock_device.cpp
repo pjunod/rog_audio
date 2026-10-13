@@ -17,6 +17,7 @@ struct Device {
   spa_device_info info{};
   std::string route="analog-output-speaker",description="Speakers";
   std::string other_route="hdmi-output-0",other_description="HDMI";
+  bool routes_visible=true;
   pw_main_loop* loop=nullptr;
   static int add(void* object,spa_hook* hook,const spa_device_events* events,void* data) {
     auto* d=static_cast<Device*>(object);
@@ -32,7 +33,7 @@ struct Device {
   }
   static int enumerate(void* object,int seq,uint32_t id,uint32_t start,uint32_t count,const spa_pod*) {
     auto* d=static_cast<Device*>(object);
-    if(id!=SPA_PARAM_Route || start>=2 || count==0)return 0;
+    if(id!=SPA_PARAM_Route || start>=2 || count==0 || !d->routes_visible)return 0;
     for(uint32_t index=start; index<2 && index-start<count; ++index) {
       uint8_t buffer[1024];spa_pod_builder builder=SPA_POD_BUILDER_INIT(buffer,sizeof(buffer));
       auto* pod=static_cast<spa_pod*>(spa_pod_builder_add_object(&builder,
@@ -49,6 +50,7 @@ struct Device {
   }
   static int set(void*,uint32_t,uint32_t,const spa_pod*) {return -ENOTSUP;}
   void changed(const std::string& command) {
+    routes_visible = command != "invalidate";
     if(command=="other-route") {other_route="hdmi-output-1";other_description="Other HDMI";}
     else if(command=="speaker") {route="analog-output-speaker";description="Speakers";}
     else if(command=="headphones") {route="analog-output-headphones";description="Headphones";}
@@ -67,8 +69,9 @@ static void input(void* object,int,uint32_t) {
   d->changed(command);
 }
 static void bound(void*,uint32_t id) {std::cout<<"device "<<id<<std::endl;}
-int main() {
-  pw_init(nullptr,nullptr);Device d;spa_hook_list_init(&d.listeners);
+int main(int argc,char** argv) {
+  if(argc>2 || (argc==2 && std::string(argv[1])!="--empty-routes"))return 2;
+  pw_init(nullptr,nullptr);Device d;d.routes_visible=argc==1;spa_hook_list_init(&d.listeners);
   d.device.iface=SPA_INTERFACE_INIT(SPA_TYPE_INTERFACE_Device,SPA_VERSION_DEVICE,&methods,&d);
   d.props=pw_properties_new("device.name","rog-synthetic-device","device.api","rog-synthetic",
     "device.description","Synthetic speaker route device","media.class","Audio/Device",nullptr);
