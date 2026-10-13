@@ -1,0 +1,101 @@
+{
+  "schema_version": 1,
+  "kind": "speaker-startup-stability-progress",
+  "date": "2026-10-13",
+  "evidence_class": "operator-reported-live-progress",
+  "status": "in-progress",
+  "timezone": "America/New_York",
+  "completed_60_minute_passes": 0,
+  "physical_latency_measured": false,
+  "source_acceptance_unchanged": [
+    "evidence/linux-speaker-latency-trials-2026-10-13.json",
+    "evidence/physical-emitter-acceptance-2026-10-13.json"
+  ],
+  "method": {
+    "processing": "full-model-specific-tuning-both-hardware-channels",
+    "quantum_frames": 256,
+    "rate_hz": 48000,
+    "client_request_ms": 100,
+    "owned_workload": "all-zero-stereo-pcm",
+    "artificial_cpu_load": false,
+    "test_writes_volume": false,
+    "volume_changes": "record-as-listening-conditions",
+    "strict_guards": [
+      "processing-identity",
+      "tuning-state",
+      "routing",
+      "services",
+      "counter-growth-or-reset",
+      "monitor-continuity"
+    ],
+    "listening_or_recording_overlap": "retain-separate-owner-coordinated-overlap-intervals"
+  },
+  "attempts": [
+    {
+      "system": "rog",
+      "attempt": "initial-startup",
+      "status": "aborted-before-timed-interval",
+      "observed_driver_error_count": 1,
+      "reason": "startup-counter-increase-above-retained-baseline",
+      "owned_test_processes_cleaned": true,
+      "failure_evidence_retained": true,
+      "automatic_retry_or_rollback": false
+    },
+    {
+      "system": "thinkpad",
+      "attempt": "initial-volume-guard",
+      "status": "stopped-incomplete",
+      "start_local": "2026-10-13T09:45:38.917-04:00",
+      "duration_seconds": 581.04,
+      "reason": "observed-volume-change",
+      "volume_percent_before": 20,
+      "volume_percent_after": 74,
+      "sampled_driver_error_count": 1,
+      "sampled_driver_error_growth": false,
+      "sampled_dsp_error_count": 0,
+      "sampled_owned_source_error_count": 0,
+      "owned_test_processes_cleaned": true,
+      "failure_evidence_retained": true
+    },
+    {
+      "system": "thinkpad",
+      "attempt": "normal-use-retry",
+      "status": "active-completion-pending",
+      "start_local": "2026-10-13T10:02:02.621-04:00",
+      "expected_finish_local": "2026-10-13T11:02:02.621-04:00",
+      "initial_volume_percent": 74,
+      "initial_driver_error_count": 1,
+      "initial_other_error_counts": 0,
+      "separate_full_interval": true
+    },
+    {
+      "system": "rog",
+      "attempt": "post-session-normal-use",
+      "status": "active-completion-pending",
+      "start_local": "2026-10-13T10:09:39.101-04:00",
+      "expected_finish_local": "2026-10-13T11:09:39.101-04:00",
+      "initial_volume_percent": 94,
+      "initial_sampled_error_counts": 0,
+      "separate_full_interval": true,
+      "session_boundary": "prior-session-counter-history-retained-not-stitched-to-new-process"
+    }
+  ],
+  "post_session_startup": {
+    "system": "rog",
+    "observed_state": "autoload-bypass-after-authorized-logout-handoff",
+    "operator_diagnosis": "device-route-availability-before-node-autoload-race",
+    "tuning_and_route_file_bytes": "reported-consistent",
+    "restoration": "exact-native-tuned-preset-restored",
+    "physical_volume_percent_preserved": 94,
+    "bounded_post_restoration_sampled_errors": 0,
+    "permanent_runtime_fix": "offline-investigation-and-build-pending-review",
+    "active_hour_interrupted_for_fix": false
+  },
+  "limits": [
+    "This is a progress record from the sole live operator, not a completed stability or source-acceptance receipt.",
+    "Expected finish times are scheduling targets; actual continuous coverage, endpoint checks, counter deltas and final preservation remain pending.",
+    "A silent processing run cannot establish absence of audible gaps, representative gaming-load reliability or physical latency.",
+    "The post-session restoration does not prove a permanent startup fix, post-reboot behaviour or calibrated sound quality.",
+    "Raw monitoring, identities, access data and private rollback files remain outside Git."
+  ]
+}

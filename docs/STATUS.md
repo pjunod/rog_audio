@@ -3,14 +3,15 @@
 **Updated:** 2026-10-13 · **State:** both speaker candidates installed with
 login startup configured; ROG stereo tuning restored after four-channel
 investigation; 256-frame requests deployed with rollback retained; sustained
-checks and ROG session handoff are in progress.
+checks are active on both laptops; a ROG post-session startup race is under
+offline investigation after restoration of its tuned preset.
 
 | Work | State | Next evidence |
 |---|---|---|
 | Hardware inventory | Both laptops inspected read-only | Refresh during installation |
 | ASUS speaker tuning | Validated stereo restored with full tuned path; prior owner feedback positive | Scoped latency trial, physical hotplug and measurements |
 | ThinkPad speaker tuning | Separate Lenovo music/balanced candidate running; live preset, IR, plugins and hardware output verified | Owner listening, physical hotplug and measurements |
-| Laptop installation runtime | Both active with private rollback and login startup; inherited 97 unit cases and both isolated graph cases passed | Actual post-reboot observation and physical qualification |
+| Laptop installation runtime | Both tuned paths restored/active; ROG session-start autoload bypass observed and restored; inherited acceptance retained | Review/test permanent startup fix, actual post-reboot observation |
 | Diagnostics and latency | Both tuned drivers reduced from 42.667 to 5.333 ms in retained paired receipts; PRs 5–7 reviewed/tested | Complete sustained checks, then physical measurements |
 | Host Atmos | 15 tests and focused CI cleanup acceptance passed in PR 1 | Actual JOC reference media and physical qualification |
 | macOS comparison | M4 Air getter and silent-running snapshots complete; 16 summary tests passed in PR 5 | Matched Linux software observations, then physical comparison |
@@ -289,34 +290,43 @@ Pilot capture and physical comparison remain pending. Coordinated listening
 and 60-minute stability outcomes will be recorded in their own receipts; this plan does not mark either check passed. Accepted
 units remain retained because their sources are unchanged.
 
-## Sustained software check start — 2026-10-13
+## Startup and sustained-check progress — 2026-10-13
 
-The sole live audio operator reported the ThinkPad silent 60-minute attempt
-started at 09:45:38 Eastern and stopped after 581.040 seconds when observed
-volume changed from 20% to 74%. Sampled driver error count stayed at its
-prior startup baseline of 1; sampled DSP and owned source counts stayed zero.
-This is a protocol stop on volume change, not an established DSP regression
-or a completed 60-minute pass. The operator preserved the chosen volume,
-removed only owned test processes and retained the failure evidence. The
-authorized retry will log volume adjustments as listening conditions while
-keeping processing identity, routing, services and counter checks strict.
-Its new full-hour interval started at 10:02:02 Eastern after the audible
-check, with an expected finish at 11:02:02. The observed 74% starting volume
-was preserved; no audio volume was written by the test. This is a separate
-attempt, not accumulated time from the first interval. Completion is pending.
+The [progress record](../evidence/speaker-startup-stability-progress-2026-10-13.json)
+retains the sole live operator's reports. Both normal-use hours are active;
+neither has a completed continuous-monitoring and final-preservation receipt.
+Expected finish times are targets, not observations of a pass.
 
-All-zero stereo PCM uses the same 100 ms client request and full Lenovo tuning
-at 256/48000. No artificial CPU load or microphone capture was added. This
-is a silent-processing check under its declared workload, not audible-gap
-or representative gaming-load acceptance. Completion and final preservation
-receipts remain pending.
+| System and attempt | Observed outcome | Separate next interval |
+|---|---|---|
+| ROG initial attempt | Aborted before the timed interval when startup driver errors increased above the retained baseline; owned test processes removed and failure evidence retained | A new session has its own counter baseline; the earlier failure remains recorded |
+| ThinkPad initial attempt | Stopped after 581.040 seconds on volume change from 20% to 74%; sampled driver count stayed at 1, sampled DSP/owned source counts stayed zero | Retry starts a fresh full hour and logs volume adjustments as normal-use conditions |
+| ThinkPad normal-use retry | Active from 10:02:02 Eastern; observed 74% starting volume preserved; full Lenovo chain at 256/48000 | Expected finish 11:02:02; final counter, continuity and preservation receipts pending |
+| ROG post-session normal-use run | Active from 10:09:39 Eastern after exact ASUS tuned-preset restoration; physical 94% volume preserved; sampled starting errors zero at 256/48000 | Expected finish 11:09:39; final counter, continuity and preservation receipts pending |
 
-The ROG attempt was aborted before its timed interval when a startup error
-counter exceeded the retained baseline. Its owned test processes were
-cleaned and failure evidence retained; no successful 60-minute result is
-claimed and no automatic retry or rollback occurred. A separately authorized
-HDR package/logout window is being coordinated before further ROG audio
-operations. The offline physical tool has no ROG session dependency. Audio
-tuning, volumes, startup and rollback must survive the handoff; a fresh audio
-preflight is needed after session changes. Operational receipts and completed
-outcomes will be documented separately from emitter source acceptance.
+After the authorized HDR package/logout handoff, the ROG user session initially
+loaded bypass although the retained tuning and route file bytes were
+consistent. The sole live operator diagnosed an autoload ordering race between
+device-route availability and the node. Restoring the exact native tuned
+preset recovered the full ASUS chain and both hardware channels; bounded
+all-zero samples reported zero errors. This restoration is distinct from a
+permanent runtime fix or proof of reliable startup. The earlier startup error
+history is retained across the PipeWire session boundary, not reset or stitched
+into the new timed interval.
+
+The runtime owner is preparing the startup correction in a separate offline
+source/build workspace. This integration batch currently contains documentation
+and progress evidence only. It will receive the runtime source and completed
+stability receipts before independent adversarial review and affected tests.
+No candidate fix is installed and no active hour is interrupted for that work.
+Accepted unchanged units remain retained.
+
+All-zero stereo PCM uses the same 100 ms client request and full model-specific
+tuning at 256/48000. The test adds no artificial CPU load, microphone capture
+or volume writes. Volume adjustments and separately owner-coordinated listening
+or recording overlaps are conditions to record, rather than reasons to reset
+the owner's chosen level. Processing identity, DSP settings, physical routing,
+services, counter growth/reset and monitoring continuity remain strict guards.
+These silent runs do not establish absence of audible gaps, representative
+gaming-load reliability, calibrated acoustics or physical latency. Actual
+post-reboot startup, hotplug/resume and the phone-capture pilot remain pending.

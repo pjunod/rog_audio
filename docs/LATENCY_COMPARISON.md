@@ -197,3 +197,29 @@ check refused before any fragment or snapshot was created and the tuned
 baseline was resumed. The reviewed list correction passed all eight affected
 methods once before the successful retry. No failed evidence was discarded.
 Sonos Arc/eARC remains deferred until the internal-speaker work is qualified.
+
+## 8. Sustained checks and session-start correction — in progress
+
+The [progress receipt](../evidence/speaker-startup-stability-progress-2026-10-13.json)
+is an operator-reported snapshot, not a completed measurement. ROG's initial
+attempt stopped before timing on a startup counter increase. ThinkPad's first
+attempt stopped after 581.040 seconds when volume changed from 20% to 74%;
+its sampled driver count stayed at 1 and DSP/source counts stayed zero.
+The revised normal-use method logs volume adjustments without writing volume,
+while retaining strict processing, routing, service, counter and continuity
+checks. Earlier incomplete attempts are not accumulated into a later hour.
+
+Fresh full-hour intervals are active: ThinkPad from 10:02:02 to an expected
+11:02:02 Eastern and ROG from 10:09:39 to an expected 11:09:39 on 2026-10-13.
+Both retain full tuning at 256/48000. ROG's new session started with sampled
+errors zero after restoring its native tuned preset from autoload bypass.
+The operator diagnosed a session-start ordering race; its permanent runtime
+fix remains offline work. A successful timed run after manual restoration
+would not establish reliable automatic preset loading.
+
+Only completed continuous coverage, endpoint checks, observed counter deltas
+and final preservation can qualify the declared software stability workload.
+The owned all-zero stream and separate listening/recording overlaps do not
+substitute for a physical response-time distribution or absence of audible
+gaps. [Current status](STATUS.md#startup-and-sustained-check-progress--2026-10-13)
+will record actual outcomes when the receipts arrive.

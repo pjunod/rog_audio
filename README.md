@@ -23,6 +23,14 @@ software timing terms, not measured speaker delay or proof of Mac parity.
 The [comparison and rollback](docs/LATENCY_COMPARISON.md#7-paired-256-frame-trials--both-tuned-paths-preserved)
 record the results and limits.
 
+Both 60-minute normal-use checks are active on 2026-10-13: ThinkPad is
+scheduled for 10:02–11:02 Eastern and ROG for 10:09–11:09. Neither has a
+completed-hour receipt yet. A ROG session restart exposed preset autoload
+bypass despite consistent tuning files; its exact tuned preset was restored
+without changing physical volume. The permanent startup correction is being
+built offline. [Current progress](docs/STATUS.md#startup-and-sustained-check-progress--2026-10-13)
+keeps the interrupted attempts, restored live state and pending fix distinct.
+
 Display work remains in [rog_hdr_dv](https://github.com/pjunod/rog_hdr_dv).
 
 ## Documentation

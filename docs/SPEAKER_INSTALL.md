@@ -18,9 +18,11 @@ speaker output checks, with login startup enabled and rollback retained; see
 Owner listening feedback on the ThinkPad remains pending. Both candidates now
 run under the persistent service with the scoped 256-frame request active.
 Their [paired latency trials and rollback](LATENCY_COMPARISON.md#7-paired-256-frame-trials--both-tuned-paths-preserved)
-preserved tuning, physical defaults and current owner volume: 86% on the ROG,
-20% on the ThinkPad. These are the final observed volumes, distinct from the
-initial installation values.
+preserved tuning, physical defaults and the volume observed in that paired
+window: 86% on the ROG, 20% on the ThinkPad. Those values are historical,
+distinct from initial installation and later owner adjustments. The current
+normal-use check starts at 94% on ROG and 74% on ThinkPad; tests preserve the
+chosen level and record later adjustments.
 
 Read [speaker preparation](AUDIO_SPEAKER_BUILD.md) before using
 [the installation tool](../scripts/speaker_install.py). The input is an
@@ -216,6 +218,16 @@ The same checks are retained in the ThinkPad deployment receipt above.
 Immediate bypass remains `rog-speaker-effects --quit`; permanent startup
 rollback uses the disable/stop procedure above. Stock amplifier controls,
 physical default selection and operator volume are not set by this unit.
+
+**Later session observation — 2026-10-13:** the authorized ROG logout/handoff
+exposed autoload bypass when device-route availability preceded node handling.
+The operator reported consistent tuning/route files and restored the exact
+native tuned preset, retaining physical volume. The full ASUS chain then
+passed bounded zero-PCM checks and entered a fresh hour. This demonstrates
+restoration, not reliable automatic startup. A permanent runtime correction
+is being developed offline; it is not installed during the active hour.
+[Progress and retained attempts](STATUS.md#startup-and-sustained-check-progress--2026-10-13)
+remain separate from this installation procedure and prior acceptance.
 
 ## 5. Build and deliver the usable runtime
 
