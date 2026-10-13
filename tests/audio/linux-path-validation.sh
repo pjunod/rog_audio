@@ -38,12 +38,13 @@ from audio_path_trial import rule
 Path(sys.argv[1]).write_bytes(rule(256))
 PY
 if [ "$stage" = config ]; then
-  pw-config -n client.conf merge > "$task_dir/merged.conf"
+  pw-config -n client.conf merge filter.rules > "$task_dir/merged.conf"
   python3 - "$task_dir/merged.conf" <<'PY'
 import sys
 from pathlib import Path
 text=Path(sys.argv[1]).read_text()
-assert 'filter.rules' in text and 'rog_audio_soe_output_level' in text and '256/48000' in text
+assert all(value in text for value in ('org.rog_audio.SpeakerEffects',
+    'rog_audio_soe_output_level', 'rog_audio_speaker_sink_group', 'DSP', '256/48000'))
 print('config: passed')
 PY
   exit
