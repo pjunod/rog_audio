@@ -1,0 +1,46 @@
+{
+  "accepted_pr_head": "d7ba126f5fc955ebe84636ec401153da946063f7",
+  "assets": [
+    {
+      "name": "SHA256SUMS",
+      "sha256": "f57f64bad171743cc9ad10fe52ad7f8aa138106643f6bfe81a5ac58be09c065f",
+      "size": 207,
+      "state": "uploaded"
+    },
+    {
+      "name": "rog-audio-speaker-kits-0.2.2.tar.gz",
+      "sha256": "39f73478fabac48a4b68ede0b3609da70aaa4417f29760ef8ec37d4ea697617a",
+      "size": 130663,
+      "state": "uploaded"
+    },
+    {
+      "name": "rog-audio-speaker-runtime-0.2.2.tar.gz",
+      "sha256": "ea9c7c0b55967a7d54038bcc12e9b9d3e4ffb0e74641ac237e9edd15603f0f48",
+      "size": 9551458,
+      "state": "uploaded"
+    }
+  ],
+  "authorization": "owner explicitly approved exact v0.2.2 runtime/source/notices, both programme kits and checksums to the public repository",
+  "date": "2026-10-13",
+  "kind": "speaker-runtime-v022-publication",
+  "latest_tag_verified": "v0.2.2",
+  "limits": [
+    "Publication does not establish new laptop deployment, everyday-media loudness, a final-configuration hour, calibrated acoustic output or physical latency.",
+    "The earlier approval refusal executed no command and remains retained privately; direct exact-payload approval preceded the successful normal-route retry.",
+    "Original profiles, recovery data, source/notices and earlier releases remain retained."
+  ],
+  "notes_match_reviewed_file": true,
+  "notes_sha256": "316f131ec80fa2dbea509aaf3ed165a9a44d183062e8ede66947b661e1557b43",
+  "prior_v021_assets_sha256_unchanged": {
+    "SHA256SUMS": "ebf1f5947e908f0c7bb1b651430fc75faeb138cd120631068ab8afa29485a44d",
+    "rog-audio-speaker-kits-0.2.1.tar.gz": "41efeecf2fc7b6db8b656cabd344c10a5d6bec39843d0ad7d923ca6e7c739492",
+    "rog-audio-speaker-runtime-0.2.1.tar.gz": "aabe2d5af8e3f759cc21b34e54cda73f8230e3aa4b6ee677f4f5c1203c8ec125"
+  },
+  "published_at_utc": "2026-10-13T20:25:47Z",
+  "release_url": "https://github.com/pjunod/rog_audio/releases/tag/v0.2.2",
+  "repository": "pjunod/rog_audio",
+  "schema_version": 1,
+  "state": "published-verified",
+  "tag": "v0.2.2",
+  "tag_commit": "589aec2f1a2ff7f20ff03f951ebffd6191abd7d9"
+}

@@ -320,5 +320,35 @@ maintenance receipts record backed-up cleanup and retained duplicate removal,
 ending at 80,625,664 available bytes; old packages, tuning, owner levels and
 recovery remain preserved. Raw maintenance records stay private. See
 [status](STATUS.md) for those separate live observations. v0.2.2 assets are
-prepared privately, with publication pending. Final repository validation and
-merge follow this coherent accepted batch; prior releases remain unchanged.
+reviewed and published after direct exact-payload owner approval. Final review
+verified every runtime/kit member hash/mode and the sole refreshed archive
+README. Remote tag, three asset sizes/digests and notes were then verified;
+v0.2.1 asset digests stayed unchanged; the [publication receipt](../evidence/speaker-runtime-v022-publication-2026-10-13.json)
+retains exact identities. The earlier approval refusal executed no command and remains separate from the successful same-route retry. PR 10
+merged at `589aec2f` from accepted `d7ba126f` after its one final repository
+check passed, without repeating accepted unit methods. The separately reviewed private deployment
+controller and actual laptop outcomes are later evidence, not new native
+code acceptance.
+
+
+## Guarded larger-period follow-up — four methods await final review
+
+Source commit `fff0936c` was imported with authorship preserved as `2c940fa2`.
+A shared 128/256/512/1024/2048 set drives rule and CLI validation; bundle and
+snapshot readers reconstruct the same rule. Default 256 and protected-state,
+file ownership, environment and rollback guards are unchanged. Four methods
+are selected after independent final source/docs review: the refactored 512
+lifecycle, new 1024/2048 full CLI lifecycles and invalid-type/size rejection.
+No methods or repository checker have executed for this follow-up. Native
++rog3/source/patch/package bytes and earlier passing suites remain unchanged.
+
+The current ROG 512 baseline counter growth is real live timing evidence;
+wrong rollback-path/inventory-header refusals are procedural and pre-mutation.
+The ThinkPad's later +rog3 query failure and initial lock-related recovery
+refusal are separate live evidence. Native logs confirmed the exact new preset
+automatically loaded despite the false query result. Targeted old+rog1 recovery
+then completed with original preset and protected controls/services verified;
+the corrected +rog3 retry remains pending.
+No source autoload regression, successful new deployment or fresh hour is
+inferred from these private-helper failures. Root-cleared public summaries
+will be imported unchanged; raw captures/manifests stay private.

@@ -4,7 +4,9 @@
 and native filter/config acceptance passed for PR 5; native environment and
 quit-save compatibility fixes passed review and 29 affected methods in PR 6.
 Retaining unchanged preset-use list entries passed independent review and
-eight affected/new methods in PR 7.
+eight affected/new methods in PR 7. Larger 1024/2048-frame request support
+is implemented in the current follow-up; final review and four focused
+methods precede acceptance. No larger-period live pass is claimed.
 
 Companion to [latency comparison](LATENCY_COMPARISON.md) (the experiment and
 Mac reference), [installation](SPEAKER_INSTALL.md) (the existing runtime), and
@@ -72,22 +74,38 @@ python3 scripts/audio_path_trial.py prepare \
 ```
 
 The default request remains 256/48000, or 5.333 ms per cycle if negotiated.
-The tool also prepares 128/48000 and 512/48000 requests for separate observed
-experiments. The 512-frame candidate offers a longer scheduling period (10.667 ms at
-48 kHz) after the ROG's 256-frame run stopped on monitored error growth; its
-live stability and physical latency remain unqualified. None of these requests
-forces the linked driver to that period. Do not infer physical performance
-or Mac parity from a requested or observed graph period.
+The supported 48 kHz requests are 128, 256, 512, 1024 and 2048 frames. One
+shared integer set drives rule construction and CLI choices; bundle and
+snapshot validation reconstruct that same rule. The default remains 256.
+The additive 1024/2048 support is implemented but awaits final review and
+focused acceptance. Existing file/settings/environment/conflict guards are
+unchanged; these remain private requests, never forced global graph periods.
+
+| Requested frames | Nominal period at 48 kHz | Evidence boundary |
+|---|---|---|
+| 128 | 2.667 ms | Existing preparer capability, not a laptop stability pass |
+| 256 | 5.333 ms | Historical paired observations; ROG later failed, ThinkPad old-runtime hour passed |
+| 512 | 10.667 ms | ROG short +rog2 check passed, but a later six-second baseline grew driver ERR 3→4→4 |
+| 1024 | 21.333 ms | New recovery candidate; source review/tests and actual negotiation remain pending |
+| 2048 | 42.667 ms | Recoverable prior default; explicit request support is new, not a new hour result |
+
+The latest 512 failure preceded any +rog3 package or gain-preset change. Keep
+it separate from the earlier 20.065-second short pass and the 256 failure.
+Restoration to 2048 is the directed recovery step, not yet a reported outcome
+in this source change. Try 1024 only after this coherent follow-up passes
+review/acceptance and merges; use 2048 if the actual trial fails. Preserve
+every failed interval. Observe the running driver quantum/rate; neither the
+request nor its nominal period establishes physical delay or Mac parity.
 
 ```bash
 python3 scripts/audio_path_trial.py prepare \
-  --capture PRIVATE_FRESH_BASELINE.json --quantum 512 --output PRIVATE_NEW_TRIAL
+  --capture PRIVATE_FRESH_BASELINE.json --quantum 1024 --output PRIVATE_NEW_TRIAL
 ```
 
 This creates an inactive bundle only. Remove any prior owned fragment using
 its retained snapshot before collecting the fresh baseline; preparation and
 installation still reject an occupied trial filename. Do not overwrite the
-256-frame fragment in place or reuse its snapshot to remove a 512-frame rule.
+existing fragment in place or reuse its snapshot to remove another request.
 Use a new bundle and snapshot for each candidate. The preset, IR, settings,
 physical route and startup unit retain the same preservation contract.
 
