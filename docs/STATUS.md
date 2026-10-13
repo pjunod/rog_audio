@@ -3,15 +3,16 @@
 **Updated:** 2026-10-13 · **State:** both speaker candidates installed with
 login startup configured; ThinkPad completed the declared hour at 256 frames
 on v0.2.0; ROG's 256-frame run failed and reviewed rollback restored 2048.
-The native startup fix is implemented; candidate compilation, independent
-review and focused acceptance remain pending. It is not deployed.
+The corrected native startup runtime is compiled/exported and all source
+findings cleared re-review. Artifact checks and focused acceptance remain
+pending. It is not deployed.
 
 | Work | State | Next evidence |
 |---|---|---|
 | Hardware inventory | Both laptops inspected read-only | Refresh during installation |
 | ASUS speaker tuning | Full tuned path preserved after reviewed removal of failed 256-frame request; short 2048-frame observation retained | Review/test startup fix and 512-frame candidate; physical hotplug and measurements |
 | ThinkPad speaker tuning | Separate Lenovo music/balanced candidate running; live preset, IR, plugins and hardware output verified | Owner listening, physical hotplug and measurements |
-| Laptop installation runtime | Installed tuned paths restored/active; additive startup fix implemented but candidate compile/acceptance pending | Complete candidate package, review and affected tests; actual post-reboot observation |
+| Laptop installation runtime | Installed tuned paths restored/active; review-fixed startup runtime compiled/exported; artifact checks/acceptance pending | Complete final artifact checks and affected tests; fresh deployed-runtime observations |
 | Diagnostics and latency | Historical paired 256-frame results retained; ThinkPad existing-runtime hour completed; ROG failed/reverted to 2048 | Review/test startup fix and 512 candidate; fresh ROG hour and physical measurements |
 | Host Atmos | 15 tests and focused CI cleanup acceptance passed in PR 1 | Actual JOC reference media and physical qualification |
 | macOS comparison | M4 Air getter and silent-running snapshots complete; 16 summary tests passed in PR 5 | Matched Linux software observations, then physical comparison |
@@ -377,10 +378,12 @@ scopes do not qualify physical latency or calibrated sound quality.
 The native builder's authored commit `d9a9cad7` is integrated with its
 additive route-cache patch, source/header pins, `+rog2` package/build contract,
 focused synthetic cases and [upgrade procedure](SPEAKER_AUTOLOAD.md).
-The original accepted patch bytes and licences are preserved. Candidate
-compilation/export remains pending; the existing-runtime ThinkPad final
-receipt is integrated; independent
-adversarial review and affected acceptance follow the complete batch. No new
+The original accepted patch bytes and licences are preserved. The
+[review-fixed compiler/export receipt](../evidence/speaker-autoload-reviewed-build-2026-10-13.json)
+binds `b6d5f1e`, final ELF/package hashes and 711 exact corresponding source
+files. The existing-runtime ThinkPad final receipt is integrated. All source
+findings cleared focused re-review; final artifact binding checks and affected
+acceptance follow this frozen batch. No new
 unit or graph case has executed. The focused coverage comprises the extended
 source method, 17 actual-header autoload cases, 10 build-orchestration cases,
 four event-order/binding graph selectors, the two existing ASUS/Lenovo loader-route
@@ -390,11 +393,12 @@ unrelated passing suites repeat; unit and graph counts remain separate.
 Two independent reviews found late profile-index storage, Docker backend
 compatibility and stale install-guide package names. The guide is corrected;
 native/model and Docker corrections at `b6d5f1e` and the guide at `3775486c`
-have all cleared focused re-review. Revised source-transfer authorization and
-a new matching build/export are pending; no tests have executed.
-The [intermediate build receipt](../evidence/speaker-autoload-build-2026-10-13.json)
-for `135c60f` is retained and not reused as proof for corrected source. A new
-matching compile/export receipt is required. All affected tests remain held.
+have all cleared focused re-review. The approved bounded corrective build
+compiled/exported successfully and its matching receipt is integrated; no
+tests have executed. The [intermediate receipt](../evidence/speaker-autoload-build-2026-10-13.json)
+for `135c60f` remains unchanged and superseded. The final build used two compiler
+workers within two CPUs/6 GiB; the production CLI's one-worker default is
+unchanged. Artifact checks precede release of the held affected tests.
 
 No candidate fix is installed and no active hour is interrupted for that work.
 Accepted unchanged units remain retained.

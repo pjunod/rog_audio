@@ -231,8 +231,8 @@ exposed autoload bypass when device-route availability preceded node handling.
 The operator reported consistent tuning/route files and restored the exact
 native tuned preset, retaining physical volume. The full ASUS chain then
 passed bounded zero-PCM checks and entered a fresh hour. This demonstrates
-restoration, not reliable automatic startup. The native runtime correction is implemented; candidate compilation and
-focused acceptance remain pending. It is not installed during the active hour.
+restoration, not reliable automatic startup. The corrected native runtime is compiled/exported with cleared source fixes;
+final artifact checks and focused acceptance remain pending. It is not installed during the active hour.
 [Speaker autoload](SPEAKER_AUTOLOAD.md) owns the exact `+rog2` package contract,
 unchanged-tuning kit regeneration, retained rollback and coordinated upgrade
 steps. Use that procedure after review and affected acceptance; do not relax
@@ -273,11 +273,11 @@ an appropriate rebuild. GCC 15.3.0 compiled Release with `-O3 -DNDEBUG
 both laptops' amd64 processors. Shared libraries retain Ubuntu's package ABI.
 The historical [v0.2.0 compiler receipt](../evidence/speaker-runtime-build-2026-10-12.json)
 binds its 22 modified source files and `+rog1` artifact. The
-[autoload compiler/export receipt](../evidence/speaker-autoload-build-2026-10-13.json)
-binds the intermediate `135c60f` source and `+rog2` artifact. Review found a
-late-binding model correction that requires a new matching build receipt;
-the intermediate artifact is retained rather than treated as final accepted
-source. The current final review/tests/rebuild state is in [status](STATUS.md).
+[review-fixed compiler/export receipt](../evidence/speaker-autoload-reviewed-build-2026-10-13.json)
+binds corrected `b6d5f1e` source, the `+rog2` artifact and all 711 corresponding
+source files. The earlier [intermediate receipt](../evidence/speaker-autoload-build-2026-10-13.json)
+for `135c60f` is retained unchanged as history; it is superseded for this
+candidate. Final artifact checks and affected acceptance still precede use. The current final review/tests/rebuild state is in [status](STATUS.md).
 The prerequisite report lists installed versions/providers and missing
 prerequisites without installing anything.
 

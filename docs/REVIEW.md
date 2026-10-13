@@ -250,8 +250,9 @@ The intermediate compiler/export receipt for source `135c60f` remains
 unchanged. It does not qualify the forthcoming corrected source or artifact.
 No unit or graph acceptance has executed. The planned affected selection is
 29 unit methods and six graph selectors (four new event-order/binding cases
-plus the ASUS and Lenovo loader-route regressions). Both reviewers cleared all three fixes before execution. Revised source
-transfer authorization and matching compilation/export remain pending; the
-intermediate artifact is not substituted for that requirement.
+plus the ASUS and Lenovo loader-route regressions). Both reviewers cleared all three fixes before execution. The approved corrective build now has a [matching receipt](../evidence/speaker-autoload-reviewed-build-2026-10-13.json)
+for reviewed `b6d5f1e`, final ELF/package hashes and 711 exact source files.
+The earlier receipt remains historical. Final artifact binding/receipt checks
+precede release of the held 29 unit methods and six graph selectors.
 Only failed or subsequently invalidated cases repeat; unrelated accepted
 speaker, latency, Mac and emitter suites remain retained.

@@ -7,14 +7,15 @@ h1{font-size:2rem}h2{color:#91d7ee}a{color:#91d7ee}table{border-collapse:collaps
 <p>**Updated:** 2026-10-13 · **State:** both speaker candidates installed with</p>
 <p>login startup configured; ThinkPad completed the declared hour at 256 frames</p>
 <p>on v0.2.0; ROG&#x27;s 256-frame run failed and reviewed rollback restored 2048.</p>
-<p>The native startup fix is implemented; candidate compilation, independent</p>
-<p>review and focused acceptance remain pending. It is not deployed.</p>
+<p>The corrected native startup runtime is compiled/exported and all source</p>
+<p>findings cleared re-review. Artifact checks and focused acceptance remain</p>
+<p>pending. It is not deployed.</p>
 <table>
 <tr><td>Work</td><td>State</td><td>Next evidence</td></tr>
 <tr><td>Hardware inventory</td><td>Both laptops inspected read-only</td><td>Refresh during installation</td></tr>
 <tr><td>ASUS speaker tuning</td><td>Full tuned path preserved after reviewed removal of failed 256-frame request; short 2048-frame observation retained</td><td>Review/test startup fix and 512-frame candidate; physical hotplug and measurements</td></tr>
 <tr><td>ThinkPad speaker tuning</td><td>Separate Lenovo music/balanced candidate running; live preset, IR, plugins and hardware output verified</td><td>Owner listening, physical hotplug and measurements</td></tr>
-<tr><td>Laptop installation runtime</td><td>Installed tuned paths restored/active; additive startup fix implemented but candidate compile/acceptance pending</td><td>Complete candidate package, review and affected tests; actual post-reboot observation</td></tr>
+<tr><td>Laptop installation runtime</td><td>Installed tuned paths restored/active; review-fixed startup runtime compiled/exported; artifact checks/acceptance pending</td><td>Complete final artifact checks and affected tests; fresh deployed-runtime observations</td></tr>
 <tr><td>Diagnostics and latency</td><td>Historical paired 256-frame results retained; ThinkPad existing-runtime hour completed; ROG failed/reverted to 2048</td><td>Review/test startup fix and 512 candidate; fresh ROG hour and physical measurements</td></tr>
 <tr><td>Host Atmos</td><td>15 tests and focused CI cleanup acceptance passed in PR 1</td><td>Actual JOC reference media and physical qualification</td></tr>
 <tr><td>macOS comparison</td><td>M4 Air getter and silent-running snapshots complete; 16 summary tests passed in PR 5</td><td>Matched Linux software observations, then physical comparison</td></tr>
@@ -329,10 +330,12 @@ h1{font-size:2rem}h2{color:#91d7ee}a{color:#91d7ee}table{border-collapse:collaps
 <p>The native builder&#x27;s authored commit `d9a9cad7` is integrated with its</p>
 <p>additive route-cache patch, source/header pins, `+rog2` package/build contract,</p>
 <p>focused synthetic cases and [upgrade procedure](SPEAKER_AUTOLOAD.md).</p>
-<p>The original accepted patch bytes and licences are preserved. Candidate</p>
-<p>compilation/export remains pending; the existing-runtime ThinkPad final</p>
-<p>receipt is integrated; independent</p>
-<p>adversarial review and affected acceptance follow the complete batch. No new</p>
+<p>The original accepted patch bytes and licences are preserved. The</p>
+<p>[review-fixed compiler/export receipt](../evidence/speaker-autoload-reviewed-build-2026-10-13.json)</p>
+<p>binds `b6d5f1e`, final ELF/package hashes and 711 exact corresponding source</p>
+<p>files. The existing-runtime ThinkPad final receipt is integrated. All source</p>
+<p>findings cleared focused re-review; final artifact binding checks and affected</p>
+<p>acceptance follow this frozen batch. No new</p>
 <p>unit or graph case has executed. The focused coverage comprises the extended</p>
 <p>source method, 17 actual-header autoload cases, 10 build-orchestration cases,</p>
 <p>four event-order/binding graph selectors, the two existing ASUS/Lenovo loader-route</p>
@@ -342,11 +345,12 @@ h1{font-size:2rem}h2{color:#91d7ee}a{color:#91d7ee}table{border-collapse:collaps
 <p>Two independent reviews found late profile-index storage, Docker backend</p>
 <p>compatibility and stale install-guide package names. The guide is corrected;</p>
 <p>native/model and Docker corrections at `b6d5f1e` and the guide at `3775486c`</p>
-<p>have all cleared focused re-review. Revised source-transfer authorization and</p>
-<p>a new matching build/export are pending; no tests have executed.</p>
-<p>The [intermediate build receipt](../evidence/speaker-autoload-build-2026-10-13.json)</p>
-<p>for `135c60f` is retained and not reused as proof for corrected source. A new</p>
-<p>matching compile/export receipt is required. All affected tests remain held.</p>
+<p>have all cleared focused re-review. The approved bounded corrective build</p>
+<p>compiled/exported successfully and its matching receipt is integrated; no</p>
+<p>tests have executed. The [intermediate receipt](../evidence/speaker-autoload-build-2026-10-13.json)</p>
+<p>for `135c60f` remains unchanged and superseded. The final build used two compiler</p>
+<p>workers within two CPUs/6 GiB; the production CLI&#x27;s one-worker default is</p>
+<p>unchanged. Artifact checks precede release of the held affected tests.</p>
 <p>No candidate fix is installed and no active hour is interrupted for that work.</p>
 <p>Accepted unchanged units remain retained.</p>
 <p>The ThinkPad reported `ENOSPC` while copying pilot files after its completed</p>

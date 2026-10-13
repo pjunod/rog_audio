@@ -31,8 +31,8 @@ startup value of 1, followers stayed zero and protected state matched at
 start, midpoint and end. The ROG's 256-frame attempt failed after 67.982
 seconds; reviewed rollback preserved its full tuning at 2048 frames. Neither
 result measures physical latency or qualifies the startup-fixed runtime.
-The native correction is implemented, with candidate build/review/acceptance
-pending. [Current results](docs/STATUS.md#startup-and-sustained-check-progress--2026-10-13)
+The corrected native runtime is compiled/exported and its source fixes
+cleared re-review; final artifact checks and focused acceptance remain pending. [Current results](docs/STATUS.md#startup-and-sustained-check-progress--2026-10-13)
 keep those evidence classes distinct. A new `v0.2.1` release with package
 `8.2.8+rog2`, corresponding source and newly bound kits is planned after
 review, focused tests and merge; existing v0.2.0 assets remain unchanged.

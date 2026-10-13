@@ -308,7 +308,7 @@
     "patch": "patches/easyeffects/0002-Retain-output-routes-for-device-return.patch",
     "upstream_commit": "6d9b1220d3dcebb154ba759a05600662bc0af549",
     "expected_package": "rog-audio-easyeffects_8.2.8+rog2_amd64.deb",
-    "candidate_compilation": "revised-transfer-authorization-and-matching-rebuild-pending",
+    "candidate_compilation": "review-fixed-source-compiled-and-exported",
     "focused_acceptance": "not-executed",
     "live_deployment": "not-installed",
     "method_document": "docs/SPEAKER_AUTOLOAD.md",
@@ -321,7 +321,13 @@
     "intermediate_build_receipt": "evidence/speaker-autoload-build-2026-10-13.json",
     "source_review_status": "all-three-findings-fixed-and-cleared-by-two-independent-reviewers",
     "native_source_cleared_commit": "b6d5f1e2dfc664ab21115a53aeeb64f3575177e6",
-    "installation_doc_cleared_commit": "3775486c9bc01d201ce832a825ce7a6da484d970"
+    "installation_doc_cleared_commit": "3775486c9bc01d201ce832a825ce7a6da484d970",
+    "final_build_receipt": "evidence/speaker-autoload-reviewed-build-2026-10-13.json",
+    "final_build_receipt_sha256": "a78f32a6aa5a3c161f2d0c15e8d1ef547a7fdf0a34701c587f7a31b71d8e3f81",
+    "binary_sha256": "5686f784a6de02e72a4fb6cb08ff9022e675eb3c61a67634ae6305a5597ca7c4",
+    "package_sha256": "b24e9c97fa1d892c4f1eede22ab5f0bf2669f7b0d3cc5c7985cae4965bd0582a",
+    "source_tree_manifest_sha256": "2b72c3600bfd2e6aaccaadbb40ba0e48ad1554fca69652f20b9ed6fa10290b1a",
+    "artifact_binding_review": "pending-final-receipt-check"
   },
   "planned_release": {
     "tag": "v0.2.1",
