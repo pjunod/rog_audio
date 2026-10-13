@@ -15,12 +15,21 @@ recovery tools are retained. Physical hotplug/measurement acceptance is pending.
 The ThinkPad's separate Lenovo candidate has also passed its live loading and
 speaker output checks, with login startup enabled and rollback retained; see
 [its deployment receipt](../evidence/thinkpad-speaker-deployment-2026-10-12.json).
-Owner listening feedback on the ThinkPad remains pending. Both candidates now
-run under the persistent service with the scoped 256-frame request active.
+Owner listening feedback on the ThinkPad remains pending. Both candidates
+use the persistent service. ThinkPad retains the 256-frame request; ROG now
+uses the 2048-frame baseline after reviewed removal of its failed request.
 Their [paired latency trials and rollback](LATENCY_COMPARISON.md#7-paired-256-frame-trials--both-tuned-paths-preserved)
-preserved tuning, physical defaults and current owner volume: 86% on the ROG,
-20% on the ThinkPad. These are the final observed volumes, distinct from the
-initial installation values.
+preserved tuning, physical defaults and the volume observed in that paired
+window: 86% on the ROG, 20% on the ThinkPad. Those values are historical,
+distinct from initial installation and later owner adjustments. The current
+normal-use attempt starts at 94% on ROG and 100% on ThinkPad; tests preserve the
+chosen level and record later adjustments.
+
+The corrected runtime is planned for `v0.2.1` (package `8.2.8+rog2`) after
+combined review, focused acceptance and merge. Its newly bound kits must retain
+exact preset/IR bytes; existing v0.2.0 assets and private rollback remain
+available. See [the upgrade contract](SPEAKER_AUTOLOAD.md). Publication and
+fresh deployed-runtime stability are still pending.
 
 Read [speaker preparation](AUDIO_SPEAKER_BUILD.md) before using
 [the installation tool](../scripts/speaker_install.py). The input is an
@@ -217,21 +226,43 @@ Immediate bypass remains `rog-speaker-effects --quit`; permanent startup
 rollback uses the disable/stop procedure above. Stock amplifier controls,
 physical default selection and operator volume are not set by this unit.
 
+**Later session observation — 2026-10-13:** the authorized ROG logout/handoff
+exposed autoload bypass when device-route availability preceded node handling.
+The operator reported consistent tuning/route files and restored the exact
+native tuned preset, retaining physical volume. The full ASUS chain then
+passed bounded zero-PCM checks and entered a fresh hour. This demonstrates
+restoration, not reliable automatic startup. The corrected native runtime is compiled/exported with cleared source fixes;
+final artifact checks and focused acceptance remain pending. It is not installed during the active hour.
+[Speaker autoload](SPEAKER_AUTOLOAD.md) owns the exact `+rog2` package contract,
+unchanged-tuning kit regeneration, retained rollback and coordinated upgrade
+steps. Use that procedure after review and affected acceptance; do not relax
+runtime/kit identity checks or duplicate a new migration path.
+[Progress and retained attempts](STATUS.md#startup-and-sustained-check-progress--2026-10-13)
+remain separate from this installation procedure and prior acceptance.
+
 ## 5. Build and deliver the usable runtime
+
+The current source build emits package `8.2.8+rog2`. Follow the focused
+[autoload build and unchanged-tuning upgrade contract](SPEAKER_AUTOLOAD.md)
+for bounded native builds, corresponding source, new runtime/kit binding and
+retained rollback. The v0.2.0 `+rog1` release and its receipt remain historical
+recovery assets; the commands below name the current output consistently.
+Use them only after the combined review and affected acceptance are clear.
 
 ```bash
 # Read public Git objects only; working-tree/private data never enter Docker.
 git clone https://github.com/wwmm/easyeffects.git PUBLIC_EASYEFFECTS_GIT
 python3 scripts/build_easyeffects_runtime.py build \
   --source PUBLIC_EASYEFFECTS_GIT --output RUNTIME_ARTIFACT \
-  --image-tag rog-audio-ee:acceptance
+  --image-tag localhost/rog-audio-ee:acceptance \
+  --container-engine podman
 
 # Read-only prerequisite report on EACH actual laptop.
 python3 scripts/inspect_speaker_runtime.py \
   --manifest RUNTIME_ARTIFACT/runtime.json --output PRIVATE_COMPATIBILITY.json
 ```
 
-The delivered `rog-audio-easyeffects_8.2.8+rog1_amd64.deb` installs only its
+The current `rog-audio-easyeffects_8.2.8+rog2_amd64.deb` installs only its
 private prefix, launcher, desktop entry and licence/source notices. It has no
 service scripts or autostart activation. Dependencies derive from Ubuntu's
 EasyEffects `8.2.8+ds-1build1` package plus required LSP LV2 plugins. The runtime
@@ -240,10 +271,15 @@ an appropriate rebuild. GCC 15.3.0 compiled Release with `-O3 -DNDEBUG
 -std=gnu++20`; the actual compiler defaults were `-march=x86-64` and
 `-mtune=generic`, with no native CPU tuning. That application baseline supports
 both laptops' amd64 processors. Shared libraries retain Ubuntu's package ABI.
-[The compiler receipt](../evidence/speaker-runtime-build-2026-10-12.json) binds
-all 22 modified compiled source files to the retained review source.
-The report lists installed versions/providers and
-missing prerequisites without installing anything.
+The historical [v0.2.0 compiler receipt](../evidence/speaker-runtime-build-2026-10-12.json)
+binds its 22 modified source files and `+rog1` artifact. The
+[review-fixed compiler/export receipt](../evidence/speaker-autoload-reviewed-build-2026-10-13.json)
+binds corrected `b6d5f1e` source, the `+rog2` artifact and all 711 corresponding
+source files. The earlier [intermediate receipt](../evidence/speaker-autoload-build-2026-10-13.json)
+for `135c60f` is retained unchanged as history; it is superseded for this
+candidate. Final artifact checks and affected acceptance still precede use. The current final review/tests/rebuild state is in [status](STATUS.md).
+The prerequisite report lists installed versions/providers and missing
+prerequisites without installing anything.
 
 `runtime.json` records binary/package SHA256, exact source/patch manifest,
 dependency expression, build package versions and ELF library names. Retain
@@ -257,7 +293,7 @@ Use the delivered per-device kit and a new private snapshot directory.
 
 ```bash
 # Coordinated package/dependency installation on the selected laptop.
-sudo apt install ./RUNTIME_ARTIFACT/rog-audio-easyeffects_8.2.8+rog1_amd64.deb
+sudo apt install ./RUNTIME_ARTIFACT/rog-audio-easyeffects_8.2.8+rog2_amd64.deb
 mkdir -p "${XDG_STATE_HOME:-$HOME/.local/state}/rog-audio/snapshots"
 python3 scripts/speaker_install.py install \
   --kit KIT --runtime /opt/rog-audio/easyeffects/bin/easyeffects \
@@ -326,7 +362,7 @@ ROG_EASYEFFECTS_SOURCE=PATCHED_SOURCE PYTHONPATH=tests \
 ```
 
 Graph inputs are source-verified converted bundles, runtime manifest, kit and a
-new writable output directory. CI builds ASUS/Lenovo bundles from the public
+new writable output directory in durable owned storage. CI builds ASUS/Lenovo bundles from the public
 profile files and sanitized inventories described in
 [speaker preparation](AUDIO_SPEAKER_BUILD.md) and
 [ThinkPad preparation](THINKPAD_AUDIO.md). The fixture preparer invents node and
@@ -334,16 +370,19 @@ route observations; it does not need private host captures.
 
 ```bash
 # Clean container invocation; KIT_DIR holds the synthetic per-device kit.
-mkdir NEW_OUTPUT
+mkdir -m 700 NEW_OUTPUT  # Retained output beneath the durable owned workspace.
 docker run --rm --network none --read-only --cap-drop ALL \
   --security-opt no-new-privileges --user "$(id -u):$(id -g)" \
-  --tmpfs /tmp:rw,nosuid,nodev,size=128m \
+  --env TMPDIR=/output \
   --mount "type=bind,src=$(pwd),dst=/repo,readonly" \
   --mount "type=bind,src=ABSOLUTE_KIT_DIR,dst=/kit,readonly" \
   --mount "type=bind,src=ABSOLUTE_NEW_OUTPUT,dst=/output" \
   rog-audio-ee:acceptance python3 /repo/scripts/check_speaker_graph.py \
   --case asus-loader-route --kit /kit --output /output/case
 ```
+
+The fixture stores its runtime/configuration under the retained output;
+`TMPDIR` also points there rather than temporary project storage.
 
 The real EasyEffects loader and plugins process generated audio through an
 exported synthetic SPA Device Route and null sinks. PipeWire's

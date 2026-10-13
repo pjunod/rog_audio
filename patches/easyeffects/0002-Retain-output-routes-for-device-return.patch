@@ -1,0 +1,458 @@
+diff --git a/src/output_route_cache.hpp b/src/output_route_cache.hpp
+new file mode 100644
+--- /dev/null
++++ b/src/output_route_cache.hpp
+@@ -0,0 +1,109 @@
++// Copyright 2026 rog_audio contributors
++// SPDX-License-Identifier: GPL-3.0-or-later
++#pragma once
++
++#include <cstdint>
++#include <limits>
++#include <map>
++#include <utility>
++
++namespace pw {
++
++// Accessed only in the PipeWire loop or while its lock is held. Route state
++// outlives a sink node, but not an invalidated/replaced Device enumeration.
++template <typename String>
++class OutputRouteCache {
++ public:
++  struct Route {
++    String name;
++    String description;
++    uint64_t generation;
++  };
++
++  auto remember(uint32_t device, int profile, String name, String description) -> uint64_t {
++    if (device == std::numeric_limits<uint32_t>::max() || profile < 0) {
++      return 0;
++    }
++    const auto generation = ++next_generation;
++    routes.insert_or_assign({device, profile}, Route{std::move(name), std::move(description), generation});
++    return generation;
++  }
++
++  void invalidate(uint32_t device) {
++    std::erase_if(routes, [device](const auto& item) { return item.first.first == device; });
++  }
++
++  [[nodiscard]] auto find(uint32_t device, int profile) const -> const Route* {
++    const auto item = routes.find({device, profile});
++    return item == routes.end() ? nullptr : &item->second;
++  }
++
++  [[nodiscard]] auto current(uint32_t device, int profile, uint64_t generation) const -> bool {
++    const auto* route = find(device, profile);
++    return route != nullptr && route->generation == generation;
++  }
++
++  template <typename Node>
++  [[nodiscard]] static auto same_instance(const Node& event, const Node& current_node) -> bool {
++    return event.id != std::numeric_limits<uint32_t>::max() &&
++           event.serial != std::numeric_limits<uint32_t>::max() &&
++           event.id == current_node.id && event.serial == current_node.serial;
++  }
++
++  // Enumeration invalidation cancels stale work, but retains notification
++  // history. An identical fresh route must not reset an already loaded preset.
++  template <typename Node>
++  [[nodiscard]] auto changed_since_notification(const Node& node) const -> bool {
++    const auto* route = find(node.device_id, node.profile_device);
++    if (route == nullptr || !same_instance(node, node)) {
++      return false;
++    }
++    const Notification current{node.device_id, node.profile_device, route->name, route->description};
++    const auto old = notifications.find({node.id, node.serial});
++    return old == notifications.end() || old->second != current;
++  }
++
++  template <typename Node>
++  void notified(const Node& node) {
++    if (const auto* route = find(node.device_id, node.profile_device); route != nullptr && same_instance(node, node)) {
++      notifications.insert_or_assign({node.id, node.serial},
++          Notification{node.device_id, node.profile_device, route->name, route->description});
++    }
++  }
++
++  void remove_node(uint32_t id, uint64_t serial) {
++    notifications.erase({id, serial});
++  }
++
++  void remove_device(uint32_t device) {
++    invalidate(device);
++    std::erase_if(notifications, [device](const auto& item) { return item.second.device == device; });
++  }
++
++  template <typename Node>
++  auto apply(Node& node) const -> bool {
++    const auto* route = find(node.device_id, node.profile_device);
++    const String name = route != nullptr ? route->name : String{};
++    const String description = route != nullptr ? route->description : String{};
++    if (node.device_route_name == name && node.device_route_description == description) {
++      return false;
++    }
++    node.device_route_name = name;
++    node.device_route_description = description;
++    return true;
++  }
++
++ private:
++  struct Notification {
++    uint32_t device;
++    int profile;
++    String name;
++    String description;
++    auto operator==(const Notification&) const -> bool = default;
++  };
++  std::map<std::pair<uint32_t, uint64_t>, Notification> notifications;
++  std::map<std::pair<uint32_t, int>, Route> routes;
++  uint64_t next_generation = 0;
++};
++
++}  // namespace pw
+diff --git a/src/pw_manager.cpp b/src/pw_manager.cpp
+--- a/src/pw_manager.cpp
++++ b/src/pw_manager.cpp
+@@ -211,6 +211,61 @@
+ 
+ namespace pw {
+ 
++void Manager::noteOutputRouteNotification(const NodeInfo& node) {
++  lock();
++  const auto current = model_nodes.get_node_by_id(node.id);
++  if (OutputRouteCache<QString>::same_instance(node, current) &&
++      current.device_id == node.device_id && current.profile_device == node.profile_device &&
++      current.device_route_name == node.device_route_name &&
++      current.device_route_description == node.device_route_description) {
++    output_routes.notified(current);
++  }
++  unlock();
++}
++
++auto Manager::refreshOutputNodeRoute(NodeInfo& node) -> bool {
++  if (node.media_class != tags::pipewire::media_class::sink &&
++      node.media_class != tags::pipewire::media_class::virtual_sink) {
++    return false;
++  }
++  if (!output_routes.apply(node)) {
++    return false;
++  }
++  const auto stored = model_nodes.get_node_by_id(node.id);
++  // NodeManager emits a copy after sinkAdded. Hydrate that copy without a
++  // duplicate notification if sinkAdded already hydrated the actual model.
++  if (stored.device_route_name == node.device_route_name &&
++      stored.device_route_description == node.device_route_description) {
++    return false;
++  }
++  model_nodes.update_info(node);
++  return true;
++}
++
++void Manager::scheduleOutputRouteChanged(uint32_t device, int profile, uint64_t generation) {
++  // The caller is in the PipeWire loop. Create the timer on this QObject's
++  // thread, then resolve current state under the PipeWire lock when it expires.
++  QMetaObject::invokeMethod(this, [this, device, profile, generation]() {
++    QTimer::singleShot(DbMain::presetsAutoloadInterval(), this, [this, device, profile, generation]() {
++      lock();
++      if (output_routes.current(device, profile, generation)) {
++        for (auto node : model_nodes.get_nodes_by_device_id(device)) {
++          if (node.profile_device == profile &&
++              (node.media_class == tags::pipewire::media_class::sink ||
++               node.media_class == tags::pipewire::media_class::virtual_sink)) {
++            refreshOutputNodeRoute(node);
++            if (output_routes.changed_since_notification(node)) {
++              output_routes.notified(node);
++              Q_EMIT sinkRouteChanged(node);
++            }
++          }
++        }
++      }
++      unlock();
++    });
++  }, Qt::QueuedConnection);
++}
++
+ Manager::Manager(QObject* parent)
+     : QObject(parent),
+       headerVersion(pw_get_headers_version()),
+@@ -311,7 +366,38 @@
+ 
+   connect(&node_manager, &NodeManager::sourceAdded, [&](NodeInfo node) { Q_EMIT sourceAdded(node); });
+ 
+-  connect(&node_manager, &NodeManager::sinkAdded, [&](NodeInfo node) { Q_EMIT sinkAdded(node); });
++  connect(&node_manager, &NodeManager::sinkAdded, this, [this](NodeInfo node) {
++    refreshOutputNodeRoute(node);
++    output_routes.notified(node);
++    Q_EMIT sinkAdded(node);
++  }, Qt::DirectConnection);
++
++  connect(&node_manager, &NodeManager::nodeChanged, this, [this](NodeInfo node) {
++    // Volume/port updates preserve the model's route and cause no preset load.
++    // A newly learned device/profile binding must hydrate from retained state.
++    if (refreshOutputNodeRoute(node) && output_routes.changed_since_notification(node)) {
++      if (const auto* route = output_routes.find(node.device_id, node.profile_device)) {
++        scheduleOutputRouteChanged(node.device_id, node.profile_device, route->generation);
++      }
++    }
++  }, Qt::DirectConnection);
++
++  connect(&device_manager, &DeviceManager::outputRoutesInvalidated, this, [this](uint32_t device) {
++    output_routes.invalidate(device);
++    for (auto node : model_nodes.get_nodes_by_device_id(device)) {
++      refreshOutputNodeRoute(node);
++    }
++  }, Qt::DirectConnection);
++
++  connect(&node_manager, &NodeManager::nodeRemoved, this, [this](NodeInfo node) {
++    output_routes.remove_node(node.id, node.serial);
++  }, Qt::DirectConnection);
++  connect(&node_manager, &NodeManager::nodeIgnored, this, [this](NodeInfo node) {
++    output_routes.remove_node(node.id, node.serial);
++  }, Qt::DirectConnection);
++  connect(&device_manager, &DeviceManager::outputDeviceRemoved, this, [this](uint32_t device) {
++    output_routes.remove_device(device);
++  }, Qt::DirectConnection);
+ 
+   connect(&link_manager, &LinkManager::linkChanged, [&](LinkInfo link) { Q_EMIT linkChanged(link); });
+ 
+@@ -343,33 +429,27 @@
+     });
+   });
+ 
+-  connect(&device_manager, &DeviceManager::outputRouteChanged, [&](DeviceInfo device) {
+-    QTimer::singleShot(DbMain::presetsAutoloadInterval(), this, [&, device]() {
+-      auto nodes = model_nodes.get_nodes_by_device_id(device.id);
+-
+-      if (nodes.empty()) {
+-        util::warning(std::format("Could not find a node related to {}", device.name.toStdString()));
+-        return;
+-      }
+-
+-      for (auto& node : nodes) {
+-        if (SpeakerRouting::route_applies(node.device_id, node.profile_device,
+-                                          device.id, device.output_route_device) &&
+-            (node.media_class == tags::pipewire::media_class::sink ||
+-             node.media_class == tags::pipewire::media_class::virtual_sink)) {
+-          if (node.device_route_name != device.output_route_name ||
+-              node.device_route_description != device.output_route_description) {
+-            node.device_route_name = device.output_route_name;
+-            node.device_route_description = device.output_route_description;
+-
+-            Q_EMIT sinkRouteChanged(node);
+-          }
+-
+-          model_nodes.update_info(node);
+-        }
+-      }
+-    });
+-  });
++  connect(&device_manager, &DeviceManager::outputRouteChanged, this, [this](DeviceInfo device) {
++    const auto generation = output_routes.remember(device.id, device.output_route_device,
++                                                   device.output_route_name, device.output_route_description);
++    if (generation == 0) {
++      return;
++    }
++    // Cache first: the Device's Route may arrive before its sink node. Model
++    // hydration is immediate; only preset notification uses the configured delay.
++    bool notify = false;
++    for (auto node : model_nodes.get_nodes_by_device_id(device.id)) {
++      if (node.profile_device == device.output_route_device &&
++          (node.media_class == tags::pipewire::media_class::sink ||
++           node.media_class == tags::pipewire::media_class::virtual_sink)) {
++        refreshOutputNodeRoute(node);
++        notify = output_routes.changed_since_notification(node) || notify;
++      }
++    }
++    if (notify) {
++      scheduleOutputRouteChanged(device.id, device.output_route_device, generation);
++    }
++  }, Qt::DirectConnection);
+ 
+   pw_init(nullptr, nullptr);
+ 
+diff --git a/src/pw_manager.hpp b/src/pw_manager.hpp
+--- a/src/pw_manager.hpp
++++ b/src/pw_manager.hpp
+@@ -41,6 +41,7 @@
+ #include "pw_module_manager.hpp"
+ #include "pw_node_manager.hpp"
+ #include "pw_objects.hpp"
++#include "output_route_cache.hpp"
+ #include "speaker_routing.hpp"
+ 
+ namespace pw {
+@@ -131,6 +132,7 @@
+   int speaker_metadata_sync = -1;
+   int speaker_shutdown_sync = -1;
+   void refreshSpeakerNode(NodeInfo node);
++  void noteOutputRouteNotification(const NodeInfo& node);
+   [[nodiscard]] auto outputCorrectionBypassed() const -> bool { return speaker_routing.bypass(); }
+ 
+   [[nodiscard]] auto count_node_ports(const uint& node_id) const -> uint;
+@@ -200,6 +202,10 @@
+   std::vector<LinkInfo> list_links;
+   std::vector<DeviceInfo> list_devices;
+ 
++  OutputRouteCache<QString> output_routes;
++  auto refreshOutputNodeRoute(NodeInfo& node) -> bool;
++  void scheduleOutputRouteChanged(uint32_t device, int profile, uint64_t generation);
++
+   void set_metadata_target_node(const uint& origin_id, const uint& target_id, const uint64_t& target_serial) const;
+ };
+ 
+diff --git a/src/pw_device_manager.cpp b/src/pw_device_manager.cpp
+--- a/src/pw_device_manager.cpp
++++ b/src/pw_device_manager.cpp
+@@ -237,6 +237,7 @@
+ 
+   dd->dm->list_devices.erase(it.begin(), it.end());
+   Q_EMIT dd->dm->outputRoutesInvalidated(dd->id);
++  Q_EMIT dd->dm->outputDeviceRemoved(dd->id);
+ }
+ 
+ }  // namespace pw
+diff --git a/src/pw_device_manager.hpp b/src/pw_device_manager.hpp
+--- a/src/pw_device_manager.hpp
++++ b/src/pw_device_manager.hpp
+@@ -59,6 +59,7 @@
+   void inputRouteChanged(DeviceInfo device);
+   void outputRouteChanged(DeviceInfo device);
+   void outputRoutesInvalidated(uint32_t device_id);
++  void outputDeviceRemoved(uint32_t device_id);
+ 
+  private:
+   struct proxy_data {
+diff --git a/src/stream_output_effects.cpp b/src/stream_output_effects.cpp
+--- a/src/stream_output_effects.cpp
++++ b/src/stream_output_effects.cpp
+@@ -53,7 +53,8 @@
+   connect(
+       pm, &pw::Manager::sinkAdded, this,
+       [&](pw::NodeInfo node) {
+-        if (node.name == DbStreamOutputs::outputDevice()) {
++        node = current_output_node(node);
++        if (node.serial != SPA_ID_INVALID && node.name == DbStreamOutputs::outputDevice()) {
+           if (DbMain::bypass()) {
+             DbMain::setBypass(false);
+ 
+@@ -62,7 +63,7 @@
+ 
+           set_bypass(false);
+ 
+-          presets::Manager::self().autoload(PipelineType::output, node.name, node.device_route_description);
++          autoload_output_preset(node);
+         }
+       },
+       Qt::QueuedConnection);
+@@ -85,7 +86,11 @@
+           return;
+         }
+ 
+-        if (auto node = pm->model_nodes.get_node_by_name(name); node.serial != SPA_ID_INVALID) {
++        pm->lock();
++        auto node = pm->model_nodes.get_node_by_name(name);
++        pm->unlock();
++        node = current_output_node(node);
++        if (node.serial != SPA_ID_INVALID) {
+           if (DbMain::bypass()) {
+             DbMain::setBypass(false);
+ 
+@@ -94,7 +99,7 @@
+ 
+           set_bypass(false);
+ 
+-          presets::Manager::self().autoload(PipelineType::output, node.name, node.device_route_description);
++          autoload_output_preset(node);
+         }
+       },
+       Qt::QueuedConnection);
+@@ -122,9 +127,10 @@
+ 
+   connect(
+       pm, &pw::Manager::sinkRouteChanged, this,
+-      [](pw::NodeInfo node) {
+-        if (node.name == DbStreamOutputs::outputDevice()) {
+-          presets::Manager::self().autoload(PipelineType::output, node.name, node.device_route_description);
++      [this](pw::NodeInfo node) {
++        node = current_output_node(node);
++        if (node.serial != SPA_ID_INVALID && node.name == DbStreamOutputs::outputDevice()) {
++          autoload_output_preset(node);
+         }
+       },
+       Qt::QueuedConnection);
+@@ -142,6 +148,41 @@
+   }
+ 
+   connect_filters();
++
++  // Manager's initial registry sync can finish before this object's signal
++  // subscriptions exist. Reconcile its current selected sink once after core
++  // construction; this is queued initialization, not a timed route retry.
++  QMetaObject::invokeMethod(this, [this]() {
++    if (initial_output_reconciled) {
++      return;
++    }
++    pm->lock();
++    auto node = pm->model_nodes.get_node_by_name(DbStreamOutputs::outputDevice());
++    pm->unlock();
++    node = current_output_node(node);
++    if (node.serial != SPA_ID_INVALID) {
++      autoload_output_preset(node);
++    }
++  }, Qt::QueuedConnection);
++}
++
++void StreamOutputEffects::autoload_output_preset(const pw::NodeInfo& node) {
++  initial_output_reconciled = true;
++  pm->noteOutputRouteNotification(node);
++  presets::Manager::self().autoload(PipelineType::output, node.name, node.device_route_description);
++}
++
++auto StreamOutputEffects::current_output_node(const pw::NodeInfo& event) -> pw::NodeInfo {
++  pm->lock();
++  auto node = pm->model_nodes.get_node_by_id(event.id);
++  pm->unlock();
++  // Queued events may outlive a removed sink or a reused global ID. Route
++  // descriptions must come from the current model, never the queued copy.
++  if (!pw::OutputRouteCache<QString>::same_instance(event, node) ||
++      node.name != DbStreamOutputs::outputDevice()) {
++    return {};
++  }
++  return node;
+ }
+ 
+ StreamOutputEffects::~StreamOutputEffects() {
+diff --git a/src/stream_output_effects.hpp b/src/stream_output_effects.hpp
+--- a/src/stream_output_effects.hpp
++++ b/src/stream_output_effects.hpp
+@@ -60,10 +60,15 @@
+   void set_bypass(const bool& state);
+ 
+  private:
++  bool initial_output_reconciled = false;
+   bool bypass = false;
+   bool bypass_transition_active = false;
+   bool bypass_transition_pending = false;
+   bool pending_bypass_state = false;
++
++  void autoload_output_preset(const pw::NodeInfo& node);
++
++  auto current_output_node(const pw::NodeInfo& event) -> pw::NodeInfo;
+ 
+   void connect_filters(const bool& bypass = false);
+ 
+diff --git a/src/pw_model_nodes.cpp b/src/pw_model_nodes.cpp
+--- a/src/pw_model_nodes.cpp
++++ b/src/pw_model_nodes.cpp
+@@ -420,6 +420,9 @@
+   updateIfDifferent(Roles::Id, info.id, new_info.id);
+   updateIfDifferent(Roles::Serial, info.serial, new_info.serial);
+   updateIfDifferent(Roles::DeviceId, info.device_id, new_info.device_id);
++  // Internal route binding is not exposed as a QML role. Persist it before
++  // Manager resolves delayed autoload from the model instead of NodeData.
++  list[row].profile_device = new_info.profile_device;
+   updateIfDifferent(Roles::Name, info.name, new_info.name);
+   updateIfDifferent(Roles::Description, info.description, new_info.description);
+   updateIfDifferent(Roles::MediaClass, info.media_class, new_info.media_class);

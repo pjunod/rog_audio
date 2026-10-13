@@ -10,6 +10,8 @@ MODULES = {
     'inspector': 'test_inspect_speaker_runtime',
     'source': 'test_easyeffects_runtime',
     'routing': 'test_speaker_routing',
+    'autoload': 'test_easyeffects_autoload',
+    'build': 'test_easyeffects_build',
 }
 
 

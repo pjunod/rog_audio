@@ -1,0 +1,31 @@
+{
+  "acoustic_or_physical_latency_measurement": false,
+  "assertions": [
+    "automatic preset selected; unrelated route index preserved it",
+    "ordinary app processed",
+    "explicit HDMI preserved",
+    "explicit USB preserved",
+    "actual preset/IR/plugins loaded",
+    "default change preserved",
+    "route-event DSP bypass before 1000 ms autoload",
+    "stock startup/config/control isolated",
+    "graceful quit restored exact typed metadata pair",
+    "physical default remains USB"
+  ],
+  "binary_sha256": "5686f784a6de02e72a4fb6cb08ff9022e675eb3c61a67634ae6305a5597ca7c4",
+  "bypass_rms": 0.07071067690287594,
+  "case": "lenovo-loader-route",
+  "corrected_rms": 0.026224823756173698,
+  "evidence_kind": "isolated-synthetic-runtime",
+  "hardware": {
+    "amplifier_identification": "unknown",
+    "codec": "10ec0285",
+    "machine_type": "20MF",
+    "pci_subsystem": "17aa2267",
+    "subsystem": "17aa2276"
+  },
+  "physical_device_or_session_access": false,
+  "schema_version": 1,
+  "speaker_bundle_manifest_sha256": "d4db50b23c56310df1b4c5a2153da51d84486799b06dcc10d22d2df7b472af08",
+  "status": "passed"
+}

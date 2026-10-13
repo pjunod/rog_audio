@@ -80,7 +80,7 @@ The implemented contract is:
 | Warm audio path | A continuous zero-valued source requests an active owned output between presses. Verify actual Linux graph activity independently. Report initial startup separately; warm processing is not an idle-power baseline. |
 | One application path | Use the same implementation/build and comparable settings on all three laptops. A browser version is part of the method, not an interchangeable player. |
 | Existing internal output | Verify the full ASUS/Lenovo chain and both hardware channels. Do not route directly to hardware in a way that bypasses speaker correction. |
-| Negotiation evidence | The context requests a 0.1-second application latency hint without forcing sample rate or global graph timing. The browser can interpret the hint differently. Record actual context rate and Linux driver quantum while it runs; a move from 256/48000 is a different condition. |
+| Negotiation evidence | The context requests a 0.1-second application latency hint without forcing sample rate or global graph timing. The browser can interpret the hint differently. Record actual context rate and Linux driver quantum while it runs; a departure from the accepted per-host period is a different condition. |
 | Timing and application metadata | The local JSON log retains session alias, browser user agent, actual context rate, level, the operator route statement, requested latency hint and finite/null API timing estimates. Events retain sequence, page monotonic time, key event timestamp and context start time as diagnostics only; `physical_latency_ms` stays null. |
 | Input/event bounds | Leave 2–4 seconds between trials. Presses less than 750 ms apart emit none and are logged. At 2000 logged events the owned stream stops; export and reload for a new set. |
 | Explicit start/stop | Arm creates the owned context; Disarm stops/disconnects owned sources and closes that context. Hiding/leaving the page, switching windows or loss of running context also disarms it. Other media and audio services are untouched. |
@@ -109,11 +109,20 @@ physical measurement acceptance.
 
 ## 3. Preserve the tuned state and coordinate the capture window
 
+Complete software qualification before the coordinated recording session.
+ROG 512 frames and ThinkPad 256 frames are the planned updated-runtime
+conditions, not yet accepted settings. Preserve each host's actually accepted
+runtime, timing and tuning bindings. Record the negotiated running driver
+quantum/rate for each physical capture; the request alone does not establish
+that condition. Keep different periods or runtime versions in separate
+measurement groups. The historical PR 8 source/test receipt remains unchanged.
+
 Before the window, retain runtime/kit/preset/IR/plugin settings hashes, the
 physical default/profile/route, owner volume, persistent startup state and
 the existing [rollback](LATENCY_COMPARISON.md#7-paired-256-frame-trials--both-tuned-paths-preserved).
-Record power state, actual client requests and other media. Keep the 256-frame
-request, limiter, IR, amplifier protection and stock audio services intact.
+Record power state, actual client requests and other media. Preserve the
+per-host latency request actually accepted at session time, alongside the
+limiter, IR, amplifier protection and stock audio services.
 
 Agree who operates the recorder, who presses the key, the quiet capture
 interval, the conservative signal level and the start/stop sequence. Do not

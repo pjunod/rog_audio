@@ -24,6 +24,10 @@ class SourcePreparationTests(unittest.TestCase):
             self.assertIn('org.rog_audio.SpeakerEffects',(source/'src/tags_app.hpp').read_text())
             self.assertIn('RogAudioSpeakerEffectsServer',(source/'src/tags_local_server.hpp').read_text())
             self.assertTrue((source/'src/speaker_routing.hpp').is_file())
+            self.assertTrue((source/'src/output_route_cache.hpp').is_file())
+            self.assertIn('current_output_node',(source/'src/stream_output_effects.cpp').read_text())
+            self.assertIn('list[row].profile_device = new_info.profile_device;',
+                          (source/'src/pw_model_nodes.cpp').read_text())
             self.assertIn('GNU',(source/'LICENSE').read_text())
             self.assertNotIn('webrtc-audio-processing-2',(source/'CMakeLists.txt').read_text())
             with self.assertRaises(build.BuildError):build.source_snapshot(repository,source)

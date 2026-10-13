@@ -224,3 +224,42 @@ WAV download was not exercised because the page was never armed.
 Armed browser/device behaviour and actual physical captures remain separate
 acceptance work. The interrupted laptop stability attempts do not qualify
 the emitter or either full-hour check.
+
+
+## Startup/stability batch — adversarial findings before affected acceptance
+
+Two independent adversarial reviews examined the completed native/512 source
+at integration `24a8feef`. They identified three P2 findings:
+
+- The real node model did not retain late `card.profile.device` updates, so
+  current-node/timer paths could continue to see the old unknown binding.
+  Native storage correction and a real late-profile-binding graph regression
+  are implemented in `b6d5f1e` and cleared focused source re-review; the matching
+  rebuilt artifact and late-profile-binding graph passed acceptance.
+- Docker's default BuildKit/Buildx path did not support the legacy build
+  resource arguments. The builder now selects the compatible bounded legacy backend explicitly
+  in only the Docker build subprocess. The existing Docker unit assertion
+  is extended; `b6d5f1e` cleared focused source re-review.
+- The install guide's current build emitted `+rog2` while its package/install
+  commands still named `+rog1`. Section 5 now consistently names `+rog2`,
+  directs the current procedure to the authored autoload topic, and preserves
+  the old receipt/release as history. The correction at `3775486c` cleared
+  focused documentation re-review.
+
+The intermediate compiler/export receipt for source `135c60f` remains
+unchanged. It does not qualify the forthcoming corrected source or artifact.
+The completed selection is
+29 unit methods and six graph selectors (four new event-order/binding cases
+plus the ASUS and Lenovo loader-route regressions). Both reviewers cleared all three fixes before execution. The approved corrective build now has a [matching receipt](../evidence/speaker-autoload-reviewed-build-2026-10-13.json)
+for reviewed `b6d5f1e`, final ELF/package hashes and 711 exact source files.
+The earlier receipt remains historical. Final artifact binding/receipt checks also cleared independently. The [final acceptance receipt](../evidence/speaker-autoload-acceptance-2026-10-13.json)
+records 29 unit methods and six isolated graph selectors passing on first
+execution, with zero failures or skips. One earlier container-lifetime setup
+failure executed zero Linux methods. Four unit-log hashes and all six graph
+receipt hashes were independently checked against retained originals. Receipts
+were retained before owned-container cleanup; the SSH keeper ended with exit
+137 after the owned PID 1 stop timeout. No host services or linger settings
+changed. This integration lane executed no units. Physical startup, actual
+ROG 512 negotiation and fresh final-configuration hours remain separate.
+Only failed or subsequently invalidated cases repeat; unrelated accepted
+speaker, latency, Mac and emitter suites remain retained.

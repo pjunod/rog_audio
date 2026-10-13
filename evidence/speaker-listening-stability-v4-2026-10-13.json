@@ -1,0 +1,774 @@
+{
+  "date": "2026-10-13",
+  "kind": "coordinated-listening-stability-results-before-startup-runtime-update",
+  "limits": [
+    "Owned silent stability clients streamed all-zero PCM and recorded no microphone; separate listening operations played signals and the listening lane performed microphone captures.",
+    "Graph256/48000 represents a5.333ms driver period, not physical latency.",
+    "ROG startup error and incomplete listening/stability acceptance are retained; no zero-error or60-minute pass claimed.",
+    "Enabled startup configuration is verified; actual reboot/login acceptance remains pending.",
+    "Sonos remains held until both laptops subjective acceptance.",
+    "ROG uses the native larger period after reviewed latency rollback; its short five-sample cumulativeERR3 observation is not zero-error startup or hour qualification.",
+    "ThinkPad continuous hour applies to the old v0.2.0 runtime; reviewed startup-fixed runtime and ROG512 require distinct fresh deployed-runtime observations."
+  ],
+  "listening": {
+    "date": "2026-10-13",
+    "familiar_observation": {
+      "acceptance": "not-established-idle-observation",
+      "elapsed_seconds": 29.560574054718018,
+      "playback_generated": false,
+      "recording_performed": false,
+      "route_consistent": true,
+      "running_driver_observed": false,
+      "services_preserved": true,
+      "settings_changed": false,
+      "speaker_state_consistent": true,
+      "volume_preserved": true
+    },
+    "host": "lab5",
+    "kind": "coordinated-listening-observations",
+    "limits": [
+      "ROG owner confirmed the directly cued synthetic channel clip sounded fine; familiar-audio and ThinkPad subjective acceptance remain pending.",
+      "Original monitor history includes startup negotiation 2048\u2192256; the guarded leading-silence check observed256 before audible pulses.",
+      "Reported quantum and errors are software observations, not acoustic latency or calibrated response.",
+      "No microphone was recorded and no tuning, volume, routing or audio service was changed."
+    ],
+    "operations": [
+      {
+        "actual_player_seconds": 8.162276123999618,
+        "default_preserved": true,
+        "driver_sequence": [
+          {
+            "errors": 0,
+            "quantum_frames": 2048,
+            "rate_hz": 48000,
+            "state": "R"
+          },
+          {
+            "errors": 0,
+            "quantum_frames": 256,
+            "rate_hz": 48000,
+            "state": "R"
+          },
+          {
+            "errors": 0,
+            "quantum_frames": 256,
+            "rate_hz": 48000,
+            "state": "R"
+          },
+          {
+            "errors": 0,
+            "quantum_frames": 256,
+            "rate_hz": 48000,
+            "state": "R"
+          },
+          {
+            "errors": 0,
+            "quantum_frames": 256,
+            "rate_hz": 48000,
+            "state": "R"
+          },
+          {
+            "errors": 0,
+            "quantum_frames": 256,
+            "rate_hz": 48000,
+            "state": "R"
+          },
+          {
+            "errors": 0,
+            "quantum_frames": 256,
+            "rate_hz": 48000,
+            "state": "R"
+          },
+          {
+            "errors": 0,
+            "quantum_frames": 256,
+            "rate_hz": 48000,
+            "state": "R"
+          },
+          {
+            "errors": 0,
+            "quantum_frames": 256,
+            "rate_hz": 48000,
+            "state": "R"
+          },
+          {
+            "errors": 0,
+            "quantum_frames": 256,
+            "rate_hz": 48000,
+            "state": "R"
+          }
+        ],
+        "during_full_chain": true,
+        "leading_silence_full_chain": true,
+        "operation": "original",
+        "player_exit_code": 0,
+        "services_preserved": true,
+        "signal_sha256": "b9c61312e8e938156cad95823ea2a93df943d469beead5239e0a47b3519f729d",
+        "speaker_state_preserved": true,
+        "subjective_acceptance_reported": false,
+        "volume_preserved": true
+      },
+      {
+        "actual_player_seconds": 8.11199513101019,
+        "default_preserved": true,
+        "driver_sequence": [
+          {
+            "errors": 0,
+            "quantum_frames": 256,
+            "rate_hz": 48000,
+            "state": "R"
+          },
+          {
+            "errors": 0,
+            "quantum_frames": 256,
+            "rate_hz": 48000,
+            "state": "R"
+          },
+          {
+            "errors": 0,
+            "quantum_frames": 256,
+            "rate_hz": 48000,
+            "state": "R"
+          },
+          {
+            "errors": 0,
+            "quantum_frames": 256,
+            "rate_hz": 48000,
+            "state": "R"
+          },
+          {
+            "errors": 0,
+            "quantum_frames": 256,
+            "rate_hz": 48000,
+            "state": "R"
+          },
+          {
+            "errors": 0,
+            "quantum_frames": 256,
+            "rate_hz": 48000,
+            "state": "R"
+          },
+          {
+            "errors": 0,
+            "quantum_frames": 256,
+            "rate_hz": 48000,
+            "state": "R"
+          },
+          {
+            "errors": 0,
+            "quantum_frames": 256,
+            "rate_hz": 48000,
+            "state": "R"
+          },
+          {
+            "errors": 0,
+            "quantum_frames": 256,
+            "rate_hz": 48000,
+            "state": "R"
+          },
+          {
+            "errors": 0,
+            "quantum_frames": 256,
+            "rate_hz": 48000,
+            "state": "R"
+          },
+          {
+            "errors": 0,
+            "quantum_frames": 256,
+            "rate_hz": 48000,
+            "state": "R"
+          },
+          {
+            "errors": 0,
+            "quantum_frames": 256,
+            "rate_hz": 48000,
+            "state": "R"
+          },
+          {
+            "errors": 0,
+            "quantum_frames": 256,
+            "rate_hz": 48000,
+            "state": "R"
+          }
+        ],
+        "during_full_chain": true,
+        "leading_silence_full_chain": true,
+        "operation": "owner-requested-replay",
+        "player_exit_code": 0,
+        "services_preserved": true,
+        "signal_sha256": "b9c61312e8e938156cad95823ea2a93df943d469beead5239e0a47b3519f729d",
+        "speaker_state_preserved": true,
+        "subjective_acceptance_reported": false,
+        "volume_preserved": true
+      },
+      {
+        "elapsed_seconds": 8.567947149276733,
+        "finished_unix": 1791898334.8193731,
+        "graph_monitored_during_this_direct_cue": false,
+        "kind": "owner-cued-existing-channel-clip",
+        "nominal_seconds": 8,
+        "operation": "direct-owner-cue",
+        "recording_performed": false,
+        "returncode": 0,
+        "settings_changed": false,
+        "signal_sha256": "b9c61312e8e938156cad95823ea2a93df943d469beead5239e0a47b3519f729d",
+        "started_unix": 1791898326.251429,
+        "status": "completed",
+        "subjective_acceptance_reported": true,
+        "subjective_report": "they sounded fine",
+        "subjective_scope": "channel-clip-only"
+      }
+    ],
+    "original_transport_timeout": {
+      "automatic_replay_performed": false,
+      "owned_monitor_identity_checked_and_cleaned": true,
+      "owned_read_only_monitor_lingered": true,
+      "playback_failed": false,
+      "saved_receipt_proved_completion": true
+    },
+    "private_receipt_sha256": {
+      "lab5-channel-check-replay-1-raw.json": "8ca3acf784214a373f92959157da2bd4236d68ac07ff869a9f54146c4d83be43",
+      "lab5-channel-check-timeout-diagnostic.json": "ec51c43e1edc1f9ec11ff0d7b30ad76f27304e4204ea373887bad96f844b8a77",
+      "lab5-owned-monitor-cleanup.json": "d3def4543e4582a4d95959b4f993a01e348f5765f7ce2c2a1a0b3ff555142c3d",
+      "lab5-preflight.json": "81d2c5ef773264414d4fa6388d45c172b26161a96440503082e40ae2c3915f74",
+      "lab6-preflight.json": "42ade8e2858a37ec6eb9722e88a4b0afe0bef236336f11521dcc8c2f7f45a007"
+    },
+    "schema_version": 1,
+    "signal": {
+      "channels": 2,
+      "duration_seconds": 8.0,
+      "frequency_hz": 500,
+      "initial_silence_seconds": 2.0,
+      "kind": "generated-synthetic-speaker-listening-signal",
+      "phases": [
+        {
+          "channels": "left",
+          "end_seconds": 3.5,
+          "gap_seconds": 0.25,
+          "pulse_count": 3,
+          "pulse_seconds": 0.25,
+          "start_seconds": 2.0
+        },
+        {
+          "channels": "right",
+          "end_seconds": 5.5,
+          "gap_seconds": 0.25,
+          "pulse_count": 3,
+          "pulse_seconds": 0.25,
+          "start_seconds": 4.0
+        },
+        {
+          "channels": "both",
+          "end_seconds": 7.5,
+          "gap_seconds": 0.25,
+          "pulse_count": 3,
+          "pulse_seconds": 0.25,
+          "start_seconds": 6.0
+        }
+      ],
+      "playback_performed": false,
+      "pulse_peak_dbfs": -24.43732842927202,
+      "ramp_seconds": 0.03,
+      "recording_performed": false,
+      "sample_rate_hz": 48000,
+      "stage": "prepared-signal-definition-no-playback-at-preparation",
+      "wav_sha256": "b9c61312e8e938156cad95823ea2a93df943d469beead5239e0a47b3519f729d"
+    }
+  },
+  "native_preset_restoration": {
+    "audible_signal_generated": false,
+    "exact_reviewed_preset_selected": true,
+    "finished_unix": 1791900518.6529412,
+    "from_bypass": true,
+    "host": "lab5",
+    "native_ipc_exitcode": 0,
+    "on_disk_state_preserved": true,
+    "recording_performed": false,
+    "sampled_running_driver_errors": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "silent_player_exitcode": 0,
+    "silent_player_seconds": 8.11992883682251,
+    "started_unix": 1791900507.3945653,
+    "units_preserved": true,
+    "volume_preserved": true
+  },
+  "new_attempts": {
+    "lab5": {
+      "active_interval_complete": false,
+      "active_started_unix": 1791900579.1007733,
+      "actual_owned_active_seconds": 67.98183788798633,
+      "all_owned_load_processes_stopped": true,
+      "expected_finish_unix": 1791904179.1007736,
+      "failure": "new node error or counter reset",
+      "failure_cause": "unattributed-simultaneous-driver-source-convolver-errors",
+      "failure_sample_history": [
+        {
+          "changed_roles": [
+            {
+              "errors": 1,
+              "quantum_frames": 256,
+              "rate_hz": 48000,
+              "role": "physical-output",
+              "state": "R"
+            },
+            {
+              "errors": 2,
+              "quantum_frames": 4800,
+              "rate_hz": 48000,
+              "role": "owned-zero-source",
+              "state": "R"
+            },
+            {
+              "errors": 2,
+              "quantum_frames": 0,
+              "rate_hz": 0,
+              "role": "convolver",
+              "state": "R"
+            }
+          ],
+          "sample_index": 71,
+          "seconds_relative_to_active_start": 67.957526479
+        },
+        {
+          "changed_roles": [
+            {
+              "errors": 1,
+              "quantum_frames": 256,
+              "rate_hz": 48000,
+              "role": "physical-output",
+              "state": "R"
+            },
+            {
+              "errors": 2,
+              "quantum_frames": 4800,
+              "rate_hz": 48000,
+              "role": "owned-zero-source",
+              "state": "R"
+            },
+            {
+              "errors": 2,
+              "quantum_frames": 0,
+              "rate_hz": 0,
+              "role": "convolver",
+              "state": "R"
+            }
+          ],
+          "sample_index": 72,
+          "seconds_relative_to_active_start": 67.987334306
+        }
+      ],
+      "finished_cleanup_unix": 1791900647.0872834,
+      "fresh_session_boundary": true,
+      "full_stereo_tuned_chain_verified": true,
+      "last_valid_sample_seconds": 66.956971463,
+      "private_launch_sha256": "d614d8936c1ab50813c218ef474e068cc3dc20bc2f0ce9e6d682d7f7fd0fab56",
+      "requested_seconds": 3600,
+      "startup_driver_errors": 0,
+      "status": "failed-counter-growth",
+      "units_preserved": true,
+      "volume_preserved": true
+    },
+    "lab6": {
+      "active_interval_complete": true,
+      "active_started_unix": 1791900122.6209257,
+      "actual_owned_active_seconds": 3600.1771743470163,
+      "agent_applied_volume_changes": false,
+      "all_monitored_chain_components_present_and_running_in_active_samples": true,
+      "all_owned_load_processes_stopped": true,
+      "calibrated_sound_quality_qualification": false,
+      "cleanup_duration_after_required_interval_seconds": 0.18175029754638672,
+      "completed_process_absence_verified": true,
+      "counter_growth_observed": false,
+      "counter_ranges_by_role": {
+        "autogain": {
+          "first": 0,
+          "last": 0,
+          "maximum": 0,
+          "minimum": 0,
+          "sample_count": 3608
+        },
+        "convolver": {
+          "first": 0,
+          "last": 0,
+          "maximum": 0,
+          "minimum": 0,
+          "sample_count": 3608
+        },
+        "limiter": {
+          "first": 0,
+          "last": 0,
+          "maximum": 0,
+          "minimum": 0,
+          "sample_count": 3608
+        },
+        "multiband_compressor": {
+          "first": 0,
+          "last": 0,
+          "maximum": 0,
+          "minimum": 0,
+          "sample_count": 3608
+        },
+        "output_level": {
+          "first": 0,
+          "last": 0,
+          "maximum": 0,
+          "minimum": 0,
+          "sample_count": 3608
+        },
+        "owned-zero-source": {
+          "first": 0,
+          "last": 0,
+          "maximum": 0,
+          "minimum": 0,
+          "sample_count": 3608
+        },
+        "physical-output": {
+          "first": 1,
+          "last": 1,
+          "maximum": 1,
+          "minimum": 1,
+          "sample_count": 3608
+        },
+        "speaker_sink": {
+          "first": 0,
+          "last": 0,
+          "maximum": 0,
+          "minimum": 0,
+          "sample_count": 3608
+        },
+        "spectrum": {
+          "first": 0,
+          "last": 0,
+          "maximum": 0,
+          "minimum": 0,
+          "sample_count": 3608
+        }
+      },
+      "counter_reset_observed": false,
+      "expected_finish_unix": 1791903722.620926,
+      "final_physical_default_volume": 1.0,
+      "finished_cleanup_unix": 1791903722.802676,
+      "first_retained_active_sample_relative_seconds": 0.89336099,
+      "full_stereo_tuned_chain_initially_verified": true,
+      "graph_observations_retained": 360,
+      "graph_observations_with_other_playback_clients": 10,
+      "initial_physical_default_volume": 1.0,
+      "last_retained_active_sample_relative_seconds": 3599.893348479,
+      "latest_startup_fixed_runtime_qualification": false,
+      "max_monitor_reception_gap_ns": 1002105343,
+      "midpoint_snapshot_unix": 1791901922.6695778,
+      "monitor_frames_controller_observed": 3616,
+      "monitor_frames_in_required_active_window": 3608,
+      "monitor_frames_retained": 3616,
+      "observer_runner_sha256": "3e11a61d316b6a8fd6e3a4bdf41864b90f552a5a9efd7f8128015476d8ffb9cb",
+      "physical_latency_qualification": false,
+      "private_complete_archive_sha256": "c4dd122b343f1353adcd9643125ad190687dbce51b0e03413072143afd72fdd6",
+      "protected_start_midpoint_end_state_equal": true,
+      "qualification_scope": "continuous-software-path-only-old-runtime",
+      "runtime_artifact_family": "v0.2.0-8.2.8+rog1",
+      "runtime_binary_sha256": "e5061dcc1e0b925933eceeacffb576536d24f609307166b97d0e159c0f1772d1",
+      "sampled_driver_quantum_frames": 256,
+      "sampled_driver_rate_hz": 48000,
+      "start_end_audio_unit_identity_equal": true,
+      "startup_driver_errors": 1,
+      "status": "completed-60-minute-silent-observation",
+      "timed_active_seconds_required": 3600,
+      "volume_condition_changes_count": 0,
+      "zero_error_startup_claim": false
+    }
+  },
+  "normal_use_retry_method": {
+    "external_volume_changes": "retained-as-timestamped-segmented-conditions",
+    "fixed_source_request": "4800/48000",
+    "hard_guards": [
+      "node-identity-and-full-stereo-chain",
+      "counter-growth-or-reset",
+      "256-at-48000-driver-negotiation",
+      "DSP-and-source-byte-drift",
+      "physical-speaker-route-and-default",
+      "audio-service-and-core-identity",
+      "monitor-continuity"
+    ],
+    "other_playback_clients": "logged-with-ten-second-graph-observations",
+    "requested_continuous_seconds": 3600,
+    "revision": "normal-use-volume-observation-v2",
+    "runner_sha256": "3e11a61d316b6a8fd6e3a4bdf41864b90f552a5a9efd7f8128015476d8ffb9cb",
+    "volume_changes_agent_applied": false
+  },
+  "other_lane_listening_overlaps": [
+    {
+      "host": "lab6",
+      "input_gain_restored": null,
+      "kind": "channel-and-mic-original-full-gain",
+      "native_recorder_exitcode_preserved": true,
+      "physical_latency_qualification": false,
+      "playback_finished_unix": 1791900494.0887685,
+      "playback_started_unix": 1791900486.0617778,
+      "player_exitcode": 0,
+      "raw_recording_not_public": true,
+      "recorder_exitcode": 1,
+      "recording_finished_unix": 1791900495.9992447,
+      "recording_receipt_sha256": "8a040b675e7221ed9c2378b840f0f0668beb6dc1d35f9afcd3e530e7f4e526c4",
+      "recording_started_unix": 1791900485.9677043,
+      "scope": "separate-owner-authorized-listening-lane",
+      "services_and_output_volume_preserved": true,
+      "speaker_state_preserved": true,
+      "temporary_input_gain": null
+    },
+    {
+      "host": "lab6",
+      "input_gain_restored": true,
+      "kind": "channel-and-mic-low-input-gain",
+      "native_recorder_exitcode_preserved": true,
+      "physical_latency_qualification": false,
+      "playback_finished_unix": 1791901071.6608238,
+      "playback_started_unix": 1791901063.6339915,
+      "player_exitcode": 0,
+      "raw_recording_not_public": true,
+      "recorder_exitcode": 1,
+      "recording_finished_unix": 1791901073.5650513,
+      "recording_receipt_sha256": "e0ea64130462910d4ff2957e572d98108d396f7b59ecdfc5cb27e26d32be72c8",
+      "recording_started_unix": 1791901063.5361154,
+      "scope": "separate-owner-authorized-listening-lane",
+      "services_and_output_volume_preserved": true,
+      "speaker_state_preserved": true,
+      "temporary_input_gain": 0.2
+    },
+    {
+      "host": "lab6",
+      "input_gain_restored": true,
+      "kind": "generated-speech-music-demo-and-mic",
+      "native_recorder_exitcode_preserved": true,
+      "physical_latency_qualification": false,
+      "playback_finished_unix": 1791901414.3083186,
+      "playback_started_unix": 1791901369.2795024,
+      "player_exitcode": 0,
+      "raw_recording_not_public": true,
+      "recorder_exitcode": 1,
+      "recording_finished_unix": 1791901419.208885,
+      "recording_receipt_sha256": "e2d080e1ec151a27630b5e66579af446accca1c4687c89f7566c25fe21eb0998",
+      "recording_started_unix": 1791901369.1789808,
+      "scope": "separate-owner-authorized-listening-lane",
+      "services_and_output_volume_preserved": true,
+      "speaker_state_preserved": true,
+      "temporary_input_gain": 0.2
+    },
+    {
+      "channels": 1,
+      "host": "lab6",
+      "kind": "corrected-source-level-generated-speech-music-listening-overlap",
+      "mic_analysis_attribution": "listening-lane-private-analysis",
+      "original_input_gain_restored": true,
+      "owner_subjective_acceptance": "pending",
+      "physical_latency_qualification": false,
+      "playback_finished_unix": 1791902084.083657,
+      "playback_started_unix": 1791902039.0590186,
+      "player_exitcode": 0,
+      "private_receipt_sha256": "acd70f5ec476845aea73124fbb4564ba32a3f88186f4aa0c1935d6b0d27e8a6e",
+      "recorded_clipped_samples_reported_by_listening_lane": 0,
+      "recorded_peak_dbfs_reported_by_listening_lane": -15.88,
+      "recorder_exitcode": 1,
+      "recorder_exitcode_preserved": true,
+      "recording_finished_unix": 1791902088.9862268,
+      "recording_started_unix": 1791902038.9573452,
+      "sample_rate_hz": 48000,
+      "schema_version": 1,
+      "scope": "separate-owner-authorized-listening-lane",
+      "services_and_output_volume_preserved": true,
+      "sound_quality_calibration": false,
+      "source_level_adjustment": "generated-file-gain-only-no-laptop-output-volume-change",
+      "speaker_state_preserved": true,
+      "temporary_input_gain": 0.2,
+      "verified_recorded_frames": 2400000,
+      "verified_recorded_seconds": 50
+    }
+  ],
+  "post_session_restart": {
+    "automatic_tuned_startup_acceptance": "failed-bypass-preset-until-explicit-native-restoration",
+    "cause": "route-before-node-autoload-race",
+    "durable_fix_state": "in-development",
+    "host": "lab5",
+    "kind": "coordinated-logout-login-boundary",
+    "native_runtime_restarted_after_pipewire_connection_loss": true,
+    "observed_volume": 0.94,
+    "physical_node_return_observed": true,
+    "post_restart_bypass_preset_loaded": true,
+    "prior_tuned_preset_loaded": true,
+    "reboot_performed": false,
+    "speaker_data_restart_equivalent": true,
+    "volume_changed_by_agent": false
+  },
+  "private_receipt_sha256": {
+    "lab5-direct-cue-1.json": "1e0035a4ce7b0ccf5d8a7298539c04b5b682cd4c9a88eb06882aedc9a41b9f75",
+    "lab5-familiar-listening-raw.json": "a5db332d019a8f90476354b3cf076078a50998e9918baa94db5c330d173c9faf",
+    "lab5-handoff-status-1791899586.json": "43e0ac21a199795d354ed5b465f9a0b47465b20d2e0d7d9d88e52963282f510b",
+    "lab5-latency256-removal-readiness-recovery.json": "0f89d41c89375eb9157950532d3acb279be4813c5004631495e017b134ba712e",
+    "lab5-latency256-reviewed-removal-1.json": "49a342a9f04d4abd309a9c3e35d31ca6f7da5649e9b539d004d7e06d6ff48102",
+    "lab5-post-hdr-preflight-1791900217.json": "22b573de294e1432eb048b8c04573683efa1c334ff8d450ece6ea4227b3d6246",
+    "lab5-post-latency-removal-silent-check-1.json": "86ba7f3a34e22a205c1abc77afe45eb8ae3481eec6a2e830a3bad7383c25e56b",
+    "lab5-preset-restoration-1.json": "942cf71366017fb8aa8fe53b839ceb7e8cc903b493f717cb96666875e37ae06e",
+    "lab5-stability-post-hdr-attempt-1.tar.gz": "6763e6ab5bffcb45febf1e4eaf81dad49374f6de7cf2c1c46d9f06b1bcec1e26",
+    "lab5-stability-startup-failure.json": "8d436d6ccc193c479018b5d91749aef0ea358b7bd0f38839442075480a8677f1",
+    "lab6-handoff-status-1791899587.json": "d2346ae8714212174d14ede1acee0692e8444ff2c34fa177b500161247280110",
+    "lab6-normal-use-status-1791901693727498000.json": "739cb80242f1610bfd59658b2eba677f67bb1a4cb8716d0dc7b5b1559c6fe6a2",
+    "lab6-stability-attempt-1.tar.gz": "36f88f44905ae673f51c1745c95658d7bed8bc75bb7519a2140411b1d6fbf94a",
+    "lab6-stability-normal-use-completed.tar.gz": "c4dd122b343f1353adcd9643125ad190687dbce51b0e03413072143afd72fdd6",
+    "thinkpad-normal-demo-overlap-supplement.json": "966778ace2ca8662202525e31e31a74d71889ac45a0607b9bb26207c5dbf4aab"
+  },
+  "reviewed_rog_latency_rollback": {
+    "bounded_silent_check": {
+      "first_valid_driver_errors": 3,
+      "full_stereo_tuned_chain_verified": true,
+      "hour_pass": false,
+      "last_valid_driver_errors": 3,
+      "player_exitcode": 0,
+      "player_seconds": 8.094456911087036,
+      "pre_start_driver_error_baseline": "not-measured-with-this-monitor",
+      "protected_state_preserved": true,
+      "sampled_cumulative_driver_errors": [
+        3,
+        3,
+        3,
+        3,
+        3
+      ],
+      "sampled_driver_quantum_frames": [
+        2048
+      ],
+      "sampled_driver_rate_hz": [
+        48000
+      ],
+      "units_preserved": true,
+      "volume_preserved": true,
+      "zero_error_startup_claim": false
+    },
+    "candidate_service_restarted_once_via_retained_recipe": true,
+    "host": "lab5",
+    "owned_rule_quarantined": true,
+    "owned_rule_status": {
+      "owned_file": "absent",
+      "status": "removed"
+    },
+    "physical_volume": 0.94,
+    "preset_correct_after_restart_without_manual_reload": true,
+    "readiness_error_handling": "read-only-inspection-confirmed-completed-removal-no-removal-or-restart-repeat",
+    "readiness_wrapper_error": "checked-raw-runtime-too-early-after-service-active",
+    "reason": "256-frame-continuous-attempt-failed-on-counter-growth",
+    "runtime_binary_preserved": true,
+    "speaker_preset_and_IR_preserved": true,
+    "stock_pipewire_and_wireplumber_not_restarted": true,
+    "volume_changed_by_agent": false
+  },
+  "schema_version": 4,
+  "stability": {
+    "lab5": {
+      "active_seconds": 0,
+      "all_owned_load_processes_stopped": true,
+      "attempt_seconds": 2.078972339630127,
+      "exact_protected_state_preserved": true,
+      "failure": "startup counter above retained baseline",
+      "requested_seconds": 3600,
+      "retry_performed": false,
+      "roG_session_coordination": "yielded-for-coordinated-HDR-window",
+      "rollback_files_present": true,
+      "sampled_counter_history": [
+        {
+          "all_sampled_dsp_and_owned_client_errors_zero": true,
+          "physical_output": [
+            {
+              "errors": 0,
+              "quantum_frames": 0,
+              "rate_hz": 0,
+              "state": "C"
+            }
+          ],
+          "sample_index": 0
+        },
+        {
+          "all_sampled_dsp_and_owned_client_errors_zero": true,
+          "physical_output": [
+            {
+              "errors": 1,
+              "quantum_frames": 256,
+              "rate_hz": 48000,
+              "state": "I"
+            }
+          ],
+          "sample_index": 1
+        },
+        {
+          "all_sampled_dsp_and_owned_client_errors_zero": true,
+          "physical_output": [
+            {
+              "errors": 1,
+              "quantum_frames": 256,
+              "rate_hz": 48000,
+              "state": "I"
+            }
+          ],
+          "sample_index": 2
+        },
+        {
+          "all_sampled_dsp_and_owned_client_errors_zero": true,
+          "physical_output": [
+            {
+              "errors": 1,
+              "quantum_frames": 256,
+              "rate_hz": 48000,
+              "state": "R"
+            }
+          ],
+          "sample_index": 3
+        },
+        {
+          "all_sampled_dsp_and_owned_client_errors_zero": true,
+          "physical_output": [
+            {
+              "errors": 1,
+              "quantum_frames": 256,
+              "rate_hz": 48000,
+              "state": "R"
+            }
+          ],
+          "sample_index": 4
+        }
+      ],
+      "service_pids_and_restart_counts_unchanged": true,
+      "settings_changed": false,
+      "speaker_unit_active_enabled": true,
+      "status": "failed-before-timed-active-interval",
+      "unit_sha256": "6a6603dabd7188909d8dd7810f2af6dc8a622074da2b616bad64a474d8bb4b0a",
+      "volume_preserved": true
+    },
+    "lab6": {
+      "active_interval_complete": false,
+      "active_started_unix": 1791899138.917384,
+      "all_other_monitored_node_errors_zero": true,
+      "all_owned_load_processes_stopped": true,
+      "driver_error_end": 1,
+      "driver_error_start": 1,
+      "elapsed_including_cleanup_seconds": 581.039567232132,
+      "failure": "observed volume changed; preserve owner state",
+      "final_volume": 0.74,
+      "finished_cleanup_unix": 1791899719.9569511,
+      "initial_volume": 0.2,
+      "max_monitor_reception_gap_ns": 1001013578,
+      "monitor_frames_observed": 587,
+      "requested_seconds": 3600,
+      "status": "failed-volume-condition-guard",
+      "units_preserved": true,
+      "volume_change_source": "unattributed-external",
+      "volume_changed_by_agent": false
+    }
+  },
+  "status": "current-runtime-thinkpad-hour-complete-rog-256-failed-and-reverted"
+}

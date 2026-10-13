@@ -1,6 +1,7 @@
 # Latency comparison — tuned Linux laptops and the M4 Air
 
-**Status:** both tuned 256-frame trials active; physical comparison pending ·
+**Status:** historical paired results retained; ThinkPad v0.2.0 hour complete
+at 256 frames, ROG fallback 2048; corrected-runtime/512 and physical tests pending ·
 **Written:** 2026-10-13 · **Executes:** latency phase in
 [implementation](AUDIO_IMPLEMENTATION.md).
 
@@ -157,7 +158,9 @@ records the final operational results. Both Linux pairs used the same explicit
 DSP chain and the persistent user service. The four bounded observations lasted
 4.67–5.88 seconds; exact durations and startup sequences are in the
 receipt. The 256-frame output-filter request was observed on the actual linked
-driver, and remains active on both laptops.
+driver during those paired trials. The later ROG failure and rollback
+restored 2048/48000; ThinkPad retains 256/48000. Section 8 records that
+subsequent state.
 
 | Host | Paired baseline | Final software period | Processing and error observations |
 |---|---|---|---|
@@ -197,3 +200,52 @@ check refused before any fragment or snapshot was created and the tuned
 baseline was resumed. The reviewed list correction passed all eight affected
 methods once before the successful retry. No failed evidence was discarded.
 Sonos Arc/eARC remains deferred until the internal-speaker work is qualified.
+
+## 8. Sustained checks and session-start correction — in progress
+
+The [progress receipt](../evidence/speaker-startup-stability-progress-2026-10-13.json)
+is an operator-reported snapshot, not a completed measurement. ROG's initial
+attempt stopped before timing on a startup counter increase. ThinkPad's first
+attempt stopped when volume changed from 20% to 74%; its elapsed time of
+581.040 seconds includes cleanup, not exact uninterrupted active coverage;
+its sampled driver count stayed at 1 and DSP/source counts stayed zero.
+The revised normal-use method logs volume adjustments without writing volume,
+while retaining strict processing, routing, service, counter and continuity
+checks. Earlier incomplete attempts are not accumulated into a later hour.
+
+ThinkPad's fresh interval completed 3600.177 seconds from 10:02:02 Eastern
+on 2026-10-13, on existing v0.2.0 runtime only. Its sampled driver counter
+stayed at 1 and followers at zero; exact start/mid/end protected state matched.
+The [frozen v4 receipt](../evidence/speaker-listening-stability-v4-2026-10-13.json)
+binds continuous coverage, actual cleanup and runtime hash. ROG started at 10:09:39 after exact tuned-preset
+restoration, with sampled errors zero. It then stopped after 67.982 seconds
+of owned playback: sampled driver errors rose 0→1 and the owned zero-PCM
+client and convolver each rose 0→2. The 256/48000 graph, 94% physical volume
+and service identities/restart counts were preserved; owned test processes
+were removed and the failure archive retained. No counter reset or retry was
+automatically performed. The startup correction was not installed, and the
+cause of this later error growth remains unestablished.
+
+The operator diagnosed a separate session-start ordering race; its permanent
+runtime fix is implemented in the offline source; candidate compilation,
+review and focused acceptance remain pending. A successful timed run after manual
+restoration would not establish reliable automatic preset loading.
+
+The [scoped v3 receipt](../evidence/speaker-listening-stability-v3-2026-10-13.json)
+also records reviewed ROG rollback: the owned 256-frame rule was quarantined,
+only the candidate service restarted once, and runtime/tuning/94% volume were
+preserved. One 8.094-second all-zero check verified full stereo at 2048/48000.
+Five valid samples held cumulative driver count 3, with no pre-start baseline
+measured by that monitor. It is not a zero-error startup or sustained pass.
+ThinkPad's retry launch physical-default volume was actually 100%; 74% was the
+preceding stopped attempt's final value. No volume write was made by the test.
+V3 retains separately coordinated listening/recording overlaps and explicitly
+scopes the silent client's all-zero/no-microphone claim to that workload.
+
+The completed ThinkPad receipt qualifies only its declared existing-runtime
+software workload. The new startup-fixed runtime and ROG 512-frame candidate
+need fresh continuous coverage, endpoint checks, counter deltas and preservation.
+The owned all-zero stream and separate listening/recording overlaps do not
+substitute for a physical response-time distribution or absence of audible
+gaps. [Current status](STATUS.md#startup-and-sustained-check-progress--2026-10-13)
+will record actual outcomes when the receipts arrive.

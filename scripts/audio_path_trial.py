@@ -29,7 +29,7 @@ class RemovalConflict(ValueError):
 
 
 def rule(quantum):
-    if type(quantum) is not int or quantum not in (128, 256):
+    if type(quantum) is not int or quantum not in (128, 256, 512):
         raise ValueError('unsupported period request')
     return ('# One private output filter; a suggestion, never a forced graph period.\n'
             'filter.rules = [\n  { matches = [ {\n'
@@ -453,7 +453,7 @@ def main():
     parser = PrivateArgumentParser(description=__doc__)
     sub = parser.add_subparsers(dest='command', required=True)
     prepare_parser = sub.add_parser('prepare'); prepare_parser.add_argument('--capture', required=True)
-    prepare_parser.add_argument('--quantum', type=int, choices=(128, 256), default=256)
+    prepare_parser.add_argument('--quantum', type=int, choices=(128, 256, 512), default=256)
     prepare_parser.add_argument('--output', required=True)
     install_parser = sub.add_parser('install')
     for name in ('bundle', 'kit', 'runtime', 'snapshot'): install_parser.add_argument('--'+name, required=True)
