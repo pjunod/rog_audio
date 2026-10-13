@@ -204,11 +204,28 @@ def restart_state_equivalent(before, after, preset):
             if line.lstrip().startswith('['):
                 section = header[1] if header else None
             if section == 'StreamOutputs' and line.startswith('usedPresets='):
-                match = re.fullmatch(r'usedPresets=(rog-speaker-[0-9a-f]{16}):(0|[1-9][0-9]{0,9})(\r?\n)?', line)
-                if found or not match or match[1] != preset or int(match[2]) > 2**31-1:
+                match = re.fullmatch(r'usedPresets=([^\r\n]+)(\r?\n)?', line)
+                if found or not match:
                     return False
-                counts.append(int(match[2])); found = True
-                lines.append('usedPresets='+preset+':<retained-counter>'+ (match[3] or ''))
+                entries = match[1].split(',')
+                if not 1 <= len(entries) <= 128:
+                    return False
+                seen, retained, selected_count = set(), [], None
+                for entry in entries:
+                    item = re.fullmatch(r'([A-Za-z0-9_.-]{1,128}):(0|[1-9][0-9]{0,9})', entry)
+                    if not item or item[1] in seen or int(item[2]) > 2**31-1:
+                        return False
+                    seen.add(item[1])
+                    if item[1] == preset:
+                        selected_count = int(item[2])
+                        retained.append(preset+':<retained-counter>')
+                    else:
+                        # Keep other entries verbatim, including their order.
+                        retained.append(entry)
+                if selected_count is None:
+                    return False
+                counts.append(selected_count); found = True
+                lines.append('usedPresets='+','.join(retained)+(match[2] or ''))
             else:
                 lines.append(line)
         if not found:
