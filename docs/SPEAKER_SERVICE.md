@@ -13,7 +13,11 @@ the native audio engine, original speaker filters and final limiter are unchange
 The previous user unit invoked `rog-speaker-effects --quit`. That secondary
 command returns after delivering the message, before the primary process has
 finished saving settings and exiting. Systemd can then send its normal SIGTERM
-while shutdown is already in progress.
+while shutdown is already in progress. Upstream systemd documents that
+remaining processes receive the configured kill signal after ExecStop returns
+and recommends waiting for termination in that command.
+[The primary ExecStop documentation](https://github.com/systemd/systemd/blob/main/man/systemd.service.xml#L479-L496)
+supports this protocol requirement.
 
 [The isolated diagnosis](../evidence/rog-speaker-shutdown-diagnosis-2026-10-13.json)
 used the exact accepted native ELF and published ROG preset/IR. Quit followed
