@@ -1,29 +1,32 @@
 # Speaker installation — exact route, reversible files
 
-**Status:** v0.2.2 published; +rog3 programme implementation accepted; live loudness/hours open ·
-**Updated:** 2026-10-13 · **Executes:** internal-speaker installation from
+**Status:** v0.2.2 published; +rog3 deployed, both current demos accepted; both final software hours passed ·
+**Updated:** 2026-10-14 · **Executes:** internal-speaker installation from
 [status](STATUS.md).
 
-The ROG now runs corrected `8.2.8+rog2` with its original speaker tuning;
-[the upgrade receipt](../evidence/rog-speaker-runtime-upgrade-2026-10-13.json)
-records automatic tuned-preset loading during a controlled service start,
-preserved preset/IR/autoload and non-main RC bytes, expected main-RC counter
-and formatting changes, retained rollback and unchanged owner volume/stock
-services. Its [short 512-frame check](../evidence/rog-speaker-latency512-short-trial-2026-10-13.json)
-passed separately; no new ROG reboot or full-hour pass is claimed. ThinkPad
-now runs +rog3 after a corrected retry following a procedural query failure
-and completed old-runtime recovery. Two automatic starts and a 20.162-second
-256-frame check passed, with original IR/non-AutoGain settings and protected
-state intact. Its new hour and everyday loudness acceptance remain pending. The old-runtime hour and one separate post-boot
-observation remain scoped historical results.
+[Both current laptops](../evidence/programme-service-autoload-and-current-settings-v2-2026-10-13.json)
+now run +rog3 with the separately backported reviewed stop helper and user
+unit. Native/helper stops returned 0, settings serialized correctly, two
+automatic preset starts and fresh IR/full-stereo checks passed. ROG uses
+1024/48000 at −20 LUFS/cap 2.6475 dB; ThinkPad uses 256/48000 at −16
+LUFS/cap 14.1375 dB. Original IR/non-AutoGain settings, final limiters, owner
+gains/routes, stock services/firmware and exact rollback remain preserved.
+Both [final software hours](STATUS.md#final-kept-settings-software-hours--2026-10-14) passed without added errors,
+and both current generated demos were accepted;
+new reboot, hotplug/resume, broader media and physical/acoustic acceptance
+remain separate. Physical recording is deferred to another coordinated
+window. The old ThinkPad hour, ROG 256/512 failures and earlier recovered updates are dated
+history in [status](STATUS.md). No +rog4 package was installed by the backport.
 
 The original [ROG](../evidence/rog-speaker-deployment-2026-10-12.json) and
 [ThinkPad](../evidence/thinkpad-speaker-deployment-2026-10-12.json) deployment
 receipts retain initial 20% volume, private recovery snapshots and startup
 history. Later owner-selected levels are test conditions, not installation
-instructions. The owner reports positive demo clarity but ordinary movies/shows
-remain too quiet on both; everyday loudness and physical quality acceptance
-are unresolved. Both persistent login services remain enabled. Keep the
+instructions. Earlier owner feedback found ordinary movies/shows too quiet. The current
+[ROG demo](../evidence/rog-programme-owner-listening-2026-10-13.json) was accepted
+with improved loudness, and the current [ThinkPad demo](../evidence/thinkpad-target16-programme-owner-listening-2026-10-13.json)
+was accepted for sound and loudness. Broader media and physical quality remain
+unqualified. Both persistent login services remain enabled. Keep the
 original filters, limiter and stock amplifier protection intact.
 
 The published [v0.2.1 release](https://github.com/pjunod/rog_audio/releases/tag/v0.2.1)
@@ -41,6 +44,143 @@ The kit installs files only. It does not start EasyEffects, install packages,
 change the physical default sink, set amplifier controls, restart services,
 play audio or record sound. Coordinate the later runtime start and audible
 acceptance window separately.
+
+## Prospective v0.2.3 — +rog4 package, paired kits and required service companion
+
+**Prepared, not published:** v0.2.2 remains the current public release. The
+commands below apply only after v0.2.3 is actually published at its verified
+final merge. The prepared +rog4 package reuses the accepted native ELF/source;
+it adds the shutdown helper/MIT notice. Its paired kits use the kept ROG
+−20 LUFS/cap 2.6475 and ThinkPad −16 LUFS/cap 14.1375 settings. Both generated
+demos are accepted; that is not calibrated acoustics or proof for every medium.
+The sealed kit archive retains its preparation-era provisional metadata;
+later qualification belongs in the outer release notes/manifest.
+
+Use all five release assets together. The old `rog-audio-speaker-*` download
+pattern does not select both new archives:
+
+```bash
+# Only after v0.2.3 is published; choose a new durable owned directory.
+audio_release_root="$HOME/.local/state/rog-audio/work"
+mkdir -p "$audio_release_root"
+git clone --branch v0.2.3 https://github.com/pjunod/rog_audio.git \
+  "$audio_release_root/rog-audio-0.2.3"
+cd "$audio_release_root/rog-audio-0.2.3"
+mkdir delivery
+gh release download v0.2.3 --repo pjunod/rog_audio --dir delivery \
+  --pattern 'rog-audio-packaging-only-8.2.8+rog4.tar.gz' \
+  --pattern 'rog-audio-provisional-speaker-kits-8.2.8+rog4.tar.gz' \
+  --pattern rog-audio-speaker.service --pattern RELEASE_NOTES.md --pattern SHA256SUMS
+(cd delivery && sha256sum --check SHA256SUMS)
+tar -tzf delivery/rog-audio-packaging-only-8.2.8+rog4.tar.gz
+tar -tzf delivery/rog-audio-provisional-speaker-kits-8.2.8+rog4.tar.gz
+tar -xzf delivery/rog-audio-packaging-only-8.2.8+rog4.tar.gz -C delivery
+tar -xzf delivery/rog-audio-provisional-speaker-kits-8.2.8+rog4.tar.gz -C delivery
+```
+
+The verified layouts are `delivery/artifact` for runtime/package/source and
+`delivery/speaker-kits/kits/asus` or `delivery/speaker-kits/kits/thinkpad` for
+the ordinary model kit. The package is
+`delivery/artifact/rog-audio-easyeffects_8.2.8+rog4_amd64.deb`; its SHA256 is
+`17e8dcdd0f59461a035fa0eea8ec6c692194878ed788765a39c7de54ce732e91`.
+The runtime/source archive pin is `f00fe028e3c65e669bbb9a696cf0357b67bd0c1642f4fab6ae96f30aa6c0df1c`,
+kit archive `c0520d9866b0166e194b71f1c18071755d43753c2474980d2bbe006a23cf9e0f`,
+and standalone service companion `65beb0fa15830f9204d9026c06e37ec14fc5bb1d33a4f9108eafce93d3a706dd`.
+Match these reviewed pins as well as the downloaded checksum file. Keep source,
+all notices, `runtime.json`, release notes and checksums with the delivery.
+
+Use the version-bound commands below from the v0.2.3 checkout after the
+verified download/extraction above. Do not substitute the legacy +rog3 package
+command in §5. Never mix +rog4 metadata/kits with an older package or a different
+model. The deb contains the helper but no automatic unit/profile activation
+scripts. The standalone `delivery/rog-audio-speaker.service` is required.
+
+First retain the existing package, model kit/configuration snapshots, unit,
+enablement and helper/notice preimages. For an existing managed installation,
+apply the corrected stop contract described below before this single stop:
+
+```bash
+# Existing managed upgrade only, after correcting/validating its ExecStop.
+systemctl --user stop rog-audio-speaker.service
+```
+
+Verify the saved state and actual primary exit before package or candidate
+file changes. For a fresh installation with no service or primary, omit that
+stop. If a known unmanaged primary remains, use only the authenticated helper
+procedure in §4; never launch a secondary native `--quit` as an absence check.
+
+```bash
+# Fresh read-only reports; retain them privately and inspect the results.
+mkdir -p -m 0700 private
+python3 scripts/inspect_audio.py --output private/v0.2.3-inventory.json
+python3 scripts/inspect_speaker_runtime.py \
+  --manifest delivery/artifact/runtime.json \
+  --output private/v0.2.3-prerequisites.json
+
+# Coordinated +rog4 package/dependency installation, after saved-state checks.
+sudo apt install ./delivery/artifact/rog-audio-easyeffects_8.2.8+rog4_amd64.deb
+mkdir -p "${XDG_STATE_HOME:-$HOME/.local/state}/rog-audio/snapshots"
+
+# Choose exactly ONE matching model, using a new snapshot directory.
+python3 scripts/speaker_install.py install \
+  --kit delivery/speaker-kits/kits/asus \
+  --runtime /opt/rog-audio/easyeffects/bin/easyeffects \
+  --snapshot "${XDG_STATE_HOME:-$HOME/.local/state}/rog-audio/snapshots/V023_ASUS_PRE_INSTALL"
+# ThinkPad alternative: run this instead of the ASUS command.
+python3 scripts/speaker_install.py install \
+  --kit delivery/speaker-kits/kits/thinkpad \
+  --runtime /opt/rog-audio/easyeffects/bin/easyeffects \
+  --snapshot "${XDG_STATE_HOME:-$HOME/.local/state}/rog-audio/snapshots/V023_THINKPAD_PRE_INSTALL"
+```
+
+The installer reads the actual hardware again and refuses a model/runtime
+binding mismatch. For a custom candidate root, keep the existing absolute
+`ROG_AUDIO_STATE_DIR` for the installer and adjust the delivered companion's
+same setting before validation; its default is the documented private state
+root. Preserve the existing startup ordering and remaining service semantics.
+The installed binary remains `/opt/rog-audio/easyeffects/bin/easyeffects`, the
+launcher `/usr/bin/rog-speaker-effects`, and +rog4 owns the helper at
+`/usr/lib/rog-audio/stop-speaker-effects`.
+
+```bash
+# Validate/install the delivered companion; preserve any existing unit first.
+test -x /usr/lib/rog-audio/stop-speaker-effects
+systemd-analyze --user verify delivery/rog-audio-speaker.service
+install -D -m 0644 delivery/rog-audio-speaker.service \
+  "$HOME/.config/systemd/user/rog-audio-speaker.service"
+systemctl --user daemon-reload
+systemctl --user enable rog-audio-speaker.service
+# Explicit activation only in the coordinated window, after file verification.
+systemctl --user start rog-audio-speaker.service
+systemctl --user is-enabled rog-audio-speaker.service
+```
+
+Verify native saved values, automatic model preset/IR/full stereo loading,
+actual driver period and preserved physical default/owner volume. A failed
+check requires the retained recovery procedure, not another blind launch.
+For bypass use `systemctl --user stop rog-audio-speaker.service` alone;
+for removal use §4 with the matching new snapshot and an unused archive path.
+
+For an existing asynchronous `--quit` unit, apply the accepted reversible
+[helper/ExecStop correction](SPEAKER_SERVICE.md#3-distinguish-package-distribution-from-the-live-backport)
+before invoking `systemctl stop` for an upgrade. Do not issue quit and then
+immediately terminate the still-saving primary. Retain the old package,
+model-kit/config/install/latency snapshots, unit/link and helper/notice
+preimages before the coordinated window. Verify real exit and saved state,
+then install the matching package/kit and observe automatic original-voicing
+preset/IR/full stereo loading and actual driver period on the new invocation.
+
+Package rollback must keep a corrected helper in an explicitly retained
+persistent path outside the package-owned `/usr/lib/rog-audio` path, with its
+MIT notice and matching ExecStop, before downgrading to a package that lacks
+that helper. Otherwise the downgrade can remove the unit's stop executable.
+Restore the retained matching runtime/kit/config preimages with the existing
+conflict-aware removal contract; preserve the corrected stop behavior and the
+kept independent latency request. Do not restore the known asynchronous
+shutdown sequence while the programme runtime is in use. Dependencies are
+not automatically removed, and stock PipeWire/WirePlumber, amplifier firmware,
+boot and display/session configuration remain outside this upgrade.
+
 
 ## Download v0.2.2 — programme kits bound to +rog3
 
@@ -178,19 +318,41 @@ The new runtime's target-aware policy is required for these settings.
 
 ## 4. Remove and retain post-install state
 
-If login startup was enabled, first disable it and stop the managed service.
-The final controlled quit also handles a still-running initial deployment
-process. This prevents a later login from relaunching a removed candidate.
+If login startup was enabled, first disable it and stop the managed service
+through its validated synchronous ExecStop. This prevents a later login from
+relaunching a removed candidate. Do not issue a native `--quit` after the
+managed stop: without an existing primary, that command can start a new
+primary instead of acting as an absence no-op.
 
 ```bash
 systemctl --user disable --now rog-audio-speaker.service
-QT_QPA_PLATFORM=offscreen rog-speaker-effects --quit
 rm -- "$HOME/.config/systemd/user/rog-audio-speaker.service"
 systemctl --user daemon-reload
 ```
 
 On both inspected laptops the prior unit was absent. If replacing an existing unit
 elsewhere, retain and restore its original bytes and enablement instead.
+
+Verify actual primary exit and saved state before removing files. If a known
+unmanaged initial-deployment primary remains, first identify its existing
+owned PID and current control socket with read-only process inspection. Use
+the exact accepted helper from +rog4 or the retained operator-owned backport;
+the following placeholder must be replaced with that verified PID:
+
+```bash
+# Known unmanaged primary only; choose the verified installed helper path.
+/usr/lib/rog-audio/stop-speaker-effects \
+  --pid VERIFIED_OWNED_PRIMARY_PID \
+  --socket "$XDG_RUNTIME_DIR/RogAudioSpeakerEffectsServer"
+```
+
+An older package without that path requires its explicitly installed accepted
+backport, for example `$HOME/.local/lib/rog-audio/stop-speaker-effects`, with
+the retained MIT notice. The helper authenticates owner/executable/socket-peer
+and pins process lifetime. A verified absent primary may be represented by
+`--pid 0`; zero or already-exited PID safely does nothing. A refusal or timeout
+must be resolved before file removal. Never use the native `--quit` invocation
+as an absent-primary check or fallback, and never guess a PID from a stale lock.
 
 ```bash
 # Explicit later removal; EasyEffects must be closed.
@@ -208,7 +370,7 @@ recoverable through the same interface.
 Keep both private snapshots until removal and the coordinated runtime check
 are accepted. They contain personal application settings and must not enter
 Git. No package or boot rollback is needed for these filesystem operations.
-Controlled `--quit` restores owned per-stream targets before disconnecting.
+Authenticated primary IPC quit restores owned per-stream targets before disconnecting.
 Original target metadata is held in memory; forced termination does not provide
 that controlled restoration. The session manager handles disappearing virtual
 nodes. Physical restart/resume and forced-termination behaviour remain acceptance
@@ -246,7 +408,9 @@ The persistent service takes over at the next normal user-manager startup;
 no reboot was performed for this configuration change. See
 [the startup receipt](../evidence/rog-speaker-startup-2026-10-12.json).
 The same checks are retained in the ThinkPad deployment receipt above.
-Immediate bypass remains `rog-speaker-effects --quit`; permanent startup
+For a managed primary, immediate bypass is
+`systemctl --user stop rog-audio-speaker.service` alone. A known unmanaged
+primary uses only the authenticated helper procedure in §4. Permanent startup
 rollback uses the disable/stop procedure above. Stock amplifier controls,
 physical default selection and operator volume are not set by this unit.
 
@@ -273,17 +437,22 @@ The published v0.2.2 `8.2.8+rog3` native runtime passed the isolated
 28-unit/two-graph programme batch. The current packaging follow-up emits
 `8.2.8+rog4` with the same native ELF/source and an added authenticated
 service-stop helper; its separate source review, eleven units and one
-isolated native integration passed. No +rog4 artifact build/publication or
-laptop package replacement is claimed. Actual laptop
-listening/stability remain pending; published v0.2.1 and its `+rog2` recovery
+isolated native integration passed. The [verified +rog4 artifact](../evidence/speaker-stop-packaging-only-rog4-2026-10-13.json)
+is built without a native recompile; it is not published or installed on the
+laptops. Its separate corrected unit companion must be used for future
+installs; the deb alone does not replace or enable the user unit. Actual +rog3/backport laptop demos and settings-bound hours passed; that
+does not establish a live +rog4 package deployment. Published v0.2.1 and its `+rog2` recovery
 artifacts remain unchanged. Read [programme loudness](PROGRAMME_LOUDNESS.md)
 for the independent controls, preserved voicing and source/build contract.
 Follow the focused
 [autoload build and unchanged-tuning upgrade contract](SPEAKER_AUTOLOAD.md)
 for bounded native builds, corresponding source, new runtime/kit binding and
 retained rollback. The v0.2.0 `+rog1` release and its receipt remain historical
-recovery assets; the commands below name the current output consistently.
-Use them only after the combined review and affected acceptance are clear.
+recovery assets. The build commands below produce the version selected by
+this checkout; current packaging is +rog4. The separate +rog3 installation
+example later in this section is legacy v0.2.2 only and requires its retained
+matching artifact/kit. Use the concrete prospective v0.2.3 block above for
++rog4, after publication and coordinated acceptance.
 
 ```bash
 # Read public Git objects only; working-tree/private data never enter Docker.
@@ -298,7 +467,7 @@ python3 scripts/inspect_speaker_runtime.py \
   --manifest RUNTIME_ARTIFACT/runtime.json --output PRIVATE_COMPATIBILITY.json
 ```
 
-The current `rog-audio-easyeffects_8.2.8+rog3_amd64.deb` installs only its
+The retained v0.2.2 `rog-audio-easyeffects_8.2.8+rog3_amd64.deb` installs only its
 private prefix, launcher, desktop entry and licence/source notices. It has no
 service scripts or autostart activation. Dependencies derive from Ubuntu's
 EasyEffects `8.2.8+ds-1build1` package plus required LSP LV2 plugins. The runtime
@@ -328,8 +497,15 @@ package; these provide corresponding GPL source and original notices. The
 compiled prefix is `/opt/rog-audio/easyeffects`; install the Debian package
 at that path rather than inventing a relocation procedure.
 
-The following commands are for the later coordinated installation window.
-Use the delivered per-device kit and a new private snapshot directory.
+### Legacy v0.2.2 installation — +rog3 artifact only
+
+The following example uses the retained matching v0.2.2 +rog3 artifact and
+per-device kit in a coordinated window, with a new private snapshot. It is
+not the install command for a new +rog4 build. Because +rog3 lacks the helper,
+install the accepted helper/MIT backport and corrected unit from the
+[service contract](SPEAKER_SERVICE.md) before activation or managed stop.
+Stop any existing managed primary with that corrected unit alone and verify
+exit/saved state before the package/file changes.
 
 ```bash
 # Coordinated package/dependency installation on the selected laptop.
@@ -339,9 +515,9 @@ python3 scripts/speaker_install.py install \
   --kit KIT --runtime /opt/rog-audio/easyeffects/bin/easyeffects \
   --snapshot "${XDG_STATE_HOME:-$HOME/.local/state}/rog-audio/snapshots/PRE_INSTALL"
 
-# Explicit candidate start/stop; these address only its private control socket.
-rog-speaker-effects --hide-window --service-mode
-rog-speaker-effects --quit
+# After the accepted helper backport/corrected unit are explicitly installed.
+systemctl --user start rog-audio-speaker.service
+systemctl --user stop rog-audio-speaker.service
 
 # Restore files, retain later settings, then remove only the candidate package.
 python3 scripts/speaker_install.py remove \

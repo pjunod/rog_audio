@@ -1,7 +1,21 @@
 # Programme loudness — adjustable makeup with original speaker voicing
 
 **Status:** corrected native source/artifacts reviewed; 28 affected units and
-both isolated model graphs passed; ThinkPad deployment/short check passed, fresh hours and everyday listening pending · **Updated:** 2026-10-13.
+both isolated model graphs passed; both current +rog3 deployments/short checks passed, both final software hours passed without added errors and both current generated demos accepted · **Updated:** 2026-10-14.
+
+[The current live settings](../evidence/programme-service-autoload-and-current-settings-v2-2026-10-13.json)
+are ROG −20 LUFS/cap 2.6475 dB and ThinkPad −16 LUFS/cap 14.1375 dB,
+with original voicing/limiter preserved and separate reviewed helper/unit
+backports. Both short checks and native save/autoload passed; both [final software hours](STATUS.md#final-kept-settings-software-hours--2026-10-14)
+passed without added errors. Physical recording is deferred to another
+coordinated window. [ROG](../evidence/rog-programme-owner-listening-2026-10-13.json)
+and [ThinkPad](../evidence/thinkpad-target16-programme-owner-listening-2026-10-13.json)
+current demos are accepted; that is not acoustic/all-media qualification.
+The public preparer defaults/release assets are
+unchanged. ROG's cap equals its 2.6475 dB inverse-FIR source budget;
+ThinkPad's cap adds 4 dB above its 10.1375 dB budget, retaining the ordinary
+above-source-budget advisory. These are not measured speaker or amplifier
+headroom limits.
 
 Companion to [speaker installation](SPEAKER_INSTALL.md) and
 [device-return autoload](SPEAKER_AUTOLOAD.md). This document describes the

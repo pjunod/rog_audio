@@ -1,37 +1,57 @@
 # Status — implementation and physical acceptance
 
-**Updated:** 2026-10-13 · **State:** v0.2.2 published; ROG explicit 1024
-trial passed, but programme-update serialization failed and original +rog2
-tuning was restored. ThinkPad +rog3 remains active at 256; its −20 LUFS run
-ended explicitly after 1647.944 seconds for a planned louder candidate, not a
-stability failure or completed hour. A synchronous service-stop/package fix
-cleared independent review, eleven Linux units and actual helper-to-native
-integration. The final repository check and merge precede deployment. Fresh hours and physical measurements
-remain open.
-**Evidence update:** 2026-10-13 22:38 UTC; dated receipts retain separate attempts.
+**Updated:** 2026-10-14 · **State:** both laptops now run +rog3 with the
+reviewed helper/unit backport, original speaker voicing and protection intact.
+ROG uses 1024/48000 with −20 LUFS/cap 2.6475 dB; ThinkPad uses 256/48000 with
+−16 LUFS/cap 14.1375 dB. Real helper/native stop, saved-state, two automatic
+starts, short checks and both final full-stereo software hours passed with
+no added driver errors. Both current generated demos are accepted. Physical
+recording is deferred to another coordinated window; measurements and broader
+media qualification remain open.
+**Evidence update:** both final hours completed 2026-10-14 00:12/00:16 UTC; dated receipts below retain separate attempts.
 
-PR 9 startup source/artifact findings cleared re-review; 29 affected unit methods and
-six isolated graph selectors passed once, with zero failures or skips. PR 9
-is merged. Fresh final-configuration hours and physical measurements remain open.
+| System | Deployed software | Timing term | Loudness | Current acceptance |
+|---|---|---|---|---|
+| ROG | +rog3, separately backported merged helper/unit | Graph 1024/48 kHz, 21.333 ms | −20 LUFS, cap 2.6475 dB | Full hour passed, no added errors; accepted demo, improved loudness; physical checks remain |
+| ThinkPad | +rog3, separately backported merged helper/unit | Graph 256/48 kHz, 5.333 ms | −16 LUFS, cap 14.1375 dB | Full hour passed, no added errors; accepted sound/loudness demo; physical checks remain |
+| M4 Air | Stock output; matched files staged | HAL 512/48 kHz, 10.667 ms | Unchanged | Actual browser/route/phone/keyboard pilot and physical comparison |
+| Sonos | Deferred | Unmeasured | Unassessed | Internal-speaker acceptance first |
+
+Both actual laptop packages remain +rog3, ELF `3f110d6a`; the separate helper
+is `ba8c4a6a` with MIT notice `b6dfebc6`. +rog4 is a verified packaging-only
+artifact, not a published release or installed laptop package. No new reboot,
+resume/hotplug, calibrated acoustics or physical speaker-delay pass is inferred.
+Graph periods and the HAL buffer are different software terms; final hours
+remain separate from the historical ThinkPad hour and intentionally shortened
+−20 observation. The ROG observer's two-compressor pre-start refusal was a
+procedure error, not an audio failure; only that observation was restarted.
 
 | Work | State | Next evidence |
 |---|---|---|
 | Hardware inventory | Both laptops inspected read-only | Refresh during installation |
-| ASUS speaker tuning | Full tuned path restored; demo clarity feedback positive, everyday movie/show loudness unresolved | Reviewed startup fix installed, short 512 trial passed; final gain configuration, hour and physical checks |
-| ThinkPad speaker tuning | Corrected +rog3 retry/short check passed; demo clear but too quiet; partial −20 run retained | Apply/assess −16 target and 14.1375 dB cap after stop fix; fresh hour |
-| Laptop installation runtime | ROG +rog2 recovered with explicit 1024 request; ThinkPad +rog3 active at 256 | Reviewed synchronous stop backport, ROG programme retry and louder ThinkPad trial |
-| Diagnostics and latency | ThinkPad old-runtime hour retained; new −20 run ended at 1647.944 s; ROG explicit 1024 short trial passed | Fresh hours on kept settings and physical measurements |
-| Programme loudness | Reviewed corrected `+rog3` build accepted: 28 units passed once; both model graphs passed after failed-selector-only retry | Coordinated deployment and fresh provisional-default software hours; owner listening separately accepts everyday loudness |
+| ASUS speaker tuning | +rog3, original voicing preserved; final 1024 hour and current demo passed | Broader media and physical checks |
+| ThinkPad speaker tuning | −16/cap 14.1375 installed; original voicing preserved; final 256 hour and current demo passed | Broader media and physical checks |
+| Laptop installation runtime | Both +rog3 with exact merged helper/unit backport; saved-state, automatic starts and final hours passed | Reboot/resume/hotplug separately |
+| Diagnostics and latency | Final ROG 1024/ThinkPad 256 hours passed without added errors; earlier failures/partial/old-runtime runs retained | Physical measurements |
+| Programme loudness | Reviewed corrected `+rog3` build accepted: 28 units passed once; both model graphs passed after failed-selector-only retry | Both deployments, final hours and current demos accepted; physical checks remain |
 | Host Atmos | 15 tests and focused CI cleanup acceptance passed in PR 1 | Actual JOC reference media and physical qualification |
-| macOS comparison | M4 Air getter and silent-running snapshots complete; 16 summary tests passed in PR 5 | Matched Linux software observations, then physical comparison |
-| Physical interaction timing | Ten methods/unarmed local M3 Chrome smoke retained; matched Firefox/emitter staged on actual M4, no launch or physical samples | Armed route check and manual pilot, then repeated same-track capture |
+| macOS comparison | M4 Air getter/silent-running snapshots and Linux software observations retained; 16 summary tests passed in PR 5 | Physical comparison in a later coordinated window |
+| Physical interaction timing | Ten methods/local M3 unarmed smoke retained; matched files/browser prepared; ROG page unarmed; no physical samples | Deferred coordinated pilot and repeated same-track capture |
 | Sonos Arc/eARC | Deferred until internal audio work | TV route and actual received formats |
 
 Companion to [installation](SPEAKER_INSTALL.md), [review](REVIEW.md) and
 [implementation](AUDIO_IMPLEMENTATION.md). Source capability, synthetic results,
 installation and measured performance remain separate claims.
 
-## Installation readiness
+## Historical receipts and implementation history
+
+The sections below retain their recorded versions, settings and acceptance
+states. Statements such as “current,” “pending” or “undeployed” apply to each
+historical snapshot, not the deployed conditions in the current table above.
+The kept-settings deployment/hour-start and later listening/hour receipts
+follow this history. Earlier failures and old-runtime passes remain unchanged.
+
+### Installation readiness
 
 Both model-specific kits passed their isolated loader/plugin/routing case
 with ten assertions. The ASUS ROG GU605MZ is now installed and active on
@@ -52,7 +72,7 @@ cached resolution, not successful download or installation. A fresh ASUS
 baseline and private rollback records are retained. These simulations remain
 historical preparation receipts, distinct from the completed ROG installation.
 
-## ROG live deployment
+### ROG live deployment
 
 The owner authorized the ROG installation and activation. The exact v0.2.0
 package installed with 135 new packages and no existing-package upgrades or
@@ -84,7 +104,7 @@ Headphone/HDMI hotplug, resume, calls, power, calibrated response/distortion and
 physical latency remain unmeasured.
 ThinkPad and Sonos were not changed in this window.
 
-## ROG automatic startup
+### ROG automatic startup
 
 The owner requested that the tuning persist after reboot. The installed
 `rog-audio-speaker.service` is enabled under the user's `default.target`, starts
@@ -101,7 +121,7 @@ is pending observation. The prior absent unit state and updated rollback
 instructions are retained privately. Rollback disables future startup before
 stopping the candidate, removing its owned unit and restoring managed files.
 
-## ThinkPad live deployment and startup
+### ThinkPad live deployment and startup
 
 The owner separately authorized ThinkPad installation, activation and automatic
 startup. Fresh model, codec/subsystem and current route checks matched its
@@ -135,7 +155,7 @@ records these live operational checks. Owner listening feedback, physical
 hotplug/resume, calls, power, acoustics and latency remain pending. Accepted
 unit and isolated graph cases were not repeated for deployment.
 
-## Review and acceptance
+### Review and acceptance
 
 The completed PR 2 batch received three independent adversarial reviews.
 All seven findings were fixed and cleared focused source re-review before
@@ -159,7 +179,7 @@ and [graph receipt](../evidence/speaker-runtime-graph-validation-2026-10-12.json
 bind the accepted code, artifacts and results. The release includes exact
 corresponding runtime source and original notices.
 
-## Recovery and implementation decisions
+### Recovery and implementation decisions
 
 The original ASUS tuning came from recovery; the Lenovo tuning came from the
 matching official download. The ThinkPad WinRE index contained 25,538 paths,
@@ -176,7 +196,7 @@ Hosted CI is manual to avoid duplicating review-bound acceptance runs.
 Music/balanced speaker candidates are the delivery default; no Mac parity,
 Dolby certification or acoustic accuracy is claimed.
 
-## Latency comparison — 2026-10-13
+### Latency comparison — 2026-10-13
 
 The owner requested latency improvements next, using both tuned laptops and
 the M4 Air reference. Fresh inventories will retain actual negotiated graph
@@ -241,7 +261,7 @@ record the route investigation and restoration. The
 compilation and idle/running snapshots. None is unit or physical acceptance
 of the forthcoming latency request.
 
-## Paired 256-frame observations — historical
+### Paired 256-frame observations — historical
 
 Both laptops ran the full tuning chain under the enabled persistent user
 service with the exact 256/48000 output-filter request active during this
@@ -275,7 +295,7 @@ Only one failed test expectation was retried. The refused ROG installation
 created no fragment or snapshot, resumed its working baseline, and retained
 its evidence before the corrected retry.
 
-## Physical interaction measurement plan — 2026-10-13
+### Physical interaction measurement plan — 2026-10-13
 
 The [physical method](PHYSICAL_LATENCY_METHOD.md) documents a practical
 phone/tablet capture of a mechanical key click and the resulting speaker
@@ -314,7 +334,7 @@ Pilot capture and physical comparison remain pending. Coordinated listening
 and 60-minute stability outcomes will be recorded in their own receipts; this plan does not mark either check passed. Accepted
 units remain retained because their sources are unchanged.
 
-## Startup and sustained-check progress — 2026-10-13
+### Startup and sustained-check progress — 2026-10-13
 
 The [progress record](../evidence/speaker-startup-stability-progress-2026-10-13.json)
 binds the sole live operator's [frozen v4 receipt](../evidence/speaker-listening-stability-v4-2026-10-13.json).
@@ -467,7 +487,7 @@ preserved. Raw cleanup records stay private.
 The corrected `+rog3` package is 3,751,126 bytes compressed and has 26,125,232
 regular unpacked bytes; its 4 KiB block estimate including directories is
 26,669,056 bytes. Those artifact values do not by themselves qualify a live
-installation/recovery budget. The runtime upgrade remains held pending the
+installation/recovery budget. At that capacity-maintenance snapshot, the runtime upgrade was held pending the
 accepted merged source and the sole live operator's final budget and service
 checks. No partition, boot, reservation or owner recovery data changed. These
 maintenance observations do not extend the completed old-runtime hour or
@@ -509,7 +529,7 @@ unchanged. The historical v0.2.0 package identity remains in its own acceptance
 paragraph, separate from the current v0.2.1 download hash.
 
 
-## Digital loudness diagnosis — 2026-10-13
+### Digital loudness diagnosis — 2026-10-13
 
 The [paired digital transfer receipt](../evidence/both-laptop-digital-gain-transfer-2026-10-13.json)
 records the same prepared ten-second speech clip on the original v0.2.0
@@ -537,7 +557,7 @@ Fresh software hours bind to the installed settings, with everyday listening
 acceptance separate; Sonos remains deferred.
 
 
-## ROG corrected runtime and short 512-frame check — 2026-10-13
+### ROG corrected runtime and short 512-frame check — 2026-10-13
 
 The operator's [runtime upgrade receipt](../evidence/rog-speaker-runtime-upgrade-2026-10-13.json)
 binds the merged source, reviewed binary/package and freshly bound ASUS kit.
@@ -559,7 +579,7 @@ All twelve usable driver observations retained count 3, with no observed
 counter growth or reset. Its immediately preceding 8.177-second baseline had
 four usable 2048/48000 samples at count 3. Tuning, volumes, stock services and
 startup unit were preserved; owned probe nodes were gone after cleanup.
-The one private filter request remains installed, with its distinct snapshot
+At that short-check snapshot, the private 512 request remained installed with its distinct snapshot
 and both latency/runtime rollback retained. This changes the observed period
 from 42.667 to 10.667 ms, rather than measuring physical speaker delay.
 
@@ -584,7 +604,7 @@ follow the reviewed programme-default deployment and resolution of the storage
 hold; listening acceptance of those defaults remains separate.
 
 
-## Programme loudness candidate — reviewed build and selective acceptance
+### Programme loudness candidate — reviewed build and selective acceptance
 
 The initial `8.2.8+rog3` build and its 712-file receipt remain immutable and
 superseded. Six adversarial findings required analyser lifetime and reset/error
@@ -666,11 +686,11 @@ the final active invocation; the two starts remain distinct observations,
 not a reboot test or a stitched continuous run.
 
 
-## Larger driver-period recovery — current preflight failure before gain update
+### Larger driver-period recovery — current preflight failure before gain update
 
 The ROG's existing +rog2 512/48000 condition failed a fresh six-second baseline:
 sampled cumulative driver ERR values were 3→4→4. The +rog3 update refused before
-package, preset or service mutation. This is a real current timing-error
+package, preset or service mutation. This is a real timing-error
 observation, distinct from the earlier successful 20.065-second 512 check and
 from two earlier procedural preflight refusals (wrong rollback path, then
 missing private inventory headers). Those wrappers were corrected and checked
@@ -700,7 +720,7 @@ merge, the operator can request and qualify 1024 explicitly, with recoverable
 ThinkPad retains its independent 256 request. Physical delay remains unmeasured.
 
 
-## ThinkPad programme-update attempt — query failure and completed recovery
+### ThinkPad programme-update attempt — query failure and completed recovery
 
 The +rog3 package installed, then the first-start preset query failed. The
 active process identity was valid. The native journal independently recorded
@@ -727,14 +747,14 @@ ordered full stereo route were observed; a 20.162-second check yielded ten
 usable 256/48000 driver observations with ERR 0 unchanged. Owner gains,
 route, startup, stock services and protection were preserved; original +rog1
 rollback assets remain retained. The debug override was removed from the unit,
-while the current process retains its debug environment until normal restart.
-A new hour and ordinary programme listening are still pending. Source/runtime
-unit and isolated graph acceptance remain separate. ROG +rog2 is unchanged;
+while that recorded process retained its debug environment until normal restart.
+At that checkpoint, a new hour and programme listening were pending. Source/runtime
+unit and isolated graph acceptance remain separate. ROG +rog2 was unchanged;
 no ROG gain update is claimed. Raw locks, captures, manifests and recovery
 data remain private.
 
 
-## Accepted larger-request source and programme listening follow-up
+### Accepted larger-request source and programme listening follow-up
 
 [PR 11](https://github.com/pjunod/rog_audio/pull/11) merged at
 2026-10-13 21:39:23 UTC as `5ce6205987c858a4e700ce5ac86486b6a13e5e25`,
@@ -761,7 +781,7 @@ live deployment, acoustic measurement or owner-accepted loudness result.
 These three device-free diagnostic cases are separate from acceptance units;
 no native build or passing unit suite repeated.
 
-## Synchronous service stop — review clear; eleven units and native integration passed
+### Synchronous service stop — review clear; eleven units and native integration passed
 
 [The explicit ROG 1024/recovery receipt](../evidence/rog-explicit1024-programme-recovery-2026-10-13.json)
 records eleven positive 1024/48000 observations at driver ERR 4 unchanged,
@@ -820,3 +840,173 @@ isolated native protocol result; live backport and final settings-bound hours
 remain pending. Earlier unchanged native/audio
 suites were not repeated; one changed export method was legitimately
 invalidated and re-executed. No native compiler pass is claimed.
+
+### Synchronous-stop merge and live rollout boundary
+
+[PR 12](https://github.com/pjunod/rog_audio/pull/12) merged at
+2026-10-13 22:39:55 UTC as `ba269db84c5f6877014dfc2e124af7c0b74d8f06`,
+from accepted head `f0490adc243562e94b95afc5f23def75132b37cd`. The coordinator's
+final repository checker passed once at 22:39:42 UTC; retained output SHA256
+is `09a0398419bb39417b3b8fdbda88fe42610055286a7fbcdc1f953104851455ad`.
+No passing tests or native integration were repeated for merge.
+
+The live helper/notice/unit transaction remains separately coordinated and
+undeployed at that earlier deployment-planning snapshot. Its operational review found incomplete MIT
+notice copying, interrupted-publication ownership and effective-unit baseline
+issues before laptop mutation; those wrapper corrections do not alter the
+accepted public helper/source or invalidate its tests. Existing ROG +rog2
+tuning at explicit 1024 and ThinkPad +rog3 at 256 remain the working conditions.
+The selected louder ThinkPad settings remain uninstalled until a verified
+transaction and coordinated settings change. No fresh completed hour is claimed.
+
+The [packaging-only +rog4 receipt](../evidence/speaker-stop-packaging-only-rog4-2026-10-13.json)
+records a built and verified 3,753,142-byte package, SHA256
+`17e8dcdd0f59461a035fa0eea8ec6c692194878ed788765a39c7de54ce732e91`.
+All 142 native runtime entries match +rog3 in paths/types/file bytes/modes and
+symlink targets; ELF `3f110d6a` and corresponding native source remain unchanged.
+The additions are the exact reviewed helper `ba8c4a6a`, MIT notice `b6dfebc6`
+and Python 3 dependency. No compiler, acceptance tests, laptop package rewrite
+or publication occurred. The retained sealed artifact archive is 9,567,774
+bytes, SHA256 `f00fe028e3c65e669bbb9a696cf0357b67bd0c1642f4fab6ae96f30aa6c0df1c`.
+The merged service unit `65beb0fa` is a required separate companion; it is not
+inside the deb or automatically installed/activated by package scripts.
+Actual laptop backports remain bound to their older package identities.
+
+## Kept programme settings — deployment and hour-start receipt
+
+This immutable v2 snapshot records active hours and predates the later owner
+feedback; final-hour outcomes are separate receipts. [The exact allowlisted live summary](../evidence/programme-service-autoload-and-current-settings-v2-2026-10-13.json)
+binds both actual +rog3 packages/ELF `3f110d6a` and the separately installed
+merged helper `ba8c4a6a`, MIT notice `b6dfebc6` and user unit `65beb0fa`.
+Real helper and native exits returned 0 with service-stop success. Native
+serialization, nine authenticated property getters, two automatic preset
+starts, fresh IR and the identical full ordered stereo path were verified.
+The original IR/non-AutoGain voicing, final −1 dB limiter, owner gains/defaults,
+physical Speakers route, stock services/firmware and recovery assets remain
+preserved. No +rog4 package or native rebuild was installed for this backport.
+
+ROG now runs preset `rog-speaker-78dba4c0ea3a6e68`, target −20 LUFS/cap
+2.6475 dB, 1024/48000. Its new 20-second short check yielded eleven positive
+driver observations at ERR 4 unchanged. ThinkPad now runs preset
+`rog-speaker-c2b907510d3d8500`, target −16 LUFS/cap 14.1375 dB, 256/48000.
+Its two changed preset fields are target and maximum makeup; a fresh full
+package-ledger readback matched before/after. Its 20-second check yielded
+eleven positive observations at ERR 0 unchanged. Both exact rollback paths
+retain the corrected stop helper and independent timing requests.
+
+ThinkPad's new observation began at 2026-10-13 23:12:23.423583 UTC, expected
+end 2026-10-14 00:12:23.423583 UTC. ROG's corrected observation began at
+23:16:14.228573 UTC, expected end 00:16:14.228574 UTC. Both are active, not
+completed receipts. The initial ROG observer wrongly required one generic
+compressor node despite the original two sequential instances; it refused
+before counting owned active time and retained its failure/cleanup. The narrow
+correction requires exactly the intended multiplicities plus the existing
+stereo edge, identity and counter checks. Only the ROG observation retried;
+ThinkPad was not restarted. Normal owner playback is allowed by the declared
+observer contract. Current programme listening is waiting for owner readiness;
+no absent feedback, active hour or old pass is treated as acceptance.
+
+The exact three emitter files were copied to ThinkPad's intended Documents
+location with accepted `ac9be696` source/hashes verified. This was unarmed,
+unlaunched staging with no audio or recording. All file prep is complete;
+actual browser/route/phone/keyboard verification and manual pilot remain open.
+The shared private handoff is maintained by its owning lane, with corrected
+current M4 instructions and historical staging receipts kept separately.
+No cold reboot, suspend/resume, physical hotplug, calibration or physical delay
+result is claimed. Sonos remains last and untouched.
+
+[The exact provisional +rog4 kit manifest](../evidence/speaker-stop-provisional-rog4-kit-manifest-2026-10-13.json)
+records two prepared ordinary distribution kits matching the currently deployed
+provisional DSP settings, bound to the verified +rog4 package. ASUS kit
+`51efcc00` keeps preset `78dba4c0`, −20 LUFS/cap 2.6475 dB. ThinkPad kit
+`a292c2c6` keeps preset `c2b90751`, −16 LUFS/cap 14.1375 dB. The paired
+121,200-byte kit archive has SHA256
+`c0520d9866b0166e194b71f1c18071755d43753c2474980d2bbe006a23cf9e0f`;
+44 members and metadata were independently checked for safe/public contents.
+The unchanged runtime/source archive `f00fe028` and required service companion
+remain paired. These are prepared, not installed, published or owner-approved.
+No source defaults, current laptop packages or old v0.2.2 assets changed.
+If listening feedback changes settings, reprepare only the affected kit using
+the accepted tool and reviewed metadata; never edit output hashes manually.
+
+The final current-state receipt is authored v2, imported unchanged at
+SHA256 `460ab3ed`. It clarifies that ROG's cap equals its source inverse-FIR
+normalization budget, whereas ThinkPad's provisional cap adds 4 dB above its
+10.1375 dB source budget and retains the ordinary above-source-budget advisory.
+Neither budget/cap is measured speaker headroom or an OEM safety/loudness
+limit. The original v1 `72635c3f` remains retained privately; all other live
+software, hour and physical claims are unchanged.
+
+## Owner listening at the kept conditions — demo acceptance on both laptops
+
+[The current ROG receipt](../evidence/rog-programme-owner-listening-2026-10-13.json)
+records one 45.973-second generated speech/music playback, return 0, at
++rog3/1024/48000, −20 LUFS/cap 2.6475 dB. Owner feedback was “sounded good”
+and “yeah the loudness is better.” The [current ThinkPad receipt](../evidence/thinkpad-target16-programme-owner-listening-2026-10-13.json)
+records one 46.380-second playback, return 0, at +rog3/256/48000, −16
+LUFS/cap 14.1375 dB. Feedback was “yeah the sound and loudness sound good.”
+Both use the same pinned generated signal. Each confirms all twelve protected
+file hashes, selected preset and service invocation unchanged before/after.
+There was no recording or repeated test/playback for these authored receipts.
+
+The owner accepted these demos at these conditions, with improved ROG loudness
+and accepted ThinkPad sound/loudness. This later evidence does not overwrite
+the earlier quiet −20 ThinkPad feedback or pre-feedback v2 summary. Both kept
+settings remained unchanged during their subsequently completed hours. No acoustic level, physical
+latency or proof for all everyday media is inferred. The provisional sealed
+archives retain their preparation-era qualification metadata; later outer
+release notes/manifest may record these scoped demo passes without changing
+preset, IR or payload hashes. Sonos remains held for a coordinated next step.
+
+
+## Final kept-settings software hours — 2026-10-14
+
+The independently read/hash-verified allowlisted [ROG receipt](../evidence/programme-final-software-hour-lab5-v2-2026-10-14.json)
+and [ThinkPad receipt](../evidence/programme-final-software-hour-lab6-v2-2026-10-14.json)
+record completed guarded intervals of at least 3600 seconds on the actual kept
++rog3 packages with the separate merged helper/unit backport. Elapsed values
+below are retained as source-reported values. The observer supplied continuous
+all-zero stereo PCM to keep the complete tuned path active; ordinary playback
+could coexist, and the accepted demos occurred during these observations.
+This was a normal-use software continuity check, without artificial CPU stress
+or observer-generated audible signals; it was not acoustic measurement.
+
+| Condition | ROG / lab5 | ThinkPad / lab6 |
+|---|---|---|
+| Source-reported owned elapsed | 3600.258197174 seconds | 3600.4026909890017 seconds |
+| Actual driver quantum/rate | 1024/48000 | 256/48000 |
+| Programme target / makeup cap | −20 LUFS / 2.6475 dB | −16 LUFS / 14.1375 dB |
+| Driver error counter | 4 → 4; no added errors | 0 → 0; no added errors |
+| Other watched-chain errors | 0 across ten watched nodes | 0 across nine watched nodes |
+| Monitor frames / graph observations | 3607 / 360 | 3609 / 358 |
+| Maximum monitor reception gap | 1.002606875 seconds | 1.002331482 seconds |
+| Final active verification UTC | 00:16:14.486758 | 00:12:23.826268 |
+| Owned cleanup finished UTC | 00:16:14.492327 | 00:12:23.831181 |
+
+Both complete compressed streams passed CRC and all-JSON verification, with
+final events exactly matching retained final JSON and transport return 0.
+The same ordered full stereo path, node/core/default/internal route identities,
+selected preset, native settings and candidate/stock service identities were
+preserved. No default-output or physical/virtual output gain changes were
+observed; the physical default reported volume 1.0/unmuted before and after.
+The observer applied no volume/settings setters. Each saw at most one other
+playback client; per-client details remain private. Aggregate journal growth
+was zero and the declared recovery/reserve floor remained available.
+
+Cleanup stopped only the owned zero player, monitor and reader/writer threads;
+their graph nodes were confirmed absent. The tuning service and stock audio
+remained active. The current invocation's debug environment is retained until
+its next normal restart; no extra restart was made to remove it. Independent
+post-cleanup readback checked all nine native properties, automatic-start
+bindings, complete package ledger, current runtime and retained rollback
+packages/configuration preimages. Original IR/non-AutoGain voicing, final
+limiter, owner gain, stock protection and recoverable rollback remain intact.
+
+These receipts qualify software continuity for these exact conditions. They
+do not overwrite the earlier ROG 256/512 failures, observer preflight refusal,
+old ThinkPad hour, intentionally shortened −20 interval or shutdown recovery.
+Owner demo acceptance remains the separate listening evidence above. Physical
+recording was deferred by the owner to another coordinated window; the ROG
+page remains unarmed, with no additional playback or microphone use tonight.
+No physical latency, calibrated acoustics, cold reboot, suspend/resume or
+headphone/HDMI qualification is inferred. Sonos remains untouched and last.

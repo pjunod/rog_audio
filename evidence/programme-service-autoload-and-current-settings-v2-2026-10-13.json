@@ -1,0 +1,124 @@
+{
+  "accepted_native_runtime": {
+    "binary_sha256": "3f110d6a2d1e2c743cc552b58930679acd0c00e45f5771a23d4b7702ca31206d",
+    "package_version": "8.2.8+rog3",
+    "source_commit": "589aec2f1a2ff7f20ff03f951ebffd6191abd7d9"
+  },
+  "date": "2026-10-13",
+  "evidence_kind": "new live software checks and private retained receipts; separate from listening and physical measurement",
+  "gain_limit_interpretation": "ROG cap equals the inverse-FIR normalization budget. ThinkPad provisional cap adds 4dB to its original inverse-FIR budget, with the ordinary above-source-budget advisory preserved. These are source/configuration values, not OEM amplifier/headroom/safety limits or acoustic measurements.",
+  "kind": "authored-allowlisted-live-software-summary",
+  "lab5": {
+    "above_source_budget_advisory": false,
+    "actual_authenticated_native_properties_checked": 9,
+    "actual_native_and_helper_exit_status": 0,
+    "actual_service_stop_result": "success",
+    "driver_error_counter_before_and_after": 4,
+    "fresh_native_ir_load_receipt": true,
+    "immediate_rollback": "original native+2 tuning, exact retained package and config preimages; corrected stop helper and owned1024 retained",
+    "kit_sha256": "dac5574efc00ddf18c7397abccb65aced2850054c5fa4a51a36c10f193a58bbb",
+    "maximum_gain_db": 2.647500000006407,
+    "model": "ASUS ROG Zephyrus G16 GU605MZ",
+    "quantum_frames": 1024,
+    "rate_hz": 48000,
+    "selected_preset": "rog-speaker-78dba4c0ea3a6e68",
+    "short_same_full_stereo_path_seconds": 20,
+    "source_inverse_fir_budget_db": 2.647500000006407,
+    "target_lufs": -20,
+    "two_automatic_preset_starts": true,
+    "usable_positive_driver_observations": 11
+  },
+  "lab6": {
+    "above_source_budget_advisory": true,
+    "actual_authenticated_native_properties_checked": 9,
+    "actual_native_and_helper_exit_status": 0,
+    "actual_service_stop_result": "success",
+    "changed_preset_fields": [
+      "autogain target",
+      "autogain maximum-gain"
+    ],
+    "driver_error_counter_before_and_after": 0,
+    "fresh_native_ir_load_receipt": true,
+    "immediate_rollback": "remove only the new ordinary-kit installation to restore target20/cap10.1375 on the unchanged native+3; corrected helper and owned256 retained",
+    "kit_sha256": "9eee4b565c7514b9e5c4a925c8d21b7db89e38fc36f688e7d538a6b2fcbb9eab",
+    "maximum_gain_db": 14.137500000002703,
+    "model": "Lenovo ThinkPad X1 Extreme Gen1",
+    "native_package_ledger_before_after_freshly_observed_equal": true,
+    "quantum_frames": 256,
+    "rate_hz": 48000,
+    "selected_makeup_above_source_budget_db": 4,
+    "selected_preset": "rog-speaker-c2b907510d3d8500",
+    "setting_choice": "agent-selected provisional two-field adjustment in response to owner feedback that the prior target20 condition was clear but too quiet",
+    "short_same_full_stereo_path_seconds": 20,
+    "source_inverse_fir_budget_db": 10.137500000002703,
+    "target_lufs": -16,
+    "two_automatic_preset_starts": true,
+    "usable_positive_driver_observations": 11
+  },
+  "limits": [
+    "no completed final hour yet",
+    "no new owner listening acceptance inferred",
+    "no cold reboot, suspend/resume or headphone/HDMI acceptance claim",
+    "no phone recording or optical/acoustic calibration or physical latency measurement",
+    "Sonos remains last and untouched"
+  ],
+  "observation_status": {
+    "earlier_rog_startup_refusal": "observer generic-name uniqueness incorrectly rejected the original two sequential compressor instances; no owned active interval counted; failed observer and cleanup retained; corrected guard requires exact expected multiplicities and all existing stereo edge/identity/counter checks",
+    "lab5": {
+      "active_start_utc": "2026-10-13T23:16:14.228573Z",
+      "completed_hour": false,
+      "expected_end_utc": "2026-10-14T00:16:14.228574Z",
+      "method_revision": 7
+    },
+    "lab6": {
+      "active_start_utc": "2026-10-13T23:12:23.423583Z",
+      "completed_hour": false,
+      "expected_end_utc": "2026-10-14T00:12:23.423583Z",
+      "method_revision": 6
+    },
+    "normal_owner_playback_allowed": true
+  },
+  "preserved": [
+    "original model impulse response",
+    "original non-AutoGain voicing and plugin order",
+    "original final -1dB limiter",
+    "owner volume and playback defaults",
+    "physical internal Speakers route",
+    "stock PipeWire and WirePlumber services",
+    "observable amplifier controls and retained firmware",
+    "boot, display and session configuration",
+    "original recovery packages and preimages"
+  ],
+  "retained_private_receipt_sha256": {
+    "current_immediate_rollback_contract": "f5f7bfe3cd13c9da12b0c7dbd2fef00bfc501b5a8e064758ceda957b20166283",
+    "rog_actual_old_tuning_stop_validation": "3eac5e78e4547baa4e08f179ac7f41d5aa5e85310c649eabeba7c2778ecab678",
+    "rog_candidate_install": "14403b47eecb24f1a4461a6434e41ad1bf4dc2db7b4e0fadc11c77ece429306b",
+    "rog_metadata": "1e2d19a5275a4aa190bcf5033c9f360506041c4a4c957e9356d0fd458b7cc6a7",
+    "rog_native_getters": "c4e93be2aa3a4885491297af2c202bf9c0d6d6bc7445856715f5954181c45261",
+    "thinkpad_actual_old_tuning_stop_validation": "45eaad87145ff8a1a0d899174c7b8d5bcd6f85a6e5a34398f120d2cf364f4816",
+    "thinkpad_metadata": "cf9356a4b1b5e7dc2e2f2b49e9dcdd8e51f9959c99d7a3c3b718903fb75d2c56",
+    "thinkpad_native_getters_and_full_ledger": "d5c2798f8eae365c301e578845db4076afab02d4c697e7b8c0db3afb91284b02",
+    "thinkpad_settings_install": "68d48dea41dbb8a3d583a9f364d610c5a6a14aa1f504f288f3aacc26bb322592",
+    "thinkpad_unarmed_documents": "4d681b9ee5530e93a772cca0dddee5eb9add0fd9ca93dd719f8be9d7d91d914c"
+  },
+  "schema_version": 1,
+  "service_source_backport": {
+    "contract": "owned-synchronous-exit-v1",
+    "effective_stop": "direct owned primary IPC quit, wait for actual process exit; systemd final guards retained",
+    "enabled_for_user_login": true,
+    "helper_sha256": "ba8c4a6a103a03969879fab794c823438247eb173e7f227f29630c2585273d42",
+    "mit_license_sha256": "b6dfebc63ca0515ea78c37829fb946125e2d5e708101c4685f36ac907527d066",
+    "native4_package_installed": false,
+    "native_rebuild_for_backport": false,
+    "source_commit": "ba269db84c5f6877014dfc2e124af7c0b74d8f06",
+    "timeout_stop_seconds": 15,
+    "user_unit_sha256": "65beb0fa15830f9204d9026c06e37ec14fc5bb1d33a4f9108eafce93d3a706dd"
+  },
+  "unarmed_thinkpad_documents_emitter": {
+    "audio_armed_or_played": false,
+    "browser_launched": false,
+    "exact_three_files_available": true,
+    "recording_performed": false,
+    "source_commit": "ac9be696a0938a4f2836534b8e230a2bf127d421"
+  }
+}

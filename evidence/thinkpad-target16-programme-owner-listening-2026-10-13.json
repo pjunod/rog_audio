@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "host": "lab6",
+  "condition": {
+    "quantum_frames": 256,
+    "sample_rate_hz": 48000,
+    "native_package_version": "8.2.8+rog3",
+    "native_sha256": "3f110d6a2d1e2c743cc552b58930679acd0c00e45f5771a23d4b7702ca31206d",
+    "selected_preset": "rog-speaker-c2b907510d3d8500",
+    "target_lufs": -16,
+    "maximum_gain_db": 14.137500000002703
+  },
+  "signal": {
+    "kind": "45-second generated speech-and-music demo",
+    "sha256": "80c0a4693f49d21b9291d792ba7b3d268cf83a989e69b063f5c0586e1db07b80"
+  },
+  "playback": {
+    "private_receipt_sha256": "1bb9901092a0f1d78cf15dfde1e607c532f9309ade085e6cd89dfc343407a3fb",
+    "ready_receipt_sha256": "1b3dda5d611cc3456c925b7ea9605c9f7b53763c66f35ea5b899563046b46cac",
+    "returncode": 0,
+    "player_returncode": 0,
+    "elapsed_seconds": 46.37968921661377,
+    "recording_performed": false
+  },
+  "observed_state": {
+    "condition_unchanged": true,
+    "protected_files_count": 12,
+    "protected_file_hashes_equal_before_after": true,
+    "selected_preset_equal_before_after": true,
+    "service_invocation_equal_before_after": true
+  },
+  "owner_feedback": [
+    "yeah the sound and loudness sound good"
+  ],
+  "acceptance": "Owner accepted sound and loudness for this demo at this condition. No acoustic measurement or proof for all everyday media.",
+  "sonos_held_pending_coordinated_next_step": true
+}

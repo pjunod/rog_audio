@@ -68,9 +68,12 @@ Packaging `8.2.8+rog4` adds `/usr/lib/rog-audio/stop-speaker-effects`, Python 3,
 the project's existing MIT notice and exact helper/license hashes under
 `stop_contract: owned-synchronous-exit-v1`. The exporter supplies those exact
 source bytes to its self-contained packaging input and checks their manifest
-bindings. The native ELF, corresponding native source and patch pins remain
-those of the accepted programme runtime. No native rebuild is needed for the
-stop correction; +rog4 packaging is separately reviewed acceptance work.
+bindings. The [verified packaging-only artifact](../evidence/speaker-stop-packaging-only-rog4-2026-10-13.json)
+retains all 142 native runtime entries, ELF/source and patch pins from the
+accepted programme runtime. The 3,753,142-byte +rog4 package is built and
+verified; no compiler or tests were repeated, and it remains unpublished and
+uninstalled on the laptops. The corrected service unit is a required separate
+companion; the deb contains no automatic service/profile activation scripts.
 The published v0.2.2 package and assets remain unchanged.
 
 The coordinated laptop plan instead retains the existing +rog2/+rog3 packages
