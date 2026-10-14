@@ -83,11 +83,28 @@ static class Regression {
         object NewGuard() => Activator.CreateInstance(GuardType,true)!;
         void Validate(object g,bool fresh,int objects=1,int coded=1,int channels=5,int beds=0,int lfe=-1) => Call(g,"Validate",fresh,objects,coded,channels,beds,lfe);
         Unsupported(()=>Validate(NewGuard(),false),"initial_oamd_missing");
-        object guard = NewGuard(); Validate(guard,true); Validate(guard,false); // Valid carry-forward.
+        object guard = NewGuard();
+        Check(Call(guard,"Describe") == null,"shape reported before first OAMD");
+        Validate(guard,true); Validate(guard,false); // Valid carry-forward.
+        var shape = (IReadOnlyDictionary<string,int>)Call(guard,"Describe");
+        Check(shape["object_count"] == 1 && shape["joc_input_channels"] == 5 && shape["bed_count"] == 0 && shape["lfe_object_index"] == -1,"wrong observed configuration");
         Unsupported(()=>Validate(guard,true,2,2),"changing_object_configuration");
         Unsupported(()=>Validate(guard,true,channels:7),"changing_object_configuration");
         Unsupported(()=>Validate(guard,true,beds:1),"changing_object_configuration");
         Unsupported(()=>Validate(guard,true,objects:2,lfe:0),"changing_object_configuration");
+    }
+    static void ScannerDuration() {
+        Type type = Assembly.LoadFrom(Path.Combine(AppContext.BaseDirectory,"..","AtmosProbe.dll")).GetType("AtmosProbe.Program",true)!;
+        MethodInfo scan = type.GetMethod("Scan",BindingFlags.Static|BindingFlags.NonPublic)!;
+        byte[] frame = [0x0b,0x77,0,2,0x0f,0x80]; // Header-only 256-sample syncframe; scanner, not codec, fixture.
+        byte[] bytes = Enumerable.Range(0,90*48000/256).SelectMany(_=>frame).ToArray();
+        var result = ((int samples,int rate,int frameSamples,int frames))scan.Invoke(null,new object[]{bytes})!;
+        Check(result.samples == 90*48000 && result.rate == 48000,"complete90-second scan rejected");
+        try { scan.Invoke(null,new object[]{bytes.Concat(frame).ToArray()}); }
+        catch (TargetInvocationException ex) when (ex.InnerException?.GetType().Name == "InvalidInput" && ex.InnerException.Message == "duration_limit") {
+            return;
+        }
+        throw new InvalidOperationException("over90-second stream accepted");
     }
     static int Main(string[] args) {
         switch (args.Single()) {
@@ -95,6 +112,7 @@ static class Regression {
             case "joc-timeslots": JocTimeslots(); break;
             case "late-sparse": LateSparse(); break;
             case "metadata-state": MetadataState(); break;
+            case "scanner-duration": ScannerDuration(); break;
             default: throw new ArgumentException("regression ID");
         }
         Console.WriteLine(args[0]+": pass"); return 0;

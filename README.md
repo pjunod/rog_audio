@@ -29,6 +29,13 @@ differ. See [comparison and retained trials](docs/LATENCY_COMPARISON.md) and
 the [phone-recorded method](docs/PHYSICAL_LATENCY_METHOD.md). No physical latency
 or calibrated sound-quality result has been collected.
 
+Host Atmos has [complete official-vector diagnostics](docs/ATMOS_REFERENCE.md)
+for Dolby Channel ID 5.1.4/7.1.4 and [eight reviewed focused acceptance methods](evidence/audio-atmos-official-vectors-acceptance-2026-10-14.json)
+passed once. The bounded offline launcher and channel-energy analyzer changed;
+installed laptop speaker software remains as recorded above. Independent
+reference fidelity, binaural/realtime support and physical qualification remain
+open; vector payloads and detailed renders stay private.
+
 [v0.2.3 is published](https://github.com/pjunod/rog_audio/releases/tag/v0.2.3)
 with the [verified packaging-only +rog4 runtime](evidence/speaker-stop-packaging-only-rog4-2026-10-13.json),
 corresponding source/notices, both [kept-settings-bound model kits](evidence/speaker-stop-provisional-rog4-kit-manifest-2026-10-13.json),
@@ -68,6 +75,7 @@ Display work remains in [rog_hdr_dv](https://github.com/pjunod/rog_hdr_dv).
 - [Latency comparison](docs/LATENCY_COMPARISON.md) — tuned laptop baselines, M4 Air reference and reversible experiments.
 - [Physical latency method](docs/PHYSICAL_LATENCY_METHOD.md) — local key-to-chirp emitter and proposed phone-recorded comparison, with repeat counts and measurement limits.
 - [Atmos build](docs/AUDIO_ATMOS_BUILD.md) — offline object rendering and format limits.
+- [Atmos references](docs/ATMOS_REFERENCE.md) — official JOC test inputs, bounded file rendering and observed channel energy.
 - [Development](docs/DEVELOPMENT.md) — review, CI and selective test policy.
 - [Operations](docs/OPERATIONS.md) — baseline, result interpretation and physical tests.
 - [Provenance](docs/PROVENANCE.md) — migration, source ownership and evidence classes.

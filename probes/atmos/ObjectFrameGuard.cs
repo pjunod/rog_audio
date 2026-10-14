@@ -14,6 +14,15 @@ internal sealed class ObjectFrameGuard {
         if (initial.HasValue && initial.Value != shape) throw new Unsupported("changing_object_configuration");
         initial = shape;
     }
+    public IReadOnlyDictionary<string,int>? Describe() {
+        if (!initial.HasValue) return null;
+        Shape shape = initial.Value;
+        return new Dictionary<string,int> {
+            ["object_count"] = shape.Objects, ["joc_object_count"] = shape.CodedObjects,
+            ["joc_input_channels"] = shape.Channels, ["bed_count"] = shape.Beds,
+            ["lfe_object_index"] = shape.Lfe
+        };
+    }
     // Called while observing frames and after Render, because the pinned
     // matrix expander sets HadSparse later than DecodeFrame observation.
     public static void CheckSparse(bool hadSparse) {

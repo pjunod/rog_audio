@@ -17,13 +17,13 @@ sealed class InvalidInput(string message) : Exception(message);
 
 static class Program {
     internal const string Pin = "7d85d1880666ca5ea323848cff47ce7f50b29f7d";
-    internal const int Rate = 48000, Block = 256;
+    internal const int Rate = 48000, Block = 256, MaxEncodedSeconds = 90;
     static readonly JsonSerializerOptions Json = new() { WriteIndented = true };
     static readonly string[] Stereo = ["FL", "FR"];
     // WAVEFORMATEXTENSIBLE bit order, matching the explicit Cavern matrix below.
     static readonly string[] Surround = ["FL", "FR", "FC", "LFE", "BL", "BR", "SL", "SR", "TFL", "TFR", "TBL", "TBR"];
     static Dictionary<string, object?> report = new() {
-        ["schema_version"] = 1, ["tool_version"] = "0.1.0", ["cavern_source"] = Pin,
+        ["schema_version"] = 1, ["tool_version"] = "0.2.0", ["cavern_source"] = Pin,
         ["modified_upstream_source"] = true, ["cavern_patches"] = new[]{"0001-block-buffer-exact-read", "0002-joc-timeslot-frame-boundary", "0003-emdf-oamd-presence"},
         ["status"] = "pending", ["evidence_class"] = "private-offline",
         ["container"] = null, ["codec"] = null, ["atmos_signalling"] = null,
@@ -162,7 +162,7 @@ static class Program {
             if (frames > 0 && (frameSamples != n || mode != channelMode)) throw new Unsupported("changing_stream_configuration");
             frameSamples = n; rate = Rate; channelMode = mode;
             samples += n; frames++; pos += size;
-            if (samples > 60*Rate) throw new InvalidInput("duration_limit");
+            if (samples > MaxEncodedSeconds*Rate) throw new InvalidInput("duration_limit");
         }
         return (samples,rate,frameSamples,frames);
     }
@@ -185,6 +185,7 @@ static class Program {
             report["object_frames"] = decoder.ObjectFrames;
             report["oamd_fresh_object_frames"] = decoder.FreshOamdFrames;
             report["oamd_reused_object_frames"] = decoder.ReusedOamdFrames;
+            report["object_configuration"] = decoder.ObjectConfiguration;
             report["status"] = decoder.ObjectFrames > 0 ? "joc-inspected-unqualified" : "bed-only";
             Warnings.Add("Signalling describes parsed frames; absence is not an independent bitstream metadata audit.");
             return;
@@ -203,8 +204,9 @@ static class Program {
         report["decoded_frames"] = decoder.Frames; report["object_frames"] = decoder.ObjectFrames;
         report["oamd_fresh_object_frames"] = decoder.FreshOamdFrames;
         report["oamd_reused_object_frames"] = decoder.ReusedOamdFrames;
+        report["object_configuration"] = decoder.ObjectConfiguration;
         report["status"] = objects ? "joc-rendered-unqualified" : "bed-fallback-rendered";
-        Warnings.Add(objects ? "No lawfully supplied JOC reference comparison; this path remains unqualified." : "Explicit conventional-channel fallback; not Atmos rendering.");
+        Warnings.Add(objects ? "JOC decoded/rendered; independent reference fidelity, delay and gain comparison remain unqualified." : "Explicit conventional-channel fallback; not Atmos rendering.");
     }
 
     static void Render(Listener listener, string output, int samples, string layout, Action<int> update) {
@@ -251,6 +253,7 @@ sealed class ObservedDecoder(BlockBuffer<byte> reader) : EnhancedAC3Decoder(read
     readonly ObjectFrameGuard guard = new();
     object Extensions => ExtensionsProperty.GetValue(this)!;
     static object Value(object obj,string name) => obj.GetType().GetProperty(name)!.GetValue(obj)!;
+    public IReadOnlyDictionary<string,int>? ObjectConfiguration => guard.Describe();
     public bool HasObjects => (bool)Value(Extensions,"HasObjects");
     public void Seed(int frames) { expectedFrames = frames; seeded = true; Observe(); }
     void Observe() {

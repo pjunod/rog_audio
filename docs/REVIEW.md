@@ -440,3 +440,33 @@ records a publication event that occurred after that reviewed merge; it does
 not change code, sealed payloads, actual laptop packages or qualification.
 Both exact software hours and scoped demos passed; physical recording remains
 owner-deferred and unmeasured. Sonos remains untouched.
+
+
+## Official JOC vectors — four fixes and eight selected methods
+
+PR 15 exercised Dolby's complete 5.1.4/7.1.4 channel-ID vectors as private
+pre-review development diagnostics. The prior 64-descriptor cap failed during
+report serialization after rendering; a sampled native count of 66 supported
+the revised 128 allowance. Encoded duration is bounded to 90 seconds with
+consistent output/resource limits. Those successful diagnostic receipts remain
+bound to source `0f913a5`; no corrected-binary full-vector rerender is claimed.
+
+| Independent finding | Fix and affected coverage |
+|---|---|
+| Opening a FIFO could block before regular-file validation | Nonblocking descriptor/fstat before fdopen; timeout-bounded FIFO CLI case |
+| Detailed private report used default 0644 permissions | Exclusive 0600 create; successful CLI mode assertion under umask 022 and collision preservation |
+| Initial-bed/later-JOC inspection could report a stale null shape | Report final configuration after processing; null-before-first-OAMD and later shape coverage |
+| New analyzer cases lacked a selective hosted acceptance route | Independent `atmos-energy` workflow/runner; strict exact IDs and unknown/duplicate/cross-module negative coverage |
+
+The coordinator reported all four fixes cleared on
+`e1e14f5c45bab1cd25601a673def1616731c7b1c`. The changed C# source compiled with
+zero errors and the same two inherited Cavern CS0649 warnings. The first formal
+[affected acceptance](../evidence/audio-atmos-official-vectors-acceptance-2026-10-14.json)
+ran three probe methods and five analyzer/selector methods once in isolated
+Linux, with zero failures, errors or skips. No retries or passing-case repeats
+were needed. The original 13 unaffected probe methods remain retained.
+
+This is source/synthetic acceptance plus separately bound actual JOC diagnostic
+observations. It does not establish independent PCM/metadata/motion fidelity,
+late-JOC bitstream acceptance, physical speaker delay, calibrated acoustics,
+binaural output, TrueHD or realtime integration. No laptop or Sonos changed.

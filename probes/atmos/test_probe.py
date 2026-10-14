@@ -171,6 +171,9 @@ class ProbeTests(unittest.TestCase):
     def test_late_sparse_detection(self):
         self.regression('late-sparse')
 
+    def test_encoded_duration_bound(self):
+        self.regression('scanner-duration')
+
     def test_oamd_freshness_and_stable_configuration(self):
         self.regression('metadata-state')
 

@@ -108,3 +108,11 @@ properties (`app`, `node`, `group`, `role`), `filter-env-latency` and
 accept exact failed method IDs. Independent stages continue after a failure,
 so their passing results remain usable. This lane does not rerun the previous
 42 latency tests or either accepted speaker-runtime graph case.
+
+
+The `atmos-energy` lane runs only the offline channel-energy methods through
+`python3 scripts/validate_atmos_energy.py`, without a Cavern build or codec
+suite. Exact failed IDs use repeated `--test-id` arguments in the form
+`test_analyse_atmos_render.AnalyseAtmosTests.test_METHOD`. Unknown/duplicate
+IDs, skips and empty results fail. A new optional `--report` is mode 0600.
+See [reference acceptance commands](ATMOS_REFERENCE.md#run-only-the-reviewed-analyzer-methods).
