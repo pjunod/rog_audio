@@ -29,14 +29,16 @@ differ. See [comparison and retained trials](docs/LATENCY_COMPARISON.md) and
 the [phone-recorded method](docs/PHYSICAL_LATENCY_METHOD.md). No physical latency
 or calibrated sound-quality result has been collected.
 
-[v0.2.2 is published](https://github.com/pjunod/rog_audio/releases/tag/v0.2.2)
-with the +rog3 runtime, corresponding source/notices, both programme kits and
-checksums. The [packaging-only +rog4 artifact](evidence/speaker-stop-packaging-only-rog4-2026-10-13.json)
-is built and verified with the same native DSP plus the helper/MIT notice;
-its corrected service unit is a required separate companion. +rog4 is neither
-published nor installed on these laptops. Both [current-settings-bound +rog4 kits](evidence/speaker-stop-provisional-rog4-kit-manifest-2026-10-13.json)
-are prepared provisionally. Both current demo passes are later evidence;
-the sealed preparation metadata remains its historical snapshot.
+[v0.2.3 is published](https://github.com/pjunod/rog_audio/releases/tag/v0.2.3)
+with the [verified packaging-only +rog4 runtime](evidence/speaker-stop-packaging-only-rog4-2026-10-13.json),
+corresponding source/notices, both [kept-settings-bound model kits](evidence/speaker-stop-provisional-rog4-kit-manifest-2026-10-13.json),
+the required standalone service companion, release notes and checksums.
+[Publication verification](evidence/speaker-runtime-v023-publication-2026-10-14.json)
+binds the tag and five exact assets; v0.2.2 assets remain unchanged.
+The +rog4 native payload matches the accepted +rog3 engine. Actual laptops
+retain +rog3 with the separate helper/unit backport; no +rog4 package rewrite
+occurred. The sealed kit metadata remains its preparation-era snapshot;
+outer release notes record the later scoped demos and completed software hours.
 
 [Current status and dated receipts](docs/STATUS.md) preserve the earlier
 startup fixes, ROG 256/512 failures and 1024 pass, ThinkPad old-runtime hour,

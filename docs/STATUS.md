@@ -8,7 +8,7 @@ starts, short checks and both final full-stereo software hours passed with
 no added driver errors. Both current generated demos are accepted. Physical
 recording is deferred to another coordinated window; measurements and broader
 media qualification remain open.
-**Evidence update:** both final hours completed 2026-10-14 00:12/00:16 UTC; dated receipts below retain separate attempts.
+**Evidence update:** both final hours completed 2026-10-14 00:12/00:16 UTC; v0.2.3 published/verified at 00:31/00:32 UTC. Dated receipts retain separate attempts.
 
 | System | Deployed software | Timing term | Loudness | Current acceptance |
 |---|---|---|---|---|
@@ -18,8 +18,8 @@ media qualification remain open.
 | Sonos | Deferred | Unmeasured | Unassessed | Internal-speaker acceptance first |
 
 Both actual laptop packages remain +rog3, ELF `3f110d6a`; the separate helper
-is `ba8c4a6a` with MIT notice `b6dfebc6`. +rog4 is a verified packaging-only
-artifact, not a published release or installed laptop package. No new reboot,
+is `ba8c4a6a` with MIT notice `b6dfebc6`. +rog4 is the [published v0.2.3 packaging-only distribution](../evidence/speaker-runtime-v023-publication-2026-10-14.json),
+with required service companion and paired kits. It is not installed on the laptops. No new reboot,
 resume/hotplug, calibrated acoustics or physical speaker-delay pass is inferred.
 Graph periods and the HAL buffer are different software terms; final hours
 remain separate from the historical ThinkPad hour and intentionally shortened
@@ -670,7 +670,7 @@ after direct approval for the exact reviewed runtime/source/notices, ordinary
 fresh-inventory-bound programme kits and checksums. Publication completed at
 20:25:47 UTC on 2026-10-13; its tag resolves to the exact PR 10 merge. All three
 remote asset sizes/digests and notes match the reviewed files, and latest
-release resolves to v0.2.2. The runtime archive is 9,551,458 bytes, kit archive
+release resolved to v0.2.2 at that publication checkpoint. The runtime archive is 9,551,458 bytes, kit archive
 130,663 bytes and checksum file 207 bytes. v0.2.1's three remote asset hashes
 remain unchanged. The [publication receipt](../evidence/speaker-runtime-v022-publication-2026-10-13.json)
 retains those exact bindings. The earlier approval refusal executed no command;
@@ -916,15 +916,17 @@ No cold reboot, suspend/resume, physical hotplug, calibration or physical delay
 result is claimed. Sonos remains last and untouched.
 
 [The exact provisional +rog4 kit manifest](../evidence/speaker-stop-provisional-rog4-kit-manifest-2026-10-13.json)
-records two prepared ordinary distribution kits matching the currently deployed
-provisional DSP settings, bound to the verified +rog4 package. ASUS kit
+records two ordinary distribution kits prepared at that checkpoint, matching
+the kept DSP settings and bound to the verified +rog4 package. ASUS kit
 `51efcc00` keeps preset `78dba4c0`, −20 LUFS/cap 2.6475 dB. ThinkPad kit
 `a292c2c6` keeps preset `c2b90751`, −16 LUFS/cap 14.1375 dB. The paired
 121,200-byte kit archive has SHA256
 `c0520d9866b0166e194b71f1c18071755d43753c2474980d2bbe006a23cf9e0f`;
 44 members and metadata were independently checked for safe/public contents.
 The unchanged runtime/source archive `f00fe028` and required service companion
-remain paired. These are prepared, not installed, published or owner-approved.
+remain paired. At this preparation checkpoint they were not installed,
+published or owner-approved; the later scoped demo/hour evidence and verified
+v0.2.3 publication are recorded separately below.
 No source defaults, current laptop packages or old v0.2.2 assets changed.
 If listening feedback changes settings, reprepare only the affected kit using
 the accepted tool and reviewed metadata; never edit output hashes manually.
@@ -1010,3 +1012,51 @@ recording was deferred by the owner to another coordinated window; the ROG
 page remains unarmed, with no additional playback or microphone use tonight.
 No physical latency, calibrated acoustics, cold reboot, suspend/resume or
 headphone/HDMI qualification is inferred. Sonos remains untouched and last.
+
+
+## Reviewed final results and v0.2.3 publication — 2026-10-14
+
+[PR 13](https://github.com/pjunod/rog_audio/pull/13) merged at 00:29:50 UTC,
+commit `d08a6489e0fe0f2fcc2fd99af7d23d57659f49dd`, after independent
+adversarial review of final head `77a108c55e4b248ee7b87d38f445393fd3d6422d`.
+Two documentation findings were fixed before clearance: the new +rog4 procedure
+now names its exact package/kit/binary/service paths instead of forwarding to
+a legacy +rog3 literal; managed stop uses only the synchronous unit, with
+an authenticated-helper fallback for a verified existing unmanaged primary.
+Native `--quit` is not used as an absent-primary stop check. One final
+repository check passed at 00:29:10 UTC, retained log SHA256 `09a03984`;
+no already-passing unit or native integration suite was repeated.
+
+[The exact publication receipt](../evidence/speaker-runtime-v023-publication-2026-10-14.json),
+imported unchanged at SHA256 `f1673c78`, records
+[v0.2.3](https://github.com/pjunod/rog_audio/releases/tag/v0.2.3) published
+at 00:31:43 UTC and verified at 00:32:26 UTC. Its tag resolves to that PR 13
+merge; all five remote asset sizes/digests and release notes match, and the
+latest-release link resolves to v0.2.3. Previous v0.2.2 asset identities,
+sizes and digests remain unchanged.
+
+| Public asset | Bytes | SHA256 prefix |
+|---|---|---|
+| `rog-audio-packaging-only-8.2.8+rog4.tar.gz` | 9,567,774 | `f00fe028` |
+| `rog-audio-provisional-speaker-kits-8.2.8+rog4.tar.gz` | 121,200 | `c0520d98` |
+| `rog-audio-speaker.service` | 551 | `65beb0fa` |
+| `RELEASE_NOTES.md` | 5,350 | `bd697218` |
+| `SHA256SUMS` | 403 | `76b2c46f` |
+
+The two sealed archives and service companion are unchanged from their
+verified prepared payloads. Only outer notes/manifest/checksums were finalized
+with the merged target and later software/listening acceptance. Private cleanup
+inventory and raw captures were excluded from upload. The laptops still run
++rog3 with the separate helper/unit backport, at the exact hour-qualified
+settings; publication did not rewrite their packages, change tuning or restart
+an audio/session service. Spent owned observer source/options/status files and
+empty directories were cleaned after off-host retention, with full logs,
+rollback, current native/configuration and physical-session inputs retained.
+
+Both demos and exact software hours remain passed. Physical recording is
+owner-deferred, the page remains unarmed, and no further user-attended action
+is planned tonight. Physical latency against the M4 Air, calibrated acoustics,
+reboot/resume/hotplug and broader media qualification remain open. Sonos stays
+untouched and last. Use the current [installation procedure](SPEAKER_INSTALL.md)
+for a future coordinated +rog4 installation; publication alone does not qualify
+an actual +rog4 laptop deployment.

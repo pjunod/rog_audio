@@ -1,0 +1,58 @@
+{
+  "schema_version": 1,
+  "kind": "verified-github-release-publication",
+  "release_url": "https://github.com/pjunod/rog_audio/releases/tag/v0.2.3",
+  "tag": "v0.2.3",
+  "target_commit": "d08a6489e0fe0f2fcc2fd99af7d23d57659f49dd",
+  "published_at": "2026-10-14T00:31:43Z",
+  "verified_at": "2026-10-14T00:32:26.724738+00:00",
+  "latest_release_matches": true,
+  "remote_tag_commit_matches": true,
+  "remote_asset_sizes_and_sha256_digests_match": true,
+  "release_notes_match_ignoring_only_final_newline": true,
+  "previous_v022_asset_ids_sizes_digests_unchanged": true,
+  "assets": [
+    {
+      "name": "rog-audio-packaging-only-8.2.8+rog4.tar.gz",
+      "bytes": 9567774,
+      "sha256": "f00fe028e3c65e669bbb9a696cf0357b67bd0c1642f4fab6ae96f30aa6c0df1c"
+    },
+    {
+      "name": "rog-audio-provisional-speaker-kits-8.2.8+rog4.tar.gz",
+      "bytes": 121200,
+      "sha256": "c0520d9866b0166e194b71f1c18071755d43753c2474980d2bbe006a23cf9e0f"
+    },
+    {
+      "name": "rog-audio-speaker.service",
+      "bytes": 551,
+      "sha256": "65beb0fa15830f9204d9026c06e37ec14fc5bb1d33a4f9108eafce93d3a706dd"
+    },
+    {
+      "name": "RELEASE_NOTES.md",
+      "bytes": 5350,
+      "sha256": "bd6972187738c294bfabf1fe570d94505cd5877ea2df64479a3d797e771ee322"
+    },
+    {
+      "name": "SHA256SUMS",
+      "bytes": 403,
+      "sha256": "76b2c46f540e7e2de653a4dc0ffe67a80f87a36b8d864bd875c006b47c993827"
+    }
+  ],
+  "native_package_version": "8.2.8+rog4",
+  "native_payload_unchanged_from_accepted_rog3": true,
+  "required_separate_service_companion": true,
+  "actual_laptop_packages_remain_rog3_with_helper_unit_backport": true,
+  "laptop_package_rewrite_performed": false,
+  "unit_or_native_suites_repeated": false,
+  "private_cleanup_inventory_or_raw_captures_uploaded": false,
+  "physical_latency_or_acoustic_measurement_claimed": false,
+  "physical_recording_deferred_by_owner": true,
+  "sonos_changed": false,
+  "pr13_acceptance": {
+    "reviewed_head": "77a108c55e4b248ee7b87d38f445393fd3d6422d",
+    "merge_commit": "d08a6489e0fe0f2fcc2fd99af7d23d57659f49dd",
+    "merged_at": "2026-10-14T00:29:50Z",
+    "final_repository_check_at": "2026-10-14T00:29:10Z",
+    "final_repository_check_log_sha256": "09a0398419bb39417b3b8fdbda88fe42610055286a7fbcdc1f953104851455ad"
+  }
+}

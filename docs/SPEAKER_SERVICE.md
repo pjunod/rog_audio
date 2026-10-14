@@ -1,7 +1,7 @@
 # Speaker service — quit the owned process and wait for saved state
 
 **Status:** independent review clear; eleven focused Linux methods passed once;
-actual helper-to-native integration passed once · **Updated:** 2026-10-13 ·
+actual helper-to-native integration passed once · **Updated:** 2026-10-14 ·
 **Executes:** the controlled-stop part of [speaker installation](SPEAKER_INSTALL.md).
 
 Companion to [native autoload](SPEAKER_AUTOLOAD.md), [programme loudness](PROGRAMME_LOUDNESS.md)
@@ -71,8 +71,10 @@ source bytes to its self-contained packaging input and checks their manifest
 bindings. The [verified packaging-only artifact](../evidence/speaker-stop-packaging-only-rog4-2026-10-13.json)
 retains all 142 native runtime entries, ELF/source and patch pins from the
 accepted programme runtime. The 3,753,142-byte +rog4 package is built and
-verified; no compiler or tests were repeated, and it remains unpublished and
-uninstalled on the laptops. The corrected service unit is a required separate
+verified; no compiler or tests were repeated. It is now
+[published in v0.2.3](../evidence/speaker-runtime-v023-publication-2026-10-14.json)
+with both paired kits, notes and checksums, and remains uninstalled on the
+laptops. The corrected service unit is a required separate
 companion; the deb contains no automatic service/profile activation scripts.
 The published v0.2.2 package and assets remain unchanged.
 
