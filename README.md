@@ -10,14 +10,15 @@ Atmos is last.
 records both laptops running `8.2.8+rog3` with the reviewed synchronous-stop helper
 backported separately. Original IRs, non-AutoGain settings, final limiters,
 owner gains and stock protection are preserved. Login startup is enabled;
-two controlled automatic starts and real saved-state checks passed. Fresh
-hours are active. Both current generated demos were accepted; physical
-measurements and broader media qualification remain open.
+two controlled automatic starts and real saved-state checks passed. Both
+final software hours passed with no added errors, and both current generated
+demos were accepted. Physical recording is deferred to another coordinated
+window; measurements and broader media qualification remain open.
 
 | System | Current software | Software timing at 48 kHz | Programme settings | Current acceptance |
 |---|---|---|---|---|
-| ROG G16 | +rog3 and PR 12 helper/unit backport | 1024-frame graph cycle: 21.333 ms | −20 LUFS; cap 2.6475 dB | Short check passed; demo accepted, loudness improved; fresh hour active |
-| ThinkPad X1 Extreme | +rog3 and PR 12 helper/unit backport | 256-frame graph cycle: 5.333 ms | −16 LUFS; cap 14.1375 dB | Louder settings verified; sound/loudness demo accepted; fresh hour active |
+| ROG G16 | +rog3 and PR 12 helper/unit backport | 1024-frame graph cycle: 21.333 ms | −20 LUFS; cap 2.6475 dB | Full hour passed without added errors; demo accepted, loudness improved |
+| ThinkPad X1 Extreme | +rog3 and PR 12 helper/unit backport | 256-frame graph cycle: 5.333 ms | −16 LUFS; cap 14.1375 dB | Full hour passed without added errors; sound/loudness demo accepted |
 | M4 Air | Stock output; matched browser/emitter files staged | 512-frame HAL buffer: 10.667 ms | Unchanged | Route/armed pilot and physical comparison pending |
 | Sonos Arc/eARC | Deferred | Unmeasured | Unassessed | Follows internal-speaker acceptance |
 
@@ -147,7 +148,7 @@ recovered vendor files and separately fetched dependencies.
 - [x] Trial lower tuned Linux graph periods and collect the M4 Air software reference; retain distinct bounded passes and later ROG 256/512 failures.
 - [x] Merge guarded 1024/2048 requests and pass the explicit ROG 1024 short trial.
 - [x] Review/test/deploy synchronous service stop and both current programme settings; retain both accepted demo listening results.
-- [ ] Finish fresh software hours on the kept settings.
+- [x] Finish both settings-bound software hours without added errors; verify intact logs, preserved state and owned cleanup.
 - [ ] Qualify physical headphone/HDMI routing and resume.
 - [ ] Measure built-in speaker quality and latency against the Macs.
 - [ ] Qualify Sonos Arc/eARC last.

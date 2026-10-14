@@ -1,0 +1,95 @@
+{
+  "accepted_condition": {
+    "actual_final_invocation_condition_matched": true,
+    "binary_sha256": "3f110d6a2d1e2c743cc552b58930679acd0c00e45f5771a23d4b7702ca31206d",
+    "diagnostic_source_commit": "589aec2f1a2ff7f20ff03f951ebffd6191abd7d9",
+    "final_process_debug_environment_retained_until_next_normal_restart": true,
+    "helper_sha256": "ba8c4a6a103a03969879fab794c823438247eb173e7f227f29630c2585273d42",
+    "kit_sha256": "9eee4b565c7514b9e5c4a925c8d21b7db89e38fc36f688e7d538a6b2fcbb9eab",
+    "maximum_gain_db": 14.137500000002703,
+    "mit_license_sha256": "b6dfebc63ca0515ea78c37829fb946125e2d5e708101c4685f36ac907527d066",
+    "native_package": "8.2.8+rog3",
+    "preset": "rog-speaker-c2b907510d3d8500",
+    "service_stop_backport_source_commit": "ba269db84c5f6877014dfc2e124af7c0b74d8f06",
+    "target_lufs": -16,
+    "user_unit_sha256": "65beb0fa15830f9204d9026c06e37ec14fc5bb1d33a4f9108eafce93d3a706dd"
+  },
+  "active_start_utc": "2026-10-13T23:12:23.423583Z",
+  "artificial_cpu_stress": false,
+  "audible_signal_generated_by_observer": false,
+  "cleanup": {
+    "native_tuning_service_and_stock_audio_still_active": true,
+    "only_owned_player_and_monitor_stopped": true,
+    "owned_reader_writer_threads_stopped": true,
+    "owned_zero_source_graph_nodes_absent": true
+  },
+  "cleanup_finished_utc": "2026-10-14T00:12:23.831181Z",
+  "date": "2026-10-14",
+  "default_output_volume_condition_changes_observed": 0,
+  "driver_error_counter_final": 0,
+  "driver_error_counter_preexisting": 0,
+  "driver_error_delta": 0,
+  "final_active_verification_utc": "2026-10-14T00:12:23.826268Z",
+  "final_capacity": {
+    "declared_maximum_aggregate_journal_growth_bytes": 8388608,
+    "observed_aggregate_journal_growth_bytes": 0,
+    "ordinary_available_bytes": 72912896,
+    "required_recovery_and_reserve_floor_bytes": 49098752
+  },
+  "gain_observation_scope": "fixed physical output and tuned virtual sink Props plus default-output reported volume/mute; complete ordinary client Props retained privately",
+  "graph_observations": 358,
+  "host": "lab6",
+  "kind": "authored-allowlisted-completed-live-software-observation",
+  "limits": [
+    "software continuity of this unchanged condition, not calibrated acoustics or measured physical interaction latency",
+    "source-reported elapsed time is retained as reported; the completed guarded owned interval is at least 3600 seconds",
+    "listening acceptance comes from separately retained owner demo feedback",
+    "no cold reboot, suspend/resume or headphone/HDMI qualification inferred",
+    "original rollback preserved; Sonos remains last"
+  ],
+  "maximum_monitor_reception_gap_seconds": 1.002331482,
+  "maximum_other_playback_clients_observed": 1,
+  "method_revision": 6,
+  "microphone_recording": false,
+  "monitor_frames_observed": 3609,
+  "native_preset_and_candidate_stock_service_identities_unchanged": true,
+  "normal_use_observation": true,
+  "observed_external_volume_conditions": [],
+  "observed_output_graph_gain_conditions": [],
+  "offhost_stream": {
+    "complete_event_count": 5052,
+    "final_event_exactly_matches_retained_final_json": true,
+    "gzip_crc_and_all_json_events_verified": true,
+    "receiver_completed": true,
+    "transport_returncode": 0
+  },
+  "other_watched_chain_node_errors": 0,
+  "owned_minimum_active_interval_seconds": 3600,
+  "physical_and_virtual_output_gain_condition_changes_observed": 0,
+  "physical_core_node_identity_default_and_internal_route_preserved": true,
+  "physical_default_volume_after": {
+    "muted": false,
+    "reported_wpctl_volume": 1.0
+  },
+  "physical_default_volume_before": {
+    "muted": false,
+    "reported_wpctl_volume": 1.0
+  },
+  "private_receipt_sha256": {
+    "final": "f63f0a5f20afc8a359c4c6375190ec8f127abe3309ad1e55258e9fa71fd54221",
+    "intact_compressed_stream": "eb70df0008c0acfa28ec28efe475b384bc8c41e809574f4f135a6cdce8defb92",
+    "options": "4703ee95bd0a2fe9ca63c7e86e851c399c660d0c95d2a7a3a1bc625076b20a3a",
+    "receiver": "2733e6c10a62be34664cc2821704c07c86c872c423f6ec6801aa330f9734d40c",
+    "transport_stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "quantum_frames": 256,
+  "rate_hz": 48000,
+  "result": "completed-60-minute-silent-observation",
+  "same_ordered_full_stereo_path_and_node_identities": true,
+  "schema_version": 1,
+  "signal": "owned continuous all-zero stereo s16 48kHz stream into the tuned speaker sink; ordinary playback can coexist",
+  "source_reported_owned_elapsed_seconds": 3600.4026909890017,
+  "tuning_native_settings_exactly_equal_before_after": true,
+  "volume_or_settings_changes_applied_by_observer": false,
+  "watched_chain_nodes": 9
+}

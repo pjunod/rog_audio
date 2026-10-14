@@ -1,18 +1,19 @@
 # Status — implementation and physical acceptance
 
-**Updated:** 2026-10-13 · **State:** both laptops now run +rog3 with the
+**Updated:** 2026-10-14 · **State:** both laptops now run +rog3 with the
 reviewed helper/unit backport, original speaker voicing and protection intact.
 ROG uses 1024/48000 with −20 LUFS/cap 2.6475 dB; ThinkPad uses 256/48000 with
 −16 LUFS/cap 14.1375 dB. Real helper/native stop, saved-state, two automatic
-starts and short full-stereo checks passed. Fresh hours are active, not complete;
-both current generated demos are accepted; physical measurements and broader
+starts, short checks and both final full-stereo software hours passed with
+no added driver errors. Both current generated demos are accepted. Physical
+recording is deferred to another coordinated window; measurements and broader
 media qualification remain open.
-**Evidence update:** 2026-10-13 23:20 UTC; dated receipts below retain separate attempts.
+**Evidence update:** both final hours completed 2026-10-14 00:12/00:16 UTC; dated receipts below retain separate attempts.
 
-| System | Deployed software | Timing term | Loudness | Acceptance still open |
+| System | Deployed software | Timing term | Loudness | Current acceptance |
 |---|---|---|---|---|
-| ROG | +rog3, separately backported merged helper/unit | Graph 1024/48 kHz, 21.333 ms | −20 LUFS, cap 2.6475 dB | Fresh corrected-observer hour active; accepted demo, improved loudness; physical checks remain |
-| ThinkPad | +rog3, separately backported merged helper/unit | Graph 256/48 kHz, 5.333 ms | −16 LUFS, cap 14.1375 dB | Fresh hour active; accepted sound/loudness demo; physical checks remain |
+| ROG | +rog3, separately backported merged helper/unit | Graph 1024/48 kHz, 21.333 ms | −20 LUFS, cap 2.6475 dB | Full hour passed, no added errors; accepted demo, improved loudness; physical checks remain |
+| ThinkPad | +rog3, separately backported merged helper/unit | Graph 256/48 kHz, 5.333 ms | −16 LUFS, cap 14.1375 dB | Full hour passed, no added errors; accepted sound/loudness demo; physical checks remain |
 | M4 Air | Stock output; matched files staged | HAL 512/48 kHz, 10.667 ms | Unchanged | Actual browser/route/phone/keyboard pilot and physical comparison |
 | Sonos | Deferred | Unmeasured | Unassessed | Internal-speaker acceptance first |
 
@@ -20,7 +21,7 @@ Both actual laptop packages remain +rog3, ELF `3f110d6a`; the separate helper
 is `ba8c4a6a` with MIT notice `b6dfebc6`. +rog4 is a verified packaging-only
 artifact, not a published release or installed laptop package. No new reboot,
 resume/hotplug, calibrated acoustics or physical speaker-delay pass is inferred.
-Graph periods and the HAL buffer are different software terms; current hours
+Graph periods and the HAL buffer are different software terms; final hours
 remain separate from the historical ThinkPad hour and intentionally shortened
 −20 observation. The ROG observer's two-compressor pre-start refusal was a
 procedure error, not an audio failure; only that observation was restarted.
@@ -28,14 +29,14 @@ procedure error, not an audio failure; only that observation was restarted.
 | Work | State | Next evidence |
 |---|---|---|
 | Hardware inventory | Both laptops inspected read-only | Refresh during installation |
-| ASUS speaker tuning | +rog3 programme path active, original voicing preserved; short 1024 check passed | Finish active hour, current programme listening and physical checks |
-| ThinkPad speaker tuning | −16 target/14.1375 dB cap installed and native-readback verified; original voicing preserved | Finish active hour and assess current programme listening |
-| Laptop installation runtime | Both +rog3 with exact merged helper/unit backport; saved-state and automatic starts passed | Kept-setting hours, reboot/resume/hotplug separately |
-| Diagnostics and latency | ThinkPad old-runtime hour retained; new −20 run ended at 1647.944 s; ROG explicit 1024 short trial passed | Fresh hours on kept settings and physical measurements |
-| Programme loudness | Reviewed corrected `+rog3` build accepted: 28 units passed once; both model graphs passed after failed-selector-only retry | Both coordinated deployments passed; finish active settings-bound hours and owner listening |
+| ASUS speaker tuning | +rog3, original voicing preserved; final 1024 hour and current demo passed | Broader media and physical checks |
+| ThinkPad speaker tuning | −16/cap 14.1375 installed; original voicing preserved; final 256 hour and current demo passed | Broader media and physical checks |
+| Laptop installation runtime | Both +rog3 with exact merged helper/unit backport; saved-state, automatic starts and final hours passed | Reboot/resume/hotplug separately |
+| Diagnostics and latency | Final ROG 1024/ThinkPad 256 hours passed without added errors; earlier failures/partial/old-runtime runs retained | Physical measurements |
+| Programme loudness | Reviewed corrected `+rog3` build accepted: 28 units passed once; both model graphs passed after failed-selector-only retry | Both deployments, final hours and current demos accepted; physical checks remain |
 | Host Atmos | 15 tests and focused CI cleanup acceptance passed in PR 1 | Actual JOC reference media and physical qualification |
-| macOS comparison | M4 Air getter and silent-running snapshots complete; 16 summary tests passed in PR 5 | Matched Linux software observations, then physical comparison |
-| Physical interaction timing | Ten methods/unarmed local M3 Chrome smoke retained; all three emitter file preparations complete, matched Firefox staged on actual M4; no armed pilot or physical samples | Armed route check and manual pilot, then repeated same-track capture |
+| macOS comparison | M4 Air getter/silent-running snapshots and Linux software observations retained; 16 summary tests passed in PR 5 | Physical comparison in a later coordinated window |
+| Physical interaction timing | Ten methods/local M3 unarmed smoke retained; matched files/browser prepared; ROG page unarmed; no physical samples | Deferred coordinated pilot and repeated same-track capture |
 | Sonos Arc/eARC | Deferred until internal audio work | TV route and actual received formats |
 
 Companion to [installation](SPEAKER_INSTALL.md), [review](REVIEW.md) and
@@ -951,8 +952,61 @@ There was no recording or repeated test/playback for these authored receipts.
 The owner accepted these demos at these conditions, with improved ROG loudness
 and accepted ThinkPad sound/loudness. This later evidence does not overwrite
 the earlier quiet −20 ThinkPad feedback or pre-feedback v2 summary. Both kept
-settings and ongoing hours remain unchanged. No acoustic level, physical
+settings remained unchanged during their subsequently completed hours. No acoustic level, physical
 latency or proof for all everyday media is inferred. The provisional sealed
 archives retain their preparation-era qualification metadata; later outer
 release notes/manifest may record these scoped demo passes without changing
 preset, IR or payload hashes. Sonos remains held for a coordinated next step.
+
+
+## Final kept-settings software hours — 2026-10-14
+
+The independently read/hash-verified allowlisted [ROG receipt](../evidence/programme-final-software-hour-lab5-v2-2026-10-14.json)
+and [ThinkPad receipt](../evidence/programme-final-software-hour-lab6-v2-2026-10-14.json)
+record completed guarded intervals of at least 3600 seconds on the actual kept
++rog3 packages with the separate merged helper/unit backport. Elapsed values
+below are retained as source-reported values. The observer supplied continuous
+all-zero stereo PCM to keep the complete tuned path active; ordinary playback
+could coexist, and the accepted demos occurred during these observations.
+This was a normal-use software continuity check, without artificial CPU stress
+or observer-generated audible signals; it was not acoustic measurement.
+
+| Condition | ROG / lab5 | ThinkPad / lab6 |
+|---|---|---|
+| Source-reported owned elapsed | 3600.258197174 seconds | 3600.4026909890017 seconds |
+| Actual driver quantum/rate | 1024/48000 | 256/48000 |
+| Programme target / makeup cap | −20 LUFS / 2.6475 dB | −16 LUFS / 14.1375 dB |
+| Driver error counter | 4 → 4; no added errors | 0 → 0; no added errors |
+| Other watched-chain errors | 0 across ten watched nodes | 0 across nine watched nodes |
+| Monitor frames / graph observations | 3607 / 360 | 3609 / 358 |
+| Maximum monitor reception gap | 1.002606875 seconds | 1.002331482 seconds |
+| Final active verification UTC | 00:16:14.486758 | 00:12:23.826268 |
+| Owned cleanup finished UTC | 00:16:14.492327 | 00:12:23.831181 |
+
+Both complete compressed streams passed CRC and all-JSON verification, with
+final events exactly matching retained final JSON and transport return 0.
+The same ordered full stereo path, node/core/default/internal route identities,
+selected preset, native settings and candidate/stock service identities were
+preserved. No default-output or physical/virtual output gain changes were
+observed; the physical default reported volume 1.0/unmuted before and after.
+The observer applied no volume/settings setters. Each saw at most one other
+playback client; per-client details remain private. Aggregate journal growth
+was zero and the declared recovery/reserve floor remained available.
+
+Cleanup stopped only the owned zero player, monitor and reader/writer threads;
+their graph nodes were confirmed absent. The tuning service and stock audio
+remained active. The current invocation's debug environment is retained until
+its next normal restart; no extra restart was made to remove it. Independent
+post-cleanup readback checked all nine native properties, automatic-start
+bindings, complete package ledger, current runtime and retained rollback
+packages/configuration preimages. Original IR/non-AutoGain voicing, final
+limiter, owner gain, stock protection and recoverable rollback remain intact.
+
+These receipts qualify software continuity for these exact conditions. They
+do not overwrite the earlier ROG 256/512 failures, observer preflight refusal,
+old ThinkPad hour, intentionally shortened −20 interval or shutdown recovery.
+Owner demo acceptance remains the separate listening evidence above. Physical
+recording was deferred by the owner to another coordinated window; the ROG
+page remains unarmed, with no additional playback or microphone use tonight.
+No physical latency, calibrated acoustics, cold reboot, suspend/resume or
+headphone/HDMI qualification is inferred. Sonos remains untouched and last.

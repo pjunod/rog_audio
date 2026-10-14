@@ -1,7 +1,7 @@
 # Speaker installation — exact route, reversible files
 
-**Status:** v0.2.2 published; +rog3 programme implementation accepted; live loudness/hours open ·
-**Updated:** 2026-10-13 · **Executes:** internal-speaker installation from
+**Status:** v0.2.2 published; +rog3 deployed, both current demos accepted; both final software hours passed ·
+**Updated:** 2026-10-14 · **Executes:** internal-speaker installation from
 [status](STATUS.md).
 
 [Both current laptops](../evidence/programme-service-autoload-and-current-settings-v2-2026-10-13.json)
@@ -11,18 +11,22 @@ automatic preset starts and fresh IR/full-stereo checks passed. ROG uses
 1024/48000 at −20 LUFS/cap 2.6475 dB; ThinkPad uses 256/48000 at −16
 LUFS/cap 14.1375 dB. Original IR/non-AutoGain settings, final limiters, owner
 gains/routes, stock services/firmware and exact rollback remain preserved.
-New hours are active, not complete; current owner listening, new reboot,
-hotplug/resume and physical/acoustic acceptance remain separate. The old
-ThinkPad hour, ROG 256/512 failures and earlier recovered updates are dated
+Both [final software hours](STATUS.md#final-kept-settings-software-hours--2026-10-14) passed without added errors,
+and both current generated demos were accepted;
+new reboot, hotplug/resume, broader media and physical/acoustic acceptance
+remain separate. Physical recording is deferred to another coordinated
+window. The old ThinkPad hour, ROG 256/512 failures and earlier recovered updates are dated
 history in [status](STATUS.md). No +rog4 package was installed by the backport.
 
 The original [ROG](../evidence/rog-speaker-deployment-2026-10-12.json) and
 [ThinkPad](../evidence/thinkpad-speaker-deployment-2026-10-12.json) deployment
 receipts retain initial 20% volume, private recovery snapshots and startup
 history. Later owner-selected levels are test conditions, not installation
-instructions. The owner reports positive demo clarity but ordinary movies/shows
-remain too quiet on both; everyday loudness and physical quality acceptance
-are unresolved. Both persistent login services remain enabled. Keep the
+instructions. Earlier owner feedback found ordinary movies/shows too quiet. The current
+[ROG demo](../evidence/rog-programme-owner-listening-2026-10-13.json) was accepted
+with improved loudness, and the current [ThinkPad demo](../evidence/thinkpad-target16-programme-owner-listening-2026-10-13.json)
+was accepted for sound and loudness. Broader media and physical quality remain
+unqualified. Both persistent login services remain enabled. Keep the
 original filters, limiter and stock amplifier protection intact.
 
 The published [v0.2.1 release](https://github.com/pjunod/rog_audio/releases/tag/v0.2.1)
@@ -348,8 +352,8 @@ service-stop helper; its separate source review, eleven units and one
 isolated native integration passed. The [verified +rog4 artifact](../evidence/speaker-stop-packaging-only-rog4-2026-10-13.json)
 is built without a native recompile; it is not published or installed on the
 laptops. Its separate corrected unit companion must be used for future
-installs; the deb alone does not replace or enable the user unit. Actual laptop
-listening/stability remain pending; published v0.2.1 and its `+rog2` recovery
+installs; the deb alone does not replace or enable the user unit. Actual +rog3/backport laptop demos and settings-bound hours passed; that
+does not establish a live +rog4 package deployment. Published v0.2.1 and its `+rog2` recovery
 artifacts remain unchanged. Read [programme loudness](PROGRAMME_LOUDNESS.md)
 for the independent controls, preserved voicing and source/build contract.
 Follow the focused

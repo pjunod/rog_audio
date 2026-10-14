@@ -1,7 +1,7 @@
 # Physical latency method — record key click and speaker response on one phone
 
 **Status:** local emitter source-reviewed; ten synthetic methods passed once;
-unarmed Chrome smoke passed on local M3; Firefox/emitter staged on actual M4; manual pilot pending; no physical measurements collected · **Written:** 2026-10-13 · **Executes:**
+unarmed Chrome smoke passed on local M3; Firefox/emitter staged on actual M4; manual pilot deferred; no physical measurements collected · **Written:** 2026-10-13 · **Executes:**
 physical comparison in [latency comparison](LATENCY_COMPARISON.md).
 
 Companion to [latency tooling](AUDIO_LATENCY_BUILD.md) (trial schema and
@@ -130,8 +130,10 @@ Complete software qualification before the coordinated recording session.
 Both laptops now run +rog3 with the separate reviewed helper/unit backport:
 ROG 1024/48000, target −20 LUFS/cap 2.6475 dB; ThinkPad 256/48000, target
 −16 LUFS/cap 14.1375 dB. Original IRs/non-AutoGain stages and final limiters
-remain intact. Fresh settings-bound hours are active, not complete; current
-generated demos are accepted at the recorded conditions; that does not
+remain intact. Both [final settings-bound hours](STATUS.md#final-kept-settings-software-hours--2026-10-14) passed without added errors; current
+generated demos are accepted at the recorded conditions. Physical recording
+is deferred to another coordinated window; no page is to be armed or
+recording started until that window is agreed. These results do not
 qualify acoustic response or every media source. Earlier ROG 256/512 failures, 1024
 short pass and recovered shutdown failure, and the old ThinkPad hour/partial
 −20 run remain distinct history in [status](STATUS.md).

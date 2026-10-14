@@ -1,7 +1,7 @@
 # Latency comparison — tuned Linux laptops and the M4 Air
 
-**Status:** historical paired results retained; ThinkPad v0.2.0 hour complete
-at 256 frames; ROG short 512 pass retained but later 512 baseline failed; larger recovery requests and fresh hours pending ·
+**Status:** current +rog3/backport hours passed at ROG 1024 and ThinkPad 256;
+historical 256/512 failures retained; physical comparison deferred/unmeasured ·
 **Written:** 2026-10-13 · **Executes:** latency phase in
 [implementation](AUDIO_IMPLEMENTATION.md).
 
@@ -14,8 +14,10 @@ Sonos Atmos remains outside this phase.
 records +rog3 on both laptops with the separate synchronous-stop backport.
 ROG's 20-second 1024/48000 check retained driver ERR 4; ThinkPad's 20-second
 256/48000 check retained ERR 0. Both produced eleven positive observations
-with original IR/non-AutoGain/full stereo preserved. Fresh hours on ROG
-−20/cap 2.6475 and ThinkPad −16/cap 14.1375 are active, not complete.
+with original IR/non-AutoGain/full stereo preserved. The [final hours](STATUS.md#final-kept-settings-software-hours--2026-10-14) on ROG
+−20/cap 2.6475 and ThinkPad −16/cap 14.1375 passed without added errors,
+with unchanged tuning and verified owned cleanup. Physical recording is
+deferred to another coordinated window.
 These current conditions do not retroactively replace the failed or old-runtime
 intervals below, and none measures physical speaker delay.
 
