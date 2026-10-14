@@ -552,7 +552,8 @@
       "AnalyseAtmosTests.test_height_and_silence_have_distinct_observations",
       "AnalyseAtmosTests.test_invalid_pcm_headers_and_window_rejected",
       "AnalyseAtmosTests.test_duration_bound_and_report_collision"
-    ]
+    ],
+    "plan_scope": "Preparation snapshot at diagnostic revision; review adds selection/FIFO/privacy coverage and later acceptance uses separate source-bound receipt"
   },
   "limits": {
     "encoded_duration_seconds": 90,
@@ -564,5 +565,6 @@
     "realtime_qualified": false,
     "binaural_supported": false,
     "truehd_supported": false
-  }
+  },
+  "diagnostic_revision": "0f913a5aaeccbc4dc6eb9f56be035fa5b68b31d2"
 }

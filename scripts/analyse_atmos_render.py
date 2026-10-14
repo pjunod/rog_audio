@@ -4,6 +4,7 @@ import argparse
 import hashlib
 import json
 import math
+import os
 from pathlib import Path
 import stat
 import struct
@@ -22,11 +23,21 @@ def identity(info):
     return (info.st_dev, info.st_ino, info.st_size, info.st_mtime_ns, info.st_ctime_ns)
 
 
+def open_regular_input(path):
+    descriptor = os.open(path, os.O_RDONLY | os.O_NONBLOCK)
+    try:
+        if not stat.S_ISREG(os.fstat(descriptor).st_mode):
+            raise ValueError('input must be a regular file')
+        return os.fdopen(descriptor, 'rb')
+    except BaseException:
+        os.close(descriptor)
+        raise
+
+
 def analyse(path, window_ms=250):
     if not isinstance(window_ms, int) or isinstance(window_ms, bool) or not 20 <= window_ms <= 1000:
         raise ValueError('window must be an integer from20 through1000ms')
-    with Path(path).open('rb') as source:
-        import os
+    with open_regular_input(path) as source:
         before = os.fstat(source.fileno())
         if not stat.S_ISREG(before.st_mode) or not 68 <= before.st_size <= MAX_SECONDS * RATE * 12 * 4 + 68:
             raise ValueError('input size or type outside probe WAV contract')
@@ -95,7 +106,8 @@ def main():
     args = parser.parse_args()
     try:
         report = analyse(args.input, args.window_ms)
-        with args.report.open('x') as output:
+        descriptor = os.open(args.report, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+        with os.fdopen(descriptor, 'w') as output:
             json.dump(report, output, indent=2, allow_nan=False)
             output.write('\n')
     except (OSError, ValueError):

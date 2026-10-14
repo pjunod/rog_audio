@@ -175,7 +175,6 @@ static class Program {
         using var input = new MemoryStream(bytes,false);
         var decoder = new ObservedDecoder(BlockBuffer<byte>.Create(input));
         decoder.Seed(scan.frames);
-        report["object_configuration"] = decoder.ObjectConfiguration;
         if (decoder.SampleRate != Rate || decoder.FrameSize != scan.frameSamples || decoder.ChannelCount is < 1 or > 8) throw new Unsupported("decoder_configuration");
         if (output == null) {
             float[] buffer = new float[scan.frameSamples*decoder.ChannelCount];
@@ -186,6 +185,7 @@ static class Program {
             report["object_frames"] = decoder.ObjectFrames;
             report["oamd_fresh_object_frames"] = decoder.FreshOamdFrames;
             report["oamd_reused_object_frames"] = decoder.ReusedOamdFrames;
+            report["object_configuration"] = decoder.ObjectConfiguration;
             report["status"] = decoder.ObjectFrames > 0 ? "joc-inspected-unqualified" : "bed-only";
             Warnings.Add("Signalling describes parsed frames; absence is not an independent bitstream metadata audit.");
             return;
@@ -204,6 +204,7 @@ static class Program {
         report["decoded_frames"] = decoder.Frames; report["object_frames"] = decoder.ObjectFrames;
         report["oamd_fresh_object_frames"] = decoder.FreshOamdFrames;
         report["oamd_reused_object_frames"] = decoder.ReusedOamdFrames;
+        report["object_configuration"] = decoder.ObjectConfiguration;
         report["status"] = objects ? "joc-rendered-unqualified" : "bed-fallback-rendered";
         Warnings.Add(objects ? "JOC decoded/rendered; independent reference fidelity, delay and gain comparison remain unqualified." : "Explicit conventional-channel fallback; not Atmos rendering.");
     }

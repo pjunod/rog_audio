@@ -83,7 +83,9 @@ static class Regression {
         object NewGuard() => Activator.CreateInstance(GuardType,true)!;
         void Validate(object g,bool fresh,int objects=1,int coded=1,int channels=5,int beds=0,int lfe=-1) => Call(g,"Validate",fresh,objects,coded,channels,beds,lfe);
         Unsupported(()=>Validate(NewGuard(),false),"initial_oamd_missing");
-        object guard = NewGuard(); Validate(guard,true); Validate(guard,false); // Valid carry-forward.
+        object guard = NewGuard();
+        Check(Call(guard,"Describe") == null,"shape reported before first OAMD");
+        Validate(guard,true); Validate(guard,false); // Valid carry-forward.
         var shape = (IReadOnlyDictionary<string,int>)Call(guard,"Describe");
         Check(shape["object_count"] == 1 && shape["joc_input_channels"] == 5 && shape["bed_count"] == 0 && shape["lfe_object_index"] == -1,"wrong observed configuration");
         Unsupported(()=>Validate(guard,true,2,2),"changing_object_configuration");

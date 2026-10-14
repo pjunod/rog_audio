@@ -2,6 +2,7 @@
 import importlib.util
 import json
 import math
+import os
 from pathlib import Path
 import struct
 import subprocess
@@ -76,6 +77,26 @@ class AnalyseAtmosTests(unittest.TestCase):
         self.assertEqual(result.returncode,2)
         self.assertTrue(output.is_symlink())
         self.assertFalse((self.root/'missing').exists())
+        output.unlink()
+        result=subprocess.run([sys.executable,str(ROOT/'scripts/analyse_atmos_render.py'),'--input',str(self.path),'--report',str(output)],capture_output=True,timeout=5,preexec_fn=lambda:os.umask(0o022))
+        self.assertEqual(result.returncode,0,result.stderr)
+        self.assertEqual(output.stat().st_mode & 0o777,0o600)
+        self.assertEqual(json.loads(output.read_text())['analysis'],'observed-channel-energy')
+        fifo=self.root/'fifo';os.mkfifo(fifo)
+        result=subprocess.run([sys.executable,str(ROOT/'scripts/analyse_atmos_render.py'),'--input',str(fifo),'--report',str(self.root/'fifo.json')],capture_output=True,timeout=5)
+        self.assertEqual(result.returncode,2)
+        self.assertFalse((self.root/'fifo.json').exists())
+
+    def test_acceptance_selector_fails_without_running_cases(self):
+        valid='test_analyse_atmos_render.AnalyseAtmosTests.test_channel_windows_and_partial_length'
+        for ids in [[valid,valid],['test_analyse_atmos_render.AnalyseAtmosTests.test_unknown'],['os.system'],['test_analyse_atmos_render.AnalyseAtmosTests.test_bad;command']]:
+            command=[sys.executable,str(ROOT/'scripts/validate_atmos_energy.py'),'--report',str(self.root/'invalid-selection.json')]
+            for item in ids:command+=['--test-id',item]
+            result=subprocess.run(command,capture_output=True,timeout=5)
+            self.assertEqual(result.returncode,2)
+            self.assertNotIn(b'Ran ',result.stderr)
+            self.assertFalse((self.root/'invalid-selection.json').exists())
+
 
 
 if __name__ == '__main__':unittest.main()

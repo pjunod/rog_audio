@@ -99,8 +99,9 @@ The [streaming analyzer](../scripts/analyse_atmos_render.py) accepts only the
 probe's contiguous 48kHz WAVE-extensible float32 stereo/7.1.4 contract. It checks
 length, format, finite samples, unit peak, duration and unchanged input identity.
 It reads bounded windows, records input SHA256, sample count, per-channel RMS
-and peak, and each window's dominant channel. It creates a new JSON file and
-refuses existing files, directories and dangling symlinks. It does not infer
+and peak, and each window's dominant channel. Input is opened nonblocking and rejected unless its descriptor is a regular
+file, so FIFOs cannot block startup. It creates a new JSON file with mode 0600
+and refuses existing files, directories and dangling symlinks. It does not infer
 Atmos from PCM or compare with an independent reference.
 
 **How to read it:** each window gives `start_sample` and `samples_per_channel`;
@@ -126,8 +127,8 @@ counts, hashes and diagnostics live in the [allowlisted receipt](../evidence/aud
 The inherited 15-method reviewed synthetic/bed acceptance and separate focused
 CI cleanup remain in their [original receipt](../evidence/audio-atmos-acceptance-2026-10-12.json).
 They contain no official JOC payload. This batch adds a scanner 90-second
-boundary regression, object-shape report coverage and four generated WAV
-analyzer methods. Final selection after independent review covers those four
+boundary regression, object-shape report coverage and five generated WAV/selector
+analyzer methods. Final selection after independent review covers those five
 methods plus `test_encoded_duration_bound`,
 `test_oamd_freshness_and_stable_configuration` and `test_generated_eac3_bed`.
 Unchanged QMF/parser patches, synthetic position rendering and publication-race
@@ -139,3 +140,30 @@ Independent renderer comparison, moving-object fidelity, delay/tail accounting,
 binaural output, TrueHD, stereo/mono decoder support and realtime integration
 remain separate work. No acoustic or physical latency result is inferred.
 Sonos stays last, and accepted laptop speaker tuning is unchanged.
+
+## Run only the reviewed analyzer methods
+
+The `atmos-energy` choice in the [manual acceptance workflow](../.github/workflows/acceptance.yml)
+runs only the offline Python analyzer methods through the
+[selective runner](../scripts/validate_atmos_energy.py). It does not rebuild
+Cavern or rerun the encoded Atmos suite. Full local acceptance and a single
+failed-method retry use new report paths:
+
+```bash
+python3 scripts/validate_atmos_energy.py --report PRIVATE/energy-all.json
+# Run the five reviewed analyzer/input/privacy/selection methods once.
+
+python3 scripts/validate_atmos_energy.py \
+  --test-id test_analyse_atmos_render.AnalyseAtmosTests.test_duration_bound_and_report_collision \
+  --report PRIVATE/energy-failed-retry.json
+# Retry this failed method alone; unchanged passing methods stay retained.
+```
+
+Exact module/class/method IDs are validated before execution. Unknown IDs,
+duplicates and cross-module selections fail rather than silently running a
+partial or empty suite. Errors, failures, skips and zero-test runs fail
+acceptance. Optional reports are exclusively created with mode 0600.
+The initial vector receipt binds its pre-review source bytes; the later review
+fixes and final affected acceptance have separate source identities. No
+successful complete-vector diagnostic is repeated for these input/report/CI
+changes.

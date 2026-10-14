@@ -217,6 +217,14 @@ float WAV into per-channel RMS/peak windows without playback. Observed height
 energy and dominant-channel order do not establish independent reference
 fidelity, physical delay, perceptual localization or realtime support.
 
+The separate `atmos-energy` workflow lane runs the standard-library analyzer
+methods without this decoder build. Use `python3 scripts/validate_atmos_energy.py`
+from the repository root, with repeated `--test-id` arguments for exact failed
+methods and an optional new `--report` path. [The reference procedure](../../docs/ATMOS_REFERENCE.md#run-only-the-reviewed-analyzer-methods)
+documents the full and selective commands. Empty, unknown or skipped acceptance
+cannot pass. Detailed private energy reports use mode 0600; FIFO input is
+rejected before any blocking read.
+
 ## Hosted CI and focused retries
 
 The [CI recipe](ci.sh) needs a Linux host with Git and Docker. It fetches only
