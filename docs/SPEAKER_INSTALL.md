@@ -1,6 +1,6 @@
 # Speaker installation — exact route, reversible files
 
-**Status:** v0.2.2 published; +rog3 deployed, both current demos accepted; both final software hours passed ·
+**Status:** v0.2.3 published; +rog3 deployed, both current demos accepted; both final software hours passed ·
 **Updated:** 2026-10-14 · **Executes:** internal-speaker installation from
 [status](STATUS.md).
 
@@ -45,11 +45,13 @@ change the physical default sink, set amplifier controls, restart services,
 play audio or record sound. Coordinate the later runtime start and audible
 acceptance window separately.
 
-## Prospective v0.2.3 — +rog4 package, paired kits and required service companion
+## Install v0.2.3 — +rog4 package, paired kits and required service companion
 
-**Prepared, not published:** v0.2.2 remains the current public release. The
-commands below apply only after v0.2.3 is actually published at its verified
-final merge. The prepared +rog4 package reuses the accepted native ELF/source;
+[v0.2.3 is published](https://github.com/pjunod/rog_audio/releases/tag/v0.2.3)
+at verified PR 13 merge `d08a6489e0fe0f2fcc2fd99af7d23d57659f49dd`.
+[The publication receipt](../evidence/speaker-runtime-v023-publication-2026-10-14.json)
+verifies the tag, all five remote assets and notes. The +rog4 package reuses
+the accepted native ELF/source;
 it adds the shutdown helper/MIT notice. Its paired kits use the kept ROG
 −20 LUFS/cap 2.6475 and ThinkPad −16 LUFS/cap 14.1375 settings. Both generated
 demos are accepted; that is not calibrated acoustics or proof for every medium.
@@ -60,7 +62,7 @@ Use all five release assets together. The old `rog-audio-speaker-*` download
 pattern does not select both new archives:
 
 ```bash
-# Only after v0.2.3 is published; choose a new durable owned directory.
+# Obtain published v0.2.3; choose a new durable owned directory.
 audio_release_root="$HOME/.local/state/rog-audio/work"
 mkdir -p "$audio_release_root"
 git clone --branch v0.2.3 https://github.com/pjunod/rog_audio.git \
@@ -438,8 +440,8 @@ The published v0.2.2 `8.2.8+rog3` native runtime passed the isolated
 `8.2.8+rog4` with the same native ELF/source and an added authenticated
 service-stop helper; its separate source review, eleven units and one
 isolated native integration passed. The [verified +rog4 artifact](../evidence/speaker-stop-packaging-only-rog4-2026-10-13.json)
-is built without a native recompile; it is not published or installed on the
-laptops. Its separate corrected unit companion must be used for future
+was built without a native recompile and is now published in v0.2.3;
+it is not installed on the laptops. Its separate corrected unit companion must be used for future
 installs; the deb alone does not replace or enable the user unit. Actual +rog3/backport laptop demos and settings-bound hours passed; that
 does not establish a live +rog4 package deployment. Published v0.2.1 and its `+rog2` recovery
 artifacts remain unchanged. Read [programme loudness](PROGRAMME_LOUDNESS.md)
@@ -451,8 +453,8 @@ retained rollback. The v0.2.0 `+rog1` release and its receipt remain historical
 recovery assets. The build commands below produce the version selected by
 this checkout; current packaging is +rog4. The separate +rog3 installation
 example later in this section is legacy v0.2.2 only and requires its retained
-matching artifact/kit. Use the concrete prospective v0.2.3 block above for
-+rog4, after publication and coordinated acceptance.
+matching artifact/kit. Use the concrete published v0.2.3 block above for
++rog4 in a future coordinated installation window.
 
 ```bash
 # Read public Git objects only; working-tree/private data never enter Docker.

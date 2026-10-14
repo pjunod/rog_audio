@@ -11,8 +11,10 @@ passed without added errors. Physical recording is deferred to another
 coordinated window. [ROG](../evidence/rog-programme-owner-listening-2026-10-13.json)
 and [ThinkPad](../evidence/thinkpad-target16-programme-owner-listening-2026-10-13.json)
 current demos are accepted; that is not acoustic/all-media qualification.
-The public preparer defaults/release assets are
-unchanged. ROG's cap equals its 2.6475 dB inverse-FIR source budget;
+The public preparer defaults and older release assets are unchanged.
+[Published v0.2.3](../evidence/speaker-runtime-v023-publication-2026-10-14.json)
+pairs packaging-only +rog4 with both kept-settings model kits; the laptops
+remain +rog3 with their separate helper/unit backport. ROG's cap equals its 2.6475 dB inverse-FIR source budget;
 ThinkPad's cap adds 4 dB above its 10.1375 dB budget, retaining the ordinary
 above-source-budget advisory. These are not measured speaker or amplifier
 headroom limits.

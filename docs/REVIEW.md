@@ -419,3 +419,24 @@ MIT notice and Python dependency are added; the merged service unit remains a
 required separate companion. The original +rog3 package is unchanged. No
 compiler, unit/native integration repeat, laptop rewrite or publication is
 claimed. Later live transactions and kept-settings hours remain separate.
+
+
+## Final live-results and publication ledger — PR 13
+
+PR 13's documentation/evidence batch preserved the completed source/test
+identities while importing the exact final ROG/ThinkPad hours and listening
+receipts. Independent adversarial review found two P2 documentation issues:
+version forwarding could select the legacy +rog3 package for +rog4 assets,
+and a native `--quit` fallback after managed stop could create a new primary.
+The exact version-bound installation block and managed-stop/authenticated-helper
+instructions fixed both; changed-diff review cleared final head `77a108c`.
+
+One final repository check passed at 2026-10-14 00:29:10 UTC; no affected
+unit/native tests were invalidated or repeated. The batch merged as `d08a6489`
+at 00:29:50 UTC. [Publication verification](../evidence/speaker-runtime-v023-publication-2026-10-14.json)
+subsequently bound v0.2.3 to that merge and all five exact public assets,
+with older v0.2.2 assets unchanged. The current release-reference follow-up
+records a publication event that occurred after that reviewed merge; it does
+not change code, sealed payloads, actual laptop packages or qualification.
+Both exact software hours and scoped demos passed; physical recording remains
+owner-deferred and unmeasured. Sonos remains untouched.
