@@ -49,7 +49,11 @@ bound retains the format/resource contracts. A 64-descriptor serialization
 abort was reproduced, and the 128 allowance supported a sampled native count
 of 66. Source/patch pins are unchanged. Observed height energy and repeated
 channel order are not independently verified metadata or PCM fidelity.
-The new scanner/report/energy-analysis formal acceptance remains pending review.
+Four source-review findings were fixed, then the three affected probe methods
+and five analyzer/selector methods passed once without failures, errors or
+skips. [The acceptance receipt](../evidence/audio-atmos-official-vectors-acceptance-2026-10-14.json)
+binds the reviewed source; the earlier complete-vector diagnostics are retained
+on their original hashes and are not a fresh post-review vector render.
 
 ## 1. Establish the exact candidate and compiler loop
 

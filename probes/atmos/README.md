@@ -3,7 +3,9 @@
 **Status:** patched libraries/CLI compiled and all fifteen reviewed-source
 regressions passed on Linux x86_64 on 2026-10-12. Complete official JOC
 channel vectors were decoded/rendered in development diagnostics on 2026-10-14;
-independent reference fidelity and new affected formal acceptance remain pending.
+eight affected methods passed once after four review fixes. Independent
+reference fidelity remains pending; complete-vector diagnostics retain their
+original pre-review source identities.
 
 This probe processes explicit files and writes new JSON/WAV outputs. It never
 opens a sound device, discovers personal media, registers with a desktop or
@@ -263,5 +265,6 @@ regressions use generated arrays and reflection, with no Dolby payload.
 
 The current suite has sixteen methods, adding an encoded-duration scanner
 boundary case. The inherited fifteen-method receipt remains unchanged; the
-new affected formal selection is pending independent review. Without
+three affected probe methods and five analyzer methods passed once after
+independent review, as recorded in the [new acceptance receipt](../../evidence/audio-atmos-official-vectors-acceptance-2026-10-14.json). Without
 explicit generated codec fixtures, those two methods are recorded as skips.

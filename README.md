@@ -29,6 +29,13 @@ differ. See [comparison and retained trials](docs/LATENCY_COMPARISON.md) and
 the [phone-recorded method](docs/PHYSICAL_LATENCY_METHOD.md). No physical latency
 or calibrated sound-quality result has been collected.
 
+Host Atmos has [complete official-vector diagnostics](docs/ATMOS_REFERENCE.md)
+for Dolby Channel ID 5.1.4/7.1.4 and [eight reviewed focused acceptance methods](evidence/audio-atmos-official-vectors-acceptance-2026-10-14.json)
+passed once. The bounded offline launcher and channel-energy analyzer changed;
+installed laptop speaker software remains as recorded above. Independent
+reference fidelity, binaural/realtime support and physical qualification remain
+open; vector payloads and detailed renders stay private.
+
 [v0.2.3 is published](https://github.com/pjunod/rog_audio/releases/tag/v0.2.3)
 with the [verified packaging-only +rog4 runtime](evidence/speaker-stop-packaging-only-rog4-2026-10-13.json),
 corresponding source/notices, both [kept-settings-bound model kits](evidence/speaker-stop-provisional-rog4-kit-manifest-2026-10-13.json),

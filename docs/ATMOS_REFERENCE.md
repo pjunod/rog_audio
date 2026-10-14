@@ -1,7 +1,7 @@
 # Atmos references — offline official vectors and channel observations
 
-**Status:** complete-vector development diagnostics passed; review and affected
-formal tests pending · **Written:** 2026-10-14 · **Executes:** host Atmos lane in
+**Status:** complete-vector development diagnostics retained; four review findings
+fixed and eight affected formal methods passed once · **Written:** 2026-10-14 · **Executes:** host Atmos lane in
 [audio implementation](AUDIO_IMPLEMENTATION.md).
 
 Companion to [Atmos build](AUDIO_ATMOS_BUILD.md) and the
@@ -128,12 +128,14 @@ The inherited 15-method reviewed synthetic/bed acceptance and separate focused
 CI cleanup remain in their [original receipt](../evidence/audio-atmos-acceptance-2026-10-12.json).
 They contain no official JOC payload. This batch adds a scanner 90-second
 boundary regression, object-shape report coverage and five generated WAV/selector
-analyzer methods. Final selection after independent review covers those five
+analyzer methods. The final selection after independent review covered those five
 methods plus `test_encoded_duration_bound`,
 `test_oamd_freshness_and_stable_configuration` and `test_generated_eac3_bed`.
 Unchanged QMF/parser patches, synthetic position rendering and publication-race
 methods are retained rather than repeated. Private vector diagnostics precede
-review and are labelled accordingly; affected formal acceptance is pending.
+review and are labelled accordingly; all eight affected methods passed once with zero failures, errors or skips.
+[The acceptance receipt](../evidence/audio-atmos-official-vectors-acceptance-2026-10-14.json)
+binds reviewed revision `e1e14f5c45bab1cd25601a673def1616731c7b1c`.
 
 JOC file decoding/rendering is now exercised on two official complete vectors.
 Independent renderer comparison, moving-object fidelity, delay/tail accounting,
@@ -164,6 +166,8 @@ duplicates and cross-module selections fail rather than silently running a
 partial or empty suite. Errors, failures, skips and zero-test runs fail
 acceptance. Optional reports are exclusively created with mode 0600.
 The initial vector receipt binds its pre-review source bytes; the later review
-fixes and final affected acceptance have separate source identities. No
+fixes and final affected acceptance have separate source identities. The
+complete vectors were not rendered again with the reviewed binary; their
+original successful diagnostic receipts remain distinct. No
 successful complete-vector diagnostic is repeated for these input/report/CI
 changes.

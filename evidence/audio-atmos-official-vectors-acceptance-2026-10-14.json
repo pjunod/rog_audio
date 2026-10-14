@@ -1,0 +1,114 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-14",
+  "evidence_class": "synthetic-test",
+  "repository": "https://github.com/pjunod/rog_audio",
+  "pull_request": "https://github.com/pjunod/rog_audio/pull/15",
+  "reviewed_tested_revision": "e1e14f5c45bab1cd25601a673def1616731c7b1c",
+  "source_sha256": {
+    ".github/workflows/acceptance.yml": "31e823b9a74fd76b220ec26e475369bad17d73478dc7d81b04ab2f79fe02f546",
+    "probes/atmos/Program.cs": "3c4d676288928df1f56530503fe03e2cc676445b60bb8230c3a9f0b67626e5d2",
+    "probes/atmos/ObjectFrameGuard.cs": "f9c1a73531b153593b704021294a40cb3eafccccc0ae5cb6806a959898de6f4c",
+    "probes/atmos/atmos-probe": "20311eb252ef642e91ac856746642a50cc9bd89bd934c7808b2ec9ab9378baf8",
+    "probes/atmos/source_manifest.json": "c02ee407dab7dae8d2d3830929667f364336e57467fcc355decfc85106064063",
+    "probes/atmos/regressions/Program.cs": "ab88c8f700876b2132a79b6befebe3c3364b84367b10897778c7a0b5ffc5b261",
+    "probes/atmos/test_probe.py": "2265eaec1747221a3c070f66455feda55f31dfc95337b525df67ef3d64bf3c1c",
+    "scripts/analyse_atmos_render.py": "ac4ec40309a70a1df1a45091c7246b798c9087d6bb14d29adebd646b2f06580e",
+    "scripts/validate_atmos_energy.py": "fddf9935a7b4722a01cec336e8403a0992a203161aa8d6bcad919be4b181179a",
+    "tests/test_analyse_atmos_render.py": "b2bbb455cdd943dbce95b5784df77dc455825ad41d7063164f3e3ec5005ef6b7"
+  },
+  "independent_review": {
+    "outcome": "coordinator reported exact revised source cleared after four findings",
+    "cleared_revision": "e1e14f5c45bab1cd25601a673def1616731c7b1c",
+    "resolved_findings": [
+      "Nonblocking input descriptor rejects FIFO before fdopen/read",
+      "Exclusive mode0600 energy reports preserve colliding paths",
+      "Object configuration is reported after complete inspect/render processing",
+      "Independent selective Python acceptance lane rejects unknown/duplicate/cross-module IDs, skips and empty runs"
+    ]
+  },
+  "compiler": {
+    "sdk": "8.0.414",
+    "runtime": "8.0.20",
+    "cavern_source": "7d85d1880666ca5ea323848cff47ce7f50b29f7d",
+    "unchanged_three_patch_bytes": true,
+    "upstream_cs0649_warnings": 2,
+    "errors": 0,
+    "changed_review_fix_compile_exit": 0,
+    "private_compile_log_sha256": "68e21f4cb84aec0db46ca37ff6be03ee034f3952bace2cdf9c1887d2be834f79",
+    "compiled_artifacts_sha256": {
+      "AtmosProbe.dll": "381a69258471f0cfef3e3b8604859e766a6592344432a4332637f17fdb834e2f",
+      "Cavern.dll": "dacf85b757a80fe8cedef36296fa2cb3d61428d9cc0b40678046a14b85d0838d",
+      "Cavern.Format.dll": "66ff995f0ea589499f42c330891b123ef04f6fb45ba421ff972155b06bfe92ff",
+      "regressions/BlockBufferRegression.dll": "1886658a0b8fab4e7dbd923f62e4beb0e6a62728402bd30cf5189680d55c8b44",
+      "CAVERN-LICENSE.md": "7ee7a348148612651f16fdda5ec1b193e8351c0408b4f0ea0239ff1b1147d3f1"
+    },
+    "image_config_sha256": "4f4f94629f30bd1b87a387bbb6e09e7caaa8100392e379fbee1894b2081aa3d5",
+    "environment": "Linux amd64 under macOS arm64 emulation"
+  },
+  "isolation": {
+    "cpus": 2,
+    "memory_bytes": 1073741824,
+    "pids_limit": 128,
+    "network": "none",
+    "sound_devices_mounted": false,
+    "desktop_sockets_mounted": false,
+    "host_configuration_mounted": false,
+    "hardware_playback": false,
+    "microphone_access": false,
+    "laptop_changes": false,
+    "sonos_changes": false,
+    "unit_scratch": "owned durable acceptance directory inside private container mount"
+  },
+  "fixture": {
+    "type": "generated ordinary5.1 E-AC-3 sine, not JOC",
+    "encoder": "FFmpeg9.0.2 on macOS",
+    "encoder_version_log_sha256": "78352a6983ade79cdaf6744ad453c2d9f86cbd2277086a6a1fa87036e4ba89c4",
+    "bytes": 15360,
+    "sha256": "2d0c3de5fa5dbaf1742e93ca74366263e02a7abd4cd27b8e2a3fae0628a682e5",
+    "generation": "lavfi sine997Hz48kHz duration0.16s, eac3 encoder768kbit/s6channels, file only"
+  },
+  "outcomes": {
+    "total_methods": 8,
+    "probe_methods": 3,
+    "energy_methods": 5,
+    "failures": 0,
+    "errors": 0,
+    "skips": 0,
+    "runs_per_method": 1,
+    "passing_methods_repeated": false,
+    "probe_method_ids": [
+      "test_encoded_duration_bound",
+      "test_oamd_freshness_and_stable_configuration",
+      "test_generated_eac3_bed"
+    ],
+    "energy_method_ids": [
+      "test_analyse_atmos_render.AnalyseAtmosTests.test_acceptance_selector_fails_without_running_cases",
+      "test_analyse_atmos_render.AnalyseAtmosTests.test_channel_windows_and_partial_length",
+      "test_analyse_atmos_render.AnalyseAtmosTests.test_duration_bound_and_report_collision",
+      "test_analyse_atmos_render.AnalyseAtmosTests.test_height_and_silence_have_distinct_observations",
+      "test_analyse_atmos_render.AnalyseAtmosTests.test_invalid_pcm_headers_and_window_rejected"
+    ],
+    "probe_log_sha256": "6c3ee0d398853fadc922eb5b7d736c927b9784a369a745cafb1912dc48eb9e49",
+    "energy_log_sha256": "d5a68912194dd33348806836207731fd4d9a455b2939edbd276d023436b78337",
+    "probe_result_sha256": "230b02d266c6aab0314769229415da9bb43ed5af934e2b65900d4675f5ff5093",
+    "energy_result_sha256": "5cf2bc5dc7d1bc6f9c5866fbf311e49f4d1a12d69f936d7a764247bb3f65231c",
+    "selected_acceptance_result_sha256": "050b823f69cb8d57a35e27493dd0ac4b68c7194c660b09de7e09e6b73fabb04f",
+    "runner_exit": 0
+  },
+  "retained_evidence": {
+    "original_acceptance": "evidence/audio-atmos-acceptance-2026-10-12.json",
+    "original_unaffected_methods_retained": 13,
+    "new_vector_diagnostics": "evidence/audio-atmos-official-vectors-2026-10-14.json",
+    "full_vector_diagnostic_revision": "0f913a5aaeccbc4dc6eb9f56be035fa5b68b31d2",
+    "full_vectors_rerendered_after_review": false,
+    "reason": "review fixes affect nonblocking input/privacy/CI selection and final object-report timing; the render algorithm and Cavern patches are unchanged"
+  },
+  "limitations": [
+    "The complete official vector results remain development diagnostics on their original source hashes; this receipt does not claim a fresh reviewed-binary full-vector pass.",
+    "Source review and synthetic shape coverage do not establish actual late-JOC bitstream qualification.",
+    "No independent reference PCM/metadata/motion fidelity, physical latency, acoustics, binaural, TrueHD or realtime qualification.",
+    "Hosted workflow was not dispatched; the same selected runner was exercised locally in isolated Linux.",
+    "Final repository/privacy checks and merge belong to coordinator."
+  ]
+}
