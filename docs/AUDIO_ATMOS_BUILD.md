@@ -1,7 +1,7 @@
 # Host Atmos build — prove decoding and rendering before live integration
 
-**Status:** Linux libraries/CLI built; synthetic renderer exercised; JOC and
-physical qualification pending ·
+**Status:** Linux libraries/CLI built; synthetic renderer exercised; complete official JOC vectors exercised in
+development diagnostics; independent fidelity and physical qualification pending ·
 **Written:** 2026-10-12 · **Executes:** host Atmos lane in
 [implementation](AUDIO_IMPLEMENTATION.md).
 
@@ -39,6 +39,17 @@ belong to the parent integration; they have not been claimed here. Retry
 selected test IDs after that run. Import only the lane files, not this clone's
 inherited display history. The remaining numbered sections retain the build
 contract and later qualification requirements.
+
+## Official-vector development diagnostics (2026-10-14)
+
+[Atmos references](ATMOS_REFERENCE.md) records two complete official testing
+vectors, lossless elementary-stream extraction and actual JOC file rendering.
+The original 60-second input bound excluded their full duration; the 90-second
+bound retains the format/resource contracts. A 64-descriptor serialization
+abort was reproduced, and the 128 allowance supported a sampled native count
+of 66. Source/patch pins are unchanged. Observed height energy and repeated
+channel order are not independently verified metadata or PCM fidelity.
+The new scanner/report/energy-analysis formal acceptance remains pending review.
 
 ## 1. Establish the exact candidate and compiler loop
 

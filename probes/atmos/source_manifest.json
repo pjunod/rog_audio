@@ -54,6 +54,6 @@
   },
   "ci_only_fixture_encoder": {
     "ffmpeg_debian_version": "7:5.1.9-0+deb12u1",
-    "qualification": "not yet executed; final integration test after adversarial review"
+    "qualification": "accepted once on reviewed revision42642b287868069239f17dbc8cc57e69af455927; retained audio-atmos-acceptance-2026-10-12.json identifies FFmpeg5.1.9 Debian package; later CI ownership cleanup received focused validation"
   }
 }

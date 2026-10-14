@@ -1,8 +1,9 @@
 # Atmos probe — offline Cavern inspection and rendering
 
 **Status:** patched libraries/CLI compiled and all fifteen reviewed-source
-regressions passed on Linux x86_64 on 2026-10-12; JOC/reference qualification
-remains pending.
+regressions passed on Linux x86_64 on 2026-10-12. Complete official JOC
+channel vectors were decoded/rendered in development diagnostics on 2026-10-14;
+independent reference fidelity and new affected formal acceptance remain pending.
 
 This probe processes explicit files and writes new JSON/WAV outputs. It never
 opens a sound device, discovers personal media, registers with a desktop or
@@ -96,7 +97,7 @@ private-atmos/build/atmos-probe render \
 ```
 
 Only raw E-AC-3 is accepted: one independent substream 0, 48 kHz, constant
-frame block count/channel mode, complete syncframes, at most 60 seconds and
+frame block count/channel mode, complete syncframes, at most 90 seconds and
 64 MiB. MP4/MKV demux, dependent substreams, ordinary AC-3 and TrueHD are
 explicitly unsupported. The scanner counts actual frames; it does not trust
 Cavern's bitrate-derived duration or file extensions for the codec. A `.json`
@@ -138,12 +139,12 @@ invalid input, decoder failures and resource/process failures. Upstream
 exception text and private paths are suppressed.
 
 The Linux Python launcher applies a 90-second wall timeout, 60-second CPU
-limit, 64-descriptor limit, disabled core dumps/diagnostics and a 512 MiB
+limit, 128-descriptor limit, disabled core dumps/diagnostics and a 512 MiB
 managed heap limit. The Docker memory/process limits additionally constrain
 native allocations. The launcher alone is not a filesystem/network sandbox;
 keep untrusted input in the documented disposable container. A file-size
 rlimit prevented .NET startup through its runtime-backed files; output size
-is instead bounded by the validated sample/channel counts (under 139 MiB).
+is instead bounded by the validated sample/channel counts (under 198 MiB).
 
 JSON and WAV are privately prepared and published with exclusive hard links.
 Existing files/directories and broken symlinks collide. A raced destination
@@ -188,7 +189,7 @@ pre-review receipts are historical, separate from this final qualification.
 | Conventional 5.1 E-AC-3 | Generated signal decoded/rendered; explicit bed fallback |
 | Stereo E-AC-3 | Upstream explicitly rejects this mode |
 | Generated mono E-AC-3 | Upstream decoder error 1; broader mono support unqualified |
-| E-AC-3 JOC | API compiled; lawful sample/metadata/reference comparison pending |
+| E-AC-3 JOC | Complete official 5.1.4/7.1.4 vectors exercised; independent fidelity comparison pending |
 | TrueHD Atmos | Unsupported here; Cavernize's inspected adapter invokes external `truehdd.exe` and downloads floating releases; no pinned Linux decoder supplied |
 | Binaural/headphones | Unsupported; no HRTF source/licence or fidelity qualification |
 | Dolby gst-home-audio | Alternate public contract; proprietary native libraries not supplied |
@@ -201,6 +202,20 @@ once. The offline result has no timestamp, seek/flush, gap or live EOS API;
 create a new decoder/renderer per input. Establish decoder/JOC and QMF delay,
 tail handling, seek state, allocation and block cost before a playback API.
 There is no always-running service or physical-device output in this batch.
+
+## Official vectors and observed channel energy
+
+[Atmos references](../../docs/ATMOS_REFERENCE.md) records publisher testing terms,
+exact private-input hashes, lossless frame-zero extraction and complete-vector
+development diagnostics. The 90-second bound admits both official channel-ID
+files. The 128-descriptor allowance accommodates a sampled native count of 66;
+the prior 64 limit could abort report serialization after rendering a WAV.
+Reports now expose the validated initial object configuration.
+
+The [energy analyzer](../../scripts/analyse_atmos_render.py) streams the probe
+float WAV into per-channel RMS/peak windows without playback. Observed height
+energy and dominant-channel order do not establish independent reference
+fidelity, physical delay, perceptual localization or realtime support.
 
 ## Hosted CI and focused retries
 
@@ -238,5 +253,7 @@ A publication regression simulates a competing writer replacing the linked
 WAV before report collision and checks that its inode/data remains. These
 regressions use generated arrays and reflection, with no Dolby payload.
 
-The complete suite has fifteen methods; without
+The current suite has sixteen methods, adding an encoded-duration scanner
+boundary case. The inherited fifteen-method receipt remains unchanged; the
+new affected formal selection is pending independent review. Without
 explicit generated codec fixtures, those two methods are recorded as skips.

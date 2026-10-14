@@ -1,0 +1,568 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-14",
+  "evidence_class": "private-offline",
+  "stage": "development diagnostics before independent review and affected formal acceptance",
+  "repository": "https://github.com/pjunod/rog_audio",
+  "base_revision": "84bf6bf4624eb5dcffe485f159e10fc5e9930b61",
+  "source_sha256": {
+    "probes/atmos/Program.cs": "3dd6437ea360d4f986024109f571c9cedd8ec498ec82ca70454868b6b9453e77",
+    "probes/atmos/ObjectFrameGuard.cs": "f9c1a73531b153593b704021294a40cb3eafccccc0ae5cb6806a959898de6f4c",
+    "probes/atmos/atmos-probe": "20311eb252ef642e91ac856746642a50cc9bd89bd934c7808b2ec9ab9378baf8",
+    "probes/atmos/source_manifest.json": "c02ee407dab7dae8d2d3830929667f364336e57467fcc355decfc85106064063",
+    "probes/atmos/regressions/Program.cs": "cc21cd747a3dfc30a3fe7e8cf6e770442622c9d3589863387e16af74e6e01db4",
+    "probes/atmos/test_probe.py": "2265eaec1747221a3c070f66455feda55f31dfc95337b525df67ef3d64bf3c1c",
+    "scripts/analyse_atmos_render.py": "36cea6941b3bed6ec143e21468c68b8d38bab30285cbb9b74f6ec2e764e0e617",
+    "tests/test_analyse_atmos_render.py": "da4bc4ae00220dde4cb019d62b6921aeaa8a941b6c20cbb415e9eff2629d9402"
+  },
+  "terms": {
+    "official_article": "https://dolby.my.site.com/professionalsupport/s/article/App-Development-for-Automotive-Test-Content",
+    "permitted_use": "solely for testing",
+    "payload_redistributed": false
+  },
+  "compiler": {
+    "sdk": "8.0.414",
+    "runtime": "8.0.20",
+    "cavern": "7d85d1880666ca5ea323848cff47ce7f50b29f7d",
+    "original_three_attributed_patches_unchanged": true,
+    "image_base": "mcr.microsoft.com/dotnet/sdk:8.0.414-bookworm-slim@sha256:ff8311847c54c04d1a14c488362807997d59b61372da5095a95f89cbcda7f9b7",
+    "local_image_config_sha256": "4f4f94629f30bd1b87a387bbb6e09e7caaa8100392e379fbee1894b2081aa3d5",
+    "runtime_environment": "Linux amd64 container under macOS arm64 emulation",
+    "inherited_compile_exit": 0,
+    "changed_compile_exit": 0,
+    "unchanged_upstream_cs0649_warnings": 2,
+    "errors": 0,
+    "changed_compile_log_sha256": "865006467ba9a12dadc2540f9749c4950cb3db0a404c2cdfe9384188a9546e2d"
+  },
+  "isolation": {
+    "network_during_compilation_processing": "none",
+    "cpus": 2,
+    "memory_bytes": 1073741824,
+    "pids_limit": 128,
+    "managed_heap_bytes": 536870912,
+    "cpu_limit_seconds": 60,
+    "wall_limit_seconds": 90,
+    "open_descriptor_limit": 128,
+    "sound_devices_mounted": false,
+    "desktop_sockets_mounted": false,
+    "host_configuration_mounted": false,
+    "hardware_playback": false,
+    "microphone_access": false,
+    "laptop_changes": false,
+    "sonos_changes": false
+  },
+  "extraction": {
+    "tool": "FFmpeg9.0.2 on macOS",
+    "method": "stream-copy selected sole audio track into elementary E-AC-3; original full files retained; no decode/re-encode/seek/crop in complete-vector diagnostics"
+  },
+  "original_failure": {
+    "input": "first complete syncframes through60s beginning at frame0 of official5.1.4 vector",
+    "launcher_limit": 64,
+    "launcher_status": "resource-limit-or-process-failure",
+    "native_exit": -6,
+    "bounded_direct_reproduction": "Completed private WAV then runtime assembly load failed while serializing JSON; no qualified render report",
+    "private_stderr_sha256": "0f761bbcb2590af305f8e077ce9da9f9e63c7cdd71de0f66e00b49313a8341b0",
+    "direct_without_descriptor_limit_status": "joc-rendered-unqualified",
+    "no_failed_output_published_by_launcher": true
+  },
+  "vectors": [
+    {
+      "name": "Dolby Channel ID 5.1.4 768 kbit/s",
+      "official_url": "https://ott.dolby.com/DISC/assets/54bfa462-f806-4b77-a303-5f8255be9847/channel_ID_voices_514_768.mp4",
+      "original_mp4_bytes": 5907021,
+      "original_mp4_sha256": "e2ea5a2f33e5e3d0a06abf76e4216f00a3b92bff1cddcb8fc9a423ac0da10fee",
+      "elementary_bytes": 5904384,
+      "elementary_sha256": "6ee95693613da2b6daa1a21deb9fd730271f428d2bfd2f4cfd589363365f0240",
+      "entire_input_used": true,
+      "duration_seconds": 61.504,
+      "samples_per_channel": 2952192,
+      "decoder": "Cavern.Format.EnhancedAC3Decoder",
+      "renderer": "Cavern.Listener/BalanceBasedRenderer",
+      "status": "joc-rendered-unqualified",
+      "decoded_frames": 1922,
+      "joc_frames": 1922,
+      "fresh_oamd_frames": 1922,
+      "reused_oamd_frames": 0,
+      "object_configuration": {
+        "object_count": 16,
+        "joc_object_count": 15,
+        "joc_input_channels": 5,
+        "bed_count": 1,
+        "lfe_object_index": 0
+      },
+      "object_metadata_consumed": true,
+      "output_channels": [
+        "FL",
+        "FR",
+        "FC",
+        "LFE",
+        "BL",
+        "BR",
+        "SL",
+        "SR",
+        "TFL",
+        "TFR",
+        "TBL",
+        "TBR"
+      ],
+      "output_wav_sha256": "ab4d5f63feeae1bc9e70a41bfebe444ba7e63e39fc3127b072587a341a98904e",
+      "output_bytes": 141705284,
+      "peak": 0.77051425,
+      "per_channel_rms": [
+        0.022032454164147966,
+        0.02060700767275001,
+        0.015419690406627872,
+        0.019181544867012776,
+        0.0,
+        0.0,
+        0.022250388000516645,
+        0.022597061212304183,
+        0.02168727785914233,
+        0.020898191135934427,
+        0.023097423107246665,
+        0.021087080584137337
+      ],
+      "all_four_height_channels_nonzero": true,
+      "analysis_window_ms": 250,
+      "observed_run_threshold_max_rms": 0.001,
+      "observed_dominant_channel_runs": [
+        {
+          "channel": "FL",
+          "start_seconds": 0.5,
+          "end_seconds": 1.25
+        },
+        {
+          "channel": "FR",
+          "start_seconds": 2.5,
+          "end_seconds": 3.25
+        },
+        {
+          "channel": "FC",
+          "start_seconds": 4.5,
+          "end_seconds": 5.25
+        },
+        {
+          "channel": "SL",
+          "start_seconds": 6.5,
+          "end_seconds": 7.75
+        },
+        {
+          "channel": "SR",
+          "start_seconds": 8.5,
+          "end_seconds": 9.75
+        },
+        {
+          "channel": "TFL",
+          "start_seconds": 10.5,
+          "end_seconds": 12.0
+        },
+        {
+          "channel": "TFR",
+          "start_seconds": 12.5,
+          "end_seconds": 14.0
+        },
+        {
+          "channel": "TBL",
+          "start_seconds": 14.5,
+          "end_seconds": 16.0
+        },
+        {
+          "channel": "TBR",
+          "start_seconds": 16.5,
+          "end_seconds": 18.0
+        },
+        {
+          "channel": "LFE",
+          "start_seconds": 18.5,
+          "end_seconds": 19.75
+        },
+        {
+          "channel": "FL",
+          "start_seconds": 21.0,
+          "end_seconds": 21.75
+        },
+        {
+          "channel": "FR",
+          "start_seconds": 23.0,
+          "end_seconds": 23.75
+        },
+        {
+          "channel": "FC",
+          "start_seconds": 25.0,
+          "end_seconds": 25.75
+        },
+        {
+          "channel": "SL",
+          "start_seconds": 27.0,
+          "end_seconds": 28.25
+        },
+        {
+          "channel": "SR",
+          "start_seconds": 29.0,
+          "end_seconds": 30.25
+        },
+        {
+          "channel": "TFL",
+          "start_seconds": 31.0,
+          "end_seconds": 32.5
+        },
+        {
+          "channel": "TFR",
+          "start_seconds": 33.0,
+          "end_seconds": 34.5
+        },
+        {
+          "channel": "TBL",
+          "start_seconds": 35.0,
+          "end_seconds": 36.5
+        },
+        {
+          "channel": "TBR",
+          "start_seconds": 37.0,
+          "end_seconds": 38.5
+        },
+        {
+          "channel": "LFE",
+          "start_seconds": 39.0,
+          "end_seconds": 40.25
+        },
+        {
+          "channel": "FL",
+          "start_seconds": 41.5,
+          "end_seconds": 42.25
+        },
+        {
+          "channel": "FR",
+          "start_seconds": 43.5,
+          "end_seconds": 44.25
+        },
+        {
+          "channel": "FC",
+          "start_seconds": 45.5,
+          "end_seconds": 46.25
+        },
+        {
+          "channel": "SL",
+          "start_seconds": 47.5,
+          "end_seconds": 48.75
+        },
+        {
+          "channel": "SR",
+          "start_seconds": 49.5,
+          "end_seconds": 50.75
+        },
+        {
+          "channel": "TFL",
+          "start_seconds": 51.5,
+          "end_seconds": 53.0
+        },
+        {
+          "channel": "TFR",
+          "start_seconds": 53.5,
+          "end_seconds": 55.0
+        },
+        {
+          "channel": "TBL",
+          "start_seconds": 55.5,
+          "end_seconds": 57.0
+        },
+        {
+          "channel": "TBR",
+          "start_seconds": 57.5,
+          "end_seconds": 59.0
+        },
+        {
+          "channel": "LFE",
+          "start_seconds": 59.5,
+          "end_seconds": 60.75
+        }
+      ],
+      "expected_spoken_labels_independently_verified": false,
+      "reference_pcm_compared": false,
+      "sampled_max_native_open_descriptors": 66,
+      "descriptor_sample_period_seconds": 0.01,
+      "descriptor_peak_is_lower_bound": true,
+      "launcher_exit": 0,
+      "private_decoder_report_sha256": "84bf543a84766e166607facf3ac33bdc3e7ad88bce282be8cde2c8dea99a057b",
+      "private_energy_report_sha256": "c2d0e67c830e722aaf27c3d1572b4a1d485aee2d7e9424c9f16583813407f58c"
+    },
+    {
+      "name": "Dolby Channel ID 7.1.4 768 kbit/s",
+      "official_url": "https://ott.dolby.com/DISC/assets/ef7d6eeb-1968-4010-82e8-808399604553/channel_ID_voices_714_768.mp4",
+      "original_mp4_bytes": 7059393,
+      "original_mp4_sha256": "3c7db38e5fe29124c10c660177b6bc377703f2af846a67bf7f452431d3e9bb08",
+      "elementary_bytes": 7056384,
+      "elementary_sha256": "c190089bbb0600b8bcba27dbe07c370252c3c2605fd285b4f596b9c2a9d59432",
+      "entire_input_used": true,
+      "duration_seconds": 73.504,
+      "samples_per_channel": 3528192,
+      "decoder": "Cavern.Format.EnhancedAC3Decoder",
+      "renderer": "Cavern.Listener/BalanceBasedRenderer",
+      "status": "joc-rendered-unqualified",
+      "decoded_frames": 2297,
+      "joc_frames": 2297,
+      "fresh_oamd_frames": 2297,
+      "reused_oamd_frames": 0,
+      "object_configuration": {
+        "object_count": 16,
+        "joc_object_count": 15,
+        "joc_input_channels": 5,
+        "bed_count": 1,
+        "lfe_object_index": 0
+      },
+      "object_metadata_consumed": true,
+      "output_channels": [
+        "FL",
+        "FR",
+        "FC",
+        "LFE",
+        "BL",
+        "BR",
+        "SL",
+        "SR",
+        "TFL",
+        "TFR",
+        "TBL",
+        "TBR"
+      ],
+      "output_wav_sha256": "8071c62cf9c1bf2883cf5947f75ac1965eda8742dc102f4b731128e1db0bc377",
+      "output_bytes": 169353284,
+      "peak": 0.817282,
+      "per_channel_rms": [
+        0.020153898622409898,
+        0.018849990118142923,
+        0.014104959652837062,
+        0.017546066703902546,
+        0.027951324404687825,
+        0.026406960507745214,
+        0.020353250731264528,
+        0.020670365504571228,
+        0.019838153109475086,
+        0.019116346486128373,
+        0.021128064959177077,
+        0.019289130905010696
+      ],
+      "all_four_height_channels_nonzero": true,
+      "analysis_window_ms": 250,
+      "observed_run_threshold_max_rms": 0.001,
+      "observed_dominant_channel_runs": [
+        {
+          "channel": "FL",
+          "start_seconds": 0.5,
+          "end_seconds": 1.25
+        },
+        {
+          "channel": "FR",
+          "start_seconds": 2.5,
+          "end_seconds": 3.25
+        },
+        {
+          "channel": "FC",
+          "start_seconds": 4.5,
+          "end_seconds": 5.25
+        },
+        {
+          "channel": "SL",
+          "start_seconds": 6.5,
+          "end_seconds": 7.75
+        },
+        {
+          "channel": "SR",
+          "start_seconds": 8.5,
+          "end_seconds": 9.75
+        },
+        {
+          "channel": "BL",
+          "start_seconds": 10.5,
+          "end_seconds": 12.25
+        },
+        {
+          "channel": "BR",
+          "start_seconds": 12.5,
+          "end_seconds": 14.25
+        },
+        {
+          "channel": "TFL",
+          "start_seconds": 14.5,
+          "end_seconds": 16.0
+        },
+        {
+          "channel": "TFR",
+          "start_seconds": 16.5,
+          "end_seconds": 18.0
+        },
+        {
+          "channel": "TBL",
+          "start_seconds": 18.5,
+          "end_seconds": 20.0
+        },
+        {
+          "channel": "TBR",
+          "start_seconds": 20.5,
+          "end_seconds": 22.0
+        },
+        {
+          "channel": "LFE",
+          "start_seconds": 22.5,
+          "end_seconds": 23.75
+        },
+        {
+          "channel": "FL",
+          "start_seconds": 25.0,
+          "end_seconds": 25.75
+        },
+        {
+          "channel": "FR",
+          "start_seconds": 27.0,
+          "end_seconds": 27.75
+        },
+        {
+          "channel": "FC",
+          "start_seconds": 29.0,
+          "end_seconds": 29.75
+        },
+        {
+          "channel": "SL",
+          "start_seconds": 31.0,
+          "end_seconds": 32.25
+        },
+        {
+          "channel": "SR",
+          "start_seconds": 33.0,
+          "end_seconds": 34.25
+        },
+        {
+          "channel": "BL",
+          "start_seconds": 35.0,
+          "end_seconds": 36.75
+        },
+        {
+          "channel": "BR",
+          "start_seconds": 37.0,
+          "end_seconds": 38.75
+        },
+        {
+          "channel": "TFL",
+          "start_seconds": 39.0,
+          "end_seconds": 40.5
+        },
+        {
+          "channel": "TFR",
+          "start_seconds": 41.0,
+          "end_seconds": 42.5
+        },
+        {
+          "channel": "TBL",
+          "start_seconds": 43.0,
+          "end_seconds": 44.5
+        },
+        {
+          "channel": "TBR",
+          "start_seconds": 45.0,
+          "end_seconds": 46.5
+        },
+        {
+          "channel": "LFE",
+          "start_seconds": 47.0,
+          "end_seconds": 48.25
+        },
+        {
+          "channel": "FL",
+          "start_seconds": 49.5,
+          "end_seconds": 50.25
+        },
+        {
+          "channel": "FR",
+          "start_seconds": 51.5,
+          "end_seconds": 52.25
+        },
+        {
+          "channel": "FC",
+          "start_seconds": 53.5,
+          "end_seconds": 54.25
+        },
+        {
+          "channel": "SL",
+          "start_seconds": 55.5,
+          "end_seconds": 56.75
+        },
+        {
+          "channel": "SR",
+          "start_seconds": 57.5,
+          "end_seconds": 58.75
+        },
+        {
+          "channel": "BL",
+          "start_seconds": 59.5,
+          "end_seconds": 61.25
+        },
+        {
+          "channel": "BR",
+          "start_seconds": 61.5,
+          "end_seconds": 63.25
+        },
+        {
+          "channel": "TFL",
+          "start_seconds": 63.5,
+          "end_seconds": 65.0
+        },
+        {
+          "channel": "TFR",
+          "start_seconds": 65.5,
+          "end_seconds": 67.0
+        },
+        {
+          "channel": "TBL",
+          "start_seconds": 67.5,
+          "end_seconds": 69.0
+        },
+        {
+          "channel": "TBR",
+          "start_seconds": 69.5,
+          "end_seconds": 71.0
+        },
+        {
+          "channel": "LFE",
+          "start_seconds": 71.5,
+          "end_seconds": 72.75
+        }
+      ],
+      "expected_spoken_labels_independently_verified": false,
+      "reference_pcm_compared": false,
+      "sampled_max_native_open_descriptors": 66,
+      "descriptor_sample_period_seconds": 0.01,
+      "descriptor_peak_is_lower_bound": true,
+      "launcher_exit": 0,
+      "private_decoder_report_sha256": "8067a99a1aec82ea896bddd62564559a755e2c54453ad7dc41401b1633ba0b48",
+      "private_energy_report_sha256": "fe543ec284e5ba50215493842b9b2ad68f3883c7fc7ab94d3a268590feb6127a"
+    }
+  ],
+  "formal_acceptance": {
+    "new_unit_tests_run": 0,
+    "status": "pending independent review before affected units",
+    "inherited": "original15 synthetic/bed methods and separate focused CI cleanup retained at evidence/audio-atmos-acceptance-2026-10-12.json",
+    "planned_probe_methods": [
+      "test_encoded_duration_bound",
+      "test_oamd_freshness_and_stable_configuration",
+      "test_generated_eac3_bed"
+    ],
+    "planned_analysis_methods": 4,
+    "planned_analysis_test_ids": [
+      "AnalyseAtmosTests.test_channel_windows_and_partial_length",
+      "AnalyseAtmosTests.test_height_and_silence_have_distinct_observations",
+      "AnalyseAtmosTests.test_invalid_pcm_headers_and_window_rejected",
+      "AnalyseAtmosTests.test_duration_bound_and_report_collision"
+    ]
+  },
+  "limits": {
+    "encoded_duration_seconds": 90,
+    "maximum_output_bytes": 207360068,
+    "synthetic_scene_duration_seconds": 10,
+    "reference_fidelity_compared": false,
+    "moving_object_fidelity": false,
+    "physical_delay_measured": false,
+    "realtime_qualified": false,
+    "binaural_supported": false,
+    "truehd_supported": false
+  }
+}

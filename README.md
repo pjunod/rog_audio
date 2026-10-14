@@ -68,6 +68,7 @@ Display work remains in [rog_hdr_dv](https://github.com/pjunod/rog_hdr_dv).
 - [Latency comparison](docs/LATENCY_COMPARISON.md) — tuned laptop baselines, M4 Air reference and reversible experiments.
 - [Physical latency method](docs/PHYSICAL_LATENCY_METHOD.md) — local key-to-chirp emitter and proposed phone-recorded comparison, with repeat counts and measurement limits.
 - [Atmos build](docs/AUDIO_ATMOS_BUILD.md) — offline object rendering and format limits.
+- [Atmos references](docs/ATMOS_REFERENCE.md) — official JOC test inputs, bounded file rendering and observed channel energy.
 - [Development](docs/DEVELOPMENT.md) — review, CI and selective test policy.
 - [Operations](docs/OPERATIONS.md) — baseline, result interpretation and physical tests.
 - [Provenance](docs/PROVENANCE.md) — migration, source ownership and evidence classes.

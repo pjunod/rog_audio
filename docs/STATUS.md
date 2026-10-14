@@ -34,7 +34,7 @@ procedure error, not an audio failure; only that observation was restarted.
 | Laptop installation runtime | Both +rog3 with exact merged helper/unit backport; saved-state, automatic starts and final hours passed | Reboot/resume/hotplug separately |
 | Diagnostics and latency | Final ROG 1024/ThinkPad 256 hours passed without added errors; earlier failures/partial/old-runtime runs retained | Physical measurements |
 | Programme loudness | Reviewed corrected `+rog3` build accepted: 28 units passed once; both model graphs passed after failed-selector-only retry | Both deployments, final hours and current demos accepted; physical checks remain |
-| Host Atmos | 15 tests and focused CI cleanup acceptance passed in PR 1 | Actual JOC reference media and physical qualification |
+| Host Atmos | Original 15 tests/CI cleanup retained; complete official 5.1.4/7.1.4 JOC vectors rendered in offline development diagnostics; descriptor/duration fixes and energy analysis awaiting review | Affected formal acceptance, independent fidelity and physical qualification |
 | macOS comparison | M4 Air getter/silent-running snapshots and Linux software observations retained; 16 summary tests passed in PR 5 | Physical comparison in a later coordinated window |
 | Physical interaction timing | Ten methods/local M3 unarmed smoke retained; matched files/browser prepared; ROG page unarmed; no physical samples | Deferred coordinated pilot and repeated same-track capture |
 | Sonos Arc/eARC | Deferred until internal audio work | TV route and actual received formats |
@@ -42,6 +42,19 @@ procedure error, not an audio failure; only that observation was restarted.
 Companion to [installation](SPEAKER_INSTALL.md), [review](REVIEW.md) and
 [implementation](AUDIO_IMPLEMENTATION.md). Source capability, synthetic results,
 installation and measured performance remain separate claims.
+
+## Official Atmos vectors — development evidence, review pending
+
+[The reference procedure](ATMOS_REFERENCE.md) and
+[allowlisted receipt](../evidence/audio-atmos-official-vectors-2026-10-14.json)
+record entire 61.504-second/1922-frame and 73.504-second/2297-frame JOC
+inputs from Dolby, all frames with fresh OAMD. The original launcher
+64-descriptor failure was reproduced; the revised bounded allowance supported
+a sampled 66 native descriptors. Both full files rendered privately with
+finite peaks and height activity. Initial object configuration and observed
+energy-window order are reported without claiming reference fidelity.
+No laptop, playback, microphone or Sonos changes occurred. Independent review
+and affected formal tests are pending; original synthetic passes are retained.
 
 ## Historical receipts and implementation history
 
