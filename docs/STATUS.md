@@ -1,16 +1,16 @@
 # Status — implementation and physical acceptance
 
-**Updated:** 2026-10-15 · **State:** thirty-eight distinct live unit methods and
+**Updated:** 2026-10-15 · **State:** forty distinct live unit methods and
 three existing dispatch smoke methods have passing source-bound receipts.
-All seven ordinary integration cases are green through retained unaffected
-passes and reviewed corrections. The first full 73.504-second official JOC
-stream submitted and drained all 3,528,192 frames with the expected source PCM
-hash, but failed exact captured-output matching. Retained comparison evidence
-shows actual delivery gaps, including an early missing 256-frame block; the
-final audio remains present later. A bounded prefix comparison reproduced both
-small-pipe feeding gaps and decode-batch starvation. A smaller live caller batch
-and bounded player reserve are being implemented; their acceptance is pending.
-The live preview is not ready for publication or laptop playback yet.
+The reviewed smaller live batches and bounded player reserve passed twelve
+selected methods and all six affected ordinary cases; the unchanged mismatch
+case is retained. The second full 73.504-second official JOC retry still failed
+captured-output identity despite exact produced/submitted PCM and counts.
+It skips 256 frames near 0.733 seconds; the exact final tail is present 6,144
+frames later. The first failed run and all diagnostics remain retained.
+A private runtime-concurrency diagnostic is testing a source-supported
+alternative before adding more queued-audio capacity. The live preview is
+not ready for publication or laptop playback yet.
 Signed manual annotations and the bounded
 file-only Atmos API passed independent review and all 27 selected unit methods
 once. Fresh JOC rendering and four split continuity groups passed; the original
@@ -43,7 +43,7 @@ remain different software quantities, not physical latency or Mac parity.
 | Startup/stop | Reviewed helper, prior save/automatic-start checks and ROG service autostart evidence retained | End-to-end post-login routing; repeated boot/resume/hotplug separately |
 | Signed annotation analysis | Eleven reviewed methods passed once; signed bounds and provenance retained | Actual private annotations from the later recording session |
 | Source-level chain latency | Accepted minimum-phase IR/preset audit found no justified removable fixed delay; no tuning change | Actual same-path physical recording |
-| Live Atmos prototype | 38 distinct units + 3 dispatch smokes passed; all seven ordinary cases green; full JOC submitted hash/count/drain correct but capture failed | Review the smaller live caller batch and bounded player reserve, then validate affected checks and full JOC; no laptop or Sonos playback |
+| Live Atmos prototype | 40 distinct units + 3 dispatch smokes passed; all seven ordinary cases green; second full JOC capture still failed | Investigate remaining full-stream gaps with a private runtime-concurrency diagnostic; preserve passing checks; no laptop or Sonos playback |
 | Host Atmos | Sixteen affected methods passed once; fresh full JOC render and four isolated timeline groups passed | Original long sequence resource failure retained; independent fidelity and later live integration |
 | Physical interaction timing | Emitter source/ten-method acceptance and earlier staging retained; no pilot/physical samples | Owner-ready coordinated same-keyboard/phone capture, still deferred |
 | Sonos Arc/eARC | Untouched and last | TV route and received-format qualification after internal audio |
@@ -52,6 +52,32 @@ Companion to [installation](SPEAKER_INSTALL.md), [review](REVIEW.md),
 [manual annotations](MANUAL_LATENCY_ANNOTATIONS.md) and
 [implementation](AUDIO_IMPLEMENTATION.md). Source, synthetic, read-only and
 physical evidence remain separate.
+
+## October 15 reviewed batching/reserve correction — full JOC still fails
+
+Independent review cleared `528152b` with no findings. Release compilation,
+twelve selected methods and all six affected ordinary integration cases
+passed; the unchanged mismatch case remains accepted. The source and built
+runtime copies were unchanged through validation. The corrected live producer
+uses 1,536-frame reads; the player requests 1,024 frames of pipe capacity.
+The original dependency DLLs, offline API and laptop settings are unchanged.
+
+The full JOC retry produced, submitted and drained all 3,528,192 expected
+frames with the retained reference hash, but captured payload hash `a9316394`
+differs. Read-only unique-anchor analysis found the first 256-frame skip at
+source frame 35,189 (0.7331 seconds), fifteen alignment changes, and the exact
+last 8,192 frames displaced by +6,144 frames (128 ms). The run took 75.266
+seconds including playback setup/drain; these are software observations, not
+physical delay measurements. No profiler/feeder timing trace was inserted,
+so this capture alone cannot attribute the remaining skips to queue starvation
+or scheduling. The first full failure remains separate and unchanged.
+
+Source inspection found per-channel and per-object ThreadPool jobs and waits
+inside the pinned JOC path. One private full-stream diagnostic will set only
+`DOTNET_PROCESSOR_COUNT=1` for the producer, keeping the accepted DLL, batches,
+pipe, graph and resource bounds. This is a runtime concurrency hint, not a
+hard one-CPU/one-worker limit. Its result is pending. No further unit methods,
+passing ordinary cases, full reference render or laptop playback repeat.
 
 ## October 15 prefix diagnosis — feeding gaps and decode starvation
 
