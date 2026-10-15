@@ -310,6 +310,30 @@ The [separate virtual-sink lane](../probes/atmos/live-ci.sh) uses the
 [bounded native capture observer](LIVE_ATMOS_CAPTURE.md) and a pinned PipeWire daemon with no
 `/dev/snd` or desktop session socket. It checks streamed capture/hash/count,
 initial seek/attenuation, target mismatch/loss, cancellation and node cleanup.
+
+The isolated harness and local wrapper accept `--graph-quantum 256|512|1024`;
+the default stays 256. This selects only the private test daemon's three
+`default.clock.quantum`, `min-quantum` and `max-quantum` values. Every other
+configuration byte is preserved, with base/effective config SHA-256 in the
+case receipt. Startup waits boundedly for published clock settings; observed
+rate/quantum/bounds and force overrides are checked at startup and every
+existing registry pump. Contradictory or later missing settings fail. The
+native playback receipt separately records the largest callback request;
+when media was submitted it must match the selected test quantum. Without a
+playback callback, that observation remains unavailable rather than inferred
+from configuration.
+
+At 48 kHz, 256/512/1024 frames represent 5.333/10.667/21.333 ms of graph
+period, not measured physical latency. A result at 1024 does not qualify a
+256-frame graph or ThinkPad/laptop playback. Larger-period tests retain the
+same exact media/reference PCM requirement; final transport padding remains
+separate (the full JOC vector has a 512-frame suffix within a 1024-frame final
+request). No production launcher, host graph or laptop setting is changed.
+A quantum option alone selects the integration stage; mixing it with unit
+selectors or explicit `all` is rejected before external work. An exact retry
+can use `--stage integration --case success-joc --joc-input PRIVATE_VECTOR`
+with `--graph-quantum 1024`; it does not select other cases.
+
 Public official JOC-vector streaming is separate from generated-scene/bed
 unit evidence. None of those checks qualifies laptop hardware, physical
 latency, independent Dolby fidelity, binaural rendering or Sonos reception.

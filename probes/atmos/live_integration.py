@@ -8,6 +8,7 @@ import math
 import os
 from pathlib import Path
 import resource
+import re
 import signal
 import struct
 import subprocess
@@ -52,6 +53,50 @@ def require_target_loss_result(case, action, code, report, *, target_removed=Fal
         assert report['status'] in ('target-disappeared-or-changed', 'stream-links-lost',
                                     'pipewire-player-ended-early'), 'unexpected target loss status'
 
+
+
+def isolated_graph_config(source, quantum):
+    """Change exactly the three private clock bounds, preserving all else."""
+    if type(quantum) is not int or quantum not in (256, 512, 1024) or len(source) > 65536:
+        raise ValueError('invalid isolated graph configuration')
+    text = source.decode('utf-8')
+    for name in ('quantum', 'min-quantum', 'max-quantum'):
+        pattern = r'(^[ \t]*default\.clock\.' + re.escape(name) + r'[ \t]*=[ \t]*)[0-9]+([ \t]*(?:#[^\n]*)?$)'
+        text, count = re.subn(pattern, lambda match: match[1] + str(quantum) + match[2], text, flags=re.MULTILINE)
+        if count != 1:
+            raise ValueError('isolated clock property missing or duplicated')
+    return text.encode('utf-8')
+
+
+def observed_graph_settings(data, quantum, *, require_ready=False):
+    """Wait for initial metadata; contradictory or later missing values fail."""
+    expected = {'clock.rate': 48000, 'clock.quantum': quantum, 'clock.min-quantum': quantum,
+                'clock.max-quantum': quantum, 'clock.force-rate': 0, 'clock.force-quantum': 0}
+    settings = [item for item in data if item.get('type') == 'PipeWire:Interface:Metadata' and
+                item.get('props', {}).get('metadata.name') == 'settings']
+    assert len(settings) <= 1, 'ambiguous graph settings'
+    values = {}
+    for item in settings[0].get('metadata', []) if settings else ():
+        key = item.get('key')
+        if item.get('subject') == 0 and key in expected:
+            assert key not in values, 'duplicate graph clock value'
+            value = item.get('value')
+            assert type(value) in (int, str) and str(value) == str(expected[key]), 'effective graph clock mismatch'
+            values[key] = expected[key]
+    if values.keys() != expected.keys():
+        assert not require_ready, 'effective graph settings disappeared'
+        return None
+    return values
+
+
+def observed_graph_callback(report, quantum):
+    """A native callback observation supplements the daemon's settings."""
+    native = report.get('native_playback')
+    if native is None or not report.get('submitted_complete_frames'):
+        return None
+    observed = native.get('maximum_callback_frames')
+    assert type(observed) is int and observed == quantum, 'observed callback quantum mismatch'
+    return observed
 
 def pcm_comparison(captured, channels, offset, expected=None, *, frames=None, expected_hash=None):
     """Return diagnostic evidence before the caller asserts full PCM equality."""
@@ -461,7 +506,7 @@ def scene_file(private, seconds):
     return path
 
 
-def one_case(name, probe, config, parent, joc_input=None, failure_artifacts=None):
+def one_case(name, probe, config, parent, joc_input=None, failure_artifacts=None, graph_quantum=256):
     started = time.monotonic()
     result = {'case': name, 'status': 'failed', 'physical_audio': False}
     with tempfile.TemporaryDirectory(prefix='case-', dir=parent) as directory:
@@ -480,11 +525,24 @@ def one_case(name, probe, config, parent, joc_input=None, failure_artifacts=None
         policy_version = None
         daemon_log = (private / 'daemon.log').open('xb')
         try:
-            daemon = subprocess.Popen(['pipewire', '-c', str(config)], env=env,
+            with config.open('rb') as handle:
+                config_source = handle.read(65537)
+            effective_config = isolated_graph_config(config_source, graph_quantum)
+            private_config = private / 'pipewire.conf'
+            private_config.write_bytes(effective_config)
+            private_config.chmod(0o600)
+            graph = {'requested_quantum': graph_quantum, 'rate': None, 'quantum': None, 'freewheel': False,
+                     'base_config_sha256': hashlib.sha256(config_source).hexdigest(),
+                     'effective_config_sha256': hashlib.sha256(effective_config).hexdigest(),
+                     'settings_observed': None, 'observed_callback_max_frames': None}
+            result['virtual_graph'] = graph
+            daemon = subprocess.Popen(['pipewire', '-c', str(private_config)], env=env,
                                       stdin=subprocess.DEVNULL, stdout=daemon_log, stderr=daemon_log)
             wait_for(lambda: (runtime / 'pipewire-live-atmos').is_socket())
             monitor = RegistryMonitor(env)
             monitor.start()
+            graph['settings_observed'] = wait_for(lambda: observed_graph_settings(monitor.snapshot(), graph_quantum))
+            graph.update(rate=48000, quantum=graph_quantum)
             if name == 'policy-target-loss':
                 wp = Path(env['XDG_CONFIG_HOME']) / 'wireplumber'
                 policy_version = run(['wireplumber', '--version'], env).decode().strip()
@@ -563,6 +621,7 @@ def one_case(name, probe, config, parent, joc_input=None, failure_artifacts=None
                 if capture_client is not None:
                     capture_client.poll(allow_source_end=capture_source_end_allowed(name, action))
                 data = monitor.snapshot()
+                observed_graph_settings(data, graph_quantum, require_ready=True)
                 if capture_client is not None:
                     capture_active = capture_links_active(data, sink_id, capture_node['id'], channels)
                     if not capture_source_end_allowed(name, action):
@@ -609,6 +668,8 @@ def one_case(name, probe, config, parent, joc_input=None, failure_artifacts=None
             assert report['physical_playback_observed'] is False
             wait_for(lambda: not nodes(monitor.snapshot(), 'rog-atmos-'), timeout=5)
             assert not list(private.glob('.atmos-live-*')), 'private child directory leaked'
+            observed_graph_settings(monitor.snapshot(), graph_quantum, require_ready=True)
+            graph['observed_callback_max_frames'] = observed_graph_callback(report, graph_quantum)
             result.update(exit_code=code, playback_status=report['status'],
                           playback_report=report, unexpected_links=unexpected_links,
                           stream_observed=observed_stream is not None, owned_nodes_removed=True,
@@ -618,7 +679,7 @@ def one_case(name, probe, config, parent, joc_input=None, failure_artifacts=None
                           waited_descendants_cpu_seconds=round((usage_after.ru_utime + usage_after.ru_stime) -
                               (usage_before.ru_utime + usage_before.ru_stime), 6),
                           cpu_scope='all waited harness descendants during playback, including registry clients',
-                          virtual_graph={'rate': 48000, 'quantum': 256, 'freewheel': False})
+                          virtual_graph=graph)
             if name.startswith('success'):
                 assert code == 0 and report['status'] == 'completed'
                 assert linked and report['pipewire_drain_completed'] is True
@@ -725,6 +786,8 @@ def main():
     parser.add_argument('--probe', type=Path, required=True, help='built atmos-live launcher')
     parser.add_argument('--config', type=Path, default=Path(__file__).with_name('live-pipewire.conf'))
     parser.add_argument('--case', action='append', choices=CASES)
+    parser.add_argument('--graph-quantum', type=int, choices=(256, 512, 1024), default=256,
+                        help='private test graph period; never changes production or host graphs')
     parser.add_argument('--joc-input', type=Path, help='explicit publisher vector elementary stream, never fetched here')
     parser.add_argument('--report', type=Path, required=True)
     parser.add_argument('--failure-artifacts', type=Path, help='new private directory for bounded captures from failed cases only')
@@ -746,7 +809,8 @@ def main():
     if args.joc_input:
         args.joc_input = args.joc_input.resolve(strict=True)
     report = {'schema_version': 1, 'evidence_class': 'isolated-virtual-pipewire-integration',
-              'physical_audio': False, 'selected_cases': list(selected), 'results': []}
+              'physical_audio': False, 'selected_cases': list(selected),
+              'graph_quantum_requested': args.graph_quantum, 'results': []}
     args.probe = args.probe.resolve(strict=True)
     args.config = args.config.resolve(strict=True)
     source_files = ('Program.cs', 'LiveStream.cs', 'OfflinePullRenderer.cs', 'ObjectFrameGuard.cs',
@@ -772,7 +836,7 @@ def main():
         args.failure_artifacts.mkdir(mode=0o700)
     with tempfile.TemporaryDirectory(prefix='.live-integration-', dir=args.report.parent) as parent:
         for name in selected:
-            report['results'].append(one_case(name, args.probe, args.config, Path(parent), args.joc_input, args.failure_artifacts))
+            report['results'].append(one_case(name, args.probe, args.config, Path(parent), args.joc_input, args.failure_artifacts, args.graph_quantum))
         report['source_after_sha256'] = bindings()
         report['source_unchanged'] = report['source_before_sha256'] == report['source_after_sha256']
         report['passed'] = sum(item['status'] == 'passed' for item in report['results'])

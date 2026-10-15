@@ -21,11 +21,12 @@ parser.add_argument('--stage', choices=('units', 'integration', 'all'))
 parser.add_argument('--test-id', action='append', default=[])
 parser.add_argument('--case', action='append', default=[])
 parser.add_argument('--joc-input', type=Path)
+parser.add_argument('--graph-quantum', type=int, choices=(256, 512, 1024))
 args = parser.parse_args(sys.argv[2:])
 sys.path.insert(0, str(script.parent))
 from live_ci_options import select_stage
 try:
-    stage = select_stage(args.stage, args.test_id, args.case, args.joc_input)
+    stage = select_stage(args.stage, args.test_id, args.case, args.joc_input, args.graph_quantum)
 except ValueError as exc:
     parser.error(str(exc))
 def interrupted(signum, frame):
@@ -74,7 +75,8 @@ if options['stage'] in ('units', 'all'):
     codes.append(subprocess.run(cmd).returncode)
 if options['stage'] in ('integration', 'all') and not any(codes):
     cmd = ['python3', 'probes/atmos/live_integration.py', '--probe', '/work/build/atmos-live',
-           '--config', '/work/probes/atmos/live-pipewire.conf', '--report', '/work/integration.json']
+           '--config', '/work/probes/atmos/live-pipewire.conf', '--report', '/work/integration.json',
+           '--graph-quantum', str(options['graph_quantum'])]
     for name in options['cases']:
         cmd += ['--case', name]
     if options['joc_input']:
@@ -87,7 +89,8 @@ receipt = {'schema_version': 1, 'stage': stage, 'evidence_class': 'selected-live
     'compiler_image_id': compiler_data.get('Id'), 'compile_exit_code': None,
     'network': 'none', 'cpus': 2, 'memory_bytes': 6442450944, 'pids_limit': 256,
     'capabilities': 'all dropped', 'host_devices_or_session_sockets': False,
-    'physical_audio': False, 'units': None, 'integration': None}
+    'physical_audio': False, 'units': None, 'integration': None,
+    'graph_quantum_requested': (args.graph_quantum or 256) if stage != 'units' else None}
 with tempfile.TemporaryDirectory(prefix='live-atmos-ci.', dir=work_root) as directory:
     scratch = Path(directory)
     archive = scratch/'public-source.tar'
@@ -102,7 +105,7 @@ with tempfile.TemporaryDirectory(prefix='live-atmos-ci.', dir=work_root) as dire
         shutil.copyfile(args.joc_input.resolve(strict=True), scratch/'joc.eac3')
     name = 'rog-atmos-' + scratch.name
     options = {'stage': stage, 'test_ids': args.test_id, 'cases': args.case,
-               'joc_input': args.joc_input is not None}
+               'joc_input': args.joc_input is not None, 'graph_quantum': args.graph_quantum or 256}
     argv = [engine, 'run', '--rm', '--pull', 'never', '--name', name, '--network', 'none',
         '--cpus', '2', '--memory', '6g', '--pids-limit', '256', '--cap-drop', 'all',
         '--security-opt', 'no-new-privileges', '--user', str(os.getuid())+':'+str(os.getgid()),

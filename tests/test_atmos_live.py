@@ -788,6 +788,59 @@ raise SystemExit(2 if MODE.startswith('source-') else 0)
         for status in ('target-disappeared-or-changed', 'stream-links-lost', 'pipewire-player-ended-early'):
             integration.require_target_loss_result('target-loss', True, 2, {**report, 'status': status})
 
+    def test_isolated_graph_quantum_config_preserves_every_other_byte(self):
+        base = (ROOT / 'probes/atmos/live-pipewire.conf').read_bytes()
+        self.assertEqual(integration.isolated_graph_config(base, 256), base)
+        template = (b'# private test only\ncontext.properties = {\n'
+                    b' default.clock.quantum = 256 # period\n'
+                    b' default.clock.min-quantum = 256\n'
+                    b' default.clock.max-quantum = 256\n'
+                    b' default.clock.rate = 48000\n unrelated = 256\n}\n')
+        expected = (b'# private test only\ncontext.properties = {\n'
+                    b' default.clock.quantum = 1024 # period\n'
+                    b' default.clock.min-quantum = 1024\n'
+                    b' default.clock.max-quantum = 1024\n'
+                    b' default.clock.rate = 48000\n unrelated = 256\n}\n')
+        self.assertEqual(integration.isolated_graph_config(template, 1024), expected)
+        self.assertIn(b'default.clock.quantum = 512', integration.isolated_graph_config(template, 512))
+        for quantum in (True, 0, 128, 2048):
+            with self.subTest(quantum=quantum), self.assertRaises(ValueError):
+                integration.isolated_graph_config(template, quantum)
+        for source in (template.replace(b'default.clock.quantum', b'other.quantum'),
+                       template + b'default.clock.quantum = 256\n',
+                       template.replace(b'min-quantum = 256', b'min-quantum = invalid'), b' ' * 65537):
+            with self.subTest(source=source[:80]), self.assertRaises(ValueError):
+                integration.isolated_graph_config(source, 1024)
+
+    def test_isolated_graph_quantum_requires_observed_settings_and_callback(self):
+        values = {'clock.rate': 48000, 'clock.quantum': 1024, 'clock.min-quantum': 1024,
+                  'clock.max-quantum': 1024, 'clock.force-rate': 0, 'clock.force-quantum': 0}
+        def settings(changes=None):
+            return {'type': 'PipeWire:Interface:Metadata', 'props': {'metadata.name': 'settings'},
+                    'metadata': [{'subject': 0, 'key': key, 'value': str(value)}
+                                 for key, value in {**values, **(changes or {})}.items()]}
+        self.assertIsNone(integration.observed_graph_settings([], 1024))
+        partial = settings(); partial['metadata'].pop()
+        self.assertIsNone(integration.observed_graph_settings([partial], 1024))
+        with self.assertRaisesRegex(AssertionError, 'disappeared'):
+            integration.observed_graph_settings([partial], 1024, require_ready=True)
+        self.assertEqual(integration.observed_graph_settings([settings()], 1024), values)
+        for changes in ({'clock.quantum': 256}, {'clock.min-quantum': 512}, {'clock.max-quantum': 2048},
+                        {'clock.rate': 44100}, {'clock.force-rate': 48000}, {'clock.force-quantum': 1024}):
+            with self.subTest(changes=changes), self.assertRaisesRegex(AssertionError, 'mismatch'):
+                integration.observed_graph_settings([settings(changes)], 1024)
+        with self.assertRaisesRegex(AssertionError, 'ambiguous'):
+            integration.observed_graph_settings([settings(), settings()], 1024)
+        duplicate = settings(); duplicate['metadata'].append(duplicate['metadata'][0])
+        with self.assertRaisesRegex(AssertionError, 'duplicate'):
+            integration.observed_graph_settings([duplicate], 1024)
+        self.assertIsNone(integration.observed_graph_callback({}, 1024))
+        report = {'submitted_complete_frames': 1536, 'native_playback': {'maximum_callback_frames': 1024}}
+        self.assertEqual(integration.observed_graph_callback(report, 1024), 1024)
+        report['native_playback']['maximum_callback_frames'] = 256
+        with self.assertRaisesRegex(AssertionError, 'callback quantum mismatch'):
+            integration.observed_graph_callback(report, 1024)
+
     def test_capture_comparison_preserves_mismatch_and_truncation_evidence(self):
         expected = struct.pack('<16f', *([.125] * 16))
         prefix = bytes(3 * 8)
@@ -1137,6 +1190,8 @@ raise SystemExit(2 if MODE.startswith('source-') else 0)
         self.assertEqual(ci_options.select_stage(None, [], [], None), 'all')
         self.assertEqual(ci_options.select_stage('units', ['method'], [], None), 'units')
         self.assertEqual(ci_options.select_stage('integration', [], ['case'], None), 'integration')
+        self.assertEqual(ci_options.select_stage(None, [], [], None, 1024), 'integration')
+        self.assertEqual(ci_options.select_stage('integration', [], ['case'], None, 512), 'integration')
 
     def test_ci_invalid_retry_selection_fails_before_external_commands(self):
         wrapper = ROOT / 'probes/atmos/live-ci.sh'
@@ -1153,7 +1208,11 @@ raise SystemExit(2 if MODE.startswith('source-') else 0)
             ['--stage', 'all', '--case', 'case'],
             ['--stage', 'all', '--joc-input', 'vector'],
             ['--stage', 'units', '--case', 'case'],
-            ['--stage', 'integration', '--test-id', 'method']]
+            ['--stage', 'integration', '--test-id', 'method'],
+            ['--stage', 'units', '--graph-quantum', '1024'],
+            ['--stage', 'all', '--graph-quantum', '512'],
+            ['--test-id', 'method', '--graph-quantum', '1024'],
+            ['--graph-quantum', '2048']]
         with mock.patch.object(subprocess, 'run', side_effect=AssertionError('unexpected process execution')), \
                 mock.patch.object(subprocess, 'check_output', side_effect=AssertionError('unexpected process execution')), \
                 contextlib.redirect_stderr(open(os.devnull, 'w')):
