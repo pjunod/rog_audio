@@ -8,8 +8,9 @@ case is retained. The second full 73.504-second official JOC retry still failed
 captured-output identity despite exact produced/submitted PCM and counts.
 It skips 256 frames near 0.733 seconds; the exact final tail is present 6,144
 frames later. The first failed run and all diagnostics remain retained.
-A private runtime-concurrency diagnostic is testing a source-supported
-alternative before adding more queued-audio capacity. The live preview is
+Private runtime-concurrency and larger-player-pipe diagnostics also failed.
+A bounded native-profiler run now reproduces the mismatch with the canonical
+parameters; playback-versus-capture attribution is under analysis. The live preview is
 not ready for publication or laptop playback yet.
 Signed manual annotations and the bounded
 file-only Atmos API passed independent review and all 27 selected unit methods
@@ -52,6 +53,34 @@ Companion to [installation](SPEAKER_INSTALL.md), [review](REVIEW.md),
 [manual annotations](MANUAL_LATENCY_ANNOTATIONS.md) and
 [implementation](AUDIO_IMPLEMENTATION.md). Source, synthetic, read-only and
 physical evidence remain separate.
+
+## October 15 remaining mismatch — native playback/capture attribution
+
+Two private diagnostics retained the reviewed renderer and changed one
+parameter each. The producer-only `DOTNET_PROCESSOR_COUNT=1` hint still
+failed: a 768-frame deletion begins at source frame 785,705, after which the
+remaining 2,741,719 frames match at the shifted offset. This hint is not a
+hard CPU/thread limit and was not added to the implementation.
+
+A separate player-pipe request of 4,096 frames, with the default processor
+count restored, also failed. Linux allocated 262,144 bytes for twelve
+channels, adding 85.333 ms of byte capacity above the canonical allocation.
+The first mismatch replaces 256 frames with zeros at source frame 26,412;
+55 later alignment changes leave the exact final tail 17,408 frames later.
+An initial search matched ambiguous silence; that is not evidence of repeated
+media. Neither diagnostic altered canonical source or qualifies acceptance.
+All original reports remain retained, with eighteen files independently
+hash-verified for each diagnostic.
+
+Further buffer experiments have stopped. Both raw playback reads and raw
+capture writes occur inside `pw-cat` processing callbacks in the pinned
+PipeWire source. Capture currently writes to a regular filesystem file, so
+playback and observer scheduling remain distinct possible causes. One bounded
+native-profiler run uses the canonical `528152b` source and parameters,
+without managed or feeder tracing. It reproduced the mismatch; native node
+counters and captured sample positions are being correlated before choosing
+a component to change. No passing unit or ordinary integration cases repeat.
+Speaker tuning, rollback, laptop sessions and Sonos remain untouched.
 
 ## October 15 reviewed batching/reserve correction — full JOC still fails
 
