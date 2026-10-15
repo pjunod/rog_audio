@@ -249,7 +249,11 @@ class RegistryMonitor:
         child, self.child = self.child, None
         self.failed = True
         if child is not None:
-            stop(child)
+            try:
+                stop(child)
+            finally:
+                if child.stdout is not None:
+                    child.stdout.close()
 
 
 def props(item):
