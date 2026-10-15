@@ -83,13 +83,27 @@ static void timeline_case(void)
 {
     float frame[12] = {0};
     struct cap_stamp stamp = {.clock_valid = true, .header_present = true, .pts_valid = true,
-        .ticks = 100, .sequence = UINT64_MAX - 1, .pts = -100};
+        .ticks = 100, .sequence = UINT64_MAX - 1, .pts = -100,
+        .clock_info = {.available = true, .buffer_time = 1000, .now = 1000,
+                       .rate_num = 1, .rate_denom = 48000, .size = 1}};
     assert(cap_init(&test_core, 12)); assert(cap_push(&test_core, frame, 1, &stamp));
     stamp.ticks++; stamp.sequence = 1; stamp.pts++;
+    stamp.clock_info.buffer_time = stamp.clock_info.now = 2000;
     assert(cap_push(&test_core, frame, 1, &stamp));  /* Actual uint64 wrap, not a regression. */
     stamp.ticks += 2;
+    stamp.clock_info.buffer_time = 2500; stamp.clock_info.now = 3000;
     assert(!cap_push(&test_core, frame, 1, &stamp));
     assert(atomic_load(&test_core.clock_gaps) == 1);
+    assert(test_core.first_clock_gap && test_core.gap_expected_ticks == 102 && test_core.gap_actual_ticks == 103);
+    assert(test_core.gap_previous_frames == 1 && test_core.gap_current_frames == 1);
+    assert(test_core.gap_previous_info.buffer_time == 2000 && test_core.gap_previous_info.now == 2000);
+    assert(test_core.gap_current_info.buffer_time == 2500 && test_core.gap_current_info.now == 3000);
+    assert(test_core.gap_current_info.available && test_core.gap_current_info.rate_num == 1 &&
+           test_core.gap_current_info.rate_denom == 48000 && test_core.gap_current_info.size == 1);
+    stamp.ticks = 999; stamp.clock_info.now = 9999;
+    assert(!cap_push(&test_core, frame, 1, &stamp));
+    assert(atomic_load(&test_core.clock_gaps) == 1 && test_core.gap_actual_ticks == 103 &&
+           test_core.gap_current_info.now == 3000); /* First anomaly is frozen. */
     for (unsigned mode = 0; mode < 4; mode++) {
         assert(cap_init(&test_core, 12));
         stamp = (struct cap_stamp){.header_present = true, .pts_valid = true, .sequence = 100, .pts = 100};
@@ -103,7 +117,14 @@ static void timeline_case(void)
     assert(cap_init(&test_core, 12)); stamp = (struct cap_stamp){0};
     assert(cap_push(&test_core, frame, 1, &stamp)); assert(cap_push(&test_core, frame, 1, &stamp));
     assert(atomic_load(&test_core.unavailable_clock) == 2 && atomic_load(&test_core.unavailable_pts) == 2);
-    assert(!atomic_load(&test_core.error)); /* Missing metadata is not an invented loss. */
+    assert(!atomic_load(&test_core.error) && !test_core.first_clock_gap); /* Missing metadata is not an invented loss. */
+    stamp.clock_valid = true; stamp.ticks = 100;
+    assert(cap_push(&test_core, frame, 1, &stamp));
+    stamp.clock_valid = false;
+    assert(cap_push(&test_core, frame, 1, &stamp));
+    stamp.clock_valid = true; stamp.ticks = 999;
+    assert(cap_push(&test_core, frame, 1, &stamp));
+    assert(!atomic_load(&test_core.error) && !test_core.first_clock_gap);
 }
 static void writer_case(void)
 {

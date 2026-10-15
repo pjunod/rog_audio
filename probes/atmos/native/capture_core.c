@@ -42,11 +42,19 @@ static bool stamp(struct cap_core *c, uint32_t frames, const struct cap_stamp *s
         /* Only used when pw_time has the same fixed 48-kHz frame domain and its
          * reported cycle size equals this chunk. No sequence-frequency guess. */
         if (c->have_clock && (s->ticks < c->last_ticks || s->ticks - c->last_ticks != c->last_frames)) {
+            if (!c->first_clock_gap) {
+                c->first_clock_gap = true;
+                c->gap_expected_ticks = c->last_ticks + c->last_frames;
+                c->gap_actual_ticks = s->ticks;
+                c->gap_previous_frames = c->last_frames; c->gap_current_frames = frames;
+                c->gap_previous_info = c->last_clock_info; c->gap_current_info = s->clock_info;
+            }
             atomic_fetch_add(&c->clock_gaps, 1); cap_fail(c, CAP_TIMELINE); return false;
         }
         if (!c->seen_clock) c->first_ticks = s->ticks;
         c->seen_clock = true;
         c->have_clock = true; c->last_ticks = s->ticks; c->last_frames = frames;
+        c->last_clock_info = s->clock_info;
     } else {
         atomic_fetch_add(&c->unavailable_clock, 1);
         c->have_clock = false;

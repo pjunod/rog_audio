@@ -92,7 +92,22 @@ Unavailable first/last timestamp or sequence values are `null`.
 
 A usable `pw_time` observation must have the same 1/48000 frame domain and
 cycle size as the captured chunk. Consecutive usable observations check
-frame-clock progression; unavailable intervals are explicitly counted.
+frame-clock progression; unavailable intervals are explicitly counted. A gap
+still fails the capture. The bounded `first_clock_gap` receipt freezes its
+expected and actual ticks plus the previous/current chunk sizes, snapshot
+availability, rate, cycle size, buffer queued-cycle nanoseconds and live snapshot
+nanoseconds. It is `null` when no usable-clock gap occurred; later rejected
+callbacks cannot replace the first observation. The callback copies fixed
+scalars only; receipt formatting happens after stream destruction.
+
+The pinned [stream API](https://github.com/PipeWire/pipewire/blob/1.6.8/src/pipewire/stream.h)
+describes `pw_time` as a live graph-driver snapshot and `pw_buffer.time` as the
+queued cycle time for that particular buffer. Matching rate and size alone do
+not prove those observations refer to the same queued buffer under backlog.
+The extra first-anomaly fields allow that association to be inspected without
+relaxing the current fatal check or the full exact-PCM requirement. A clock
+failure alone does not establish its direction/magnitude, PCM deletion or a
+particular scheduling cause unless the corresponding evidence was retained.
 Header sequence numbers are media-specific, so there is no `seq + 1` rule.
 The bounded run uses unsigned half-range comparison to allow normal uint64
 wrap while rejecting backward sequence movement. Valid PTS may not regress;

@@ -91,9 +91,13 @@ static void capture_process(void *opaque)
                 atomic_fetch_add(&p->received, frames);
                 struct cap_stamp stamp = {0};
                 struct pw_time time = {0};
-                stamp.clock_valid = pw_stream_get_time_n(p->stream, &time, sizeof(time)) == 0 &&
+                stamp.clock_info.available = pw_stream_get_time_n(p->stream, &time, sizeof(time)) == 0;
+                stamp.clock_valid = stamp.clock_info.available &&
                     time.rate.num == 1 && time.rate.denom == 48000 && time.size == frames;
                 stamp.ticks = time.ticks;
+                stamp.clock_info.buffer_time = b->time; stamp.clock_info.now = time.now;
+                stamp.clock_info.rate_num = time.rate.num; stamp.clock_info.rate_denom = time.rate.denom;
+                stamp.clock_info.size = time.size;
                 struct spa_meta_header *header = spa_buffer_find_meta_data(buffer, SPA_META_Header, sizeof(*header));
                 if (header) {
                     stamp.header_present = true; stamp.sequence = header->seq;
@@ -188,6 +192,22 @@ static void capture_final(struct capture *p)
     snprintf(last_seq, sizeof(last_seq), "%llu", (unsigned long long)p->core.last_sequence);
     snprintf(first_pts, sizeof(first_pts), "%lld", (long long)p->core.first_pts);
     snprintf(last_pts, sizeof(last_pts), "%lld", (long long)p->core.last_pts);
+    char gap[768] = "null";
+    if (p->core.first_clock_gap) {
+        const struct cap_clock_info *before = &p->core.gap_previous_info, *after = &p->core.gap_current_info;
+        int size = snprintf(gap, sizeof(gap),
+            "{\"expected_ticks\":%llu,\"actual_ticks\":%llu,"
+            "\"previous\":{\"time_available\":%s,\"buffer_queued_ns\":%llu,\"snapshot_now_ns\":%lld,"
+            "\"rate_num\":%u,\"rate_denom\":%u,\"cycle_frames\":%llu,\"chunk_frames\":%u},"
+            "\"current\":{\"time_available\":%s,\"buffer_queued_ns\":%llu,\"snapshot_now_ns\":%lld,"
+            "\"rate_num\":%u,\"rate_denom\":%u,\"cycle_frames\":%llu,\"chunk_frames\":%u}}",
+            (unsigned long long)p->core.gap_expected_ticks, (unsigned long long)p->core.gap_actual_ticks,
+            before->available ? "true" : "false", (unsigned long long)before->buffer_time, (long long)before->now,
+            before->rate_num, before->rate_denom, (unsigned long long)before->size, p->core.gap_previous_frames,
+            after->available ? "true" : "false", (unsigned long long)after->buffer_time, (long long)after->now,
+            after->rate_num, after->rate_denom, (unsigned long long)after->size, p->core.gap_current_frames);
+        if (size < 0 || (size_t)size >= sizeof(gap)) return;
+    }
     int n = snprintf(packet, sizeof(packet),
         "FINAL {\"protocol\":\"%s\",\"status\":\"%s\",\"complete\":%s,"
         "\"callback_received_frames\":%u,\"ring_accepted_frames\":%u,\"writer_taken_frames\":%u,"
@@ -198,7 +218,7 @@ static void capture_final(struct capture *p)
         "\"header_observations\":%u,\"unavailable_pts_observations\":%u,"
         "\"sequence_regressions\":%u,\"pts_regressions\":%u,\"header_discontinuities\":%u,"
         "\"largest_sequence_step\":%llu,\"first_ticks\":%s,\"last_ticks\":%s,"
-        "\"first_sequence\":%s,\"last_sequence\":%s,\"first_pts\":%s,\"last_pts\":%s}\n",
+        "\"first_sequence\":%s,\"last_sequence\":%s,\"first_pts\":%s,\"last_pts\":%s,\"first_clock_gap\":%s}\n",
         CAP_PROTOCOL, cap_error_name(atomic_load(&p->core.error)), complete ? "true" : "false",
         atomic_load(&p->received), accepted, atomic_load(&p->core.taken), written, written / p->core.stride,
         CAP_RING_FRAMES, atomic_load(&p->core.maximum_ring), atomic_load(&p->core.rejected_frames), atomic_load(&p->ignored),
@@ -209,7 +229,7 @@ static void capture_final(struct capture *p)
         (unsigned long long)p->core.largest_sequence_step,
         p->core.seen_clock ? first_ticks : "null", p->core.seen_clock ? last_ticks : "null",
         p->core.have_header ? first_seq : "null", p->core.have_header ? last_seq : "null",
-        p->core.have_pts ? first_pts : "null", p->core.have_pts ? last_pts : "null");
+        p->core.have_pts ? first_pts : "null", p->core.have_pts ? last_pts : "null", gap);
     if (n > 0 && (size_t)n < sizeof(packet)) (void)send(p->control, packet, n, MSG_DONTWAIT | MSG_NOSIGNAL);
 }
 static void capture_shutdown(struct capture *p)

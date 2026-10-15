@@ -12,11 +12,19 @@
 #define CAP_MAX_BYTES (256u * 1024u * 1024u)
 enum cap_error { CAP_OK, CAP_OVERFLOW, CAP_LIMIT, CAP_CHUNK, CAP_WRITE,
     CAP_CONTROL, CAP_PIPEWIRE, CAP_CANCELLED, CAP_TIMELINE, CAP_CORRUPTED };
+/* Diagnostic association data only; never changes clock validity/failure. */
+struct cap_clock_info {
+    bool available;
+    uint64_t buffer_time, size;
+    int64_t now;
+    uint32_t rate_num, rate_denom;
+};
 struct cap_stamp {
     bool clock_valid, header_present, pts_valid;
     uint64_t ticks, sequence;
     int64_t pts;
     uint32_t header_flags;
+    struct cap_clock_info clock_info;
 };
 struct cap_core {
     _Alignas(64) atomic_uint captured;
@@ -31,6 +39,10 @@ struct cap_core {
     uint64_t last_ticks, first_ticks, last_sequence, first_sequence, largest_sequence_step;
     int64_t last_pts, first_pts;
     uint32_t last_frames;
+    bool first_clock_gap;
+    uint64_t gap_expected_ticks, gap_actual_ticks;
+    uint32_t gap_previous_frames, gap_current_frames;
+    struct cap_clock_info last_clock_info, gap_previous_info, gap_current_info;
     unsigned char pcm[CAP_RING_FRAMES * 48];
 };
 bool cap_init(struct cap_core *, unsigned channels);
