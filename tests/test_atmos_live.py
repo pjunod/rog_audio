@@ -512,14 +512,15 @@ class LiveTests(unittest.TestCase):
                                     'import pathlib,sys;sys.stdout.buffer.write(pathlib.Path(sys.argv[1]).read_bytes())', str(source)],
                                     stdout=subprocess.PIPE, stdin=subprocess.DEVNULL, bufsize=0, pipesize=4096)
         sink = self.root / 'sink.pcm'
+        player_request, player_maximum = live.player_pipe_bounds(2)
         player = subprocess.Popen([sys.executable, '-c', player_code or
                                   'import pathlib,sys;pathlib.Path(sys.argv[1]).write_bytes(sys.stdin.buffer.read())', str(sink)],
-                                  stdin=subprocess.PIPE, stdout=subprocess.DEVNULL, bufsize=0, pipesize=4096)
+                                  stdin=subprocess.PIPE, stdout=subprocess.DEVNULL, bufsize=0, pipesize=player_request)
         if report is None:
             report = {'received_complete_frames': 0, 'submitted_complete_frames': 0}
         try:
             live.bounded_pipe(producer.stdout)
-            live.bounded_pipe(player.stdin)
+            live.bounded_pipe(player.stdin, player_request, player_maximum)
             class CompactObservation(observation):
                 def poll(self):
                     data = super().poll()
@@ -535,6 +536,27 @@ class LiveTests(unittest.TestCase):
             return report, sink.read_bytes()
         finally:
             live.stop_children([producer, player])
+
+    def test_player_pipe_reserve_scales_channels_and_enforces_actual_capacity(self):
+        for channels, expected in ((2, (8192, 8192)), (12, (49152, 65536))):
+            requested, maximum = live.player_pipe_bounds(channels)
+            self.assertEqual((requested, maximum), expected)
+            reader, writer = os.pipe()
+            try:
+                with os.fdopen(writer, 'wb', buffering=0) as stream:
+                    capacity = live.bounded_pipe(stream, requested, maximum)
+                    self.assertGreaterEqual(capacity // (channels * 4), 1024)
+                    self.assertLessEqual(capacity, maximum)
+                    self.assertFalse(os.get_blocking(stream.fileno()))
+                    for unsupported in (requested - 4096, maximum + 4096):
+                        with mock.patch.object(live.fcntl, 'fcntl', side_effect=[0, unsupported]):
+                            with self.assertRaisesRegex(live.PlaybackError, 'unsupported-pipe-capacity'):
+                                live.bounded_pipe(stream, requested, maximum)
+            finally:
+                os.close(reader)
+        for channels in (0, 1, 16, True):
+            with self.assertRaisesRegex(live.PlaybackError, 'unsupported-channel-count'):
+                live.player_pipe_bounds(channels)
 
     def test_startup_priming_waits_for_active_links_and_preserves_media(self):
         payload = struct.pack('<f', .125) * 2 * 10001
@@ -783,6 +805,21 @@ class LiveTests(unittest.TestCase):
         receipt.unlink()
         header, pcm = result.stdout.split(b'\n', 1) if result.stdout else (b'{}', b'')
         return result, json.loads(header), pcm, report
+
+    def test_producer_release_boundaries_preserve_pcm_and_command_budget(self):
+        result, _, reference, report = self.producer(data=scene(samples=3089))
+        self.assertEqual(result.returncode, 0, report)
+        for frames in (1535, 1536, 1537, 3073):
+            with self.subTest(frames=frames):
+                result, header, pcm, report = self.producer(data=scene(samples=frames))
+                self.assertEqual(result.returncode, 0, report)
+                self.assertEqual(pcm, reference[:frames * 8])
+                self.assertEqual(header['input_samples'], frames)
+                self.assertEqual(report['stream']['written_frames'], frames)
+                caller = report['stream']['caller_frames']
+                self.assertEqual(caller, 1536)
+                self.assertEqual(report['dsp_processing']['commands'], (frames + caller - 1) // caller + 1)
+                self.assertLessEqual((90 * 48000 + caller - 1) // caller + 2, 4096)
 
     def test_producer_stereo_partial_eof_and_hash(self):
         result, header, pcm, report = self.producer()

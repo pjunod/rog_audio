@@ -8,6 +8,9 @@ namespace AtmosProbe;
 
 /// <summary>Private producer protocol, never an audio-device callback.</summary>
 static class LiveStream {
+    // Release six fixed DSP blocks without changing the offline caller limit.
+    // Even 90 seconds plus seek/EOF fits the existing 4096-command budget.
+    const int CallerFrames = 1536;
     internal static void Run(byte[] bytes, bool synthetic, string layout,
         string startValue, string volumeValue, Dictionary<string, object?> report) {
         if (!long.TryParse(startValue, NumberStyles.None, CultureInfo.InvariantCulture, out long start) ||
@@ -32,12 +35,12 @@ static class LiveStream {
             channels = pull.Channels, input_samples = pull.Length, start_sample = start
         }) + "\n");
         output.Write(header); output.Flush();
-        float[] buffer = new float[OfflinePullRenderer.MaximumReadFrames * pull.Channels];
+        float[] buffer = new float[CallerFrames * pull.Channels];
         byte[] pcm = new byte[buffer.Length * sizeof(float)];
         long written = 0;
         using var hash = IncrementalHash.CreateHash(HashAlgorithmName.SHA256);
         while (true) {
-            PullRead read = pull.Read(buffer, OfflinePullRenderer.MaximumReadFrames);
+            PullRead read = pull.Read(buffer, CallerFrames);
             if (read.SamplePts != start + written || read.Epoch != (start == 0 ? 0 : 1))
                 throw new InvalidInput("stream_discontinuity");
             if (read.Frames == 0) {
@@ -61,7 +64,7 @@ static class LiveStream {
         }
         report["stream"] = new { start_sample = start, written_frames = written,
             sample_rate = 48000, channels = pull.Channels, layout, format = "f32le",
-            volume_attenuation = volume,
+            volume_attenuation = volume, caller_frames = CallerFrames,
             pcm_sha256 = Convert.ToHexString(hash.GetHashAndReset()).ToLowerInvariant() };
         report["dsp_processing"] = pull.Profile;
         if (pull.Decoder is { } decoder) {

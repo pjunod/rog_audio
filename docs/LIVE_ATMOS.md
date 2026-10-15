@@ -59,13 +59,13 @@ are reordered or synthesized by that spelling translation.
  bounded raw E-AC-3 / synthetic scene snapshot
               │  decode objects before metadata loss
               ▼
- .NET pull renderer, 256-frame DSP / 4096-frame caller buffer
+ .NET pull renderer, 256-frame DSP / 1536-frame live caller buffer
               │  readiness header, then interleaved float32 PCM
               ▼
  4096-byte producer pipe → 4096-frame supervisor queue
               │  finite samples, exact count and backpressure
               ▼
- 4096-byte player pipe → pw-cat stdin → selected PipeWire sink
+ 1024-frame requested player pipe → pw-cat stdin → selected PipeWire sink
 ```
 
 The input is privately snapshotted as a bounded regular file before managed
@@ -76,13 +76,30 @@ offline engine's explicit classifications. Stereo E-AC-3, TrueHD, arbitrary
 containers and changing stream configurations retain their existing limits.
 
 There is no complete rendered WAV or PCM file between decoder and output.
-The producer writes at most 4096 frames per caller block; a full pipe stops
-further decoding. The supervisor prebuffers one 4096-frame queue (85.333 ms
-at 48 kHz), or the complete shorter final fragment. Its writes are frame
-aligned and no larger than the 4096-byte atomic pipe-write bound. Each
-kernel pipe is explicitly limited to 4096 bytes before the child starts; a
-host unable to provide that exact pipe capacity is unsupported. These are application
-transport bounds, not the size or latency of PipeWire's internal buffers.
+The live producer releases at most 1536 frames per caller block (32 ms at
+48 kHz), comprising six fixed 256-frame DSP blocks. The public offline API
+still accepts up to 4096 caller frames. The smaller live release avoids
+withholding sixteen DSP blocks before any PCM is emitted and keeps a full
+90-second stream plus seek/EOF below the existing 4096-command budget. The
+producer's pipe remains exactly 4096 bytes; a full pipe stops further decoding.
+The supervisor prebuffers one 4096-frame queue (85.333 ms at 48 kHz), or the
+complete shorter final fragment. Its writes remain frame aligned and no
+larger than the 4096-byte atomic pipe-write bound.
+
+Only the native player pipe requests capacity for 1024 PCM frames (21.333 ms
+at 48 kHz): 8192 bytes for stereo, 49,152 bytes for twelve channels. Linux
+rounding permits at most 8192 / 65,536 actual bytes respectively. The latter
+holds 1365 complete twelve-channel frames (28.444 ms of byte capacity).
+Requested frames/bytes, maximum bytes and actual capacity are reported;
+an actual capacity outside the stated range stops playback. The bound is
+established before the child starts and verified afterward. It provides
+scheduling reserve without changing the graph quantum. These are queued-audio
+capacity allowances, not measured physical latency or PipeWire internal
+buffer sizes. The bounded diagnostic control passed with this reserve; a
+separate JOC prefix still exposed caller batching. A private combined
+1536-frame-release / 1024-frame-reserve prefix then matched all 239,616
+captured frames exactly. Full-stream acceptance remains subject to reviewed,
+source-bound validation.
 
 The managed decoder runs in a separate process, outside the PipeWire
 processing callback. `pw-cat` owns the native output callback and may starve
@@ -186,6 +203,8 @@ chain's filters loaded, or that Dolby reference output matched.
 
 | Field | What it proves |
 |---|---|
+| `player_pipe_requested_frames` / `player_pipe_requested_bytes` / `player_pipe_maximum_bytes` / `player_pipe_capacity_bytes` | Requested scheduling reserve and its verified kernel allocation; not physical latency |
+| `producer.stream.caller_frames` | Live producer release bound; fixed DSP block size and offline API remain separate |
 | `startup_priming_frames` | Zero frames sent only to the verified route before media activation; excluded from media counts |
 | `media_start_verified_active` | Every matching link reported active before the first media frame was submitted |
 | `backend_submitted_frames` | Startup zero frames plus submitted media frames; not hardware presentation |

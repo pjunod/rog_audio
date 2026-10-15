@@ -34,6 +34,7 @@ MAX_SNAPSHOT = MAX_REGISTRY_BYTES
 REGISTRY_INTERVAL_SECONDS = 0.5
 MAX_PRIMING_FRAMES = RATE * STARTUP_SECONDS
 MAX_OBSERVATION_REPLY = 1024
+PLAYER_PIPE_FRAMES = 1024
 
 
 class PlaybackError(Exception):
@@ -341,11 +342,22 @@ def stop_children(children):
         signal.pthread_sigmask(signal.SIG_SETMASK, blocked)
 
 
-def bounded_pipe(stream):
-    fcntl.fcntl(stream.fileno(), fcntl.F_SETPIPE_SZ, 4096)
+def player_pipe_bounds(channels):
+    if type(channels) is not int or channels not in (2, 12):
+        raise PlaybackError('unsupported-channel-count')
+    requested = PLAYER_PIPE_FRAMES * channels * 4
+    # Linux rounds a pipe request up to a power-of-two page allocation.
+    maximum = 1 << (requested - 1).bit_length()
+    return requested, maximum
+
+
+def bounded_pipe(stream, requested=4096, maximum=None):
+    if maximum is None:
+        maximum = requested
+    fcntl.fcntl(stream.fileno(), fcntl.F_SETPIPE_SZ, requested)
     os.set_blocking(stream.fileno(), False)
     capacity = fcntl.fcntl(stream.fileno(), fcntl.F_GETPIPE_SZ)
-    if capacity != 4096:
+    if not requested <= capacity <= maximum:
         raise PlaybackError('unsupported-pipe-capacity')
     return capacity
 
@@ -596,11 +608,15 @@ def playback(args, private, report):
             report['drained_frames'] = 0
             report['empty_stream_no_player'] = True
         else:
+            requested, maximum = player_pipe_bounds(len(channels))
+            report['player_pipe_requested_frames'] = PLAYER_PIPE_FRAMES
+            report['player_pipe_requested_bytes'] = requested
+            report['player_pipe_maximum_bytes'] = maximum
             player = subprocess.Popen(pw_command(target, channels, stream_name, raw_options), stdin=subprocess.PIPE,
                                       stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
-                                      env=env, bufsize=0, pipesize=4096)
+                                      env=env, bufsize=0, pipesize=requested)
             children.append(player)
-            report['player_pipe_capacity_bytes'] = bounded_pipe(player.stdin)
+            report['player_pipe_capacity_bytes'] = bounded_pipe(player.stdin, requested, maximum)
             transfer(producer, player, expected, target, stream_name, channels, env, report)
         report['status'] = 'completed'
     finally:
