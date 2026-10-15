@@ -10,8 +10,10 @@ twelve-channel capture lost 512 frames despite exact native input/consumption
 and zero ring underruns. Remaining transport cases and full JOC stopped.
 The unchanged target-mismatch case remains retained. A bounded profiler retry
 was exact with zero node errors, so it did not reproduce or attribute the loss.
-The capture observer is being hardened to remove blocking callback file I/O
-and report its own losses; accepted playback source and tests stay unchanged. Earlier full captures
+The capture-only candidate `a135f23` is implemented, compiled and under
+independent adversarial review. Nine new recorder methods and two changed
+harness methods await execution; forty-nine unchanged method passes remain
+valid. Production playback source and binaries are unchanged. Earlier full captures
 and private diagnostics remain failed and retained. The live preview is not
 ready for publication or laptop playback yet.
 Signed manual annotations and the bounded
@@ -49,7 +51,7 @@ remain different software quantities, not physical latency or Mac parity.
 | Startup/stop | Reviewed helper, prior save/automatic-start checks and ROG service autostart evidence retained | End-to-end post-login routing; repeated boot/resume/hotplug separately |
 | Signed annotation analysis | Eleven reviewed methods passed once; signed bounds and provenance retained | Actual private annotations from the later recording session |
 | Source-level chain latency | Accepted minimum-phase IR/preset audit found no justified removable fixed delay; no tuning change | Actual same-path physical recording |
-| Live Atmos prototype | 51 distinct units + 3 dispatch smokes passed; native stereo exact; twelve-channel formal capture failed; profiler retry exact but unattributed | Build/review a bounded capture observer with loss accounting, then affected acceptance; later transport/JOC stopped |
+| Live Atmos prototype | Recorder a135f23 compiled, under adversarial review; 49 unchanged unit passes retained; earlier stereo pass and twelve-channel failure historical | Resolve review, run 9 new + 2 changed methods, six ordinary captures and full JOC |
 | Host Atmos | Sixteen affected methods passed once; fresh full JOC render and four isolated timeline groups passed | Original long sequence resource failure retained; independent fidelity and later live integration |
 | Physical interaction timing | Emitter source/ten-method acceptance and earlier staging retained; no pilot/physical samples | Owner-ready coordinated same-keyboard/phone capture, still deferred |
 | Sonos Arc/eARC | Untouched and last | TV route and received-format qualification after internal audio |
@@ -58,6 +60,28 @@ Companion to [installation](SPEAKER_INSTALL.md), [review](REVIEW.md),
 [manual annotations](MANUAL_LATENCY_ANNOTATIONS.md) and
 [implementation](AUDIO_IMPLEMENTATION.md). Source, synthetic, read-only and
 physical evidence remain separate.
+
+## October 15 native recorder — compiled, awaiting adversarial clearance
+
+Capture-only implementation `a135f23` adds the [bounded observer](LIVE_ATMOS_CAPTURE.md),
+its separate compiler recipe and loss receipts. The final strict compile
+passed with no test or graph execution; all seven compile-evidence files were
+independently hash-verified. The native helper has the same GLIBC 2.38 floor
+and PipeWire/libc dependencies as the playback helper. Production playback
+source, launcher, managed renderer, runtime and binary hashes are unchanged.
+
+Independent review includes the observer, changed harness, eleven selected
+methods and the private sequential acceptance runner. Nine methods are new;
+two existing methods changed for monitor-port identity and private failure
+retention. The other forty-nine live methods and three dispatcher smoke
+receipts remain valid. Six ordinary capture cases and the separate complete
+JOC comparison require the new observer. The earlier stereo pass remains
+historical and the original 512-frame deletion remains unattributed.
+
+No test has run on this candidate. The runner will stop at the first failure
+and retain capture evidence. Speaker tuning and rollback remain untouched;
+the latest read-only connection attempts timed out before inspection on both
+laptops. Sonos and physical measurements remain deferred.
 
 ## October 15 capture observer — hardening an unqualified measurement path
 
