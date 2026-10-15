@@ -1,16 +1,13 @@
 # Status — implementation and physical acceptance
 
-**Updated:** 2026-10-15 · **State:** sixty distinct live unit methods and
+**Updated:** 2026-10-15 · **State:** sixty-one distinct live unit methods and
 three existing dispatch smoke methods have passing source-bound results.
-Reviewed `aabf092` passed all four affected native/client methods. Exact stereo,
-twelve-channel and initial-seek capture now pass; the 95,223-frame seek has
-nine separately accounted transport-padding frames and no inserted media gap.
-Cancellation and manual target removal also pass. The policy-managed removal
-stopped playback correctly, but its explicit native PipeWire error was not in
-the harness's accepted removal statuses. That narrow harness correction is
-being prepared; full JOC has not started. Earlier failed attempts, including
-the unattributed 512-frame deletion, remain retained. The live preview is not
-ready to merge or publish until the remaining acceptance passes.
+Exact stereo, twelve-channel and initial-seek capture, cancellation and both
+target-removal cases pass. The full 73.504-second JOC attempt stopped early
+on a capture-clock discontinuity and did not reach full PCM comparison.
+The failure is retained while the clock observation and scheduling path are
+investigated. Earlier failures remain distinct. The live preview is not ready
+to merge or publish until the remaining acceptance passes.
 Signed manual annotations and the bounded
 file-only Atmos API passed independent review and all 27 selected unit methods
 once. Fresh JOC rendering and four split continuity groups passed; the original
@@ -46,7 +43,7 @@ remain different software quantities, not physical latency or Mac parity.
 | Startup/stop | Reviewed helper, prior save/automatic-start checks and ROG service autostart evidence retained | End-to-end post-login routing; repeated boot/resume/hotplug separately |
 | Signed annotation analysis | Eleven reviewed methods passed once; signed bounds and provenance retained | Actual private annotations from the later recording session |
 | Source-level chain latency | Accepted minimum-phase IR/preset audit found no justified removable fixed delay; no tuning change | Actual same-path physical recording |
-| Live Atmos prototype | 60 distinct methods + 3 smokes passed; all three exact captures, cancel and manual target loss pass | Review/test narrow policy-removal status handling; retry affected removal case, then full JOC |
+| Live Atmos prototype | 61 distinct methods + 3 smokes passed; all six ordinary playback/removal cases pass | Diagnose full JOC capture-clock failure, then retry only the affected path |
 | Host Atmos | Sixteen affected methods passed once; fresh full JOC render and four isolated timeline groups passed | Original long sequence resource failure retained; independent fidelity and later live integration |
 | Physical interaction timing | Emitter source/ten-method acceptance and earlier staging retained; no pilot/physical samples | Owner-ready coordinated same-keyboard/phone capture, still deferred |
 | Sonos Arc/eARC | Untouched and last | TV route and received-format qualification after internal audio |
@@ -55,6 +52,25 @@ Companion to [installation](SPEAKER_INSTALL.md), [review](REVIEW.md),
 [manual annotations](MANUAL_LATENCY_ANNOTATIONS.md) and
 [implementation](AUDIO_IMPLEMENTATION.md). Source, synthetic, read-only and
 physical evidence remain separate.
+
+## October 15 full JOC attempt — capture-clock failure retained
+
+Independent review cleared `f1fc791`. Its one new native-removal guard method
+passed once, followed by the failed-only policy-removal retry. Production
+helper, capture observer and managed renderer bytes were unchanged. Earlier
+five ordinary passes remain valid; the separate channel-mismatch pass is also
+retained. All thirty-one new evidence files were independently hash-verified.
+
+Full JOC then stopped after 5.656 seconds with
+`capture-timeline-discontinuity`. The observer accepted and wrote 100,864
+frames and rejected 1,024; it reported one clock gap, no ring overflow and no
+writer error. Cleanup cancelled playback, which reported no native ring
+underflow. No full PCM comparison was reached. The current receipt does not
+record the rejected clock stamp, so it cannot distinguish a missed graph
+interval from a repeated or stale clock observation. Five cgroup throttled
+periods totalled 289,951 microseconds; causation is unestablished. The partial
+capture and raw failure receipt remain preserved. No laptop or Sonos action
+was performed.
 
 ## October 15 final-buffer correction — exact seek; policy status check pending
 
