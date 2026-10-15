@@ -14,7 +14,7 @@ import subprocess
 import tempfile
 import time
 from registry_json import MAX_REGISTRY_BYTES, parse_registry
-from pw_cat import raw_mode_options
+from native_capture import CaptureObserver
 
 CASES = ('success-stereo', 'success-714', 'success-seek', 'mismatch', 'cancel', 'target-loss', 'policy-target-loss', 'success-joc')
 JOC_SHA256 = 'c190089bbb0600b8bcba27dbe07c370252c3c2605fd285b4f596b9c2a9d59432'
@@ -88,12 +88,13 @@ def retain_failure_artifacts(private, destination, case):
     target = destination / case
     target.mkdir(mode=0o700)
     records = []
-    for original, name in ((private / 'capture.pcm', 'capture.pcm'),
-                           (private / 'expected.pcm', 'expected-stream.bin')):
+    for original, name, limit in ((private / 'capture.pcm', 'capture.pcm', MAX_CAPTURE_BYTES),
+                                 (private / 'expected.pcm', 'expected-stream.bin', MAX_CAPTURE_BYTES),
+                                 (private / 'playback.json', 'playback.json', 1048576)):
         if not original.is_file():
             continue
         size = original.stat().st_size
-        if size > MAX_CAPTURE_BYTES:
+        if size > limit:
             raise ValueError('failure artifact exceeds capture bound')
         descriptor = os.open(target / name, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
         digest = hashlib.sha256()
@@ -101,7 +102,7 @@ def retain_failure_artifacts(private, destination, case):
         with original.open('rb') as source, os.fdopen(descriptor, 'wb') as output:
             while value := source.read(65536):
                 copied += len(value)
-                if copied > MAX_CAPTURE_BYTES:
+                if copied > limit:
                     raise ValueError('failure artifact exceeds capture bound')
                 output.write(value)
                 digest.update(value)
@@ -386,7 +387,9 @@ def capture_links_active(data, source_id, target_id, channels):
             continue
         source = ports.get(info.get('output-port-id'), {})
         target = ports.get(info.get('input-port-id'), {})
-        if (info.get('output-node-id') != source_id or
+        is_monitor = (source.get('port.monitor') is True or
+                      str(source.get('port.name', '')).startswith('monitor_'))
+        if (info.get('output-node-id') != source_id or not is_monitor or
                 source.get('audio.channel') != target.get('audio.channel') or
                 source.get('audio.channel') not in channels):
             raise AssertionError('unexpected capture route')
@@ -449,10 +452,9 @@ def one_case(name, probe, config, parent, joc_input=None, failure_artifacts=None
             env[key] = str(folder)
         env.update(XDG_RUNTIME_DIR=str(runtime), PIPEWIRE_RUNTIME_DIR=str(runtime),
                    PIPEWIRE_REMOTE='pipewire-live-atmos')
-        daemon = capture = player = manager = monitor = media_arrival = None
+        daemon = capture = player = manager = monitor = media_arrival = capture_client = None
         policy_version = None
         daemon_log = (private / 'daemon.log').open('xb')
-        capture_handle = None
         try:
             daemon = subprocess.Popen(['pipewire', '-c', str(config)], env=env,
                                       stdin=subprocess.DEVNULL, stdout=daemon_log, stderr=daemon_log)
@@ -508,28 +510,15 @@ def one_case(name, probe, config, parent, joc_input=None, failure_artifacts=None
             report_path = private / 'playback.json'
             if name.startswith('success') or name in DESTRUCTIVE_CASES:
                 capture_path = private / 'capture.pcm'
-                capture_handle = capture_path.open('xb')
-                def capture_limits():
-                    resource.setrlimit(resource.RLIMIT_FSIZE, (MAX_CAPTURE_BYTES, MAX_CAPTURE_BYTES))
-                    resource.setrlimit(resource.RLIMIT_CORE, (0, 0))
-                raw_options = raw_mode_options(env)
-                result['capture_explicit_raw'] = bool(raw_options)
-                capture_properties = {'node.name': 'integration-capture',
-                    'stream.dont-remix': True, 'channelmix.disable': True}
-                if name in DESTRUCTIVE_CASES:
-                    capture_properties.update({'node.autoconnect': False, 'node.dont-fallback': True,
-                        'node.dont-reconnect': True, 'node.dont-move': True})
-                capture = subprocess.Popen(['pw-cat', *raw_options, '--record', '--format', 'f32',
-                    '--rate', '48000', '--channels', str(len(channels)),
-                    '--channel-map', ','.join(channels), '--target', '0',
-                    '--properties', json.dumps(capture_properties), '-'],
-                    stdin=subprocess.DEVNULL, stdout=capture_handle, stderr=subprocess.DEVNULL,
-                    env=env, preexec_fn=capture_limits)
+                capture_client = CaptureObserver(probe.with_name('atmos-pw-capture'), capture_path, len(channels), env)
+                capture = capture_client.child
                 capture_node = wait_for(lambda: next(iter(nodes(monitor.snapshot(), 'integration-capture')), None))
                 configure_client_ports(capture_node, channels, env, capture=True)
                 wait_for(lambda: scoped_links(monitor.snapshot(), sink_id, capture_node['id'], channels, env, monitor=True))
                 wait_for(lambda: capture_links_active(monitor.snapshot(), sink_id, capture_node['id'], channels))
                 result['capture_links_active_before_playback'] = True
+                capture_client.arm()
+                result['capture_armed_before_playback'] = True
                 if name in DESTRUCTIVE_CASES:
                     media_arrival = MediaArrival(capture_path, len(channels))
             selected_layout = '7.1.4' if name == 'mismatch' else layout
@@ -547,7 +536,13 @@ def one_case(name, probe, config, parent, joc_input=None, failure_artifacts=None
             deadline = time.monotonic() + (150 if name == 'success-joc' else 70)
             while player.poll() is None:
                 assert time.monotonic() < deadline, 'player exceeded harness deadline'
+                if capture_client is not None:
+                    capture_client.poll(allow_source_end=action)
                 data = monitor.snapshot()
+                if capture_client is not None:
+                    capture_active = capture_links_active(data, sink_id, capture_node['id'], channels)
+                    if not action:
+                        assert capture_active, 'capture monitor route lost'
                 streams = nodes(data, 'rog-atmos-')
                 assert len(streams) <= 1, 'multiple playback nodes'
                 if streams:
@@ -569,7 +564,6 @@ def one_case(name, probe, config, parent, joc_input=None, failure_artifacts=None
                     elif not action:
                         linked = scoped_links(data, observed_stream, sink_id, channels, env) or linked
                     if media_arrival is not None:
-                        capture_active = capture_links_active(data, sink_id, capture_node['id'], channels)
                         if not action:
                             assert capture_active, 'media observation capture route lost'
                             # Startup priming is zero. Observe actual generated media,
@@ -613,9 +607,7 @@ def one_case(name, probe, config, parent, joc_input=None, failure_artifacts=None
                 assert all(report[key] == frames for key in ('expected_frames', 'rendered_frames',
                     'submitted_complete_frames', 'drained_frames'))
                 time.sleep(.3)
-                stop(capture)
-                capture_handle.close()
-                capture_handle = None
+                capture_client.finish()
                 captured = capture_path.read_bytes()
                 if name == 'success-joc':
                     first_byte = next((i for i, value in enumerate(captured) if value), None)
@@ -651,12 +643,27 @@ def one_case(name, probe, config, parent, joc_input=None, failure_artifacts=None
                     'target-disappeared-or-changed', 'stream-links-lost', 'pipewire-player-ended-early')
                 assert report['submitted_complete_frames'] > 0
                 assert report['pipewire_drain_completed'] is False
+            if capture_client is not None and name in DESTRUCTIVE_CASES:
+                capture_client.finish(require_complete=False)
             result['status'] = 'passed'
         except Exception as exc:
             result['failure'] = type(exc).__name__ + ': ' + str(exc)
         finally:
             stop(player)
-            stop(capture)
+            # Observer failure may precede normal playback result collection.
+            playback_path = private / 'playback.json'
+            if 'playback_report' not in result and playback_path.is_file():
+                try:
+                    if playback_path.stat().st_size > 1048576:
+                        raise ValueError('bounded playback report exceeded')
+                    result['playback_report'] = json.loads(playback_path.read_text())
+                except (OSError, ValueError) as exc:
+                    result['playback_report_recovery_error'] = type(exc).__name__
+            if capture_client is not None:
+                capture_client.close()
+                result['capture_observer'] = capture_client.receipt()
+            else:
+                stop(capture)
             if media_arrival is not None:
                 result['media_action_barrier'] = media_arrival.receipt()
                 media_arrival.close()
@@ -672,8 +679,6 @@ def one_case(name, probe, config, parent, joc_input=None, failure_artifacts=None
                     'maximum_partial_bytes': monitor.maximum_partial_bytes,
                     'failed_before_cleanup': monitor.failed}
                 monitor.close()
-            if capture_handle:
-                capture_handle.close()
             stop(manager, group=True)
             stop(daemon)
             daemon_log.close()
@@ -718,6 +723,8 @@ def main():
     args.probe = args.probe.resolve(strict=True)
     args.config = args.config.resolve(strict=True)
     source_files = ('Program.cs', 'LiveStream.cs', 'OfflinePullRenderer.cs', 'ObjectFrameGuard.cs',
+                    'native_capture.py', 'build-capture.sh', 'native/capture.c', 'native/capture_core.c',
+                    'native/capture_core.h', 'native/test_capture.c',
                     'native_playback.py', 'build-native.sh', 'native/playback.c', 'native/playback_core.c',
                     'native/playback_core.h', 'native/test_core.c', 'native/test_io.c',
                     'native/compiler-packages.json', 'native/PIPEWIRE-EXAMPLE-LICENSE',
@@ -729,7 +736,8 @@ def main():
                  for name in source_files if (Path(__file__).parent / name).is_file()}
         for name in ('AtmosProbe.dll', 'Cavern.dll', 'Cavern.Format.dll', 'atmos-live', 'registry_json.py', 'pw_cat.py',
                      'native_playback.py', 'atmos-pw-playback', 'native-build.json',
-                     'native-source.tar', 'PIPEWIRE-EXAMPLE-LICENSE'):
+                     'native-source.tar', 'PIPEWIRE-EXAMPLE-LICENSE', 'native_capture.py',
+                     'atmos-pw-capture', 'capture-build.json', 'capture-source.tar'):
             items['build/' + name] = hashlib.sha256((args.probe.parent / name).read_bytes()).hexdigest()
         return items
     report['source_before_sha256'] = bindings()

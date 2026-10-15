@@ -15,8 +15,9 @@ reviewed private Linux build. The managed build copies `atmos-live` beside
 in the pinned native compiler image to add `atmos-pw-playback`, its Python
 control module, build receipt and notice. The offline build recipe remains
 usable without C headers. You need Python 3.10 or newer, native `libpipewire-0.3.so.0`,
-`pw-dump`, and a .NET 8 runtime. The isolated capture harness additionally
-uses `pw-cat`. The [native helper contract](LIVE_ATMOS_NATIVE.md) records
+`pw-dump`, and a .NET 8 runtime. The isolated capture harness separately builds its
+[native observer](LIVE_ATMOS_CAPTURE.md) with `build-capture.sh`; that observer
+is not a production playback dependency. The [native helper contract](LIVE_ATMOS_NATIVE.md) records
 the compiler, ABI requirements and standalone bundle contents. The launcher chooses sibling
 `runtime/dotnet`, then `dotnet` on `PATH`; `--dotnet` selects an explicit
 runtime host. No global SDK/runtime installation is required for a private
@@ -182,9 +183,10 @@ Playback requires the colocated native helper's bounded `--describe` protocol
 observation (2 seconds, 2 KiB). Missing/incompatible helpers fail explicitly;
 there is no fallback to `pw-cat`. `playback_backend` records this capability
 and linked library version. The old `pw_cat_explicit_raw` playback field is
-removed. The isolated capture harness still uses bounded `pw-cat --help`
-capability detection and its own explicit-raw field. Historical `pw-cat`
-receipts remain historical and do not qualify the new helper.
+removed. The isolated harness now uses a separate native capture observer
+with its own bounded capability/control protocol and `capture_observer` receipt.
+Its old `capture_explicit_raw` field is removed. Historical `pw-cat` receipts
+remain historical and do not qualify either new helper.
 A normal session manager supplies channel links in
 desktop use. The policy-free isolated harness configures only its own client adapter
 DSP ports and explicit test links because its private daemon has no desktop
@@ -300,7 +302,8 @@ PCM checks, or change runtime player buffers. Earlier failed captures retain
 their original observed results; the later diagnostic does not retroactively
 prove their cause.
 
-The [separate virtual-sink lane](../probes/atmos/live-ci.sh) uses a pinned native PipeWire daemon with no
+The [separate virtual-sink lane](../probes/atmos/live-ci.sh) uses the
+[bounded native capture observer](LIVE_ATMOS_CAPTURE.md) and a pinned PipeWire daemon with no
 `/dev/snd` or desktop session socket. It checks streamed capture/hash/count,
 initial seek/attenuation, target mismatch/loss, cancellation and node cleanup.
 Public official JOC-vector streaming is separate from generated-scene/bed

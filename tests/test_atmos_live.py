@@ -22,6 +22,7 @@ sys.path.insert(0, str(ROOT / 'probes/atmos'))
 from registry_json import MAX_REGISTRY_BYTES, parse_registry
 import pw_cat
 import native_playback
+import native_capture
 loader = importlib.machinery.SourceFileLoader('atmos_live', str(ROOT / 'probes/atmos/atmos-live'))
 spec = importlib.util.spec_from_loader(loader.name, loader)
 live = importlib.util.module_from_spec(spec)
@@ -192,6 +193,158 @@ class LiveTests(unittest.TestCase):
 
     def test_native_core_begin_rejects_duplicate_out_of_order_and_oversize(self):
         self.native_core_case('protocol')
+
+    def capture_core_case(self, name):
+        if BUILD is None:
+            self.fail('capture core methods require a compiled --build output')
+        result = subprocess.run([str(BUILD / 'native-capture-tests'), name],
+            stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=10, check=True)
+        self.assertEqual(result.stdout, b'passed\n')
+
+    def test_capture_core_concurrent_ring_wrap_overflow_and_limit(self):
+        self.capture_core_case('ring')
+
+    def test_capture_core_optional_timeline_flags_wrap_and_regressions(self):
+        self.capture_core_case('timeline')
+
+    def test_capture_core_writer_short_write_and_failure_accounting(self):
+        self.capture_core_case('writer')
+
+    def test_capture_core_arm_stop_callback_and_writer_quiescence(self):
+        self.capture_core_case('lifecycle')
+
+    def test_capture_core_rejects_nonprivate_or_unbounded_output_descriptors(self):
+        self.capture_core_case('fd-contract')
+
+    @staticmethod
+    def capture_final(**changes):
+        return {'protocol': native_capture.PROTOCOL, 'status': 'completed', 'complete': True,
+            'callback_received_frames': 4, 'ring_accepted_frames': 4, 'writer_taken_frames': 4,
+            'written_bytes': 32, 'written_complete_frames': 4, 'ring_capacity_frames': 4096,
+            'maximum_ring_frames': 4, 'rejected_frames': 0, 'ignored_before_arm_frames': 256,
+            'overflow_events': 0, 'writer_io_errors': 0,
+            'metadata_request_accepted': False, 'clock_observations': 0,
+            'unavailable_clock_observations': 1, 'clock_gap_events': 0,
+            'header_observations': 0, 'unavailable_pts_observations': 1,
+            'sequence_regressions': 0, 'pts_regressions': 0, 'header_discontinuities': 0,
+            'largest_sequence_step': 0, 'first_ticks': None, 'last_ticks': None,
+            'first_sequence': None, 'last_sequence': None, 'first_pts': None, 'last_pts': None, **changes}
+
+    def capture_helper(self, mode='good'):
+        helper = self.root / ('capture-helper-' + mode)
+        final = self.capture_final()
+        if mode == 'badcount':
+            final['written_bytes'] = 31
+        if mode in ('source-end', 'source-write-error'):
+            final.update(status='capture-pipewire-failure', complete=False)
+            if mode == 'source-write-error':
+                final['writer_io_errors'] = 1
+        code = ('#!' + sys.executable + '\nMODE = ' + repr(mode) + '\nFINAL = ' + repr(final) + '\n')
+        code += r"""
+import json,os,signal,socket,sys,time
+if sys.argv[1:] == ['--describe']:
+ print(json.dumps({'protocol':'rog-atmos-capture-v1','ring_frames':4096,'maximum_file_bytes':268435456,'rate':48000,'channels':[2,12]}))
+ raise SystemExit(0)
+options = dict(zip(sys.argv[1::2],sys.argv[2::2]))
+control = socket.socket(fileno=int(options['--control-fd']))
+output = int(options['--output-fd'])
+assert control.recv(128) == b'ARM 1\n'
+if MODE == 'eof':
+ control.close(); raise SystemExit(0)
+if MODE == 'oversize':
+ control.send(b'x'*2049); raise SystemExit(2)
+if MODE == 'badack':
+ control.send(b'ACK 2\n'); time.sleep(20)
+if MODE == 'unresponsive':
+ signal.signal(signal.SIGTERM,signal.SIG_IGN)
+control.send(b'ACK 1\n')
+if MODE == 'unresponsive':
+ time.sleep(20)
+os.write(output,bytes(32))
+assert control.recv(128) == b'STOP 2\n'
+control.send(b'ACK 2\n')
+control.send(b'FINAL '+json.dumps(FINAL).encode()+b'\n')
+raise SystemExit(2 if MODE.startswith('source-') else 0)
+"""
+        helper.write_text(code)
+        helper.chmod(0o700)
+        return helper
+
+    def test_capture_observer_capability_probe_fails_closed(self):
+        helper = self.capture_helper()
+        value = native_capture.capture_capabilities(helper, {})
+        self.assertEqual(value['protocol'], native_capture.PROTOCOL)
+        for payload in (b'{}', b'x' * 2049, b'{"protocol":"other"}'):
+            def run(argv, **options):
+                options['stdout'].write(payload)
+                return subprocess.CompletedProcess(argv, 0)
+            with mock.patch.object(native_capture.subprocess, 'run', side_effect=run), \
+                    self.assertRaises(native_capture.CaptureError):
+                native_capture.capture_capabilities(helper, {})
+        for error in (FileNotFoundError(), subprocess.TimeoutExpired('capture', 2)):
+            with mock.patch.object(native_capture.subprocess, 'run', side_effect=error), \
+                    self.assertRaises(native_capture.CaptureError):
+                native_capture.capture_capabilities(helper, {})
+
+    def test_capture_observer_arm_stop_and_complete_accounting(self):
+        for mode in ('good', 'badcount'):
+            path = self.root / (mode + '.pcm')
+            observer = native_capture.CaptureObserver(self.capture_helper(mode), path, 2, {})
+            try:
+                observer.arm()
+                self.assertEqual(observer.acknowledged, 1)
+                if mode == 'good':
+                    value = observer.finish()
+                    self.assertTrue(value['complete'])
+                    self.assertEqual(value['written_bytes'], path.stat().st_size)
+                    self.assertEqual(path.stat().st_mode & 0o777, 0o600)
+                    self.assertFalse(value['metadata_request_accepted'])
+                else:
+                    with self.assertRaisesRegex(native_capture.CaptureError, 'accounting-mismatch'):
+                        observer.finish()
+            finally:
+                observer.close()
+            self.assertIsNotNone(observer.child.returncode)
+            self.assertEqual(observer.endpoint.fileno(), -1)
+        original = path.read_bytes()
+        with self.assertRaises(FileExistsError):
+            native_capture.CaptureObserver(self.capture_helper('good'), path, 2, {})
+        self.assertEqual(path.read_bytes(), original)
+
+    def test_capture_observer_control_failure_and_partial_source_end_are_explicit(self):
+        for mode in ('badack', 'oversize', 'eof'):
+            observer = native_capture.CaptureObserver(self.capture_helper(mode), self.root / (mode + '.pcm'), 2, {})
+            try:
+                with self.assertRaises(native_capture.CaptureError):
+                    observer.arm()
+            finally:
+                observer.close()
+            self.assertIsNotNone(observer.child.returncode)
+            self.assertEqual(observer.endpoint.fileno(), -1)
+        for mode in ('source-end', 'source-write-error'):
+            observer = native_capture.CaptureObserver(self.capture_helper(mode), self.root / (mode + '.pcm'), 2, {})
+            try:
+                observer.arm()
+                if mode == 'source-write-error':
+                    with self.assertRaises(native_capture.CaptureError):
+                        observer.finish(require_complete=False)
+                else:
+                    value = observer.finish(require_complete=False)
+                    self.assertEqual(value['status'], 'capture-pipewire-failure')
+                    self.assertFalse(value['complete'])
+                    self.assertEqual(observer.child.returncode, 2)
+                    self.assertEqual(observer.receipt()['native'], value)
+            finally:
+                observer.close()
+
+    def test_capture_observer_cleanup_reaps_unresponsive_child(self):
+        observer = native_capture.CaptureObserver(self.capture_helper('unresponsive'), self.root / 'stalled.pcm', 2, {})
+        observer.arm()
+        with mock.patch.object(native_capture, 'CONTROL_SECONDS', .05):
+            observer.close()
+        self.assertEqual(observer.child.returncode, -signal.SIGKILL)
+        self.assertEqual(observer.endpoint.fileno(), -1)
+        self.assertEqual(observer.cleanup_error, 'capture-stop-timeout')
 
     def test_native_capabilities_require_exact_colocated_protocol(self):
         description = {'protocol': native_playback.PROTOCOL, 'ring_frames': 4096,
@@ -611,8 +764,11 @@ class LiveTests(unittest.TestCase):
         output.mkdir(mode=0o700)
         (source / 'capture.pcm').write_bytes(b'\0' * 16)
         (source / 'expected.pcm').write_bytes(b'header\n' + b'\0' * 16)
+        report = {'status': 'completed', 'submitted_complete_frames': 777}
+        (source / 'playback.json').write_text(json.dumps(report))
         records = integration.retain_failure_artifacts(source, output, 'case-test')
-        self.assertEqual(len(records), 2)
+        self.assertEqual(len(records), 3)
+        self.assertEqual(json.loads((output / 'case-test/playback.json').read_text()), report)
         self.assertEqual((output / 'case-test').stat().st_mode & 0o777, 0o700)
         for record in records:
             path = output / record['path']
@@ -806,6 +962,9 @@ class LiveTests(unittest.TestCase):
     def test_startup_and_capture_require_every_matching_link_active(self):
         data = registry()
         target = {'id': 42, 'serial': '142'}
+        for item in data:
+            if item['id'] in (100, 101):
+                item['info']['props']['port.monitor'] = True
         self.assertTrue(live.verify_links(data, target, 'stream-test', ['FL', 'FR'], require_active=True))
         self.assertTrue(integration.capture_links_active(data, 7, 42, ['FL', 'FR']))
         for state in ('init', 'negotiating', 'paused'):
@@ -819,6 +978,10 @@ class LiveTests(unittest.TestCase):
         with self.assertRaisesRegex(AssertionError, 'capture link error'):
             integration.capture_links_active(data, 7, 42, ['FL', 'FR'])
         data[-1]['info']['state'] = 'active'
+        data[2]['info']['props']['port.monitor'] = False
+        with self.assertRaisesRegex(AssertionError, 'unexpected capture route'):
+            integration.capture_links_active(data, 7, 42, ['FL', 'FR'])
+        data[2]['info']['props']['port.monitor'] = True
         data[-1]['info']['output-node-id'] = 99
         with self.assertRaisesRegex(AssertionError, 'unexpected capture route'):
             integration.capture_links_active(data, 7, 42, ['FL', 'FR'])

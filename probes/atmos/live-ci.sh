@@ -116,6 +116,7 @@ with tempfile.TemporaryDirectory(prefix='live-atmos-ci.', dir=work_root) as dire
 import subprocess
 subprocess.run(['sh', 'probes/atmos/build.sh', '--source', '/work/Cavern', '--output', '/work/build'], check=True)
 subprocess.run(['sh', 'probes/atmos/build-native.sh', '--output', '/work/build'], check=True)
+subprocess.run(['sh', 'probes/atmos/build-capture.sh', '--output', '/work/build'], check=True)
 '''
     compiler_argv = argv + [args.compiler_image, 'python3', '-c', build_code]
     try:

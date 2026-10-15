@@ -15,6 +15,9 @@ ROOT = Path(__file__).resolve().parents[1]
 def source_manifest():
     names = ['probes/atmos/Program.cs', 'probes/atmos/LiveStream.cs',
              'probes/atmos/OfflinePullRenderer.cs', 'probes/atmos/atmos-live',
+             'probes/atmos/native_capture.py', 'probes/atmos/build-capture.sh',
+             'probes/atmos/native/capture.c', 'probes/atmos/native/capture_core.c',
+             'probes/atmos/native/capture_core.h', 'probes/atmos/native/test_capture.c',
              'probes/atmos/native_playback.py', 'probes/atmos/build-native.sh',
              'probes/atmos/native/playback.c', 'probes/atmos/native/playback_core.c',
              'probes/atmos/native/playback_core.h', 'probes/atmos/native/test_core.c',
@@ -30,7 +33,8 @@ def artifact_manifest(module):
     if module.BUILD:
         for name in ('AtmosProbe.dll', 'Cavern.dll', 'Cavern.Format.dll', 'atmos-pw-playback',
                      'native-tests', 'native-io-tests', 'native-build.json', 'native_playback.py',
-                     'native-source.tar', 'PIPEWIRE-EXAMPLE-LICENSE'):
+                     'native-source.tar', 'PIPEWIRE-EXAMPLE-LICENSE', 'atmos-pw-capture',
+                     'native-capture-tests', 'native_capture.py', 'capture-build.json', 'capture-source.tar'):
             result[name] = hashlib.sha256((module.BUILD / name).read_bytes()).hexdigest()
     if module.BED:
         result['generated_bed_fixture'] = hashlib.sha256(module.BED.read_bytes()).hexdigest()
@@ -52,7 +56,7 @@ def main():
     ids = args.test_id or sorted(available)
     if len(ids) != len(set(ids)) or any(name not in available for name in ids):
         parser.error('unknown or duplicate live-player test method')
-    if any('.test_producer_' in name or '.test_native_core_' in name for name in ids) and not args.build:
+    if any('.test_producer_' in name or '.test_native_core_' in name or '.test_capture_core_' in name for name in ids) and not args.build:
         parser.error('producer/native core methods require --build')
     if any(name.endswith('test_producer_generated_bed_metadata_and_exact_count') for name in ids) and not args.bed_fixture:
         parser.error('generated bed method requires --bed-fixture')

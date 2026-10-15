@@ -115,6 +115,17 @@
       "stdin_pipe_bytes": 4096,
       "test_executables": "native-tests and native-io-tests; no production self-test mode"
     },
-    "pw_cat_capture_only": true
+    "legacy_pw_cat_role": "Historical playback/capture receipts; no fallback in current native helpers."
+  },
+  "isolated_capture_observer": {
+    "command": "atmos-pw-capture",
+    "protocol": "rog-atmos-capture-v1",
+    "role": "test-owned virtual sink monitors only; not a production runtime feature",
+    "build_script": "build-capture.sh",
+    "ring_frames": 4096,
+    "maximum_file_bytes": 268435456,
+    "source_reference": "https://github.com/PipeWire/pipewire/blob/1.6.8/src/examples/audio-src-ring.c",
+    "header_semantics_reference": "https://github.com/PipeWire/pipewire/blob/1.6.8/spa/include/spa/buffer/meta.h",
+    "qualification": "Observed software acceptance and measurement limits are recorded in docs/LIVE_ATMOS_CAPTURE.md; no physical or universal xrun qualification."
   }
 }

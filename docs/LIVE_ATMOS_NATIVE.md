@@ -108,5 +108,6 @@ prefill, short final tail, native underflow, malformed input/control and
 control/cancellation while ring and pipe are full. Python tests cover helper
 capability/ACK/final-count failure and the unchanged route guards. Transport
 acceptance must run through the actual new helper before earlier synthetic
-or full JOC success can be claimed. Capture remains the existing isolated
-`pw-cat` observer for this change; no microphone/physical recording is added.
+or full JOC success can be claimed. The isolated harness uses an independent
+[native capture observer](LIVE_ATMOS_CAPTURE.md); its implementation and
+acceptance do not alter this production helper. No microphone/physical recording is added.
