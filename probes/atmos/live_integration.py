@@ -4,6 +4,7 @@ import argparse
 import fcntl
 import hashlib
 import json
+import math
 import os
 from pathlib import Path
 import resource
@@ -24,6 +25,8 @@ MAPS = {'stereo-speakers': ['FL', 'FR'],
         '7.1.4': ['FL', 'FR', 'FC', 'LFE', 'RL', 'RR', 'SL', 'SR',
                   'TFL', 'TFR', 'TRL', 'TRR']}
 MAX_CAPTURE_BYTES = 268435456
+MAX_MEDIA_OBSERVATION_BYTES = 65536
+DESTRUCTIVE_CASES = ('cancel', 'target-loss', 'policy-target-loss')
 
 
 def pcm_comparison(captured, channels, offset, expected=None, *, frames=None, expected_hash=None):
@@ -256,6 +259,45 @@ class RegistryMonitor:
                     child.stdout.close()
 
 
+
+class MediaArrival:
+    """A bounded, private capture proves nonzero generated media before an action."""
+    def __init__(self, path, channels):
+        self.descriptor = os.open(path, os.O_RDONLY | os.O_NONBLOCK | os.O_NOFOLLOW)
+        self.frame_bytes = channels * 4
+        self.checked_bytes = self.maximum_read_bytes = 0
+        self.first_nonzero_frame = self.observed_at = None
+
+    def ready(self, now):
+        if self.first_nonzero_frame is None:
+            remaining = MAX_CAPTURE_BYTES - self.checked_bytes
+            if remaining <= 0:
+                raise ValueError('media observation capture limit')
+            data = os.pread(self.descriptor, min(MAX_MEDIA_OBSERVATION_BYTES, remaining), self.checked_bytes)
+            self.maximum_read_bytes = max(self.maximum_read_bytes, len(data))
+            complete = len(data) // self.frame_bytes * self.frame_bytes
+            for index, (value,) in enumerate(struct.iter_unpack('<f', data[:complete])):
+                if not math.isfinite(value):
+                    raise ValueError('media observation nonfinite PCM')
+                if value != 0 and self.first_nonzero_frame is None:
+                    self.first_nonzero_frame = (self.checked_bytes + index * 4) // self.frame_bytes
+            self.checked_bytes += complete
+            if self.first_nonzero_frame is not None:
+                self.observed_at = now
+        return self.observed_at is not None and now - self.observed_at >= 1
+
+    def receipt(self):
+        return {'evidence': 'finite numerically nonzero PCM at the owned virtual sink monitor',
+                'first_nonzero_capture_frame': self.first_nonzero_frame,
+                'checked_bytes': self.checked_bytes, 'maximum_read_bytes': self.maximum_read_bytes,
+                'read_limit_bytes': MAX_MEDIA_OBSERVATION_BYTES, 'delay_after_observation_seconds': 1}
+
+    def close(self):
+        if self.descriptor is not None:
+            os.close(self.descriptor)
+            self.descriptor = None
+
+
 def props(item):
     return item.get('info', {}).get('props', {})
 
@@ -407,7 +449,7 @@ def one_case(name, probe, config, parent, joc_input=None, failure_artifacts=None
             env[key] = str(folder)
         env.update(XDG_RUNTIME_DIR=str(runtime), PIPEWIRE_RUNTIME_DIR=str(runtime),
                    PIPEWIRE_REMOTE='pipewire-live-atmos')
-        daemon = capture = player = manager = monitor = None
+        daemon = capture = player = manager = monitor = media_arrival = None
         policy_version = None
         daemon_log = (private / 'daemon.log').open('xb')
         capture_handle = None
@@ -464,7 +506,7 @@ def one_case(name, probe, config, parent, joc_input=None, failure_artifacts=None
             else:
                 pcm = expected_pcm(probe, source, layout, private, env, start, volume) if name.startswith('success') else None
             report_path = private / 'playback.json'
-            if name.startswith('success'):
+            if name.startswith('success') or name in DESTRUCTIVE_CASES:
                 capture_path = private / 'capture.pcm'
                 capture_handle = capture_path.open('xb')
                 def capture_limits():
@@ -472,11 +514,15 @@ def one_case(name, probe, config, parent, joc_input=None, failure_artifacts=None
                     resource.setrlimit(resource.RLIMIT_CORE, (0, 0))
                 raw_options = raw_mode_options(env)
                 result['capture_explicit_raw'] = bool(raw_options)
+                capture_properties = {'node.name': 'integration-capture',
+                    'stream.dont-remix': True, 'channelmix.disable': True}
+                if name in DESTRUCTIVE_CASES:
+                    capture_properties.update({'node.autoconnect': False, 'node.dont-fallback': True,
+                        'node.dont-reconnect': True, 'node.dont-move': True})
                 capture = subprocess.Popen(['pw-cat', *raw_options, '--record', '--format', 'f32',
                     '--rate', '48000', '--channels', str(len(channels)),
                     '--channel-map', ','.join(channels), '--target', '0',
-                    '--properties', json.dumps({'node.name': 'integration-capture',
-                    'stream.dont-remix': True, 'channelmix.disable': True}), '-'],
+                    '--properties', json.dumps(capture_properties), '-'],
                     stdin=subprocess.DEVNULL, stdout=capture_handle, stderr=subprocess.DEVNULL,
                     env=env, preexec_fn=capture_limits)
                 capture_node = wait_for(lambda: next(iter(nodes(monitor.snapshot(), 'integration-capture')), None))
@@ -484,6 +530,8 @@ def one_case(name, probe, config, parent, joc_input=None, failure_artifacts=None
                 wait_for(lambda: scoped_links(monitor.snapshot(), sink_id, capture_node['id'], channels, env, monitor=True))
                 wait_for(lambda: capture_links_active(monitor.snapshot(), sink_id, capture_node['id'], channels))
                 result['capture_links_active_before_playback'] = True
+                if name in DESTRUCTIVE_CASES:
+                    media_arrival = MediaArrival(capture_path, len(channels))
             selected_layout = '7.1.4' if name == 'mismatch' else layout
             playback_started = time.monotonic()
             usage_before = resource.getrusage(resource.RUSAGE_CHILDREN)
@@ -520,14 +568,19 @@ def one_case(name, probe, config, parent, joc_input=None, failure_artifacts=None
                         linked = len(observed) == len(channels)
                     elif not action:
                         linked = scoped_links(data, observed_stream, sink_id, channels, env) or linked
-                    # Give the supervisor time to verify links and submit PCM.
-                    if linked and not action and name in ('cancel', 'target-loss', 'policy-target-loss'):
-                        time.sleep(1)
-                        if name == 'cancel':
-                            player.send_signal(signal.SIGTERM)
-                        else:
-                            run(['pw-cli', 'destroy', str(sink_id)], env)
-                        action = True
+                    if media_arrival is not None:
+                        capture_active = capture_links_active(data, sink_id, capture_node['id'], channels)
+                        if not action:
+                            assert capture_active, 'media observation capture route lost'
+                            # Startup priming is zero. Observe actual generated media,
+                            # then keep pumping for one second before the action.
+                            if linked and media_arrival.ready(time.monotonic()):
+                                result['action_after_media_observation_seconds'] = time.monotonic() - media_arrival.observed_at
+                                if name == 'cancel':
+                                    player.send_signal(signal.SIGTERM)
+                                else:
+                                    run(['pw-cli', 'destroy', str(sink_id)], env)
+                                action = True
                 time.sleep(.05)
             code = player.wait(timeout=3)
             usage_after = resource.getrusage(resource.RUSAGE_CHILDREN)
@@ -604,6 +657,9 @@ def one_case(name, probe, config, parent, joc_input=None, failure_artifacts=None
         finally:
             stop(player)
             stop(capture)
+            if media_arrival is not None:
+                result['media_action_barrier'] = media_arrival.receipt()
+                media_arrival.close()
             if monitor is not None:
                 result['registry_observation'] = {
                     'mode': 'persistent-native-monitor', 'processes_started': monitor.processes_started,

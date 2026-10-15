@@ -250,6 +250,18 @@ document, pump and complete current-state cache has a 4-MiB bound. Startup
 and partial-document completion each have a 2-second bound. Malformed data,
 EOF or child failure stops the case; cached state is never silently reused
 after failure. The monitor is stopped and reaped during case cleanup.
+The three destructive cases also capture their own controlled virtual sink
+with automatic routing/fallback disabled and exact monitor links checked.
+They incrementally inspect at most 64 KiB per pump, require a complete frame
+containing finite numerically nonzero PCM, then continue pumping for one
+second before cancellation or target removal. Startup silence and signed
+zero cannot satisfy that barrier. Nonfinite PCM in the inspected prefix fails
+the case.
+This proves generated media reached the virtual monitor before the action;
+it does not measure physical presentation. Positive submitted-frame and
+cleanup assertions remain required. No runtime test hook or full ten-second
+prerender is used.
+
 This changes observer workload because diagnostic client churn caused
 playback/capture xruns; it does not weaken channel, target, fallback or full
 PCM checks, or change runtime player buffers. Earlier failed captures retain

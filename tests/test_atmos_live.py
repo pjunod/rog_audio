@@ -412,6 +412,38 @@ class LiveTests(unittest.TestCase):
                 self.assertIsNotNone(child.returncode)
                 self.assertTrue(child.stdout.closed)
 
+    def test_destructive_action_waits_for_finite_media_with_bounded_partial_reads(self):
+        path = self.root / 'action-capture.pcm'
+        path.write_bytes(struct.pack('<2f', 0, -0.0)[:7])
+        arrival = integration.MediaArrival(path, 2)
+        descriptor = arrival.descriptor
+        try:
+            with mock.patch.object(integration, 'MAX_MEDIA_OBSERVATION_BYTES', 8):
+                self.assertFalse(arrival.ready(1))
+                self.assertEqual(arrival.checked_bytes, 0)  # Incomplete frames are retried.
+                path.write_bytes(struct.pack('<6f', 0, -0.0, 0, 0, .125, 0))
+                self.assertFalse(arrival.ready(2))
+                self.assertFalse(arrival.ready(20))  # Time alone and signed zero cannot trigger.
+                self.assertIsNone(arrival.first_nonzero_frame)
+                self.assertFalse(arrival.ready(30))
+                self.assertEqual(arrival.first_nonzero_frame, 2)
+                self.assertFalse(arrival.ready(30.999))
+                self.assertTrue(arrival.ready(31))
+                self.assertLessEqual(arrival.maximum_read_bytes, 8)
+                self.assertEqual(arrival.checked_bytes, 24)
+        finally:
+            arrival.close()
+        with self.assertRaises(OSError):
+            os.fstat(descriptor)
+        path.write_bytes(struct.pack('<2f', float('nan'), .125))
+        arrival = integration.MediaArrival(path, 2)
+        try:
+            with self.assertRaisesRegex(ValueError, 'nonfinite PCM'):
+                arrival.ready(1)
+            self.assertIsNone(arrival.first_nonzero_frame)
+        finally:
+            arrival.close()
+
     def test_capture_comparison_preserves_mismatch_and_truncation_evidence(self):
         expected = struct.pack('<16f', *([.125] * 16))
         prefix = bytes(3 * 8)
