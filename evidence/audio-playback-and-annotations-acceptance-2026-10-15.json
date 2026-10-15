@@ -1,0 +1,496 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-15",
+  "repository": "https://github.com/pjunod/rog_audio",
+  "pull_request": "https://github.com/pjunod/rog_audio/pull/16",
+  "reviewed_tested_revision": "534730ae85f051f773103bbd3a248b36914d1108",
+  "evidence_class": "selected-unit-acceptance-and-private-offline-diagnostic",
+  "source_sha256": {
+    "probes/atmos/Program.cs": "2f5f347d94446b8ec7f5ac5c29bf2c34424cbff02dcc1de9ad20ab405b80f0d5",
+    "probes/atmos/OfflinePullRenderer.cs": "99a5a9ef3f29a880db0e4b3c08a62ab6399db455b07c9ba7b9d175db9fb884c1",
+    "probes/atmos/atmos-probe": "8e4a1e3c8efcf26433386402c5126e0d641725a91a8ea32ce64608ba7e30d629",
+    "probes/atmos/regressions/Program.cs": "09eb4b77d0f3853cf069833576bf789f054d446c4bc7598a5aede7475a27e4c5",
+    "probes/atmos/regressions/PullRegression.cs": "26529048483d99d6e923d9ed74ca0def78c3cd11830e7f0aa2489fae3ec61655",
+    "probes/atmos/test_probe.py": "dae22149d2eac3d28f1493be46f89e89eeeb4583da6e5d959aa483351cb3702f",
+    "probes/atmos/source_manifest.json": "c02ee407dab7dae8d2d3830929667f364336e57467fcc355decfc85106064063",
+    "scripts/analyse_manual_annotations.py": "23a1c9f491bea13522c758738cd598873caf3fc900b03638697edbebf44cabe8",
+    "scripts/validate_manual_annotations.py": "f93dc4cb797f56cc09fa2e0e9ab9b9d9a3df08b61ad4b29b0bd55e193a949055",
+    "tests/audio/synthetic-manual-annotations.json": "b2d3638603bc4d7dcde8df8e9143a0a6b703d494ef7787e25289bb4be7596542",
+    "tests/test_analyse_manual_annotations.py": "b9283d9d4982e09dbbbdb525f862fe4e8394b936ca384d56a197f6b026021cae"
+  },
+  "source_unchanged_before_after": true,
+  "review_fixes": {
+    "review_outcome": "Coordinator reported both focused fixes independently rereviewed and cleared before acceptance",
+    "fixes": [
+      {
+        "commit": "69f0cd55ec2d9f0ec9cb85073e88c6a6487c217d",
+        "scope": "Normalize malformed synthetic JSON exceptions at public pull API boundary; bounds regression expanded."
+      },
+      {
+        "commit": "b4465ff56adb5f10689b207b4d5a523e2faead74",
+        "scope": "Snapshot four annotation acceptance inputs before loading and after execution; source changes fail acceptance without nested suite execution."
+      }
+    ]
+  },
+  "compiler": {
+    "sdk": "8.0.414",
+    "runtime": "8.0.20",
+    "cavern_commit": "7d85d1880666ca5ea323848cff47ce7f50b29f7d",
+    "compiler_image_id": "sha256:3056a4788bd963d927d0f90ab40bb6d002c59276b28e4c82347dfc3e85f2f4cb",
+    "source_sha256": {
+      "probes/atmos/Program.cs": "2f5f347d94446b8ec7f5ac5c29bf2c34424cbff02dcc1de9ad20ab405b80f0d5",
+      "probes/atmos/OfflinePullRenderer.cs": "99a5a9ef3f29a880db0e4b3c08a62ab6399db455b07c9ba7b9d175db9fb884c1",
+      "probes/atmos/atmos-probe": "8e4a1e3c8efcf26433386402c5126e0d641725a91a8ea32ce64608ba7e30d629",
+      "probes/atmos/regressions/Program.cs": "09eb4b77d0f3853cf069833576bf789f054d446c4bc7598a5aede7475a27e4c5",
+      "probes/atmos/regressions/PullRegression.cs": "26529048483d99d6e923d9ed74ca0def78c3cd11830e7f0aa2489fae3ec61655"
+    },
+    "compilations": [
+      {
+        "project": "probes/atmos/AtmosProbe.csproj",
+        "exit_code": 0,
+        "warnings": 0,
+        "errors": 0
+      },
+      {
+        "project": "probes/atmos/regressions/BlockBufferRegression.csproj",
+        "exit_code": 0,
+        "warnings": 0,
+        "errors": 0
+      }
+    ]
+  },
+  "isolation": {
+    "platform": "native Linux x86_64; not emulated",
+    "rootless": true,
+    "cpus": 2,
+    "cpu_period": 100000,
+    "cpu_quota": 200000,
+    "memory_bytes": 6442450944,
+    "memory_plus_swap_bytes": 6442450944,
+    "network": "none",
+    "pids_limit": 256,
+    "capabilities_dropped": "ALL",
+    "no_new_privileges": true,
+    "sound_devices_mounted": false,
+    "desktop_sockets_mounted": false,
+    "hardware_playback": false,
+    "microphone_access": false,
+    "laptop_changes": false,
+    "private_payloads_exported": false
+  },
+  "selected_acceptance": {
+    "total_methods": 27,
+    "runs_per_method": 1,
+    "failures": 0,
+    "errors": 0,
+    "skips": 0,
+    "atmos": {
+      "method_ids": [
+        "test_channel_order_and_height",
+        "test_stereo_and_exact_partial_block",
+        "test_moving_object_and_repeatability",
+        "test_silence",
+        "test_invalid_scene_and_limits",
+        "test_collision_and_symlink",
+        "test_publication_racer_preserved",
+        "test_generated_eac3_bed",
+        "test_pull_continuation",
+        "test_pull_seek_flush_eof",
+        "test_pull_context_and_bounds",
+        "test_pull_cumulative_budgets",
+        "test_pull_nonfinite_rejected",
+        "test_timeline_synthetic",
+        "test_timeline_generated_bed",
+        "test_timeline_invalid_commands"
+      ],
+      "tests_run": 16,
+      "exit_code": 0
+    },
+    "manual_annotations": {
+      "method_ids": [
+        "test_analyse_manual_annotations.AnnotationTests.test_acceptance_source_changes_fail_without_running_a_nested_suite",
+        "test_analyse_manual_annotations.AnnotationTests.test_cli_private_output_permissions_and_existing_target_preservation",
+        "test_analyse_manual_annotations.AnnotationTests.test_cli_special_inputs_and_unknown_arguments_fail_without_private_paths",
+        "test_analyse_manual_annotations.AnnotationTests.test_conditions_recordings_blocks_and_declared_unknowns_do_not_pool",
+        "test_analyse_manual_annotations.AnnotationTests.test_count_met_does_not_establish_parity_and_selectors_fail_before_execution",
+        "test_analyse_manual_annotations.AnnotationTests.test_optional_byte_hashing_never_promotes_declared_physical_validity",
+        "test_analyse_manual_annotations.AnnotationTests.test_regular_file_reads_refuse_fifo_symlink_directory_and_edits",
+        "test_analyse_manual_annotations.AnnotationTests.test_rejections_missing_onsets_and_empty_groups_remain_visible",
+        "test_analyse_manual_annotations.AnnotationTests.test_schema_bounds_integer_ranges_and_collisions_are_rejected",
+        "test_analyse_manual_annotations.AnnotationTests.test_signed_statistics_and_asymmetric_onset_timebase_bounds",
+        "test_analyse_manual_annotations.AnnotationTests.test_strict_json_duplicate_nonfinite_nesting_and_limits"
+      ],
+      "tests_run": 11,
+      "exit_code": 0,
+      "source_sha256": {
+        "scripts/analyse_manual_annotations.py": "23a1c9f491bea13522c758738cd598873caf3fc900b03638697edbebf44cabe8",
+        "scripts/validate_manual_annotations.py": "f93dc4cb797f56cc09fa2e0e9ab9b9d9a3df08b61ad4b29b0bd55e193a949055",
+        "tests/audio/synthetic-manual-annotations.json": "b2d3638603bc4d7dcde8df8e9143a0a6b703d494ef7787e25289bb4be7596542",
+        "tests/test_analyse_manual_annotations.py": "b9283d9d4982e09dbbbdb525f862fe4e8394b936ca384d56a197f6b026021cae"
+      },
+      "source_sha256_after": {
+        "scripts/analyse_manual_annotations.py": "23a1c9f491bea13522c758738cd598873caf3fc900b03638697edbebf44cabe8",
+        "scripts/validate_manual_annotations.py": "f93dc4cb797f56cc09fa2e0e9ab9b9d9a3df08b61ad4b29b0bd55e193a949055",
+        "tests/audio/synthetic-manual-annotations.json": "b2d3638603bc4d7dcde8df8e9143a0a6b703d494ef7787e25289bb4be7596542",
+        "tests/test_analyse_manual_annotations.py": "b9283d9d4982e09dbbbdb525f862fe4e8394b936ca384d56a197f6b026021cae"
+      },
+      "source_unchanged": true
+    },
+    "passing_methods_repeated": false,
+    "hosted_ci_dispatched": false
+  },
+  "retained_atmos_methods_not_rerun": {
+    "method_ids": [
+      "test_scene_inspect",
+      "test_unsupported_and_truncated",
+      "test_unsupported_stereo_eac3",
+      "test_block_buffer_metadata_boundary",
+      "test_joc_timeslot_frame_boundary",
+      "test_late_sparse_detection",
+      "test_encoded_duration_bound",
+      "test_oamd_freshness_and_stable_configuration"
+    ],
+    "count": 8,
+    "scope": "Inherited unchanged inspect/unsupported/scanner/dependency guards. Prior receipts retained; no fresh execution or blanket coverage claim.",
+    "receipts": [
+      "evidence/audio-atmos-acceptance-2026-10-12.json",
+      "evidence/audio-atmos-official-vectors-acceptance-2026-10-14.json"
+    ]
+  },
+  "actual_joc_diagnostic": {
+    "input_sha256": "c190089bbb0600b8bcba27dbe07c370252c3c2605fd285b4f596b9c2a9d59432",
+    "source": "Dolby public Channel ID 7.1.4 testing vector; directly downloaded to build host under publisher testing terms; payload retained privately",
+    "full_render": {
+      "attempts": 1,
+      "status": "joc-rendered-unqualified",
+      "object_metadata_consumed": true,
+      "sample_rate": 48000,
+      "channels": 12,
+      "samples_per_channel": 3528192,
+      "peak": 0.817282,
+      "finite_pcm_verified": true,
+      "riff_chunk_bounds_verified": true,
+      "wav_sha256": "8071c62cf9c1bf2883cf5947f75ac1965eda8742dc102f4b731128e1db0bc377",
+      "object_frames": 2297,
+      "fresh_oamd_frames": 2297,
+      "reused_oamd_frames": 0
+    },
+    "timeline": {
+      "attempts": 1,
+      "commands": [
+        {
+          "op": "read",
+          "frames": 117
+        },
+        {
+          "op": "read",
+          "frames": 511
+        },
+        {
+          "op": "seek",
+          "sample": 1535
+        },
+        {
+          "op": "read",
+          "frames": 4096
+        },
+        {
+          "op": "flush"
+        },
+        {
+          "op": "read",
+          "frames": 257
+        },
+        {
+          "op": "seek",
+          "sample": 240123
+        },
+        {
+          "op": "read",
+          "frames": 4096
+        },
+        {
+          "op": "seek",
+          "sample": 1800137
+        },
+        {
+          "op": "read",
+          "frames": 4096
+        },
+        {
+          "op": "seek",
+          "sample": 3528181
+        },
+        {
+          "op": "read",
+          "frames": 4096
+        },
+        {
+          "op": "read",
+          "frames": 1
+        }
+      ],
+      "status": "resource-limit-or-process-failure",
+      "child_exit_code": -9,
+      "launcher_exit_code": 2,
+      "events_published": false,
+      "pcm_continuity_verified": false,
+      "automatic_retry": false,
+      "limits_increased": false,
+      "specific_kill_cause": "Not established by launcher report; do not infer CPU versus memory kill solely from signal.",
+      "qualification": "Original full combined sequence failed under unchanged bounds. Exact kill cause is unproven; no retry of the original sequence."
+    },
+    "launcher_limits": {
+      "cpu_seconds": 60,
+      "wall_seconds": 90,
+      "managed_heap_bytes": 536870912,
+      "descriptors": 128
+    },
+    "scope": "Full render and four isolated timeline groups are fresh same-engine diagnostics. Eight read PCM hashes match baseline with PTS/epochs/EOS checked. Original combined sequence failed under unchanged limits, so all seeks in one context remain unqualified; no independent Dolby fidelity, latency or certification inference.",
+    "original_sequence_resource_observations": {
+      "container_cpu_seconds": 78.491,
+      "container_wall_seconds": 41.293,
+      "container_memory_peak_mib_source_reported": 554.1,
+      "container_oom_killed": false,
+      "timeline_wall_seconds_from_file_timestamps": 30.780459,
+      "per_child_rusage_available": false,
+      "cgroup_removed_after_exit": true,
+      "inference": "CPU-limit exhaustion is supported by the 60 CPU-second limit, two-core quota, ~30.78s timeline wall and no OOM evidence; exact cause was not independently captured."
+    },
+    "split_failed_timeline_retry": {
+      "authorized_after_original_failure": true,
+      "groups": [
+        {
+          "group": "prefix",
+          "launcher_exit_code": 0,
+          "wall_seconds": 0.3897908928338438,
+          "user_cpu_seconds": 0.485652,
+          "system_cpu_seconds": 0.062158,
+          "max_rss_kib": 346072,
+          "report_sha256": "e33e8a35665ddb0d361d2fa279fa8269443379607501d57dbf5aae9a8ccbcea2",
+          "log_sha256": "137c8fed764157aca2794881b887053d9ba4ed8e2d05aa97f539fa89dae5d9db",
+          "verified": true,
+          "read_checks": [
+            {
+              "op": "read",
+              "sample_pts": 0,
+              "frames": 117,
+              "epoch": 0,
+              "end_of_stream": false,
+              "pcm_sha256": "424ab5b733822be22bf433895a37bc44d20e51b19e42a24069beff0157c93395"
+            },
+            {
+              "op": "read",
+              "sample_pts": 117,
+              "frames": 511,
+              "epoch": 0,
+              "end_of_stream": false,
+              "pcm_sha256": "3c03697cce8a8120c4fb3d07b46a4cb8fa2ddfc948723e1516e27754466944f8"
+            },
+            {
+              "op": "read",
+              "sample_pts": 1535,
+              "frames": 4096,
+              "epoch": 1,
+              "end_of_stream": false,
+              "pcm_sha256": "3381de4ca9f3a477f25989dfc8b744e7916046b7aa369f61a9a2f7dc0963ec9e"
+            },
+            {
+              "op": "read",
+              "sample_pts": 5631,
+              "frames": 257,
+              "epoch": 2,
+              "end_of_stream": false,
+              "pcm_sha256": "affb2e349122b87f504db1de6dad9d49ea4ea022cab850ce6b1ba4fa37851b2d"
+            }
+          ],
+          "dsp_processing": {
+            "rendered_blocks": 48,
+            "charged_work_blocks": 66,
+            "commands": 6,
+            "dsp_elapsed_ms": 161.00589,
+            "dsp_allocated_bytes": 1174456,
+            "block_samples": 256,
+            "maximum_block_ms": 20.049066,
+            "maximum_block_allocated_bytes": 286152,
+            "evidence": "build-host offline block calls only; excludes setup, replay setup and WAV I/O; allocations are approximate process-wide deltas; includes discard-forward blocks; not physical latency or realtime qualification"
+          }
+        },
+        {
+          "group": "seek240123",
+          "launcher_exit_code": 0,
+          "wall_seconds": 1.5658998989965767,
+          "user_cpu_seconds": 2.438194,
+          "system_cpu_seconds": 0.365645,
+          "max_rss_kib": 352984,
+          "report_sha256": "bbc899165235c0365ed2ed621fe1fae2754439f89b746798fe16beae0164a4e7",
+          "log_sha256": "137c8fed764157aca2794881b887053d9ba4ed8e2d05aa97f539fa89dae5d9db",
+          "verified": true,
+          "read_checks": [
+            {
+              "op": "read",
+              "sample_pts": 240123,
+              "frames": 4096,
+              "epoch": 1,
+              "end_of_stream": false,
+              "pcm_sha256": "511569ab5377384267b9922fc0165ca216b9608116ecfb4929844c9ee3e811f1"
+            }
+          ],
+          "dsp_processing": {
+            "rendered_blocks": 954,
+            "charged_work_blocks": 966,
+            "commands": 2,
+            "dsp_elapsed_ms": 1301.019353,
+            "dsp_allocated_bytes": 8428008,
+            "block_samples": 256,
+            "maximum_block_ms": 40.790817,
+            "maximum_block_allocated_bytes": 286672,
+            "evidence": "build-host offline block calls only; excludes setup, replay setup and WAV I/O; allocations are approximate process-wide deltas; includes discard-forward blocks; not physical latency or realtime qualification"
+          }
+        },
+        {
+          "group": "seek1800137",
+          "launcher_exit_code": 0,
+          "wall_seconds": 6.994953123154119,
+          "user_cpu_seconds": 11.488627,
+          "system_cpu_seconds": 2.088038,
+          "max_rss_kib": 352984,
+          "report_sha256": "049588b99e14895a55f614ea10560cdab402319ae3f630f666b359225f5eb45d",
+          "log_sha256": "137c8fed764157aca2794881b887053d9ba4ed8e2d05aa97f539fa89dae5d9db",
+          "verified": true,
+          "read_checks": [
+            {
+              "op": "read",
+              "sample_pts": 1800137,
+              "frames": 4096,
+              "epoch": 1,
+              "end_of_stream": false,
+              "pcm_sha256": "57c341506079f1b072f30780bf11d4c2c6068a7827a95173f96cced7f4f329de"
+            }
+          ],
+          "dsp_processing": {
+            "rendered_blocks": 7048,
+            "charged_work_blocks": 7060,
+            "commands": 2,
+            "dsp_elapsed_ms": 6665.446968,
+            "dsp_allocated_bytes": 60435160,
+            "block_samples": 256,
+            "maximum_block_ms": 61.138064,
+            "maximum_block_allocated_bytes": 286672,
+            "evidence": "build-host offline block calls only; excludes setup, replay setup and WAV I/O; allocations are approximate process-wide deltas; includes discard-forward blocks; not physical latency or realtime qualification"
+          }
+        },
+        {
+          "group": "seek-eof",
+          "launcher_exit_code": 0,
+          "wall_seconds": 12.617318158969283,
+          "user_cpu_seconds": 20.413212,
+          "system_cpu_seconds": 4.203089,
+          "max_rss_kib": 352984,
+          "report_sha256": "1f23da04415b8e9145b57f3a9ae4d712a0fa41fb834cf52aa838907f1a2eadd5",
+          "log_sha256": "137c8fed764157aca2794881b887053d9ba4ed8e2d05aa97f539fa89dae5d9db",
+          "verified": true,
+          "read_checks": [
+            {
+              "op": "read",
+              "sample_pts": 3528181,
+              "frames": 11,
+              "epoch": 1,
+              "end_of_stream": true,
+              "pcm_sha256": "fcf874c02ea0b2a110b939bbc84f3f121ee42e192ce8c42423b3542125bc8a6e"
+            },
+            {
+              "op": "read",
+              "sample_pts": 3528192,
+              "frames": 0,
+              "epoch": 1,
+              "end_of_stream": true,
+              "pcm_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            }
+          ],
+          "dsp_processing": {
+            "rendered_blocks": 13782,
+            "charged_work_blocks": 13794,
+            "commands": 3,
+            "dsp_elapsed_ms": 12194.162049,
+            "dsp_allocated_bytes": 117824592,
+            "block_samples": 256,
+            "maximum_block_ms": 68.122126,
+            "maximum_block_allocated_bytes": 294864,
+            "evidence": "build-host offline block calls only; excludes setup, replay setup and WAV I/O; allocations are approximate process-wide deltas; includes discard-forward blocks; not physical latency or realtime qualification"
+          }
+        }
+      ],
+      "scope": "Failed-timeline-only split diagnostic. Separate processes do not establish all seeks in one context; same-engine equality only, not independent fidelity or physical latency.",
+      "source_unchanged": true,
+      "units_repeated": false,
+      "full_render_repeated": false,
+      "limits_increased": false,
+      "cgroup_observations": {
+        "sample_period_seconds": 0.25,
+        "all_sampled_oom_and_oom_kill_counters_zero": true,
+        "maximum_sampled_memory_peak_bytes": 414183424,
+        "memory_max_bytes": 6442450944,
+        "memory_swap_max_bytes": 0,
+        "counter_scope": "Same isolated container; cpu.stat cumulative across groups. wait4 per-launch rusage includes launcher/descendants; max RSS can include inherited fork footprint."
+      },
+      "separate_contexts": 4,
+      "verified_read_count": 8,
+      "verified_timeline_event_count": 13,
+      "all_seeks_in_single_context_qualified": false
+    },
+    "publisher_page": "https://dolby.my.site.com/professionalsupport/s/article/App-Development-for-Automotive-Test-Content",
+    "original_mp4": {
+      "url": "https://ott.dolby.com/DISC/assets/ef7d6eeb-1968-4010-82e8-808399604553/channel_ID_voices_714_768.mp4",
+      "size_bytes": 7059393,
+      "sha256": "3c7db38e5fe29124c10c660177b6bc377703f2af846a67bf7f452431d3e9bb08"
+    }
+  },
+  "retained_artifacts_sha256": {
+    "compile-reviewfix.log": "e4b998cf1315337912940a713c1cd20e60f80ddc8be2adbbb3a724748035b2d3",
+    "container-reviewfix-inspect.json": "ee1adaaa7c677cb9921ad23b4a39cb98b6463e33f8afe8283b1becf93bc5bdd1",
+    "acceptance-results/atmos-selected.json": "ea3f4b1758439ae0376acae5b290d5bd91becd1b3d30a347a4622442a40351ee",
+    "acceptance-results/atmos-selected.log": "ec6676d4934f8f14538b2239fac5ed7d5d68c63c7d44d94197a3d741eeffbaf2",
+    "acceptance-results/manual-selected.json": "fa32a5de7bd876772d3df14c8eb1195785efed5c3894783f267dd3adef7bc1be",
+    "acceptance-results/manual-selected.log": "32538c33a7919e22282c7f5196f4410f647c5515b4ae5771f7f21f38d520d6b6",
+    "container-acceptance-inspect.json": "823c776cde33914e681ade46f704b75127d372685b462719e6d6e3161003860c",
+    "acceptance-source-before.sha256": "971674680026fe65ec5a3f1cf24dfa402f2b5a0694c56c5294d06b68316185a0",
+    "acceptance-source-after.sha256": "971674680026fe65ec5a3f1cf24dfa402f2b5a0694c56c5294d06b68316185a0",
+    "acceptance-source-after-joc.sha256": "971674680026fe65ec5a3f1cf24dfa402f2b5a0694c56c5294d06b68316185a0",
+    "joc-diagnostic.py": "269b91f82a017427656235bd5494e0ef32a142dda2aaa9d4069239ee19fee2b5",
+    "joc-diagnostic.log": "6bb4e708c328bea6c9abe29183e4b81b695f172654a0acf8fbf03ab9b61a9cee",
+    "joc-diagnostic/full.json": "a724eae5ccc6ee0ff2515bc5fccd792930709c1812badda32add710b365095b6",
+    "joc-diagnostic/full.log": "f1f0b3e1ec37aabd6cf4e6361ce12bcb9e247fb115c2efd80fd0e5c5deb65675",
+    "joc-diagnostic/timeline.json": "4901e834691b33bafbb7ad76b86bbbdef77f24b7f2ad0512d5c909c3a5a3fe85",
+    "joc-diagnostic/timeline.log": "b9e74e85ac93fdda0e0bf054cecf67b0b03e470e56bbd13e7b00d9908aae77ff",
+    "joc-diagnostic/timeline-report.json": "69bde15f0b4e2d37891c87d4f0c1b5db9fd31ccef4028184aa2742b2c221b73f",
+    "container-joc-inspect.json": "6e56cf9347450a18e5f75dff3cf34665102bcb268837514eaaa77a0a3326c502",
+    "joc-split-diagnostic.py": "fa3283def99a72cf28b6ff8df3b6982d7c06605fa980f7b60efbabb9fa5af807",
+    "joc-split-diagnostic.log": "d879e2d5e376e5bb7f4bff020050937d1ea8234dda98afc6012bf177df099c6a",
+    "container-joc-split-inspect.json": "7dcbaf6e4d20d9a71a754b34aa47b5ef8e38dcc43a64b6b41b5e24193a15fdc0",
+    "joc-split-diagnostic/prefix-cgroup.json": "db65de21a61608a94a85bf8754ee222914c758989630a5bfc6187c16e2a297c7",
+    "joc-split-diagnostic/prefix-commands.json": "84c92231d46e26eeb46d64a02d7248fbe64249550e0ca5751a38666c2fca0870",
+    "joc-split-diagnostic/prefix-report.json": "e33e8a35665ddb0d361d2fa279fa8269443379607501d57dbf5aae9a8ccbcea2",
+    "joc-split-diagnostic/prefix.log": "137c8fed764157aca2794881b887053d9ba4ed8e2d05aa97f539fa89dae5d9db",
+    "joc-split-diagnostic/results.json": "fa609ae3a09123d72f7f8c641e8618bc682854b6e5988a6686ad8027bbd6dc68",
+    "joc-split-diagnostic/seek-eof-cgroup.json": "ca24de96b551098b18eb762d2a921573b9beafd175fe45bdbf373a91f0fe4ec0",
+    "joc-split-diagnostic/seek-eof-commands.json": "59068345554a6ba250ea45531f82b17a282d88bd837dc6017c62162d4430db97",
+    "joc-split-diagnostic/seek-eof-report.json": "1f23da04415b8e9145b57f3a9ae4d712a0fa41fb834cf52aa838907f1a2eadd5",
+    "joc-split-diagnostic/seek-eof.log": "137c8fed764157aca2794881b887053d9ba4ed8e2d05aa97f539fa89dae5d9db",
+    "joc-split-diagnostic/seek1800137-cgroup.json": "9725cba414db0f033c5b372c1dde9b2d5a7e8a680ee60bc6e24727afd0817297",
+    "joc-split-diagnostic/seek1800137-commands.json": "07b3f294d38646da1192edc847c5363f04f101773c68e4d0c5ec624542e27c7c",
+    "joc-split-diagnostic/seek1800137-report.json": "049588b99e14895a55f614ea10560cdab402319ae3f630f666b359225f5eb45d",
+    "joc-split-diagnostic/seek1800137.log": "137c8fed764157aca2794881b887053d9ba4ed8e2d05aa97f539fa89dae5d9db",
+    "joc-split-diagnostic/seek240123-cgroup.json": "fbacb1a41d7c2114c433441ffb2fb16b14d8f775003af6e0ea8727d8ac730659",
+    "joc-split-diagnostic/seek240123-commands.json": "70637db74433b2fd8c32c0cbf1deb2cee1c61ace6d37206bafbddd4f0c3efec8",
+    "joc-split-diagnostic/seek240123-report.json": "bbc899165235c0365ed2ed621fe1fae2754439f89b746798fe16beae0164a4e7",
+    "joc-split-diagnostic/seek240123.log": "137c8fed764157aca2794881b887053d9ba4ed8e2d05aa97f539fa89dae5d9db"
+  },
+  "limitations": [
+    "Synthetic and generated-bed units do not prove Dolby metadata fidelity.",
+    "Original combined JOC timeline failed without event output; four split-process groups passed, which does not establish all seeks in one context.",
+    "No independent reference fidelity, measured acoustic/physical latency, realtime, binaural, TrueHD or live device qualification.",
+    "Final repository/privacy checks, publication and merge belong to coordinator.",
+    "The cumulative 67500-work-block ceiling does not guarantee completion within the launcher 60 CPU-second process budget; long replay can exhaust a process budget before reaching the work ceiling. Offline work/timing limits are not a realtime guarantee."
+  ]
+}

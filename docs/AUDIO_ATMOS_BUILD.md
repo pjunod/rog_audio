@@ -66,16 +66,17 @@ Cavern's global layout; replay/setup work and command budgets are cumulative.
 File-only timeline reports include PCM hashes and separate DSP timing and
 allocation fields, excluding WAV I/O and engine startup.
 
-The [compiler-only receipt](../evidence/audio-atmos-pull-compiler-2026-10-15.json)
-binds native Linux x86_64 source compilation under the bounded build host.
-New regression sources are prepared; independent adversarial review and one
-selected acceptance run remain pending. Existing render tests need rerunning
-because their shared loop changed. No private reference media was transferred
-or exercised, no audio device was opened, and no laptop/service was changed.
-Synthetic/generated-bed replay equality checks internal state only; encoded
-JOC/OAMD replay, independent Dolby fidelity, unflushed tails, uncompensated
-unknown decoder/filter delay and physical/realtime qualification remain open.
-The original Cavern pin and three dependency patches are unchanged.
+The [initial compiler receipt](../evidence/audio-atmos-pull-compiler-2026-10-15.json)
+and [review-fix compiler receipt](../evidence/audio-atmos-pull-reviewfix-compiler-2026-10-15.json)
+bind the separate native Linux builds. Independent review cleared both fixes;
+[all sixteen affected Atmos methods](../evidence/audio-playback-and-annotations-acceptance-2026-10-15.json)
+passed once. Synthetic/generated-bed units check internal state; the fresh
+public JOC diagnostic separately checks full rendering and four isolated
+replay groups. The original combined replay failed under process bounds and
+remains recorded. No audio device was opened or laptop/service changed.
+Independent Dolby fidelity, unflushed tails, uncompensated decoder/filter
+delay and physical/realtime qualification remain open. The original Cavern
+pin and three dependency patches are unchanged.
 
 ## 1. Establish the exact candidate and compiler loop
 
@@ -181,3 +182,21 @@ then run the affected fast lane once. Record source compilation, synthetic
 results, private sample qualification, runtime readiness and physical
 acceptance independently. Sonos remains deferred until the coordinator
 finishes the internal-audio work and schedules that final route.
+
+
+## PR 16 acceptance — bounded replay and remaining limits
+
+[The accepted receipt](../evidence/audio-playback-and-annotations-acceptance-2026-10-15.json)
+records all sixteen affected methods passing once after independent review and
+fixes; eight unchanged methods retain prior acceptance. A fresh complete
+7.1.4 JOC render and eight exact PCM read comparisons across four separate
+timeline contexts passed on the reviewed build. The original combined sequence
+failed with signal 9 under unchanged process limits. Its resource observations
+support CPU exhaustion, without proving the exact kill cause.
+
+Only the failed timeline diagnostic was split; no passing units or full render
+were repeated. Separate contexts do not qualify all long seeks in one context.
+The 67500-block work ceiling does not promise completion within the launcher's
+60 CPU-second budget. Replay still starts from zero; no fast-seek index, delay
+compensation, tail flush, independent Dolby fidelity or device qualification is
+claimed. The measurements describe the bounded build host, not laptop latency.

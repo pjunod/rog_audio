@@ -202,9 +202,9 @@ pre-review receipts are historical, separate from this final qualification.
 
 The reusable [OfflinePullRenderer](OfflinePullRenderer.cs) is an offline,
 single-context API in `AtmosProbe.dll`. The existing `render` command uses
-this same path. Compilation is recorded separately from review and test
-acceptance; the new methods are prepared, not yet executed. Dependency pins
-and all three patch bytes remain unchanged.
+this same path. The [PR 16 receipt](../../evidence/audio-playback-and-annotations-acceptance-2026-10-15.json)
+records independent review, fixed-source compilation and sixteen affected
+methods passing once. Dependency pins and all three patch bytes remain unchanged.
 
 ```csharp
 using AtmosProbe;
@@ -310,10 +310,11 @@ Eight new focused methods cover split-read continuity/stable caller buffers,
 seek/flush/EOF history, competing-context recovery and bounds, cumulative
 budgets, nonfinite output rejection, and synthetic/generated-bed/invalid
 file timelines. Existing synthetic render and generated-bed methods are
-invalidated by the shared render-loop change and need one post-review run.
-Generated bed and synthetic fixtures cannot exercise encoded JOC/OAMD replay;
-that remains an explicit coverage gap. Prior official-vector diagnostics and
-source-bound JOC guards remain inherited evidence, not new API qualification.
+invalidated by the shared render-loop change passed once after review.
+Generated bed and synthetic fixtures cannot exercise encoded JOC/OAMD replay.
+The separate fresh public-vector diagnostic below supplies scoped same-engine
+replay evidence; prior vector diagnostics and unchanged guards retain their
+original source-bound receipts.
 
 ## Official vectors and observed channel energy
 
@@ -378,3 +379,21 @@ boundary case. The inherited fifteen-method receipt remains unchanged; the
 three affected probe methods and five analyzer methods passed once after
 independent review, as recorded in the [new acceptance receipt](../../evidence/audio-atmos-official-vectors-acceptance-2026-10-14.json). Without
 explicit generated codec fixtures, those two methods are recorded as skips.
+
+
+## PR 16 acceptance — bounded replay and remaining limits
+
+[The accepted receipt](../../evidence/audio-playback-and-annotations-acceptance-2026-10-15.json)
+records all sixteen affected methods passing once after independent review and
+fixes; eight unchanged methods retain prior acceptance. A fresh complete
+7.1.4 JOC render and eight exact PCM read comparisons across four separate
+timeline contexts passed on the reviewed build. The original combined sequence
+failed with signal 9 under unchanged process limits. Its resource observations
+support CPU exhaustion, without proving the exact kill cause.
+
+Only the failed timeline diagnostic was split; no passing units or full render
+were repeated. Separate contexts do not qualify all long seeks in one context.
+The 67500-block work ceiling does not promise completion within the launcher's
+60 CPU-second budget. Replay still starts from zero; no fast-seek index, delay
+compensation, tail flush, independent Dolby fidelity or device qualification is
+claimed. The measurements describe the bounded build host, not laptop latency.

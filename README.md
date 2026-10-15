@@ -35,22 +35,20 @@ differ. See [comparison and retained trials](docs/LATENCY_COMPARISON.md) and
 the [phone-recorded method](docs/PHYSICAL_LATENCY_METHOD.md). No physical latency
 or calibrated sound-quality result has been collected.
 
-Host Atmos has [complete official-vector diagnostics](docs/ATMOS_REFERENCE.md)
-for Dolby Channel ID 5.1.4/7.1.4 and [eight reviewed focused acceptance methods](evidence/audio-atmos-official-vectors-acceptance-2026-10-14.json)
-passed once. The bounded offline launcher and channel-energy analyzer changed;
-installed laptop speaker software remains as recorded above. Independent
-reference fidelity, binaural/realtime support and physical qualification remain
-open; vector payloads and detailed renders stay private. The [bounded pull-render API](probes/atmos/README.md) now implements
-caller-owned PCM reads, sample timestamps, seek/flush and explicit EOS. Its
-[native Linux compilation](evidence/audio-atmos-pull-compiler-2026-10-15.json)
-passed; review and selected regression acceptance remain pending.
+The [bounded Atmos pull API](probes/atmos/README.md) implements caller-owned
+PCM reads, sample timestamps, seek/flush and exact EOS. [PR 16 acceptance](evidence/audio-playback-and-annotations-acceptance-2026-10-15.json)
+records sixteen affected Atmos methods and eleven signed-annotation methods
+passed once after independent review and fixes. A fresh full official JOC
+render and four separate continuity groups passed; the original combined seek
+sequence hit a process limit and remains a recorded limitation. These are
+same-engine checks, not independent Dolby fidelity or realtime qualification.
 
-[Signed manual annotation analysis](docs/MANUAL_LATENCY_ANNOTATIONS.md) is
-implemented with generated examples and eleven proposed focused methods; review
-and acceptance are pending. It preserves negative click-to-chirp intervals,
-rejections and declared onset bounds without recording or inferring physical
-validity. The [accepted-filter audit](evidence/speaker-chain-algorithmic-delay-audit-2026-10-15.json)
+[Signed manual annotation analysis](docs/MANUAL_LATENCY_ANNOTATIONS.md) preserves
+negative click-to-chirp intervals, rejected attempts and declared onset bounds
+without recording or inferring physical validity. The [accepted-filter audit](evidence/speaker-chain-algorithmic-delay-audit-2026-10-15.json)
 found no justified removable fixed delay; original filters/limiter stay intact.
+Independent fidelity, binaural/realtime support and physical qualification
+remain open. Sonos Arc/eARC remains last.
 
 [v0.2.3 is published](https://github.com/pjunod/rog_audio/releases/tag/v0.2.3)
 with the [verified packaging-only +rog4 runtime](evidence/speaker-stop-packaging-only-rog4-2026-10-13.json),
@@ -180,7 +178,7 @@ recovered vendor files and separately fetched dependencies.
 - [x] Merge guarded 1024/2048 requests and pass the explicit ROG 1024 short trial.
 - [x] Review/test/deploy synchronous service stop and both current programme settings; retain both accepted demo listening results.
 - [x] Finish both settings-bound software hours without added errors; verify intact logs, preserved state and owned cleanup.
-- [ ] Review and accept signed manual-annotation analysis and the bounded file-only Atmos API.
+- [x] Review and accept signed manual annotations and the bounded offline Atmos API; retain the documented long-sequence resource limit.
 - [ ] Verify the post-login ROG route and refresh the reachable ThinkPad state.
 - [ ] Qualify physical headphone/HDMI routing and resume.
 - [ ] Measure built-in speaker quality and latency against the Macs.

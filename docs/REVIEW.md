@@ -489,3 +489,18 @@ passed on native Linux x86_64 with zero warnings/errors. The original compiler
 receipt remains separate. Eleven annotation methods and sixteen affected
 Atmos methods are selected for the first post-review acceptance pass.
 Unchanged speaker, physical-emitter and other prior suites are retained.
+
+
+### PR 16 final selected acceptance
+
+[The source-bound receipt](../evidence/audio-playback-and-annotations-acceptance-2026-10-15.json)
+records all 27 selected methods passing once with zero failures/errors/skips:
+eleven annotation and sixteen Atmos methods. Source/fixture hashes stayed
+unchanged; no hosted duplicate or passing-unit retry ran.
+
+The full official 7.1.4 JOC render passed. A combined replay diagnostic failed
+under the original process limits; retained resource evidence supports CPU
+exhaustion without independently proving the kill cause. Only the failed
+diagnostic was split into four isolated groups. All eight read hashes and
+PTS/epoch/EOS checks matched the retained full-render PCM. This proves scoped
+same-engine continuity, not every seek in one context or independent fidelity.

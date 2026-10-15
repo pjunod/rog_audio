@@ -1,12 +1,12 @@
 # Status — implementation and physical acceptance
 
-**Updated:** 2026-10-15 · **State:** signed manual-annotation analysis is
-implemented with review/acceptance pending; bounded file-only Atmos pull API
-is implemented and compiled; selected acceptance is pending. Earlier demo/hour
-passes remain exact-condition history.
-ROG's +rog3 tuning service started after a new externally initiated boot, but
-the operator is not logged into the desktop seat. ThinkPad was unreachable
-once; its current state remains unknown. Physical recording is still deferred.
+**Updated:** 2026-10-15 · **State:** signed manual annotations and the bounded
+file-only Atmos API passed independent review and all 27 selected unit methods
+once. Fresh JOC rendering and four split continuity groups passed; the original
+combined sequence hit a process limit and remains recorded separately.
+Earlier laptop demo/hour passes remain exact-condition history. The ROG service
+started after a new boot at the greeter; ThinkPad was unreachable once.
+Physical recording is deferred at the owner's request.
 
 | System | Last qualified software | Last qualified timing | Programme settings | October 15 observation / open evidence |
 |---|---|---|---|---|
@@ -29,9 +29,9 @@ remain different software quantities, not physical latency or Mac parity.
 | ASUS speaker tuning | Prior 1024 hour/demo accepted; new service/preset/control bindings present | Full post-login physical route, fresh IR load and negotiated period |
 | ThinkPad speaker tuning | Prior 256 hour/demo accepted at −16/cap 14.1375; current state unknown | Reachable read-only refresh; physical qualification |
 | Startup/stop | Reviewed helper, prior save/automatic-start checks and ROG service autostart evidence retained | End-to-end post-login routing; repeated boot/resume/hotplug separately |
-| Signed annotation analysis | New bounded offline tool/example/eleven methods implemented; no units run | Combined adversarial review, then one focused acceptance pass |
+| Signed annotation analysis | Eleven reviewed methods passed once; signed bounds and provenance retained | Actual private annotations from the later recording session |
 | Source-level chain latency | Accepted minimum-phase IR/preset audit found no justified removable fixed delay; no tuning change | Actual same-path physical recording |
-| Host Atmos | Prior full official vectors/eight-method acceptance retained; bounded file-only pull API implemented and compiled | Review/selected API acceptance; independent fidelity and later live integration |
+| Host Atmos | Sixteen affected methods passed once; fresh full JOC render and four isolated timeline groups passed | Original long sequence resource failure retained; independent fidelity and later live integration |
 | Physical interaction timing | Emitter source/ten-method acceptance and earlier staging retained; no pilot/physical samples | Owner-ready coordinated same-keyboard/phone capture, still deferred |
 | Sonos Arc/eARC | Untouched and last | TV route and received-format qualification after internal audio |
 
@@ -67,24 +67,37 @@ Both receipts are imported byte-for-byte at SHA256 `ce4c212e` and `ce07cdff`.
 They preserve prior hours as historical passes without claiming a new physical
 or repeated-reboot pass. User-attended recording remains deferred.
 
-## Signed annotations and bounded Atmos API — ready for final review
+## Signed annotations and bounded Atmos API — reviewed acceptance
 
-The [new annotation tool](MANUAL_LATENCY_ANNOTATIONS.md) keeps signed sample
+[PR 16 acceptance](../evidence/audio-playback-and-annotations-acceptance-2026-10-15.json)
+records two independent adversarial reviews, both P2 fixes cleared, and all
+27 affected methods passed once on `534730a`: eleven annotation methods and
+sixteen Atmos methods, with zero failures, errors or skips. No passing units
+were repeated; unchanged speaker, emitter and eight other Atmos methods
+retain their earlier receipts. Final source hashes match the accepted bytes.
+
+The [annotation tool](MANUAL_LATENCY_ANNOTATIONS.md) preserves signed sample
 intervals, conservative onset ranges, unknown timebase/bias declarations,
-rejected attempts and recording/condition/block boundaries. Its optional
-explicit-file hashing proves bytes only, never physical validity. Strict
-private file handling and the generated example have proposed new tests;
-construction syntax has been checked, but independent review and units have
-not run. The old v1 analyser and its accepted tests remain unchanged.
+rejected attempts and recording/condition/block boundaries. File hashing
+proves bytes only. Its runner binds four source/fixture inputs before and
+after loading; a change invalidates acceptance rather than relabelling it.
 
 The [file-only pull API](../probes/atmos/README.md) implements bounded caller
-reads, sample-tick timestamps, seek/flush/EOS state and continuity checks.
-[Native Linux API/regression compilation](../evidence/audio-atmos-pull-compiler-2026-10-15.json)
-passed with zero warnings/errors. Sixteen affected methods are selected from
-24 declared methods; no unit acceptance has run. Desktop/headphone playback
-and independent encoded-JOC replay fidelity remain unqualified.
-This work is being combined with the read-only receipts and source audit;
-there is no status-only PR or new physical measurement claim.
+reads, sample timestamps, history-preserving seek/flush, epochs and exact EOS.
+[Fresh reviewed-source compilation](../evidence/audio-atmos-pull-reviewfix-compiler-2026-10-15.json)
+passed on native Linux x86_64 with zero warnings/errors. A fresh full official
+7.1.4 JOC render consumed all 2297 fresh-OAMD frames. Eight PCM slices across
+four separate timeline contexts matched that retained baseline exactly,
+including PTS/epochs and the final eleven-frame read followed by EOF.
+
+The original combined seek sequence failed with child signal 9 under unchanged
+60 CPU-second/90 wall-second limits. Resource evidence supports CPU exhaustion
+but does not independently establish its exact kill cause. Only that failed
+diagnostic was split; the full render and passing units were retained.
+Separate-context passes do not qualify every seek in one long-lived context.
+The 67500-block API ceiling is not a guarantee of completing within the
+process budget. Independent Dolby fidelity, delay/tail compensation,
+realtime/headphone playback and physical latency remain unqualified.
 
 ## Accepted speaker-chain audit — no justified tuning change
 

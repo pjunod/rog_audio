@@ -1,6 +1,6 @@
 # Manual latency annotations — preserve signed click-to-chirp samples
 
-**Status:** implemented; independent review and focused acceptance pending ·
+**Status:** independently reviewed; eleven focused methods passed once ·
 **Written:** 2026-10-15 · **Executes:** the signed annotation path in
 [the physical method](PHYSICAL_LATENCY_METHOD.md#7-preserve-signed-annotations-before-choosing-the-analysis-path).
 
@@ -151,3 +151,7 @@ controlled loader/runner, without recursively running the real suite.
 Reports retain test counts and synthetic-only scope. A result-path collision
 is refused before tests execute. Public summaries need separate privacy/scope
 review; raw recordings and annotation reports remain private.
+
+[The PR 16 receipt](../evidence/audio-playback-and-annotations-acceptance-2026-10-15.json)
+records all eleven methods passing once on `534730a`, with unchanged before/after
+source and fixture hashes. These are synthetic checks, not physical recordings.
