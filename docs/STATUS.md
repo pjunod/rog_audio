@@ -10,10 +10,10 @@ twelve-channel capture lost 512 frames despite exact native input/consumption
 and zero ring underruns. Remaining transport cases and full JOC stopped.
 The unchanged target-mismatch case remains retained. A bounded profiler retry
 was exact with zero node errors, so it did not reproduce or attribute the loss.
-The capture-only candidate `a135f23` is implemented, compiled and under
-independent adversarial review. Nine new recorder methods and two changed
-harness methods await execution; forty-nine unchanged method passes remain
-valid. Production playback source and binaries are unchanged. Earlier full captures
+The capture-only candidate cleared independent adversarial review at
+`988cb25` after three harness corrections. Nine new recorder methods and two
+changed harness methods are entering acceptance; forty-nine unchanged method
+passes remain valid. Production playback source and binaries are unchanged. Earlier full captures
 and private diagnostics remain failed and retained. The live preview is not
 ready for publication or laptop playback yet.
 Signed manual annotations and the bounded
@@ -51,7 +51,7 @@ remain different software quantities, not physical latency or Mac parity.
 | Startup/stop | Reviewed helper, prior save/automatic-start checks and ROG service autostart evidence retained | End-to-end post-login routing; repeated boot/resume/hotplug separately |
 | Signed annotation analysis | Eleven reviewed methods passed once; signed bounds and provenance retained | Actual private annotations from the later recording session |
 | Source-level chain latency | Accepted minimum-phase IR/preset audit found no justified removable fixed delay; no tuning change | Actual same-path physical recording |
-| Live Atmos prototype | Recorder a135f23 compiled, under adversarial review; 49 unchanged unit passes retained; earlier stereo pass and twelve-channel failure historical | Resolve review, run 9 new + 2 changed methods, six ordinary captures and full JOC |
+| Live Atmos prototype | Recorder/harness 988cb25 reviewed and clear; 49 unchanged unit passes retained; prior capture failures retained | Run 9 new + 2 changed methods, six ordinary captures and full JOC |
 | Host Atmos | Sixteen affected methods passed once; fresh full JOC render and four isolated timeline groups passed | Original long sequence resource failure retained; independent fidelity and later live integration |
 | Physical interaction timing | Emitter source/ten-method acceptance and earlier staging retained; no pilot/physical samples | Owner-ready coordinated same-keyboard/phone capture, still deferred |
 | Sonos Arc/eARC | Untouched and last | TV route and received-format qualification after internal audio |
@@ -60,6 +60,28 @@ Companion to [installation](SPEAKER_INSTALL.md), [review](REVIEW.md),
 [manual annotations](MANUAL_LATENCY_ANNOTATIONS.md) and
 [implementation](AUDIO_IMPLEMENTATION.md). Source, synthetic, read-only and
 physical evidence remain separate.
+
+## October 15 recorder review — clear; selected acceptance starting
+
+Independent adversarial review cleared `988cb25` and the exact private
+acceptance runner after three pre-test findings were resolved:
+
+| Finding | Correction |
+|---|---|
+| Early evidence hardlink could race the recorder's single-link private-file check | Retain only after positive written output proves validation and armed writer startup |
+| Temporary capture-file disappearance could skip wrapper child cleanup | Record ordinary disappearance; other errors fail distinctly and always terminate/reap the owned process group |
+| Cancellation could accept a partial source-end receipt while its sink still existed | Only intentional target removal permits partial source end; cancellation requires healthy routing and complete capture |
+
+The existing observer regression now exercises cancellation, pre-action
+removal, deliberate removal and independent writer-error distinctions.
+Capture C/client/compiler recipe and production playback bytes are unchanged
+by these corrections. Compile artifacts are reused by exact source hash.
+
+Eleven selected methods are authorized to run once, followed only on success
+by six ordinary capture cases and the full 73.504-second JOC comparison.
+Each failed phase stops progression and retains evidence; unchanged methods
+and target-mismatch acceptance stay retained. This section records source
+clearance and execution start, not a test or capture pass.
 
 ## October 15 native recorder — compiled, awaiting adversarial clearance
 
