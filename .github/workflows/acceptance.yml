@@ -6,7 +6,7 @@ on:
         description: 'Reviewed lane to run; do not repeat already passing lanes'
         required: true
         type: choice
-        options: [all, repository, speaker, installation, latency, coreaudio, audio-path, atmos, atmos-energy]
+        options: [all, repository, speaker, installation, latency, coreaudio, audio-path, atmos, atmos-energy, manual-annotations]
         default: all
       selection:
         description: 'all, or a stage from the selected lane; use test_ids for failed cases'
@@ -211,3 +211,25 @@ jobs:
           python3 scripts/validate_atmos_energy.py --report build/atmos-energy-result.json "${args[@]}"
       - if: always()
         run: if test -f build/atmos-energy-result.json; then cat build/atmos-energy-result.json; fi
+
+  manual-annotations:
+    if: inputs.lane == 'all' || inputs.lane == 'manual-annotations'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    env:
+      TEST_IDS: ${{ inputs.test_ids }}
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - name: Run only selected offline annotation methods
+        shell: bash
+        run: |
+          mkdir -p build
+          read -r -a ids <<< "$TEST_IDS"
+          args=()
+          for id in "${ids[@]}"; do args+=(--test-id "$id"); done
+          python3 scripts/validate_manual_annotations.py --report build/manual-annotations-result.json "${args[@]}"
+      - if: always()
+        run: if test -f build/manual-annotations-result.json; then cat build/manual-annotations-result.json; fi
