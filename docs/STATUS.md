@@ -8,8 +8,11 @@ seek case failed at its final partial block: the first 94,976 frames were
 exact, then 256 zero frames preceded the complete 247-frame tail. Recorder
 accounting was complete with zero overflow, writer or clock-gap errors.
 Validation stopped; cancellation, both target-loss cases and full JOC remain
-pending. The native EOF/drain sequence is being corrected against the pinned
-upstream process-demand sequence before review and affected-only acceptance.
+pending. The reviewed next-demand EOF correction passed its focused callback method
+and exact stereo/714, but seek retained the same delayed tail. The next
+source-supported candidate fills only the unused final transport-buffer
+suffix, with padding accounted separately from media; review and affected
+acceptance remain required.
 Earlier full captures and the original unattributed 512-frame deletion remain
 failed and retained. The live preview is not ready to merge or publish yet.
 Signed manual annotations and the bounded
@@ -47,7 +50,7 @@ remain different software quantities, not physical latency or Mac parity.
 | Startup/stop | Reviewed helper, prior save/automatic-start checks and ROG service autostart evidence retained | End-to-end post-login routing; repeated boot/resume/hotplug separately |
 | Signed annotation analysis | Eleven reviewed methods passed once; signed bounds and provenance retained | Actual private annotations from the later recording session |
 | Source-level chain latency | Accepted minimum-phase IR/preset audit found no justified removable fixed delay; no tuning change | Actual same-path physical recording |
-| Live Atmos prototype | 60 distinct methods + 3 smokes passed; native recorder stereo/714 exact; seek tail delayed one quantum | Review narrow native EOF correction, rerun affected callback method and successful drain captures, then pending destructive/full JOC cases |
+| Live Atmos prototype | 60 distinct methods + 3 smokes passed; next-demand EOF fix did not resolve delayed partial tail | Build/review separately accounted final-buffer suffix fill; affected units/captures, then pending destructive/full JOC |
 | Host Atmos | Sixteen affected methods passed once; fresh full JOC render and four isolated timeline groups passed | Original long sequence resource failure retained; independent fidelity and later live integration |
 | Physical interaction timing | Emitter source/ten-method acceptance and earlier staging retained; no pilot/physical samples | Owner-ready coordinated same-keyboard/phone capture, still deferred |
 | Sonos Arc/eARC | Untouched and last | TV route and received-format qualification after internal audio |
@@ -56,6 +59,32 @@ Companion to [installation](SPEAKER_INSTALL.md), [review](REVIEW.md),
 [manual annotations](MANUAL_LATENCY_ANNOTATIONS.md) and
 [implementation](AUDIO_IMPLEMENTATION.md). Source, synthetic, read-only and
 physical evidence remain separate.
+
+## October 15 EOF handoff — reviewed correction, same retained seek failure
+
+The four-file `45eff18` correction cleared independent adversarial review and
+strict compilation. It prevents an empty EOF buffer and requires a later
+process demand before drain, in addition to successful final media queueing,
+validated EOF and complete consumption. The sole affected actual-callback
+method passed once; the other fifty-nine live method passes were retained.
+Stereo and twelve-channel exact capture passed again because their changed
+successful-drain lifecycle needed requalification.
+
+Seek still failed at frame 94,976 with the same captured payload hash. Separate
+read-only analysis again found 256 all-zero frames before the complete exact
+247-frame tail. Native and recorder counts were complete and their reported
+error counters zero. All twenty-eight attempt files and two analysis files
+were independently hash-verified. This failure remains distinct from the
+prior attempt; no destructive or full JOC case ran.
+
+Pinned adapter source waits for a complete output quantum before publishing
+its split buffer. The next bounded candidate fills only the unused suffix of
+the last requested transport buffer (nine neutral frames after 247 actual
+frames in this case), reports padding separately and leaves media/hash/EOF
+counts unchanged. Actual callback and capability/counter regressions will be
+reviewed before execution. This is a source-supported correction candidate,
+not a claim that the precise internal adapter delay has been proven. There
+is no graph/quantum change, arbitrary sleep or weaker exact-PCM criterion.
 
 ## October 15 recorder acceptance — exact stereo/714; delayed seek tail
 
