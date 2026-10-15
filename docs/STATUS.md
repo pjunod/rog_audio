@@ -6,8 +6,8 @@ Stereo streaming matched all 96,000 captured PCM frames exactly;
 cancellation and both target-loss cases passed. Target-version 7.1.4 and
 initial-seek runs now complete and drain after the raw-mode compatibility
 fix, but still fail full PCM matching. Retained captures show channel-specific
-startup loss; 7.1.4 also has a later gap. Guarded startup priming awaits
-focused review and selected validation. Live playback acceptance remains incomplete.
+startup loss; 7.1.4 also has a later gap. Guarded startup priming cleared focused review; its pending validation is
+combined with a persistent route-worker fix now awaiting review. Live playback acceptance remains incomplete.
 Signed manual annotations and the bounded
 file-only Atmos API passed independent review and all 27 selected unit methods
 once. Fresh JOC rendering and four split continuity groups passed; the original
@@ -49,6 +49,30 @@ Companion to [installation](SPEAKER_INSTALL.md), [review](REVIEW.md),
 [manual annotations](MANUAL_LATENCY_ANNOTATIONS.md) and
 [implementation](AUDIO_IMPLEMENTATION.md). Source, synthetic, read-only and
 physical evidence remain separate.
+
+## October 15 steady-state delivery — registry work leaves the feeder
+
+The guarded startup batch `9e42453` passed focused source review. Its four
+new methods and four affected methods remain unrun while the independent
+later-gap diagnosis is addressed; no passing case was repeated.
+
+A five-second twelve-channel generated-PCM diagnostic attributed internal
+zero gaps to 7.52–12.43 ms observer-process startup pauses and 2.16–6.09 ms
+registry parsing on the feeder. A 4-KiB twelve-channel pipe holds only
+1.78 ms of frames. A single diagnostic comparison with a 16-KiB player pipe
+reduced but did not eliminate the gaps; it remains recorded separately.
+Neither diagnostic was a decoder/fidelity qualification or a formal case retry.
+
+The pending fix creates one persistent route worker before startup priming.
+That worker owns native query creation, bounded snapshot parsing and exact
+route validation. The feeder receives only sequence-bound linked/active/error
+responses of at most 1 KiB, with one request in flight and a 2-second watchdog.
+Its selector is reused. Private process-group cleanup includes an active
+query and reaps the worker. Media queue, pipe bounds and exact PCM requirements
+remain unchanged. Two new worker failure/cleanup methods, two changed observer
+methods and the eight pending startup/routing/transport methods await focused
+review and selected execution. Twenty-seven earlier live methods and three
+CLI smoke methods retain their source-bound historical receipts.
 
 ## October 15 startup activation — media held until every link is active
 

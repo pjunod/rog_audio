@@ -11,6 +11,7 @@ import struct
 import subprocess
 import sys
 import tempfile
+import time
 import unittest
 from unittest import mock
 
@@ -60,7 +61,7 @@ class ImmediateObservation:
     """A ready registry for transport-only tests, without native IPC."""
     active = False
 
-    def __init__(self, _env):
+    def __init__(self, _env, *_configuration):
         pass
 
     def start(self):
@@ -221,66 +222,100 @@ class LiveTests(unittest.TestCase):
         with self.assertRaisesRegex(live.PlaybackError, 'target-disappeared'):
             live.verify_links(result, {'id': 42, 'serial': '142'}, 'stream-test', ['FL', 'FR'])
 
+    def fake_registry_environment(self, code):
+        executable = self.root / 'pw-dump'
+        executable.write_text('#!' + sys.executable + '\n' + code)
+        executable.chmod(0o700)
+        return dict(live.child_environment(), PATH=str(self.root) + os.pathsep + os.environ.get('PATH', ''))
+
+    def observation_result(self, observation):
+        deadline = time.monotonic() + 3
+        while time.monotonic() < deadline:
+            result = observation.poll()
+            if result is not None:
+                return result
+            time.sleep(.005)
+        self.fail('bounded observation did not complete')
+
     def test_async_registry_has_one_inflight_child_and_collects_completed_events(self):
-        child = mock.Mock(stdin=None, stdout=None)
-        child.poll.return_value = None
-        child.wait.return_value = 0
-        with mock.patch.object(live.subprocess, 'Popen', return_value=child) as launch:
-            observation = live.RegistryObservation({'PIPEWIRE_REMOTE': 'isolated'})
+        fixture = self.root / 'registry.json'
+        fixture.write_text(json.dumps(registry()))
+        env = self.fake_registry_environment('from pathlib import Path\nprint(Path(' + repr(str(fixture)) + ').read_text())\n')
+        with live.RegistryObservation(env, {'id': 42, 'serial': '142'}, 'stream-test', ['FL', 'FR']) as observation:
+            child = observation.child
             observation.start()
-            output = launch.call_args.kwargs['stdout']
-            self.assertEqual(launch.call_args.args[0], ['pw-dump'])
-            self.assertEqual(launch.call_args.kwargs['env'], {'PIPEWIRE_REMOTE': 'isolated'})
-            self.assertIsNone(observation.poll())
             with self.assertRaises(RuntimeError):
                 observation.start()
-            self.assertEqual(launch.call_count, 1)
-            output.write(json.dumps(registry()).encode() + b'\n[{"id":42,"info":null}]')
-            child.poll.return_value = 0
-            result = observation.poll()
+            result = self.observation_result(observation)
+            self.assertTrue(result['linked'])
+            self.assertTrue(result['active'])
             self.assertFalse(observation.active)
-            self.assertTrue(output.closed)
+            fixture.write_text(json.dumps(registry()) + '\n[{"id":42,"info":null}]')
+            observation.start()
             with self.assertRaisesRegex(live.PlaybackError, 'target-disappeared'):
-                live.verify_links(result, {'id': 42, 'serial': '142'}, 'stream-test', ['FL', 'FR'])
+                self.observation_result(observation)
+            self.assertIs(observation.child, child)  # No new observer process per request.
+        self.assertIsNotNone(child.returncode)
+        self.assertTrue(child.stdin.closed and child.stdout.closed)
 
     def test_async_registry_timeout_parse_failure_and_cancellation_close_resources(self):
-        child = mock.Mock(stdin=None, stdout=None)
-        child.poll.return_value = None
-        child.wait.return_value = 0
-        with mock.patch.object(live.subprocess, 'Popen', return_value=child) as launch, \
-                mock.patch.object(live.time, 'monotonic', side_effect=[10, 13, 13, 13]):
-            observation = live.RegistryObservation({})
-            observation.start()
-            output = launch.call_args.kwargs['stdout']
-            with self.assertRaisesRegex(live.PlaybackError, 'registry-unavailable'):
-                observation.poll()
-            self.assertFalse(observation.active)
-            self.assertTrue(output.closed)
-            child.terminate.assert_called_once()
-        for payload, code in ((b'[] trailing', 0), (b'[]' + b' ' * MAX_REGISTRY_BYTES, 0), (b'[]', 2)):
-            child = mock.Mock(stdin=None, stdout=None)
-            child.poll.return_value = code
-            child.wait.return_value = code
-            with mock.patch.object(live.subprocess, 'Popen', return_value=child) as launch:
-                observation = live.RegistryObservation({})
-                observation.start()
-                output = launch.call_args.kwargs['stdout']
-                output.write(payload)
+        for code, timeout in (('import time\ntime.sleep(20)\n', .1),
+                              ('print("[] trailing")\n', 2),
+                              ('print("[]" + " " * 4194304)\n', 2)):
+            env = self.fake_registry_environment(code)
+            with self.subTest(code=code[:20]), mock.patch.object(live, 'SNAPSHOT_SECONDS', timeout):
                 with self.assertRaisesRegex(live.PlaybackError, 'registry-unavailable'):
-                    observation.poll()
-                self.assertFalse(observation.active)
-                self.assertTrue(output.closed)
-        child = mock.Mock(stdin=None, stdout=None)
-        child.poll.return_value = None
-        child.wait.return_value = 0
-        with mock.patch.object(live.subprocess, 'Popen', return_value=child) as launch, \
-                self.assertRaisesRegex(live.PlaybackError, 'cancelled'):
-            with live.RegistryObservation({}) as observation:
+                    with live.RegistryObservation(env, {'id': 42, 'serial': '142'}, 'stream-test', ['FL', 'FR']) as observation:
+                        child = observation.child
+                        observation.start()
+                        self.observation_result(observation)
+                self.assertIsNotNone(child.returncode)
+                self.assertTrue(child.stdin.closed and child.stdout.closed)
+
+    def test_persistent_registry_rejects_wrong_sequence_oversize_crash_and_invalid_state(self):
+        original = subprocess.Popen
+        replies = (b'{"sequence":2,"linked":true,"active":true}\n',
+                   b'x' * 1025, b'{"sequence":1,"linked":false,"active":true}\n',
+                   b'{"sequence":1,"linked":true,"active":true}\ntrailing')
+        for reply in replies:
+            code = 'import os,time\nos.read(0,1)\nos.write(1,' + repr(reply) + ')\ntime.sleep(20)'
+            def launch(_command, **options):
+                return original([sys.executable, '-c', code], **options)
+            with self.subTest(reply=reply[:30]), mock.patch.object(live.subprocess, 'Popen', side_effect=launch):
+                with self.assertRaisesRegex(live.PlaybackError, 'registry-protocol'):
+                    with live.RegistryObservation(live.child_environment(), {}, '', []) as observation:
+                        child = observation.child
+                        observation.start()
+                        self.observation_result(observation)
+                self.assertIsNotNone(child.returncode)
+                self.assertTrue(child.stdin.closed and child.stdout.closed)
+        def crash(_command, **options):
+            return original([sys.executable, '-c', 'raise SystemExit(4)'], **options)
+        with mock.patch.object(live.subprocess, 'Popen', side_effect=crash):
+            with self.assertRaisesRegex(live.PlaybackError, 'registry-unavailable'):
+                with live.RegistryObservation(live.child_environment(), {}, '', []) as observation:
+                    child = observation.child
+                    observation.start()
+                    self.observation_result(observation)
+        self.assertNotEqual(child.returncode, 0)
+
+    def test_persistent_registry_cancel_reaps_worker_and_active_dump(self):
+        marker = self.root / 'dump.pid'
+        env = self.fake_registry_environment('import os,time\nfrom pathlib import Path\nPath(' +
+            repr(str(marker)) + ').write_text(str(os.getpid()))\ntime.sleep(20)\n')
+        with self.assertRaisesRegex(live.PlaybackError, 'cancelled'):
+            with live.RegistryObservation(env, {'id': 42, 'serial': '142'}, 'stream-test', ['FL', 'FR']) as observation:
+                child = observation.child
                 observation.start()
-                output = launch.call_args.kwargs['stdout']
+                deadline = time.monotonic() + 2
+                while not marker.exists() and time.monotonic() < deadline:
+                    time.sleep(.005)
+                self.assertTrue(marker.exists(), 'owned pw-dump child did not start')
+                dump_pid = int(marker.read_text())
                 raise live.PlaybackError('cancelled')
-        self.assertTrue(output.closed)
-        child.terminate.assert_called_once()
+        self.assertIsNotNone(child.returncode)
+        self.assertTrue(child.stdin.closed and child.stdout.closed)
+        self.assertFalse(Path('/proc', str(dump_pid)).exists(), 'active dump was not reaped')
 
     def test_capture_comparison_preserves_mismatch_and_truncation_evidence(self):
         expected = struct.pack('<16f', *([.125] * 16))
@@ -358,8 +393,16 @@ class LiveTests(unittest.TestCase):
         try:
             live.bounded_pipe(producer.stdout)
             live.bounded_pipe(player.stdin)
+            class CompactObservation(observation):
+                def poll(self):
+                    data = super().poll()
+                    if data is None:
+                        return None
+                    target = {'id': 42, 'serial': '142'}
+                    return {'linked': live.verify_links(data, target, 'stream-test', ['FL', 'FR']),
+                            'active': live.verify_links(data, target, 'stream-test', ['FL', 'FR'], require_active=True)}
             with mock.patch.object(live, 'snapshot', return_value=registry()), \
-                    mock.patch.object(live, 'RegistryObservation', observation):
+                    mock.patch.object(live, 'RegistryObservation', CompactObservation):
                 live.transfer(producer, player, len(payload) if expected is None else expected,
                               {'id': 42, 'serial': '142'}, 'stream-test', ['FL', 'FR'], {}, report)
             return report, sink.read_bytes()

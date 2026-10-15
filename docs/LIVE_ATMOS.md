@@ -121,10 +121,16 @@ priming. The private capture harness also waits for all its monitor links
 to become active before launching playback.
 During streaming and drain it checks for disappearance, serial replacement,
 layout change, lost links and links to unrelated nodes. It fails and stops
-both children on a routing error. During PCM transfer, at most one registry
-child runs asynchronously with the same 2-second/4-MiB bounds. A new
-observation starts 500 ms after the previous result; completed results are
-validated while the supervisor continues feeding the fixed PCM queue. No
+the producer and player on a routing error. One persistent route worker is
+created before any startup silence or media. It performs native registry
+queries, parses their bounded JSON and applies the same exact route checks
+outside the feeder. At most one request is in flight, with a 2-second
+response watchdog and 4-MiB native snapshot limit. A new observation starts
+500 ms after the previous result. The worker returns only a sequence-bound
+linked/active/error result of at most 1 KiB over private nonblocking pipes.
+Unexpected sequence, malformed/oversized response, worker exit or timeout
+stops playback. The feeder reuses one selector and never forks a registry
+query or parses its large JSON while delivering PCM. No
 bytes are submitted before the first complete route verification; actual
 media also requires the all-active observation. Drain retains synchronous
 bounded observations. The stream's native target
@@ -161,7 +167,10 @@ DSP ports and explicit test links because its private daemon has no desktop
 session manager. The normal player does not apply those harness setters.
 
 Ctrl-C, SIGTERM and SIGHUP stop the producer and player, wait briefly, then
-kill a child which will not stop. The player has no runtime pause, seek,
+kill a child which will not stop. The route worker has its own process group;
+cleanup signals that group, lets the worker reap an active `pw-dump`, then
+uses bounded kill/reap fallback. Final media EOF is sent before worker
+cleanup so a final partial native read can finish promptly. The player has no runtime pause, seek,
 input append, gap handling or interactive volume command. Stop it and start
 another invocation with `--start-sample` or attenuation; the initial prototype
 does not retain an old output queue across a restart.
