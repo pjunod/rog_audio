@@ -8,6 +8,7 @@ import json
 import os
 from pathlib import Path
 import signal
+import socket
 import struct
 import subprocess
 import sys
@@ -20,6 +21,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'probes/atmos'))
 from registry_json import MAX_REGISTRY_BYTES, parse_registry
 import pw_cat
+import native_playback
 loader = importlib.machinery.SourceFileLoader('atmos_live', str(ROOT / 'probes/atmos/atmos-live'))
 spec = importlib.util.spec_from_loader(loader.name, loader)
 live = importlib.util.module_from_spec(spec)
@@ -128,16 +130,11 @@ class LiveTests(unittest.TestCase):
         self.assertEqual(env['PIPEWIRE_REMOTE'], 'isolated')
         self.assertEqual(env['DOTNET_EnableDiagnostics'], '0')
         self.assertFalse(any(key in env for key in ('PIPEWIRE_PROPS', 'PIPEWIRE_QUANTUM', 'PIPEWIRE_NODE')))
-        command = live.pw_command({'serial': '142'}, ['FL', 'FR'], 'stream-test', [])
-        modern = live.pw_command({'serial': '142'}, ['FL', 'FR'], 'stream-test', ['--raw'])
-        self.assertEqual(modern, ['pw-cat', '--raw', *command[1:]])
-        self.assertNotIn('--raw', command)
-        self.assertEqual(command[command.index('--target') + 1], '142')
-        properties = json.loads(command[command.index('--properties') + 1])
-        for name in ('node.dont-fallback', 'node.dont-reconnect', 'node.dont-move',
-                     'stream.dont-remix', 'channelmix.disable'):
-            self.assertIs(properties[name], True)
-        self.assertFalse(any('force-' in name or 'quantum' in name for name in properties))
+        command = live.native_command(Path('/private/build/atmos-pw-playback'),
+            {'serial': '142'}, ['FL', 'FR'], 'stream-test', 9)
+        self.assertEqual(command, ['/private/build/atmos-pw-playback', '--target', '142',
+            '--channels', '2', '--name', 'stream-test', '--control-fd', '9'])
+        self.assertNotIn('pw-cat', command)
 
     def test_raw_capability_old_and_modern_help_select_exact_options(self):
         common = b'  -p, --playback  Playback\n  -r, --record  Record\n      --format FORMAT\n'
@@ -169,6 +166,146 @@ class LiveTests(unittest.TestCase):
             with mock.patch.object(pw_cat.subprocess, 'run', side_effect=error):
                 with self.assertRaisesRegex(ValueError, 'capabilities-unavailable'):
                     pw_cat.raw_mode_options({})
+
+    def native_core_case(self, name):
+        if BUILD is None:
+            self.fail('native core methods require a compiled --build output')
+        result = subprocess.run([str(BUILD / 'native-tests'), name],
+            stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=10, check=True)
+        self.assertEqual(result.stdout, b'passed\n')
+
+    def test_native_core_full_ring_control_and_cancellation_are_independent(self):
+        if BUILD is None:
+            self.fail('native core methods require a compiled --build output')
+        result = subprocess.run([str(BUILD / 'native-io-tests')],
+            stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=15, check=True)
+        self.assertEqual(result.stdout, b'passed\n')
+
+    def test_native_core_concurrent_ring_wrap_preserves_order(self):
+        self.native_core_case('concurrent')
+
+    def test_native_core_media_boundary_and_exact_partial_tail(self):
+        self.native_core_case('partial-tail')
+
+    def test_native_core_starvation_and_input_eof_bounds(self):
+        self.native_core_case('starvation')
+
+    def test_native_core_begin_rejects_duplicate_out_of_order_and_oversize(self):
+        self.native_core_case('protocol')
+
+    def test_native_capabilities_require_exact_colocated_protocol(self):
+        description = {'protocol': native_playback.PROTOCOL, 'ring_frames': 4096,
+                       'rate': 48000, 'channels': [2, 12], 'format': 'f32le'}
+        def command(payload, code=0):
+            def run(argv, **options):
+                self.assertEqual(argv, ['/build/atmos-pw-playback', '--describe'])
+                self.assertEqual(options['timeout'], 2)
+                options['stdout'].write(payload)
+                return subprocess.CompletedProcess(argv, code)
+            return run
+        for change in ({}, {'protocol': 'old'}, {'ring_frames': 65536}, {'format': 's16'}):
+            value = {**description, **change}
+            with mock.patch.object(native_playback.subprocess, 'run', side_effect=command(json.dumps(value).encode())):
+                if change:
+                    with self.assertRaises(native_playback.NativeError):
+                        native_playback.capabilities(Path('/build/atmos-pw-playback'), {})
+                else:
+                    self.assertEqual(native_playback.capabilities(Path('/build/atmos-pw-playback'), {}), description)
+        for error in (FileNotFoundError(), subprocess.TimeoutExpired('helper', 2)):
+            with mock.patch.object(native_playback.subprocess, 'run', side_effect=error), \
+                    self.assertRaisesRegex(native_playback.NativeError, 'unavailable-or-incompatible'):
+                native_playback.capabilities(Path('/build/atmos-pw-playback'), {})
+        for payload, code in ((b'x' * 2049, 0), (b'{}', 2), (b'bad', 0)):
+            with mock.patch.object(native_playback.subprocess, 'run', side_effect=command(payload, code)), \
+                    self.assertRaises(native_playback.NativeError):
+                native_playback.capabilities(Path('/build/atmos-pw-playback'), {})
+
+    @staticmethod
+    def native_final(priming=5, media=777, **changes):
+        return {'protocol': native_playback.PROTOCOL, 'status': 'completed',
+            'input_frames': priming + media, 'consumed_frames': priming + media,
+            'stdin_priming_frames': priming, 'media_frames': media,
+            'startup_silence_frames': 256, 'prefill_silence_frames': 512,
+            'underflow_events': 0, 'missing_media_frames': 0, 'ring_capacity_frames': 4096,
+            'maximum_ring_frames': 777, 'maximum_callback_frames': 256,
+            'input_eof': True, 'ring_consumed': True, 'drained': True, **changes}
+
+    def test_native_control_boundary_ack_and_terminal_counts(self):
+        endpoint, server = socket.socketpair(socket.AF_UNIX, socket.SOCK_SEQPACKET)
+        report = {}
+        client = native_playback.NativeControl(endpoint, report)
+        try:
+            client.begin(5, 777)
+            self.assertEqual(server.recv(128), b'BEGIN 1 5 777\n')
+            self.assertFalse(client.poll())
+            server.send(b'ACK 1 5 777\n')
+            self.assertTrue(client.poll())
+            server.send(b'FINAL ' + json.dumps(self.native_final()).encode() + b'\n')
+            client.finish(5, 777)
+            self.assertTrue(report['native_playback']['drained'])
+            self.assertEqual(report['native_playback']['media_frames'], 777)
+            with self.assertRaises(native_playback.NativeError):
+                client.begin(5, 777)
+        finally:
+            client.close()
+            server.close()
+        self.assertEqual(endpoint.fileno(), -1)
+
+    def test_native_control_rejects_wrong_duplicate_oversize_and_missing_ack(self):
+        for packets in ((b'ACK 2 5 777\n',), (b'ACK 1 6 777\n',),
+                        (b'ACK 1 5 777\n', b'ACK 1 5 777\n'), (b'x' * 2049,),
+                        (b'FINAL {}\n',)):
+            endpoint, server = socket.socketpair(socket.AF_UNIX, socket.SOCK_SEQPACKET)
+            client = native_playback.NativeControl(endpoint, {})
+            try:
+                client.begin(5, 777)
+                for packet in packets:
+                    server.send(packet)
+                with self.assertRaises(native_playback.NativeError):
+                    client.poll()
+            finally:
+                client.close()
+                server.close()
+        endpoint, server = socket.socketpair(socket.AF_UNIX, socket.SOCK_SEQPACKET)
+        client = native_playback.NativeControl(endpoint, {})
+        try:
+            server.send(b'ACK 1 5 777\n')
+            with self.assertRaises(native_playback.NativeError):
+                client.poll()
+            client.begin(5, 777)
+            with mock.patch.object(native_playback.time, 'monotonic', return_value=client.started + 2), \
+                    self.assertRaisesRegex(native_playback.NativeError, 'ack-timeout'):
+                client.poll()
+        finally:
+            client.close()
+            server.close()
+
+    def test_native_control_disconnect_and_failed_terminal_never_complete(self):
+        for changes in ({'status': 'native-media-underrun', 'underflow_events': 1},
+                        {'input_eof': False}, {'ring_consumed': False}, {'drained': False},
+                        {'input_frames': 781}, {'consumed_frames': 781}, {'media_frames': 776},
+                        {'underflow_events': 1}, {'missing_media_frames': 256}):
+            endpoint, server = socket.socketpair(socket.AF_UNIX, socket.SOCK_SEQPACKET)
+            report = {}
+            client = native_playback.NativeControl(endpoint, report)
+            try:
+                client.begin(5, 777)
+                server.send(b'ACK 1 5 777\n')
+                server.send(b'FINAL ' + json.dumps(self.native_final(**changes)).encode() + b'\n')
+                with self.assertRaises(native_playback.NativeError):
+                    client.finish(5, 777)
+                self.assertEqual(report['native_playback'], self.native_final(**changes))
+            finally:
+                client.close()
+                server.close()
+        endpoint, server = socket.socketpair(socket.AF_UNIX, socket.SOCK_SEQPACKET)
+        client = native_playback.NativeControl(endpoint, {})
+        server.close()
+        try:
+            with self.assertRaisesRegex(native_playback.NativeError, 'disconnected'):
+                client.poll()
+        finally:
+            client.close()
 
     def test_header_and_pcm_validation(self):
         header = {'protocol': 'rog-atmos-pcm-v1', 'sample_rate': 48000, 'channels': 2,
@@ -505,7 +642,7 @@ class LiveTests(unittest.TestCase):
                 live.arguments(base)
 
     def transfer_case(self, payload, *, expected=None, player_code=None, producer_code=None,
-                      observation=ImmediateObservation, report=None):
+                      observation=ImmediateObservation, report=None, backend_factory=None):
         source = self.root / 'payload.pcm'
         source.write_bytes(payload)
         producer = subprocess.Popen([sys.executable, '-c', producer_code or
@@ -529,23 +666,35 @@ class LiveTests(unittest.TestCase):
                     target = {'id': 42, 'serial': '142'}
                     return {'linked': live.verify_links(data, target, 'stream-test', ['FL', 'FR']),
                             'active': live.verify_links(data, target, 'stream-test', ['FL', 'FR'], require_active=True)}
+            class AcceptedBackend:
+                boundary = None
+                ready = False
+                def begin(self, priming, media):
+                    self.boundary = (priming, media)
+                    self.ready = True
+                def poll(self):
+                    return self.ready
+                def finish(self, priming, media):
+                    if self.boundary != (priming, media):
+                        raise AssertionError('media crossed a different boundary')
+            backend = (backend_factory or AcceptedBackend)()
             with mock.patch.object(live, 'snapshot', return_value=registry()), \
                     mock.patch.object(live, 'RegistryObservation', CompactObservation):
                 live.transfer(producer, player, len(payload) if expected is None else expected,
-                              {'id': 42, 'serial': '142'}, 'stream-test', ['FL', 'FR'], {}, report)
+                              {'id': 42, 'serial': '142'}, 'stream-test', ['FL', 'FR'], {}, report, backend)
             return report, sink.read_bytes()
         finally:
             live.stop_children([producer, player])
 
     def test_player_pipe_reserve_scales_channels_and_enforces_actual_capacity(self):
-        for channels, expected in ((2, (8192, 8192)), (12, (49152, 65536))):
+        for channels, expected in ((2, (4096, 4096)), (12, (4096, 4096))):
             requested, maximum = live.player_pipe_bounds(channels)
             self.assertEqual((requested, maximum), expected)
             reader, writer = os.pipe()
             try:
                 with os.fdopen(writer, 'wb', buffering=0) as stream:
                     capacity = live.bounded_pipe(stream, requested, maximum)
-                    self.assertGreaterEqual(capacity // (channels * 4), 1024)
+                    self.assertEqual(capacity, 4096)
                     self.assertLessEqual(capacity, maximum)
                     self.assertFalse(os.get_blocking(stream.fileno()))
                     for unsupported in (requested - 4096, maximum + 4096):
@@ -589,6 +738,31 @@ class LiveTests(unittest.TestCase):
         self.assertEqual(report['drained_frames'], 10001)
         self.assertTrue(report['media_start_verified_active'])
         self.assertLessEqual(report['maximum_queued_bytes'], 4096 * 8)
+
+    def test_native_boundary_ack_holds_media_until_exact_handoff(self):
+        payload = struct.pack('<f', .125) * 2 * 10001
+        sink = self.root / 'sink.pcm'
+        case = self
+        class DelayedAck:
+            boundary = None
+            ready = False
+            polls = 0
+            def begin(self, priming, media):
+                self.boundary = (priming, media)
+            def poll(self):
+                if self.boundary is not None and not self.ready:
+                    case.assertLessEqual(sink.stat().st_size if sink.exists() else 0,
+                                         self.boundary[0] * 8)
+                    self.polls += 1
+                    self.ready = self.polls >= 3
+                return self.ready
+            def finish(self, priming, media):
+                case.assertEqual(self.boundary, (priming, media))
+                case.assertTrue(self.ready)
+        report, output = self.transfer_case(payload, backend_factory=DelayedAck)
+        self.assertEqual(output, bytes(report['startup_priming_frames'] * 8) + payload)
+        self.assertEqual(report['submitted_complete_frames'], 10001)
+        self.assertEqual(report['drained_frames'], 10001)
 
     def test_startup_priming_rejects_route_loss_before_media(self):
         class LosingObservation(ImmediateObservation):
@@ -752,7 +926,8 @@ class LiveTests(unittest.TestCase):
         # Execute the wrapper's actual Python entry point with external calls
         # forbidden, rather than testing a second copy of its selection logic.
         source = wrapper.read_text().split("<<'PY'\n", 1)[1].rsplit('\nPY', 1)[0]
-        base = ['embedded-wrapper', str(wrapper), '--image', 'unused-image', '--source',
+        base = ['embedded-wrapper', str(wrapper), '--image', 'unused-image',
+                '--compiler-image', 'unused-compiler', '--source',
                 str(ROOT), '--report', str(self.root / 'report.json')]
         invalid = [
             ['--test-id', 'method', '--case', 'case'],
@@ -771,6 +946,52 @@ class LiveTests(unittest.TestCase):
                         self.assertRaises(SystemExit) as failure:
                     exec(compile(source, str(wrapper), 'exec'), {})
                 self.assertEqual(failure.exception.code, 2)
+
+    def test_ci_compiler_failure_records_phase_without_runtime_execution(self):
+        wrapper = ROOT / 'probes/atmos/live-ci.sh'
+        source = wrapper.read_text().split("<<'PY'\n", 1)[1].rsplit('\nPY', 1)[0]
+        report = self.root / 'ci.json'
+        argv = ['embedded-wrapper', str(wrapper), '--image', 'runtime-image',
+            '--compiler-image', 'compiler-image', '--source', str(ROOT),
+            '--report', str(report), '--stage', 'units', '--test-id', 'selected-method']
+        commands = []
+        def output(command, **options):
+            if command[:3] == ['podman', 'image', 'inspect']:
+                value = json.dumps([{'Id': command[3]}]).encode()
+            elif command[-1] == '--show-toplevel':
+                value = (str(ROOT) + '\n').encode()
+            elif 'status' in command:
+                value = b''
+            else:
+                value = b'7d85d1880666ca5ea323848cff47ce7f50b29f7d\n'
+            return value.decode() if options.get('text') else value
+        def run(command, **_options):
+            commands.append(command)
+            if command[:2] == ['podman', 'run']:
+                self.assertIn('compiler-image', command)
+                self.assertNotIn('runtime-image', command)
+                self.assertIn('--pull', command)
+                self.assertIn('never', command)
+                return subprocess.CompletedProcess(command, 42)
+            return subprocess.CompletedProcess(command, 0)
+        with mock.patch.object(subprocess, 'run', side_effect=run), \
+                mock.patch.object(subprocess, 'check_output', side_effect=output), \
+                mock.patch.object(sys, 'argv', argv), mock.patch.object(sys, 'platform', 'linux'), \
+                mock.patch.dict(os.environ, {'XDG_STATE_HOME': str(self.root), 'ATMOS_CONTAINER_ENGINE': 'podman'}), \
+                mock.patch.dict(sys.modules, {'live_ci_options': ci_options}), \
+                contextlib.redirect_stdout(open(os.devnull, 'w')), self.assertRaises(SystemExit) as failure:
+            exec(compile(source, str(wrapper), 'exec'), {})
+        self.assertEqual(failure.exception.code, 1)
+        result = json.loads(report.read_text())
+        self.assertEqual(result['compiler_image_id'], 'compiler-image')
+        self.assertEqual(result['image_id'], 'runtime-image')
+        self.assertEqual(result['compile_exit_code'], 42)
+        self.assertIsNone(result['container_exit_code'])
+        self.assertEqual(result['status'], 'failed')
+        self.assertEqual(sum(command[:2] == ['podman', 'run'] for command in commands), 1)
+        self.assertTrue(any(command[:3] == ['podman', 'rm', '-f'] for command in commands))
+        self.assertEqual(report.stat().st_mode & 0o777, 0o600)
+        self.assertFalse(list((self.root / 'rog-audio/work').glob('live-atmos-ci.*')))
 
     def test_signal_failure_report_is_private_and_exclusive(self):
         source = self.root / 'scene.json'

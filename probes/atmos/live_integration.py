@@ -718,13 +718,18 @@ def main():
     args.probe = args.probe.resolve(strict=True)
     args.config = args.config.resolve(strict=True)
     source_files = ('Program.cs', 'LiveStream.cs', 'OfflinePullRenderer.cs', 'ObjectFrameGuard.cs',
+                    'native_playback.py', 'build-native.sh', 'native/playback.c', 'native/playback_core.c',
+                    'native/playback_core.h', 'native/test_core.c', 'native/test_io.c',
+                    'native/compiler-packages.json', 'native/PIPEWIRE-EXAMPLE-LICENSE',
                     'atmos-live', 'atmos-probe', 'live_integration.py', 'live-pipewire.conf',
                     'live-ci.sh', 'live_ci_options.py', 'registry_json.py', 'pw_cat.py', 'build.sh', 'source_manifest.json', 'Dockerfile', 'AtmosProbe.csproj',
                     'global.json', '../../tests/test_atmos_live.py', '../../scripts/validate_atmos_live.py')
     def bindings():
         items = {name: hashlib.sha256((Path(__file__).parent / name).read_bytes()).hexdigest()
                  for name in source_files if (Path(__file__).parent / name).is_file()}
-        for name in ('AtmosProbe.dll', 'Cavern.dll', 'Cavern.Format.dll', 'atmos-live', 'registry_json.py', 'pw_cat.py'):
+        for name in ('AtmosProbe.dll', 'Cavern.dll', 'Cavern.Format.dll', 'atmos-live', 'registry_json.py', 'pw_cat.py',
+                     'native_playback.py', 'atmos-pw-playback', 'native-build.json',
+                     'native-source.tar', 'PIPEWIRE-EXAMPLE-LICENSE'):
             items['build/' + name] = hashlib.sha256((args.probe.parent / name).read_bytes()).hexdigest()
         return items
     report['source_before_sha256'] = bindings()

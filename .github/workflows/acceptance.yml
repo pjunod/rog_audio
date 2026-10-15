@@ -255,6 +255,7 @@ jobs:
           git -C build/Cavern fetch --depth=1 origin 7d85d1880666ca5ea323848cff47ce7f50b29f7d
           git -C build/Cavern checkout --detach FETCH_HEAD
           docker build --target live-ci -t rog-audio-atmos-live:reviewed -f probes/atmos/Dockerfile probes/atmos
+          docker build --target live-compiler -t rog-audio-atmos-live-compiler:reviewed -f probes/atmos/Dockerfile probes/atmos
       - name: Run only selected reviewed live methods or cases
         shell: bash
         run: |
@@ -269,6 +270,7 @@ jobs:
             echo 'select units or integration for exact retries' >&2; exit 2
           fi
           sh probes/atmos/live-ci.sh --image rog-audio-atmos-live:reviewed \
+            --compiler-image rog-audio-atmos-live-compiler:reviewed \
             --source build/Cavern --report build/atmos-live-result.json \
             --stage "$SELECTION" "${args[@]}"
       - if: always()

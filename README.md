@@ -47,8 +47,10 @@ same-engine checks, not independent Dolby fidelity or realtime qualification.
 negative click-to-chirp intervals, rejected attempts and declared onset bounds
 without recording or inferring physical validity. The [accepted-filter audit](evidence/speaker-chain-algorithmic-delay-audit-2026-10-15.json)
 found no justified removable fixed delay; original filters/limiter stay intact.
-The [live player prototype](docs/LIVE_ATMOS.md) now streams rendered PCM into
-an explicit PipeWire sink; review and isolated acceptance are pending.
+The [live player prototype](docs/LIVE_ATMOS.md) streams rendered PCM into
+an explicit PipeWire sink; review and isolated acceptance are recorded separately.
+The [native playback helper contract](docs/LIVE_ATMOS_NATIVE.md) covers its
+callback, buffering, control and build boundaries.
 Independent fidelity, binaural/realtime support and physical qualification
 remain open. Sonos Arc/eARC remains last.
 

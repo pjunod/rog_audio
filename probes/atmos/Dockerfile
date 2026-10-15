@@ -54,3 +54,50 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-ins
     dbus-bin=1.16.2-5ubuntu2 \
     dbus-session-bus-common=1.16.2-5ubuntu2 \
     && rm -rf /var/lib/apt/lists/*
+
+FROM live-ci AS live-compiler
+# Separate build layer; selected acceptance still runs in the unchanged live-ci image.
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+    binutils-common=2.47-6ubuntu1 \
+    binutils-x86-64-linux-gnu=2.47-6ubuntu1 \
+    binutils=2.47-6ubuntu1 \
+    cpp-15-x86-64-linux-gnu=15.3.0-4ubuntu1 \
+    cpp-15=15.3.0-4ubuntu1 \
+    cpp-x86-64-linux-gnu=4:15.2.0-5ubuntu1 \
+    cpp=4:15.2.0-5ubuntu1 \
+    gcc-15-base=15.3.0-4ubuntu1 \
+    gcc-15-x86-64-linux-gnu=15.3.0-4ubuntu1 \
+    gcc-15=15.3.0-4ubuntu1 \
+    gcc-x86-64-linux-gnu=4:15.2.0-5ubuntu1 \
+    gcc=4:15.2.0-5ubuntu1 \
+    libasan8=16.2.0-3ubuntu1 \
+    libbinutils=2.47-6ubuntu1 \
+    libc-bin=2.44-1ubuntu2 \
+    libc-dev-bin=2.44-1ubuntu2 \
+    libc-gconv-modules-extra=2.44-1ubuntu2 \
+    libc6-dev=2.44-1ubuntu2 \
+    libc6=2.44-1ubuntu2 \
+    libcc1-0=16.2.0-3ubuntu1 \
+    libctf-nobfd0=2.47-6ubuntu1 \
+    libctf0=2.47-6ubuntu1 \
+    libgcc-15-dev=15.3.0-4ubuntu1 \
+    libgprofng0=2.47-6ubuntu1 \
+    libhwasan0=16.2.0-3ubuntu1 \
+    libisl23=0.28-1 \
+    libitm1=16.2.0-3ubuntu1 \
+    libjansson4=2.15.1-1 \
+    liblsan0=16.2.0-3ubuntu1 \
+    libmpc3=1.3.1-3 \
+    libmpfr6=4.2.2-3 \
+    libpipewire-0.3-dev=1.6.8-1ubuntu4 \
+    libpkgconf7=2.5.1-4 \
+    libquadmath0=16.2.0-3ubuntu1 \
+    libsframe3=2.47-6ubuntu1 \
+    libspa-0.2-dev=1.6.8-1ubuntu4 \
+    libtsan2=16.2.0-3ubuntu1 \
+    libubsan1=16.2.0-3ubuntu1 \
+    linux-libc-dev=7.3.0-9.9 \
+    pkg-config=2.5.1-4 \
+    pkgconf-bin=2.5.1-4 \
+    pkgconf=2.5.1-4 \
+    && rm -rf /var/lib/apt/lists/*

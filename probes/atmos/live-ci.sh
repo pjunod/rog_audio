@@ -13,7 +13,8 @@ import tempfile
 
 script = Path(sys.argv[1]).resolve(strict=True)
 parser = argparse.ArgumentParser(description='Selected live-player unit and virtual-PipeWire integration stages')
-parser.add_argument('--image', required=True)
+parser.add_argument('--image', required=True, help='already present acceptance runtime image')
+parser.add_argument('--compiler-image', required=True, help='already present native compiler image')
 parser.add_argument('--source', type=Path, required=True)
 parser.add_argument('--report', type=Path, required=True)
 parser.add_argument('--stage', choices=('units', 'integration', 'all'))
@@ -49,6 +50,7 @@ if subprocess.check_output(['git', '-C', str(source), 'rev-parse', 'HEAD'], text
 if subprocess.check_output(['git', '-C', str(source), 'status', '--porcelain', '--untracked-files=normal'], text=True):
     parser.error('Cavern must be clean')
 image_data = json.loads(subprocess.check_output([engine, 'image', 'inspect', args.image]))[0]
+compiler_data = json.loads(subprocess.check_output([engine, 'image', 'inspect', args.compiler_image]))[0]
 source_root = subprocess.check_output(['git', '-C', str(script.parent), 'rev-parse', '--show-toplevel'], text=True).strip()
 source_commit = subprocess.check_output(['git', '-C', source_root, 'rev-parse', 'HEAD'], text=True).strip()
 work_root = Path(os.environ.get('XDG_STATE_HOME', str(Path.home()/'.local/state'))) / 'rog-audio/work'
@@ -60,7 +62,6 @@ from pathlib import Path
 import subprocess
 import sys
 options = json.loads(sys.argv[1])
-subprocess.run(['sh', 'probes/atmos/build.sh', '--source', '/work/Cavern', '--output', '/work/build'], check=True)
 codes = []
 if options['stage'] in ('units', 'all'):
     subprocess.run(['ffmpeg', '-nostdin', '-hide_banner', '-loglevel', 'error', '-f', 'lavfi', '-i',
@@ -83,6 +84,7 @@ sys.exit(0 if codes and not any(codes) else 1)
 '''
 receipt = {'schema_version': 1, 'stage': stage, 'evidence_class': 'selected-live-player-software',
     'source_commit': source_commit, 'image_id': image_data.get('Id'),
+    'compiler_image_id': compiler_data.get('Id'), 'compile_exit_code': None,
     'network': 'none', 'cpus': 2, 'memory_bytes': 6442450944, 'pids_limit': 256,
     'capabilities': 'all dropped', 'host_devices_or_session_sockets': False,
     'physical_audio': False, 'units': None, 'integration': None}
@@ -109,11 +111,19 @@ with tempfile.TemporaryDirectory(prefix='live-atmos-ci.', dir=work_root) as dire
         '-v', str(scratch)+':/work', '-w', '/work']
     if engine == 'podman':
         argv += ['--userns', 'keep-id']
-    argv += [args.image, 'python3', '-c', container_code, json.dumps(options)]
+    runtime_argv = argv + [args.image, 'python3', '-c', container_code, json.dumps(options)]
+    build_code = r'''
+import subprocess
+subprocess.run(['sh', 'probes/atmos/build.sh', '--source', '/work/Cavern', '--output', '/work/build'], check=True)
+subprocess.run(['sh', 'probes/atmos/build-native.sh', '--output', '/work/build'], check=True)
+'''
+    compiler_argv = argv + [args.compiler_image, 'python3', '-c', build_code]
     try:
         with (scratch/'container.log').open('xb') as log:
-            result = subprocess.run(argv, stdout=log, stderr=log)
-        receipt['container_exit_code'] = result.returncode
+            compiled = subprocess.run(compiler_argv, stdout=log, stderr=log)
+            receipt['compile_exit_code'] = compiled.returncode
+            result = subprocess.run(runtime_argv, stdout=log, stderr=log) if compiled.returncode == 0 else None
+        receipt['container_exit_code'] = result.returncode if result else None
     finally:
         subprocess.run([engine, 'rm', '-f', name], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     for key in ('units', 'integration'):
@@ -121,7 +131,7 @@ with tempfile.TemporaryDirectory(prefix='live-atmos-ci.', dir=work_root) as dire
         if path.is_file():
             receipt[key] = json.loads(path.read_text())
     required = ('units', 'integration') if stage == 'all' else (stage,)
-    receipt['status'] = 'passed' if receipt['container_exit_code'] == 0 and all(receipt[key] for key in required) else 'failed'
+    receipt['status'] = 'passed' if receipt['compile_exit_code'] == 0 and receipt['container_exit_code'] == 0 and all(receipt[key] for key in required) else 'failed'
     for path, data in ((log_path, (scratch/'container.log').read_bytes()),
                        (args.report, (json.dumps(receipt, indent=2, allow_nan=False)+'\n').encode())):
         fd = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)

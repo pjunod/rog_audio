@@ -57,8 +57,8 @@
     "qualification": "accepted once on reviewed revision42642b287868069239f17dbc8cc57e69af455927; retained audio-atmos-acceptance-2026-10-12.json identifies FFmpeg5.1.9 Debian package; later CI ownership cleanup received focused validation"
   },
   "live_playback_backend": {
-    "command": "pw-cat",
-    "protocol": "native PipeWire; float32 stdin with explicit serial target",
+    "command": "atmos-pw-playback",
+    "protocol": "rog-atmos-pw-v1; bounded native float32 SPSC ring and separate BEGIN/ACK control",
     "pipewire_props_reference": "https://docs.pipewire.org/page_man_pipewire-props_7.html",
     "pw_cat_source_reference": "https://github.com/PipeWire/pipewire/blob/0.3.65/src/tools/pw-cat.c",
     "qualification": "Observed software acceptance and limits are recorded in docs/LIVE_ATMOS.md; no physical or realtime qualification.",
@@ -100,6 +100,21 @@
       "fixture_encoder_role": "synthetic E-AC-3 only; not JOC or runtime decoding",
       "qualification": "Observed image, compiler and selected acceptance receipts are recorded in docs/LIVE_ATMOS.md."
     },
-    "pw_cat_modern_source_reference": "https://github.com/PipeWire/pipewire/blob/1.6.8/src/tools/pw-cat.c"
+    "pw_cat_modern_source_reference": "https://github.com/PipeWire/pipewire/blob/1.6.8/src/tools/pw-cat.c",
+    "native_source_reference": "https://github.com/PipeWire/pipewire/blob/1.6.8/src/examples/audio-src-ring.c",
+    "native_notice": "native/PIPEWIRE-EXAMPLE-LICENSE",
+    "native_build": {
+      "script": "build-native.sh",
+      "architecture": "Linux x86_64",
+      "compiler_version": "15.3.0",
+      "header_version": "1.6.8",
+      "linked_soname": "libpipewire-0.3.so.0",
+      "actual_symbol_floor": "recorded in each native-build.json; matching target stack required",
+      "compiler_layer_packages": "native/compiler-packages.json",
+      "ring_frames": 4096,
+      "stdin_pipe_bytes": 4096,
+      "test_executables": "native-tests and native-io-tests; no production self-test mode"
+    },
+    "pw_cat_capture_only": true
   }
 }

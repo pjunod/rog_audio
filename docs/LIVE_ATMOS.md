@@ -10,9 +10,14 @@ unmeasured. Sonos Arc/eARC testing remains last.
 ## Run the player through your existing tuned sink
 
 Build with the pinned [Atmos build recipe](AUDIO_ATMOS_BUILD.md), or use the
-reviewed private Linux build. The build copies `atmos-live` beside
-`AtmosProbe.dll`. You need Python 3.10 or newer, native PipeWire tools `pw-cat` and
-`pw-dump`, and a .NET 8 runtime. The launcher chooses sibling
+reviewed private Linux build. The managed build copies `atmos-live` beside
+`AtmosProbe.dll`; then run `probes/atmos/build-native.sh --output private-build`
+in the pinned native compiler image to add `atmos-pw-playback`, its Python
+control module, build receipt and notice. The offline build recipe remains
+usable without C headers. You need Python 3.10 or newer, native `libpipewire-0.3.so.0`,
+`pw-dump`, and a .NET 8 runtime. The isolated capture harness additionally
+uses `pw-cat`. The [native helper contract](LIVE_ATMOS_NATIVE.md) records
+the compiler, ABI requirements and standalone bundle contents. The launcher chooses sibling
 `runtime/dotnet`, then `dotnet` on `PATH`; `--dotnet` selects an explicit
 runtime host. No global SDK/runtime installation is required for a private
 bundle containing the pinned 8.0.20 runtime and its licence notices. The
@@ -65,7 +70,10 @@ are reordered or synthesized by that spelling translation.
  4096-byte producer pipe → 4096-frame supervisor queue
               │  finite samples, exact count and backpressure
               ▼
- 1024-frame requested player pipe → pw-cat stdin → selected PipeWire sink
+ 4096-byte native input pipe → 4096-frame SPSC ring
+              │  nonblocking native process callback
+              ▼
+ selected PipeWire sink
 ```
 
 The input is privately snapshotted as a bounded regular file before managed
@@ -86,28 +94,28 @@ The supervisor prebuffers one 4096-frame queue (85.333 ms at 48 kHz), or the
 complete shorter final fragment. Its writes remain frame aligned and no
 larger than the 4096-byte atomic pipe-write bound.
 
-Only the native player pipe requests capacity for 1024 PCM frames (21.333 ms
-at 48 kHz): 8192 bytes for stereo, 49,152 bytes for twelve channels. Linux
-rounding permits at most 8192 / 65,536 actual bytes respectively. The latter
-holds 1365 complete twelve-channel frames (28.444 ms of byte capacity).
-Requested frames/bytes, maximum bytes and actual capacity are reported;
-an actual capacity outside the stated range stops playback. The bound is
-established before the child starts and verified afterward. It provides
-scheduling reserve without changing the graph quantum. These are queued-audio
-capacity allowances, not measured physical latency or PipeWire internal
-buffer sizes. The bounded diagnostic control passed with this reserve; a
-separate JOC prefix still exposed caller batching. A private combined
-1536-frame-release / 1024-frame-reserve prefix then matched all 239,616
-captured frames exactly. Full-stream acceptance remains subject to reviewed,
-source-bound validation.
+The native input pipe is now exactly 4096 bytes for both layouts. A separate
+preallocated native ring holds at most 4096 PCM frames (85.333 ms): 32,768
+bytes stereo or 196,608 bytes twelve-channel. The ordinary reader thread has
+one additional read buffer of at most 4096 bytes and at most one incomplete
+frame. Ring, pipe and supervisor queue capacities are reported separately.
+The twelve-channel native ring replaces the former 65,536-byte kernel pipe
+reserve (28.444 ms) and adds 56.889 ms of native queued-audio capacity. This
+is an explicit scheduling tradeoff, not a physical latency measurement.
+The reserve covers the previously observed 51-ms feeder pauses; it cannot
+make an arbitrary stalled producer or graph deadline succeed. A media ring
+underflow fails playback instead of allowing a successful silent gap.
 
-The managed decoder runs in a separate process, outside the PipeWire
-processing callback. `pw-cat` owns the native output callback and may starve
-if its input is late. The prototype does not measure underruns or prove
-realtime scheduling. A buffer bound is not a latency measurement.
+The managed decoder runs in a separate process. The native helper requests
+`PW_STREAM_FLAG_RT_PROCESS`; its callback only copies available ring frames,
+updates lock-free counters and signals a PipeWire loop event. PCM reads and
+control replies run outside that callback. This removes the old blocking
+`pw-cat` stdin callback. Ring starvation counters do not measure all server,
+capture, driver or device xruns, and physical presentation remains unknown.
 
 Startup/header preparation has a 45-second wall bound. Route activation has
-a separate 45-second wall bound and at most 2,160,000 startup zero frames.
+a separate 45-second wall bound and at most 2,160,000 stdin priming frames.
+Callback-generated startup/prefill zeros are counted separately.
 The first bound reached stops startup. These zeros do not replace media.
 Decoding retains the 60 CPU-second, 128-descriptor and 512 MiB managed-heap
 launcher bounds.
@@ -127,15 +135,17 @@ launcher; use the isolated acceptance container for untrusted inputs.
 The supervisor resolves one `Audio/Sink` to a positive unique `object.serial`
 and checks its ordered channel map. Before submitting PCM, it requires all
 matching channel links from its unique playback node to that same node.
-Some native callbacks begin consuming stdin before every link finishes
-negotiating. After verifying all exact pairs, the supervisor may feed
-bounded startup silence while it waits for every link to report `active`.
-It holds the media prebuffer unchanged until that observation, then sends
-the complete media without dropping or padding its samples. Startup silence
-uses the same bounded pipe and is counted separately from all media hashes,
-frame counts and source receipts. Missing, wrong or failed routes stop
-priming. The private capture harness also waits for all its monitor links
-to become active before launching playback.
+After verifying all exact pairs, the supervisor may feed bounded stdin
+priming while links negotiate. It holds media unchanged until every link
+reports `active`, then sends the native control channel an exact priming-frame
+offset and expected media count. The native helper acknowledges that boundary
+before any media write. It consumes stdin priming only to that boundary and
+waits for a full ring, or all remaining short media, before starting media.
+Callback-generated startup and prefill zeros have separate counters from
+stdin priming and media; no media is consumed while waiting. The final
+partial media chunk retains its exact frame count and is not an underrun.
+Wrong/lost routes stop startup. The private capture harness also waits for
+all its monitor links to become active before launching playback.
 During streaming and drain it checks for disappearance, serial replacement,
 layout change, lost links and links to unrelated nodes. It fails and stops
 the producer and player on a routing error. One persistent route worker is
@@ -147,9 +157,9 @@ response watchdog and 4-MiB native snapshot limit. A new observation starts
 linked/active/error result of at most 1 KiB over private nonblocking pipes.
 Unexpected sequence, malformed/oversized response, worker exit or timeout
 stops playback. The feeder reuses one selector and never forks a registry
-query or parses its large JSON while delivering PCM. No
-bytes are submitted before the first complete route verification; actual
-media also requires the all-active observation. Drain retains synchronous
+query or parses its large JSON while delivering PCM. No stdin bytes are submitted before the first complete route verification;
+actual media also requires the all-active observation and native boundary ACK.
+Callback-generated startup silence does not contain input media. Drain retains synchronous
 bounded observations. The stream's native target
 properties additionally prevent fallback and reconnection between
 observations. A partial or missing route on a still-present playback
@@ -168,16 +178,13 @@ the explicitly selected PipeWire remote/runtime directory is preserved.
 The chosen .NET host directory supplies `DOTNET_ROOT` with multilevel lookup
 disabled. No shell receives media paths or target names.
 
-The source-inspected native backends include
-[`pw-cat` 0.3.65](https://github.com/PipeWire/pipewire/blob/0.3.65/src/tools/pw-cat.c).
-That version takes raw PCM from `-` plus explicit format/rate/channel options;
-it has no `--raw` option. In
-[`pw-cat` 1.6.8](https://github.com/PipeWire/pipewire/blob/1.6.8/src/tools/pw-cat.c),
-`--raw` bypasses file-format probing before the playback node is created.
-The launcher and isolated capture harness observe `pw-cat --help` with a
-2-second / 64-KiB bound and add `--raw` only when advertised. A failed or
-malformed capability observation stops startup. The report records
-`pw_cat_explicit_raw`; this observation is not playback qualification.
+Playback requires the colocated native helper's bounded `--describe` protocol
+observation (2 seconds, 2 KiB). Missing/incompatible helpers fail explicitly;
+there is no fallback to `pw-cat`. `playback_backend` records this capability
+and linked library version. The old `pw_cat_explicit_raw` playback field is
+removed. The isolated capture harness still uses bounded `pw-cat --help`
+capability detection and its own explicit-raw field. Historical `pw-cat`
+receipts remain historical and do not qualify the new helper.
 A normal session manager supplies channel links in
 desktop use. The policy-free isolated harness configures only its own client adapter
 DSP ports and explicit test links because its private daemon has no desktop
@@ -187,7 +194,9 @@ Ctrl-C, SIGTERM and SIGHUP stop the producer and player, wait briefly, then
 kill a child which will not stop. The route worker has its own process group;
 cleanup signals that group, lets the worker reap an active `pw-dump`, then
 uses bounded kill/reap fallback. Final media EOF is sent before worker
-cleanup so a final partial native read can finish promptly. The player has no runtime pause, seek,
+cleanup so the native reader can observe exact input EOF promptly. Native
+control closure or signals stop its mainloop, wake its blocked reader, join
+the thread and destroy its own stream. The player has no runtime pause, seek,
 input append, gap handling or interactive volume command. Stop it and start
 another invocation with `--start-sample` or attenuation; the initial prototype
 does not retain an old output queue across a restart.
@@ -197,13 +206,16 @@ does not retain an old output queue across a restart.
 Exit zero and `status: completed` mean that validated PCM reached the
 requested native stream, both children exited successfully, exact byte/frame
 counts matched, and the producer/submitted PCM hashes matched. For a nonempty
-stream, `pw-cat` returned zero after its drain callback. This is software
+stream, the helper separately confirmed exact input EOF, ring consumption
+and its native drain callback before returning zero. This is software
 delivery evidence. It does not say that a speaker was audible, that a tuned
 chain's filters loaded, or that Dolby reference output matched.
 
 | Field | What it proves |
 |---|---|
-| `player_pipe_requested_frames` / `player_pipe_requested_bytes` / `player_pipe_maximum_bytes` / `player_pipe_capacity_bytes` | Requested scheduling reserve and its verified kernel allocation; not physical latency |
+| `player_pipe_requested_bytes` / `player_pipe_maximum_bytes` / `player_pipe_capacity_bytes` | Exact 4096-byte native input pipe; not physical latency |
+| `native_ring_capacity_frames` / `native_ring_capacity_bytes` | Separate preallocated native capacity, excluded from kernel-pipe and supervisor-queue counts |
+| `native_playback` | Native input/consumed/media/priming counts, startup/prefill silence, ring starvation, exact EOF and stream-drained event |
 | `producer.stream.caller_frames` | Live producer release bound; fixed DSP block size and offline API remain separate |
 | `startup_priming_frames` | Zero frames sent only to the verified route before media activation; excluded from media counts |
 | `media_start_verified_active` | Every matching link reported active before the first media frame was submitted |
@@ -216,15 +228,16 @@ chain's filters loaded, or that Dolby reference output matched.
 | `pipewire_drain_completed` | Native player's successful drained exit; false for an empty EOF invocation |
 | `producer.decoded_frames` | Encoded syncframes observed by Cavern; not PCM frames or physical samples |
 | `producer.object_metadata_consumed` | The actual JOC/synthetic object branch was used; false for bed fallback |
-| `underruns` | Null: no trustworthy underrun counter is collected |
+| `underruns` | Null for global/server/device xruns; native ring underflows are separately counted in `native_playback` |
 | `physical_playback_observed` | Always false: no acoustic observation is performed |
 
 A failure may leave submitted frames greater than zero: cancellation cannot
 unplay bytes already delivered. A native stdin `BrokenPipeError` during
 media submission reports `pipewire-player-ended-early`, including the race
 between the process check and a write. It proves early input closure, not
-its cause. Other I/O errors keep the generic process/I/O failure status. No successful drain count is invented from a
-write count. Error reports preserve the received/submitted prefix and any
+its cause. Other I/O errors keep the generic process/I/O failure status. Native media starvation reports `native-media-underrun` with the bounded
+missing-frame count; completion requires zero such events. No successful
+drain count is invented from a write count. Error reports preserve the received/submitted prefix and any
 available producer receipt, with upstream/private exception text suppressed.
 The report is prepared in a private same-filesystem directory, mode 0600,
 then published with an exclusive hard link. Existing files, directories,
@@ -303,10 +316,14 @@ defaults to `units`; `--case` or `--joc-input` alone defaults to `integration`.
 Mixing unit and integration retry selectors, or combining explicit `all`
 with a selector/input, fails before Git, image inspection or container work.
 It runs no legacy Atmos, speaker or laptop lane. The local
-container wrapper needs an already prepared pinned image and source checkout:
+container wrapper needs explicit already prepared compiler and runtime images
+and a source checkout. It compiles in `live-compiler`, then runs acceptance
+in the unchanged `live-ci` runtime image; both identities and phase exit codes
+are recorded with the same CPU/memory/device restrictions:
 
 ```bash
 probes/atmos/live-ci.sh --image PRIVATE_PINNED_LIVE_IMAGE \
+  --compiler-image PRIVATE_PINNED_NATIVE_COMPILER_IMAGE \
   --source PRIVATE_PINNED_CAVERN --report private-live/integration.json \
   --stage integration --case success-seek
 ```
