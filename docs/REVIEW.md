@@ -504,3 +504,33 @@ exhaustion without independently proving the kill cause. Only the failed
 diagnostic was split into four isolated groups. All eight read hashes and
 PTS/epoch/EOS checks matched the retained full-render PCM. This proves scoped
 same-engine continuity, not every seek in one context or independent fidelity.
+
+
+## PR 17 — live PipeWire playback
+
+Independent source review found two P2 issues in the initial live-player
+batch: incomplete channel links could be ignored near native exit, and retry
+selectors could execute unrelated acceptance stages. Both were fixed and
+cleared at `4890d18` before the first selected test execution. A later review
+found that bounded daemon diagnostics incorrectly depended on optional raw
+capture retention; the unconditional diagnostic tail cleared at `7730093`.
+
+| Reviewed correction | Source clearance | Scope |
+|---|---|---|
+| Exact drain-route checks and strict retry selection | `4890d18` | Missing links on a surviving node fail; only whole-node successful teardown permits the bounded exit race; selectors cannot broaden stages |
+| Chronological native registry events and private client ports | `daa6dd2` | Bounded JSON array sequences preserve removals and serial identity; manual test ports belong only to isolated clients |
+| Nonblocking registry child observation and failure evidence | `7730093` | Feeding continues while the query runs; retained capture metrics precede comparison assertions; every failed case retains a bounded daemon tail |
+| Advertised raw-mode compatibility | `566ac60` | Bounded capability discovery selects native raw input/output without version gating; package and receipt bind the shared helper |
+| Guarded startup silence and all-active media start | `9e42453` | Only verified target/channel pairs receive bounded silence; actual media waits for every channel to be active and keeps its own frame/hash accounting |
+| Persistent route worker | `d1aa227` | Native query creation and bounded parsing leave the PCM feeder; one bounded sequence-checked response, watchdog and process-group cleanup |
+| Modern selected CI image | `5902c3c` | Pinned target PipeWire/WirePlumber stack and unchanged SDK/runtime; old offline/build stages and legacy diagnostics remain distinct |
+
+These clearances concern source correctness within each delta. They do not
+turn a failed sample comparison into a pass. Thirty-three distinct live unit
+methods and three existing dispatcher smoke methods have passing receipts.
+The thirteen selected startup/worker/modern-fixture methods passed. Five of
+seven modern integration cases passed; a missing 12-channel capture block and
+policy target-loss classification remain under diagnosis. Earlier failed comparisons remain retained in the
+[status ledger](STATUS.md). The original renderer binaries and their prior
+source-bound regression results remain unchanged. No physical playback or
+Sonos acceptance is implied.

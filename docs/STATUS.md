@@ -1,13 +1,14 @@
 # Status — implementation and physical acceptance
 
-**Updated:** 2026-10-15 · **State:** twenty-seven new live unit methods and
-three existing dispatch smoke methods have passed on their reviewed sources.
-Stereo streaming matched all 96,000 captured PCM frames exactly;
-cancellation and both target-loss cases passed. Target-version 7.1.4 and
-initial-seek runs now complete and drain after the raw-mode compatibility
-fix, but still fail full PCM matching. Retained captures show channel-specific
-startup loss; 7.1.4 also has a later gap. Guarded startup priming cleared focused review; its pending validation is
-combined with a persistent route-worker fix now awaiting review. Live playback acceptance remains incomplete.
+**Updated:** 2026-10-15 · **State:** thirty-three distinct live unit methods and
+three existing dispatch smoke methods have passing source-bound receipts.
+The reviewed modern build and thirteen selected startup/worker/fixture checks
+passed. Five of seven current integration cases passed: exact stereo and
+initial-seek PCM, layout rejection, cancellation and manual target loss.
+The 12-channel capture lost one 256-frame block after an exact startup;
+the policy-driven target-loss case stopped safely but returned a generic I/O
+failure instead of the expected route-loss classification. Both failures are
+retained and under isolated diagnosis. Full live JOC acceptance remains pending.
 Signed manual annotations and the bounded
 file-only Atmos API passed independent review and all 27 selected unit methods
 once. Fresh JOC rendering and four split continuity groups passed; the original
@@ -40,7 +41,7 @@ remain different software quantities, not physical latency or Mac parity.
 | Startup/stop | Reviewed helper, prior save/automatic-start checks and ROG service autostart evidence retained | End-to-end post-login routing; repeated boot/resume/hotplug separately |
 | Signed annotation analysis | Eleven reviewed methods passed once; signed bounds and provenance retained | Actual private annotations from the later recording session |
 | Source-level chain latency | Accepted minimum-phase IR/preset audit found no justified removable fixed delay; no tuning change | Actual same-path physical recording |
-| Live Atmos prototype | 27 new units + 3 dispatch smokes accepted across source-bound attempts; stereo PCM, mismatch, cancellation and both target-loss cases passed; modern 7.1.4/seek drain but still fail PCM | Review guarded startup priming and diagnose later 7.1.4 gap; retry only failed or invalidated methods/cases; no laptop playback or Sonos test |
+| Live Atmos prototype | 33 distinct units + 3 dispatch smokes have passing receipts; modern stereo, seek, mismatch, cancellation and manual target loss passed | Diagnose one missing 12-channel capture block and policy target-loss error; preserve passed cases; full JOC follows |
 | Host Atmos | Sixteen affected methods passed once; fresh full JOC render and four isolated timeline groups passed | Original long sequence resource failure retained; independent fidelity and later live integration |
 | Physical interaction timing | Emitter source/ten-method acceptance and earlier staging retained; no pilot/physical samples | Owner-ready coordinated same-keyboard/phone capture, still deferred |
 | Sonos Arc/eARC | Untouched and last | TV route and received-format qualification after internal audio |
@@ -49,6 +50,31 @@ Companion to [installation](SPEAKER_INSTALL.md), [review](REVIEW.md),
 [manual annotations](MANUAL_LATENCY_ANNOTATIONS.md) and
 [implementation](AUDIO_IMPLEMENTATION.md). Source, synthetic, read-only and
 physical evidence remain separate.
+
+## October 15 modern acceptance — five cases passed, two under diagnosis
+
+Reviewed source `5902c3c` built successfully on the pinned modern image under
+two CPUs and 6 GiB. Compiler-only sanity and all thirteen selected unit methods
+passed; the original distributable renderer DLLs remained unchanged. This adds
+six new startup/worker methods to the twenty-seven earlier distinct methods;
+changed methods and the new FFmpeg fixture were checked selectively.
+
+The first seven-case modern run passed exact stereo (96,000 frames), exact
+initial seek (95,223 frames, including the final partial block), mismatch,
+cancellation and manual target loss. The 12-channel capture begins exactly,
+then skips one 256-frame block at media frame 15,891. Its submitted hash/count
+and native drain succeeded, but capture acceptance failed. The capture alone
+cannot establish whether playback or capture scheduling lost that block.
+Policy-driven target loss stopped with no observed fallback and removed owned
+nodes, but returned `process-or-io-failure` instead of the required route-loss
+classification. Private captures, commands, source/build hashes and failure
+logs are retained. Only those failures are being diagnosed before any retry;
+passing cases are not repeated without an invalidating change. Official live
+JOC, portable preview packaging and final acceptance remain pending.
+
+The entries below preserve earlier observations and their then-pending work;
+this newer entry supersedes their current-state descriptions. No laptop
+playback, tuning/configuration change or Sonos testing occurred.
 
 ## October 15 live CI — target native stack selected
 
