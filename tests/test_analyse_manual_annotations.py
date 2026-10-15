@@ -208,7 +208,11 @@ class AnnotationTests(unittest.TestCase):
         output = self.scratch / 'result.json'
         stderr = io.StringIO()
         with contextlib.redirect_stderr(stderr):
-            self.assertEqual(annotations.main(['--input', str(source), '--output', str(output)]), 0)
+            prior_umask = os.umask(0o777)
+            try:
+                self.assertEqual(annotations.main(['--input', str(source), '--output', str(output)]), 0)
+            finally:
+                os.umask(prior_umask)
             result = output.read_bytes()
             self.assertEqual(stat.S_IMODE(output.stat().st_mode), 0o600)
             self.assertEqual(annotations.main(['--input', str(source), '--output', str(output)]), 1)

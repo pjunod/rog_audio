@@ -307,6 +307,7 @@ def write_result(result, path):
     fd = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW |
                  os.O_NONBLOCK, 0o600)
     with os.fdopen(fd, 'wb') as output:
+        os.fchmod(output.fileno(), 0o600)
         require(stat.S_ISREG(os.fstat(output.fileno()).st_mode), 'output_not_regular_file')
         output.write(encoded)
         output.flush()

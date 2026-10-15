@@ -32,6 +32,7 @@ def main(argv=None):
         print('Annotation acceptance error: report_create_failed', file=sys.stderr)
         return 2
     with os.fdopen(fd, 'w', encoding='utf-8') as report:
+        os.fchmod(report.fileno(), 0o600)
         sys.path.insert(0, str(ROOT / 'tests'))
         suite = unittest.defaultTestLoader.loadTestsFromNames(ids or ['test_analyse_manual_annotations'])
         start = time.monotonic()
