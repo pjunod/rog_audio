@@ -209,13 +209,17 @@ explicit PipeWire sink without changing speaker tuning or defaults. The
 pinned Linux baseline and changed producer compile with no warnings/errors.
 The [native helper contract](LIVE_ATMOS_NATIVE.md) adds a fixed ring and
 nonblocking processing callback without changing the managed renderer or
-speaker chain. Independent review and sixty-one distinct live unit methods
-have passing source-bound results. Stereo, twelve-channel and initial-seek
-capture, cancellation and both target-removal cases pass. Full JOC stopped
-early at a capture-clock comparison; its exact full-media acceptance remains
-incomplete. The separate [native capture observer](LIVE_ATMOS_CAPTURE.md)
-uses bounded buffering, a writer thread and loss/error accounting. Its clock
-snapshot association is under investigation without weakening exact PCM
-acceptance. See the dated [status ledger](STATUS.md) and
-[review history](REVIEW.md) for retained failures and affected-only tests.
+speaker chain. Independent review and sixty-three distinct live unit methods
+have passing source-bound results, with three existing dispatcher smokes
+retained. Earlier ordinary 256-frame media cases pass; full JOC now passes
+exact 3,528,192-frame capture at observed 1024/48k, two-logical-CPU affinity,
+unchanged two-CPU quota and 6 GiB cap. The separate 512-frame final padding is
+excluded from media counts/hashes. The [native capture observer](LIVE_ATMOS_CAPTURE.md)
+uses bounded buffering, a writer thread and explicit loss/error accounting.
+
+The [acceptance ledger](../evidence/live-atmos-acceptance-2026-10-15.json) and
+[status ledger](STATUS.md) retain the 256-frame full-stream failures and every
+changed condition. This qualifies same-engine virtual-sink continuity under
+the 1024 condition, not hard realtime, physical laptop output, independent
+Dolby fidelity or ThinkPad Atmos at 256. Speaker tuning/rollback stay intact;
 Sonos is untouched.

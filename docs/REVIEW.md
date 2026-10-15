@@ -545,20 +545,29 @@ explicit loss counters. Cancellation requires complete capture; only deliberate
 target removal permits the narrowly checked source-end exception. The private
 acceptance runner's file-retention race and cleanup were also reviewed and fixed.
 
-Sixty-one distinct live unit methods and three existing dispatcher smoke
+Sixty-three distinct live unit methods and three existing dispatcher smoke
 methods have passing source-bound receipts. Only failed or invalidated methods
 were repeated. Stereo and twelve-channel captures each match 96,000 frames;
-initial seek matches 95,223 media frames, with nine separately counted final
-transport-padding frames. Cancellation and both target-removal cases pass.
-The separate mismatch rejection remains accepted. The earlier 512-frame
-deletion and both partial-tail failures remain distinct historical failures.
+initial seek matches95,223 media frames with nine separate padding frames.
+Cancellation, both target-removal cases and channel-mismatch rejection remain
+accepted inherited media evidence at their earlier256-frame condition.
 
-Full JOC stopped on a capture-clock comparison before full PCM acceptance.
-The observer reports no ring overflow or writer errors; playback reports no
-native underflow. Those counters do not establish end-to-end continuity.
-Bounded first-anomaly timing diagnostics are being added to distinguish the
-live driver snapshot from the queued buffer timestamp. The fatal failure and
-exact PCM requirements remain intact. Review and only affected tests precede
-the failed-path retry. See the [status ledger](STATUS.md). Full exact JOC
-capture remains required before merging; no physical playback, independent
-Dolby fidelity or Sonos acceptance is implied.
+The first-clock diagnostic cleared at `cada9ea`. Its observed timestamp
+association preserved the actual graph-cycle failures; the subsequent profiler
+found startup capture-follower deadline errors without explaining an earlier
+mid-stream silent-quantum insertion. All failures remain retained.
+
+The explicit graph-quantum change first received a P2 for treating monitor
+metadata deltas as complete snapshots. `312e9cf` resolved it with bounded full
+snapshots before media and after capture, a shared startup deadline and actual
+callback-size evidence. Its four selected methods then passed once. The new
+snapshot assertions are not retroactively covered by earlier ordinary receipts.
+
+Full JOC passed exact capture of 3,528,192 media frames at observed 1024/48k,
+with 512 final transport-padding frames outside media counts/hashes, affinity
+to two logical CPUs, unchanged two-CPU quota and 6 GiB cap. Production helper,
+capture observer and managed artifacts were unchanged by the quantum work.
+The [acceptance ledger](../evidence/live-atmos-acceptance-2026-10-15.json) records
+source/artifact bindings and retained failures. This scoped software result
+does not qualify full JOC at 256 frames, laptop or Sonos playback, hard realtime
+behavior, physical latency or independent Dolby fidelity.

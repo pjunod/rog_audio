@@ -1,15 +1,14 @@
 # Status — implementation and physical acceptance
 
-**Updated:** 2026-10-15 · **State:** sixty-one distinct live unit methods and
+**Updated:** 2026-10-15 · **State:** the bounded live Atmos software batch has
+passed its selected acceptance. Sixty-three distinct live unit methods and
 three existing dispatch smoke methods have passing source-bound results.
-Exact stereo, twelve-channel and initial-seek capture, cancellation and both
-target-removal cases pass. Full JOC remains incomplete: after two capture-clock
-failures, a two-CPU-affinity attempt completed all submitted/drained frames
-but captured one extra 256-frame block of silence at 47.392 seconds. Exact
-PCM therefore still fails despite zero current ring, clock and quota-throttle
-counters. The profiler then observed capture-follower startup deadline errors. An explicit
-1024-frame isolated condition is being implemented for the next qualification. Historical
-failures remain distinct; the preview is not ready to merge or publish.
+Full 73.504-second JOC capture matched all 3,528,192 media frames at an observed
+1024-frame/48-kHz graph period, with two-logical-CPU affinity, the existing
+two-CPU quota and 6 GiB limit. The separate 512 final transport-padding frames
+are outside media counts/hashes. Earlier ordinary 256-frame results remain
+inherited media evidence; full JOC at 256 frames remains unqualified, with
+all failures retained. Final evidence/document review and merge are in progress.
 Signed manual annotations and the bounded
 file-only Atmos API passed independent review and all 27 selected unit methods
 once. Fresh JOC rendering and four split continuity groups passed; the original
@@ -45,7 +44,7 @@ remain different software quantities, not physical latency or Mac parity.
 | Startup/stop | Reviewed helper, prior save/automatic-start checks and ROG service autostart evidence retained | End-to-end post-login routing; repeated boot/resume/hotplug separately |
 | Signed annotation analysis | Eleven reviewed methods passed once; signed bounds and provenance retained | Actual private annotations from the later recording session |
 | Source-level chain latency | Accepted minimum-phase IR/preset audit found no justified removable fixed delay; no tuning change | Actual same-path physical recording |
-| Live Atmos prototype | 61 distinct methods + 3 smokes passed; all six ordinary playback/removal cases pass | Trace the remaining full JOC silent-quantum insertion; retain all prior passes |
+| Live Atmos prototype | 63 distinct methods + 3 smokes; exact full JOC at observed 1024/48k with two-CPU affinity; earlier ordinary 256 media passes retained | Final evidence review/merge/package; no 256 full JOC, laptop, independent fidelity or physical qualification |
 | Host Atmos | Sixteen affected methods passed once; fresh full JOC render and four isolated timeline groups passed | Original long sequence resource failure retained; independent fidelity and later live integration |
 | Physical interaction timing | Emitter source/ten-method acceptance and earlier staging retained; no pilot/physical samples | Owner-ready coordinated same-keyboard/phone capture, still deferred |
 | Sonos Arc/eARC | Untouched and last | TV route and received-format qualification after internal audio |
@@ -54,6 +53,38 @@ Companion to [installation](SPEAKER_INSTALL.md), [review](REVIEW.md),
 [manual annotations](MANUAL_LATENCY_ANNOTATIONS.md) and
 [implementation](AUDIO_IMPLEMENTATION.md). Source, synthetic, read-only and
 physical evidence remain separate.
+
+## October 15 selected software acceptance — exact full JOC at 1024
+
+[The source-bound acceptance ledger](../evidence/live-atmos-acceptance-2026-10-15.json)
+retains every attempt and review. The final harness correction `312e9cf`
+cleared independent adversarial review before its four selected methods ran;
+all four passed once. The two new methods bring distinct live coverage to
+sixty-three. Existing dispatch smoke passes and unaffected methods are retained.
+The metadata review finding was resolved with bounded full settings snapshots
+before media and after capture, not continuous completeness claims based on
+lossy monitor updates.
+
+The sole 1024-frame full-JOC run passed: all 3,528,192 rendered, submitted,
+drained and captured media frames matched SHA256
+`4c97fef1e51add1e08ff4a5bbc5b9df81cbc5cc0eb0b65c8077d99ae701cef19`.
+Before/after settings and the native maximum callback independently recorded
+48 kHz/1024 frames; final padding was 512 frames separately. Native ring
+underflows/missing media and capture clock gaps/overflow/writer errors/rejected
+frames were zero. Two logical CPUs on distinct cores were selected while
+retaining the two-CPU quota and 6 GiB cap. Quota throttling was zero. Playback
+wall time was 74.654186 seconds; waited child CPU time was 52.980557 seconds.
+The maximum observed DSP block took 35.078107 ms; this is not a hard realtime
+guarantee or a physical output-delay measurement.
+
+This is exact same-engine virtual-sink continuity under the stated condition.
+It does not establish independent Dolby fidelity, sustained reliability at
+256 frames, laptop acoustic output, physical latency or Sonos reception.
+Earlier ordinary 256 results qualify their recorded media behavior; they do
+not retroactively test the new before/after settings assertions. ROG's historical
+speaker period is also 1024, but no live laptop Atmos deployment or new
+speaker-tuning change was performed. ThinkPad 256 Atmos remains unqualified.
+The earlier 256 failures remain below without retroactive causal attribution.
 
 ## October 15 profiler — capture startup deadlines; explicit 1024 condition next
 
