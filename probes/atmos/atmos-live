@@ -19,6 +19,7 @@ import sys
 import tempfile
 import time
 import uuid
+from registry_json import MAX_REGISTRY_BYTES, parse_registry
 
 RATE = 48000
 CHANNELS = {'stereo-speakers': ['FL', 'FR'],
@@ -28,7 +29,7 @@ STARTUP_SECONDS = 45
 STALL_SECONDS = 15
 DRAIN_SECONDS = 15
 SNAPSHOT_SECONDS = 2
-MAX_SNAPSHOT = 4 * 1024 * 1024
+MAX_SNAPSHOT = MAX_REGISTRY_BYTES
 
 
 class PlaybackError(Exception):
@@ -65,7 +66,7 @@ def snapshot(env):
             if result.returncode != 0:
                 raise PlaybackError('pipewire-registry-unavailable')
             output.seek(0)
-            data = json.load(output)
+            data = parse_registry(output.read(MAX_SNAPSHOT + 1))
         except (subprocess.TimeoutExpired, ValueError) as exc:
             raise PlaybackError('pipewire-registry-unavailable') from exc
     if not isinstance(data, list):

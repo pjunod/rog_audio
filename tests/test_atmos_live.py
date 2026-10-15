@@ -15,6 +15,8 @@ import unittest
 from unittest import mock
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / 'probes/atmos'))
+from registry_json import MAX_REGISTRY_BYTES, parse_registry
 loader = importlib.machinery.SourceFileLoader('atmos_live', str(ROOT / 'probes/atmos/atmos-live'))
 spec = importlib.util.spec_from_loader(loader.name, loader)
 live = importlib.util.module_from_spec(spec)
@@ -118,6 +120,46 @@ class LiveTests(unittest.TestCase):
         for value in (float('nan'), float('inf'), -1.01, 1.01):
             with self.assertRaises(live.PlaybackError):
                 live.checked_pcm(struct.pack('<f', value))
+
+    def test_registry_snapshot_and_removals_preserve_chronology_and_serials(self):
+        original = registry()[0]
+        replacement = dict(original, info={'props': dict(original['info']['props'], **{'object.serial': 143})})
+        removed_after = json.dumps([original]).encode() + b'\n[{"id":42,"info":null}]\n'
+        self.assertEqual(parse_registry(removed_after), [])
+        recreated = removed_after + json.dumps([replacement]).encode()
+        current = parse_registry(recreated)
+        self.assertEqual(live.resolve_target(current, '143', ['FL', 'FR']), {'id': 42, 'serial': '143'})
+        with self.assertRaises(live.PlaybackError):
+            live.resolve_target(current, '142', ['FL', 'FR'])
+        removed_before = b'[{"id":99,"props":null}]\n' + json.dumps([original]).encode()
+        self.assertEqual(parse_registry(removed_before), [original])
+        self.assertEqual(parse_registry(b'[]\n[{"id":42,"info":null}]'), [])
+        # Link and port removals must change route validation as well as targets.
+        changed = json.dumps(registry()).encode() + b'\n[{"id":301,"info":null}]'
+        self.assertFalse(live.verify_links(parse_registry(changed), {'id': 42, 'serial': '142'},
+                                          'stream-test', ['FL', 'FR']))
+
+    def test_registry_rejects_malformed_tail_objects_and_bounds(self):
+        invalid = [b'', b' ', b'{}', b'[] trailing', b'[] [', b'[{"id":true,"info":null}]',
+                   b'[{"id":-1,"info":null}]', b'[{"id":4294967295,"info":null}]',
+                   b'[{"id":42,"info":null,"extra":1}]', b'[{"id":42}]', b'[{"id":42,"id":43,"info":null}]',
+                   b'[{"id":42,"info":null},{"id":42,"info":null}]',
+                   b'[]' + b' ' * MAX_REGISTRY_BYTES, b'[]\xff']
+        for data in invalid:
+            with self.subTest(data=data[:80]), self.assertRaises(ValueError):
+                parse_registry(data)
+
+    def test_snapshot_consumes_bounded_registry_event_stream(self):
+        payload = json.dumps(registry()).encode() + b'\n[{"id":42,"info":null}]\n'
+        def completed(command, **kwargs):
+            self.assertEqual(command, ['pw-dump'])
+            self.assertEqual(kwargs['timeout'], live.SNAPSHOT_SECONDS)
+            kwargs['stdout'].write(payload)
+            return subprocess.CompletedProcess(command, 0)
+        with mock.patch.object(live.subprocess, 'run', side_effect=completed):
+            result = live.snapshot({})
+        with self.assertRaisesRegex(live.PlaybackError, 'target-disappeared'):
+            live.verify_links(result, {'id': 42, 'serial': '142'}, 'stream-test', ['FL', 'FR'])
 
     def test_cli_rejects_invalid_input_volume_and_collisions(self):
         source = self.root / 'scene.json'

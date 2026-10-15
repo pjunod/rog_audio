@@ -10,6 +10,7 @@ import signal
 import subprocess
 import tempfile
 import time
+from registry_json import parse_registry
 
 CASES = ('success-stereo', 'success-714', 'success-seek', 'mismatch', 'cancel', 'target-loss', 'policy-target-loss', 'success-joc')
 JOC_SHA256 = 'c190089bbb0600b8bcba27dbe07c370252c3c2605fd285b4f596b9c2a9d59432'
@@ -29,7 +30,7 @@ def run(command, env, timeout=5):
 
 def registry(env):
     # This graph is created only by the harness inside an isolated container.
-    data = json.loads(run(['pw-dump'], env))
+    data = parse_registry(run(['pw-dump'], env))
     if not isinstance(data, list):
         raise AssertionError('invalid registry')
     return data
@@ -70,6 +71,18 @@ def stop(process, group=False):
             else:
                 process.kill()
             process.wait(timeout=3)
+
+
+def configure_client_ports(node, channels, env, capture=False):
+    name = props(node).get('node.name', '')
+    if (capture and name != 'integration-capture') or (not capture and not name.startswith('rog-atmos-')):
+        raise AssertionError('refusing to configure an unrelated node')
+    configuration = {'direction': 'Input' if capture else 'Output', 'mode': 'dsp',
+        'format': {'mediaType': 'audio', 'mediaSubtype': 'raw', 'format': 'F32',
+                   'rate': 48000, 'channels': len(channels), 'position': channels}}
+    # A policy-free daemon does not configure client adapter DSP ports. This
+    # setter is confined to the harness's own silent clients and private core.
+    run(['pw-cli', 'set-param', str(node['id']), 'PortConfig', json.dumps(configuration)], env)
 
 
 def scoped_links(data, source_id, target_id, channels, env, monitor=False):
@@ -219,6 +232,7 @@ def one_case(name, probe, config, parent, joc_input=None):
                     stdin=subprocess.DEVNULL, stdout=capture_handle, stderr=subprocess.DEVNULL,
                     env=env, preexec_fn=capture_limits)
                 capture_node = wait_for(lambda: next(iter(nodes(registry(env), 'integration-capture')), None))
+                configure_client_ports(capture_node, channels, env, capture=True)
                 wait_for(lambda: scoped_links(registry(env), sink_id, capture_node['id'], channels, env, monitor=True))
             selected_layout = '7.1.4' if name == 'mismatch' else layout
             playback_started = time.monotonic()
@@ -230,6 +244,7 @@ def one_case(name, probe, config, parent, joc_input=None):
             action = False
             linked = False
             observed_stream = None
+            configured_nodes = set()
             unexpected_links = []
             deadline = time.monotonic() + (150 if name == 'success-joc' else 70)
             while player.poll() is None:
@@ -239,6 +254,9 @@ def one_case(name, probe, config, parent, joc_input=None):
                 assert len(streams) <= 1, 'multiple playback nodes'
                 if streams:
                     observed_stream = streams[0]['id']
+                    if manager is None and observed_stream not in configured_nodes:
+                        configure_client_ports(streams[0], channels, env)
+                        configured_nodes.add(observed_stream)
                     for item in data:
                         info = item.get('info', {})
                         if (item.get('type') == 'PipeWire:Interface:Link' and
@@ -372,12 +390,12 @@ def main():
     args.config = args.config.resolve(strict=True)
     source_files = ('Program.cs', 'LiveStream.cs', 'OfflinePullRenderer.cs', 'ObjectFrameGuard.cs',
                     'atmos-live', 'atmos-probe', 'live_integration.py', 'live-pipewire.conf',
-                    'live-ci.sh', 'live_ci_options.py', 'build.sh', 'source_manifest.json', 'Dockerfile', 'AtmosProbe.csproj',
+                    'live-ci.sh', 'live_ci_options.py', 'registry_json.py', 'build.sh', 'source_manifest.json', 'Dockerfile', 'AtmosProbe.csproj',
                     'global.json', '../../tests/test_atmos_live.py', '../../scripts/validate_atmos_live.py')
     def bindings():
         items = {name: hashlib.sha256((Path(__file__).parent / name).read_bytes()).hexdigest()
                  for name in source_files if (Path(__file__).parent / name).is_file()}
-        for name in ('AtmosProbe.dll', 'Cavern.dll', 'Cavern.Format.dll', 'atmos-live'):
+        for name in ('AtmosProbe.dll', 'Cavern.dll', 'Cavern.Format.dll', 'atmos-live', 'registry_json.py'):
             items['build/' + name] = hashlib.sha256((args.probe.parent / name).read_bytes()).hexdigest()
         return items
     report['source_before_sha256'] = bindings()

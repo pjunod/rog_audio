@@ -1,7 +1,10 @@
 # Status — implementation and physical acceptance
 
-**Updated:** 2026-10-15 · **State:** live Atmos playback implementation is in
-progress; no live acceptance is claimed. Signed manual annotations and the bounded
+**Updated:** 2026-10-15 · **State:** reviewed live Atmos source at `4890d18`
+passed eighteen new unit methods and three existing dispatch smoke methods
+once. The isolated sink-mismatch case passed; six other integration cases
+failed and await diagnosis. Live playback acceptance remains incomplete.
+Signed manual annotations and the bounded
 file-only Atmos API passed independent review and all 27 selected unit methods
 once. Fresh JOC rendering and four split continuity groups passed; the original
 combined sequence hit a process limit and remains recorded separately.
@@ -33,7 +36,7 @@ remain different software quantities, not physical latency or Mac parity.
 | Startup/stop | Reviewed helper, prior save/automatic-start checks and ROG service autostart evidence retained | End-to-end post-login routing; repeated boot/resume/hotplug separately |
 | Signed annotation analysis | Eleven reviewed methods passed once; signed bounds and provenance retained | Actual private annotations from the later recording session |
 | Source-level chain latency | Accepted minimum-phase IR/preset audit found no justified removable fixed delay; no tuning change | Actual same-path physical recording |
-| Live Atmos prototype | In progress: bounded streaming producer and explicit PipeWire sink supervisor | Independent review, affected units and isolated virtual-sink acceptance; no laptop playback or Sonos test |
+| Live Atmos prototype | Reviewed `4890d18`: 18 new units + 3 dispatch smokes passed once; sink mismatch passed; six isolated integration cases failed | Diagnose capture/registry setup, review focused fixes, retry only failed or invalidated cases; no laptop playback or Sonos test |
 | Host Atmos | Sixteen affected methods passed once; fresh full JOC render and four isolated timeline groups passed | Original long sequence resource failure retained; independent fidelity and later live integration |
 | Physical interaction timing | Emitter source/ten-method acceptance and earlier staging retained; no pilot/physical samples | Owner-ready coordinated same-keyboard/phone capture, still deferred |
 | Sonos Arc/eARC | Untouched and last | TV route and received-format qualification after internal audio |
@@ -42,6 +45,34 @@ Companion to [installation](SPEAKER_INSTALL.md), [review](REVIEW.md),
 [manual annotations](MANUAL_LATENCY_ANNOTATIONS.md) and
 [implementation](AUDIO_IMPLEMENTATION.md). Source, synthetic, read-only and
 physical evidence remain separate.
+
+## October 15 live acceptance — units passed, integration remains incomplete
+
+After independent adversarial review and both P2 fixes, source `4890d18`
+passed all eighteen new live-player unit methods and the three affected
+existing CLI dispatch smoke methods once, without failures, errors or skips.
+The tests covered producer output, initial seek/attenuation, exact EOF,
+finite PCM, bounded transport, drain-route enforcement, signal cleanup and
+selective CI stage handling. The unchanged DSP/regression suites retain
+prior source-bound receipts.
+
+Seven ordinary isolated PipeWire cases then ran once. `mismatch` passed.
+`success-stereo`, `success-714` and `success-seek` failed during bounded
+capture setup; `cancel`, `target-loss` and `policy-target-loss` reported
+`pipewire-registry-unavailable` before their intended route action. These
+failures are retained, not counted as playback acceptance. Source and build
+artifacts remained unchanged during those runs. Daemon/registry inspection confirmed missing policy-free client DSP port
+configuration and concatenated native JSON snapshot/removal arrays under
+client churn. Focused fixes configure only harness-owned client ports and
+share a bounded chronological registry parser; review and failed-case
+retries remain pending. No accepted methods have been repeated.
+
+The official JOC streaming case and the separate target-version PipeWire
+stack have not run. A focused source review precedes any failed/invalidated
+case retry; passing units and the mismatch case are retained. There was no
+laptop playback, configuration change, recording or Sonos test. Physical
+latency, loaded tuning, sound quality and independent Dolby fidelity remain
+unmeasured.
 
 ## October 15 live preparation — tuned bytes preserved, no audible test
 

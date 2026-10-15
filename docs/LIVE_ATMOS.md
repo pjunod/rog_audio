@@ -93,7 +93,11 @@ Startup/header preparation has a 45-second wall bound, and decoding retains
 the 60 CPU-second, 128-descriptor and 512 MiB managed-heap launcher bounds.
 Transfer has a wall bound of remaining media duration plus 60 seconds, a
 15-second no-progress watchdog, and a 15-second final drain bound. Each
-registry observation has a 2-second/4 MiB bound. The whole playback can
+registry observation has a 2-second/4 MiB bound. The shared registry parser
+reads every JSON array in order, validates object IDs and removals, and
+applies tombstones; malformed trailing data fails. This handles native
+[`pw-dump` removal events](https://github.com/PipeWire/pipewire/blob/0.3.65/src/tools/pw-dump.c)
+which may precede or follow its snapshot even without monitor mode. The whole playback can
 therefore take longer than the original 90-second offline wall timeout.
 Native allocations and filesystem/network access are not sandboxed by the
 launcher; use the isolated acceptance container for untrusted inputs.
@@ -127,8 +131,9 @@ The source-inspected native backend is
 [`pw-cat` 0.3.65](https://github.com/PipeWire/pipewire/blob/0.3.65/src/tools/pw-cat.c).
 That version takes raw PCM from `-` plus explicit format/rate/channel options;
 it has no `--raw` option. A normal session manager supplies channel links in
-desktop use. The isolated harness creates only its own explicit test links
-because its private daemon has no desktop session manager.
+desktop use. The policy-free isolated harness configures only its own client adapter
+DSP ports and explicit test links because its private daemon has no desktop
+session manager. The normal player does not apply those harness setters.
 
 Ctrl-C, SIGTERM and SIGHUP stop the producer and player, wait briefly, then
 kill a child which will not stop. The player has no runtime pause, seek,

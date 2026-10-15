@@ -64,6 +64,7 @@
     "qualification": "prototype; tests pending independent review; no physical or realtime qualification",
     "ci_debian_version": "0.3.65-3+deb12u1",
     "ci_wireplumber_debian_version": "0.4.13-1",
-    "ci_dbus_debian_version": "1.14.10-1~deb12u1"
+    "ci_dbus_debian_version": "1.14.10-1~deb12u1",
+    "pw_dump_source_reference": "https://github.com/PipeWire/pipewire/blob/0.3.65/src/tools/pw-dump.c"
   }
 }
