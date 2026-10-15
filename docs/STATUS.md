@@ -5,8 +5,10 @@ three existing dispatch smoke methods have passing source-bound results.
 Exact stereo, twelve-channel and initial-seek capture, cancellation and both
 target-removal cases pass. The full 73.504-second JOC attempt stopped early
 on a capture-clock discontinuity and did not reach full PCM comparison.
-The failure is retained while the clock observation and scheduling path are
-investigated. Earlier failures remain distinct. The live preview is not ready
+A diagnostic-only retry confirmed a skipped observed graph cycle with both
+buffer timestamps matching their live snapshots. A bounded affinity retry is
+being prepared to investigate burst scheduling under the existing quota.
+Earlier failures remain distinct. The live preview is not ready
 to merge or publish until the remaining acceptance passes.
 Signed manual annotations and the bounded
 file-only Atmos API passed independent review and all 27 selected unit methods
@@ -52,6 +54,30 @@ Companion to [installation](SPEAKER_INSTALL.md), [review](REVIEW.md),
 [manual annotations](MANUAL_LATENCY_ANNOTATIONS.md) and
 [implementation](AUDIO_IMPLEMENTATION.md). Source, synthetic, read-only and
 physical evidence remain separate.
+
+## October 15 clock diagnostics — skipped cycle; bounded affinity retry prepared
+
+The five-file `cada9ea` diagnostic change cleared independent review and
+strict capture-only compilation. Its expanded clock regression passed once;
+the other sixty methods and prior ordinary cases remain retained. Full JOC
+failed again before comparison, after 5.108 seconds. All twenty-three new
+receipt files were independently hash-verified.
+
+The first anomaly expected tick 81,664 but observed 81,920. Both queued-buffer
+timestamps exactly matched their live-clock snapshots; the two snapshots
+were 10,666,666 ns apart, corresponding to two 256-frame cycles at 48 kHz.
+This attempt therefore does not support the stale-buffer hypothesis. The
+recorder rejected 256 frames with no ring overflow or writer error. Four
+quota-throttled periods totalled 165,794 microseconds, without event timing
+to establish causation.
+
+Read-only scheduling inspection found eight permitted logical CPUs under
+an aggregate two-CPU quota. A single failed-JOC retry will restrict inherited
+affinity to two logical CPUs on distinct physical cores while retaining the
+same quota, 6 GiB limit, graph quantum, buffers and exact comparison. This is
+a changed execution condition, not a production source fix or an established
+cause. Original failures remain recorded; no passing unit or ordinary case
+will repeat for this scheduling experiment.
 
 ## October 15 full JOC attempt — capture-clock failure retained
 
