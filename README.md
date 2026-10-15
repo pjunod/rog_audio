@@ -60,6 +60,14 @@ callback, buffering, control and build boundaries.
 Independent fidelity, binaural/realtime support and physical qualification
 remain open. Sonos Arc/eARC remains last.
 
+[The Linux live Atmos preview is published](https://github.com/pjunod/rog_audio/releases/tag/v0.3.0-atmos-preview.1)
+from merged PR 17, with exact runtime/source archives, checksums and packaging
+inspection. [Publication verification](evidence/live-atmos-preview-publication-2026-10-15.json)
+binds all four asset digests and the tag to `cc5bf674`; v0.2.3 remains the stable
+latest release. See [download and use](docs/LIVE_ATMOS.md#download-the-published-preview)
+for dependencies and checksum verification. Publication adds no laptop,
+256-frame full-JOC, physical or Sonos qualification.
+
 [v0.2.3 is published](https://github.com/pjunod/rog_audio/releases/tag/v0.2.3)
 with the [verified packaging-only +rog4 runtime](evidence/speaker-stop-packaging-only-rog4-2026-10-13.json),
 corresponding source/notices, both [kept-settings-bound model kits](evidence/speaker-stop-provisional-rog4-kit-manifest-2026-10-13.json),

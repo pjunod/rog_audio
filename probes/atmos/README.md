@@ -17,6 +17,14 @@ SDK/runtime and the build image. Cavern remains subject to its
 no sale or advertisements; public/commercial use has attribution/permission
 conditions. This is not Dolby certification or a qualified playback product.
 
+The [published Linux live preview](https://github.com/pjunod/rog_audio/releases/tag/v0.3.0-atmos-preview.1)
+contains accepted playback binaries and the pinned runtime; follow
+[download and use](../../docs/LIVE_ATMOS.md#download-the-published-preview)
+for verification and dependencies. Its full-JOC acceptance is limited to the
+recorded 48-kHz/1024-frame isolated condition. It does not qualify laptop,
+ThinkPad 256-frame, realtime, physical or Sonos playback. The source asset
+preserves source/licences and declares five upstream media-fixture omissions.
+
 ## Build in an isolated Linux container
 
 Fetch the pinned source explicitly. The build does not fetch dependencies or

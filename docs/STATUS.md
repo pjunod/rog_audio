@@ -9,7 +9,9 @@ two-CPU quota and 6 GiB limit. The separate 512 final transport-padding frames
 are outside media counts/hashes. Earlier ordinary 256-frame results remain
 inherited media evidence; full JOC at 256 frames remains unqualified, with
 all failures retained. Final independent evidence/document review and repository/privacy checks passed.
-The source batch is accepted for merge; distribution packaging is separate.
+PR 17 merged as `cc5bf674`; the [preview prerelease](https://github.com/pjunod/rog_audio/releases/tag/v0.3.0-atmos-preview.1)
+is published with verified asset digests. v0.2.3 remains stable latest. NUC
+cleanup is in progress; its retained-evidence/deletion receipt is pending.
 Signed manual annotations and the bounded
 file-only Atmos API passed independent review and all 27 selected unit methods
 once. Fresh JOC rendering and four split continuity groups passed; the original
@@ -45,7 +47,7 @@ remain different software quantities, not physical latency or Mac parity.
 | Startup/stop | Reviewed helper, prior save/automatic-start checks and ROG service autostart evidence retained | End-to-end post-login routing; repeated boot/resume/hotplug separately |
 | Signed annotation analysis | Eleven reviewed methods passed once; signed bounds and provenance retained | Actual private annotations from the later recording session |
 | Source-level chain latency | Accepted minimum-phase IR/preset audit found no justified removable fixed delay; no tuning change | Actual same-path physical recording |
-| Live Atmos prototype | 63 distinct methods + 3 smokes; exact full JOC at observed 1024/48k with two-CPU affinity; earlier ordinary 256 media passes retained | Distribution and coordinated laptop trial; no 256 full JOC, independent fidelity or physical qualification |
+| Live Atmos preview | Published v0.3.0-atmos-preview.1; 63 methods + 3 smokes; exact full JOC at observed 1024/48k with two-CPU affinity; ordinary 256 media passes inherited | NUC cleanup receipt; coordinated laptop trial; no 256 full JOC, independent fidelity or physical qualification |
 | Host Atmos | Sixteen affected methods passed once; fresh full JOC render and four isolated timeline groups passed | Original long sequence resource failure retained; independent fidelity and later live integration |
 | Physical interaction timing | Emitter source/ten-method acceptance and earlier staging retained; no pilot/physical samples | Owner-ready coordinated same-keyboard/phone capture, still deferred |
 | Sonos Arc/eARC | Untouched and last | TV route and received-format qualification after internal audio |
@@ -54,6 +56,25 @@ Companion to [installation](SPEAKER_INSTALL.md), [review](REVIEW.md),
 [manual annotations](MANUAL_LATENCY_ANNOTATIONS.md) and
 [implementation](AUDIO_IMPLEMENTATION.md). Source, synthetic, read-only and
 physical evidence remain separate.
+
+## October 15 preview publication — exact reviewed assets
+
+[The published prerelease](https://github.com/pjunod/rog_audio/releases/tag/v0.3.0-atmos-preview.1)
+resolves to merged PR 17 commit `cc5bf6744faf89d306863610f16021d43f1c6123`.
+[Publication verification](../evidence/live-atmos-preview-publication-2026-10-15.json)
+records the runtime/source archives, checksums and packaging-inspection JSON:
+all four GitHub sizes and SHA-256 digests match the reviewed local assets.
+The tag is a prerelease; stable latest remains v0.2.3. Accepted binaries were
+packaged without rebuilding or rerunning software acceptance.
+
+The runtime carries the complete pinned .NET runtime and original project,
+Cavern, NuGet and PipeWire notices. The source archive preserves merged
+project source, pinned Cavern source code and all attributed patches; exactly
+five upstream test-media fixture omissions are declared by path/blob. Neither
+asset contains publisher reference media or private machine data. See
+[download instructions](LIVE_ATMOS.md#download-the-published-preview) for
+requirements and verification. NUC cleanup is in progress with its receipt
+pending; this publication adds no laptop or physical qualification.
 
 ## October 15 selected software acceptance — exact full JOC at 1024
 

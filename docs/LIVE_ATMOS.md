@@ -44,10 +44,51 @@ It compares output with the same pinned decoder/renderer, not an independent
 Dolby reference. Speaker tuning, default devices and laptop configuration were
 not changed.
 
+## Download the published preview
+
+[Version v0.3.0-atmos-preview.1](https://github.com/pjunod/rog_audio/releases/tag/v0.3.0-atmos-preview.1)
+is the Linux x86_64 prerelease from merged PR 17 (`cc5bf674`). The
+[publication receipt](../evidence/live-atmos-preview-publication-2026-10-15.json)
+records the exact four asset sizes/digests and tag identity. The stable speaker
+release remains v0.2.3; publication does not install or activate the player.
+
+You need glibc 2.38 or newer, `libpipewire-0.3.so.0`, `pw-dump` and Python
+3.10 or newer. The runtime archive includes the complete pinned .NET 8.0.20
+runtime, its licence and third-party notices. It also includes the native
+helper, managed decoder/renderer, original dependency notices, per-file
+manifest and build/source receipts. It excludes test recorder/executables,
+reference media and desktop services.
+
+Download all four assets from the linked release into a new directory. Verify
+all entries in `SHA256SUMS` with `sha256sum -c SHA256SUMS` on Linux before
+extracting; on macOS, use `shasum -a 256 -c SHA256SUMS`. Those checks bind the
+two archives and `packaging-inspection.json` to the published checksum file;
+the linked publication receipt independently records that file's digest.
+
+```bash
+mkdir -m 700 private-atmos-preview  # Use a new private extraction directory.
+tar -xzf rog-audio-atmos-0.3.0-atmos-preview.1-linux-x86_64.tar.gz \
+  -C private-atmos-preview
+```
+
+The extracted player is
+`private-atmos-preview/rog-audio-atmos-0.3.0-atmos-preview.1-linux-x86_64/atmos-live`.
+Use that path instead of `private-build/atmos-live` in the invocation below.
+It uses its sibling pinned runtime without a global .NET installation.
+
+The source archive contains exact merged project source, pristine pinned
+Cavern source code and all three attributed patches. Its source manifest
+identifies exactly five omitted upstream test-media fixtures by path and Git
+blob; no source code, build input or licence text is omitted. This is a pinned
+source-code snapshot with fixture omissions, not full upstream tree equivalence.
+The software qualification is the explicit 1024-frame condition above; the
+package does not establish laptop, realtime, physical or Sonos acceptance.
+
 ## Run the player through your existing tuned sink
 
-Build with the pinned [Atmos build recipe](AUDIO_ATMOS_BUILD.md), or use the
-reviewed private Linux build. The managed build copies `atmos-live` beside
+Use the [published preview](#download-the-published-preview), or build with
+the pinned [Atmos build recipe](AUDIO_ATMOS_BUILD.md). The managed build copies
+`atmos-live` beside
 `AtmosProbe.dll`; then run `probes/atmos/build-native.sh --output private-build`
 in the pinned native compiler image to add `atmos-pw-playback`, its Python
 control module, build receipt and notice. The offline build recipe remains
