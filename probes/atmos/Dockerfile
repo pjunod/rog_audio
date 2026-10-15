@@ -11,3 +11,13 @@ FROM build AS ci
 # Generates plain synthetic E-AC-3 only; not a JOC encoder or runtime decoder.
 RUN apt-get update && apt-get install -y --no-install-recommends ffmpeg=7:5.1.9-0+deb12u1 \
     && rm -rf /var/lib/apt/lists/*
+
+FROM ci AS live-ci
+# Native virtual-sink acceptance only; no host sound devices/session sockets.
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    pipewire=0.3.65-3+deb12u1 pipewire-bin=0.3.65-3+deb12u1 \
+    libpipewire-0.3-modules=0.3.65-3+deb12u1 libspa-0.2-modules=0.3.65-3+deb12u1 \
+    wireplumber=0.4.13-1 dbus=1.14.10-1~deb12u1 \
+    dbus-daemon=1.14.10-1~deb12u1 dbus-bin=1.14.10-1~deb12u1 \
+    dbus-session-bus-common=1.14.10-1~deb12u1 \
+    && rm -rf /var/lib/apt/lists/*
