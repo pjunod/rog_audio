@@ -1,19 +1,15 @@
 # Status — implementation and physical acceptance
 
-**Updated:** 2026-10-15 · **State:** forty distinct live unit methods and
-three existing dispatch smoke methods have passing source-bound receipts.
-The reviewed smaller live batches and bounded player reserve passed twelve
-selected methods and all six affected ordinary cases; the unchanged mismatch
-case is retained. The second full 73.504-second official JOC retry still failed
-captured-output identity despite exact produced/submitted PCM and counts.
-It skips 256 frames near 0.733 seconds; the exact final tail is present 6,144
-frames later. The first failed run and all diagnostics remain retained.
-Private runtime-concurrency and larger-player-pipe diagnostics also failed.
-A bounded native-profiler run associates the first mismatch with playback
-deadline misses while capture/driver counters are still clean. The native
-playback helper is implemented and compiled at `dd2d076`; independent
-adversarial review is active, with affected tests still unrun. The live preview is
-not ready for publication or laptop playback yet.
+**Updated:** 2026-10-15 · **State:** fifty-one distinct live unit methods
+and three existing dispatch smoke methods now have passing source-bound
+results. The native playback helper cleared independent adversarial review;
+twenty selected methods passed initially and the sole failed concurrency
+fixture passed after a reviewed test-only correction. No passing method was
+repeated for that correction. Six affected native playback integration cases
+are running next; the unchanged target-mismatch case remains retained.
+The full JOC retry through this helper is still pending. Earlier full captures
+and private diagnostics remain failed and retained. The live preview is not
+ready for publication or laptop playback yet.
 Signed manual annotations and the bounded
 file-only Atmos API passed independent review and all 27 selected unit methods
 once. Fresh JOC rendering and four split continuity groups passed; the original
@@ -46,7 +42,7 @@ remain different software quantities, not physical latency or Mac parity.
 | Startup/stop | Reviewed helper, prior save/automatic-start checks and ROG service autostart evidence retained | End-to-end post-login routing; repeated boot/resume/hotplug separately |
 | Signed annotation analysis | Eleven reviewed methods passed once; signed bounds and provenance retained | Actual private annotations from the later recording session |
 | Source-level chain latency | Accepted minimum-phase IR/preset audit found no justified removable fixed delay; no tuning change | Actual same-path physical recording |
-| Live Atmos prototype | 40 distinct units + 3 dispatch smokes passed; all seven ordinary cases green; second full JOC capture still failed | Investigate remaining full-stream gaps with a private runtime-concurrency diagnostic; preserve passing checks; no laptop or Sonos playback |
+| Live Atmos prototype | Reviewed native helper; 51 distinct units + 3 dispatch smokes have passing results; six affected native transport cases running; unchanged mismatch retained | Complete native transport and full JOC capture acceptance; preserve earlier failures and unrelated passes; no laptop or Sonos playback |
 | Host Atmos | Sixteen affected methods passed once; fresh full JOC render and four isolated timeline groups passed | Original long sequence resource failure retained; independent fidelity and later live integration |
 | Physical interaction timing | Emitter source/ten-method acceptance and earlier staging retained; no pilot/physical samples | Owner-ready coordinated same-keyboard/phone capture, still deferred |
 | Sonos Arc/eARC | Untouched and last | TV route and received-format qualification after internal audio |
@@ -55,6 +51,30 @@ Companion to [installation](SPEAKER_INSTALL.md), [review](REVIEW.md),
 [manual annotations](MANUAL_LATENCY_ANNOTATIONS.md) and
 [implementation](AUDIO_IMPLEMENTATION.md). Source, synthetic, read-only and
 physical evidence remain separate.
+
+## October 15 native unit acceptance — twenty passes plus one failed-only retry
+
+Independent review found one allocation-alignment issue: the native ring's
+64-byte alignment exceeded the guarantee of ordinary allocation. Correction
+`ce2d20f` uses aligned, zero-initialized storage in the helper and its I/O
+driver and cleared focused review. All twenty-one selected methods then ran
+once: twenty passed and one concurrent fixture hit its ten-second timeout.
+The timeout, exact source/artifact bindings and exited/removed container are
+retained; no native transport case started during that failed phase.
+
+The test writer used fixed 85-frame chunks. It filled 4,080 of 4,096 frames,
+then waited for 85 free frames while the consumer waited for a full prebuffer.
+Production input already caps reads to actual available space. Test-only
+correction `b476179` caps its chunk similarly, retaining the exact 100,000-frame
+order, full startup prebuffer, EOF assertions and ten-second bound. Independent
+review cleared it; only that failed method retried and passed. Production
+helper and I/O binary bytes are unchanged, and the other twenty passes remain
+valid. The six affected ordinary cases now run through the native helper;
+full JOC follows only after they pass. Managed renderer, runtime, speaker
+tuning, rollback and Sonos remain unchanged.
+
+The dated sections below retain earlier checkpoints; the opening summary
+states current acceptance.
 
 ## October 15 native playback correction — compiled, under review
 
