@@ -199,6 +199,81 @@ class ProbeTests(unittest.TestCase):
         self.assertEqual(output.read_bytes(),b'racer-owned')
         self.assertFalse(report.exists())
 
+    def test_pull_continuation(self):
+        self.regression('pull-continuation')
+
+    def test_pull_seek_flush_eof(self):
+        self.regression('pull-seek-flush-eof')
+
+    def test_pull_context_and_bounds(self):
+        self.regression('pull-context-bounds')
+
+    def test_pull_cumulative_budgets(self):
+        self.regression('pull-budgets')
+
+    def test_pull_nonfinite_rejected(self):
+        self.regression('pull-nonfinite')
+
+    def run_timeline(self, source, commands, name='timeline'):
+        script = self.root / (name + '.json')
+        script.write_text(json.dumps({'schema_version': 1, 'commands': commands}))
+        report = self.root / (name + '-report.json')
+        result = subprocess.run([str(PROBE), 'timeline', '--input', str(source),
+                                 '--timeline', str(script), '--report', str(report)],
+                                capture_output=True, timeout=100)
+        return result, json.loads(report.read_text()) if report.exists() else None
+
+    def assert_timeline_matches(self, source, values, channels, samples, status):
+        commands = [{'op': 'read', 'frames': 117}, {'op': 'read', 'frames': 511},
+                    {'op': 'seek', 'sample': 1000}, {'op': 'read', 'frames': 300},
+                    {'op': 'flush'}, {'op': 'read', 'frames': 300},
+                    {'op': 'seek', 'sample': samples - 3}, {'op': 'read', 'frames': 17},
+                    {'op': 'read', 'frames': 17}, {'op': 'read', 'frames': 1}]
+        result, receipt = self.run_timeline(source, commands)
+        self.assertEqual(result.returncode, 0, receipt)
+        self.assertEqual(receipt['status'], status)
+        self.assertEqual(receipt['timeline']['timebase'], '1/48000')
+        events = receipt['timeline']['events']
+        for index, start, frames, epoch in [(0, 0, 117, 0), (1, 117, 511, 0),
+                                            (3, 1000, 300, 1), (5, 1300, 300, 2),
+                                            (7, samples - 3, 3, 3), (8, samples, 0, 3),
+                                            (9, samples, 0, 3)]:
+            event = events[index]
+            pcm = values[start*channels:(start+frames)*channels]
+            digest = hashlib.sha256(struct.pack('<' + 'f'*len(pcm), *pcm)).hexdigest()
+            self.assertEqual((event['sample_pts'], event['frames'], event['epoch']),
+                             (start, frames, epoch))
+            self.assertEqual(event['pcm_sha256'], digest)
+            self.assertEqual(event['end_of_stream'], start + frames == samples)
+        self.assertGreater(receipt['dsp_processing']['rendered_blocks'], 0)
+        self.assertIn('build-host', receipt['dsp_processing']['evidence'])
+        self.assertIsNone(receipt['delay']['decoder_delay_samples'])
+
+    def test_timeline_synthetic(self):
+        result, receipt, output = self.run_probe(scene(samples=4101))
+        self.assertEqual(result.returncode, 0, receipt)
+        channels, values = wave(output)
+        self.assert_timeline_matches(self.root/'input.json', values, channels, 4101, 'synthetic-timeline')
+
+    def test_timeline_generated_bed(self):
+        if BED is None:
+            self.skipTest('explicit generated E-AC-3 fixture not supplied')
+        result, receipt, output = self.run_probe(BED.read_bytes(), suffix='.eac3')
+        self.assertEqual(result.returncode, 0, receipt)
+        channels, values = wave(output)
+        self.assert_timeline_matches(self.root/'input.eac3', values, channels,
+                                     receipt['input_samples'], 'bed-fallback-timeline')
+
+    def test_timeline_invalid_commands(self):
+        source = self.root/'input.json'; source.write_text(json.dumps(scene()))
+        for index, commands in enumerate([
+                [{'op': 'read', 'frames': 4097}], [{'op': 'seek', 'sample': -1}],
+                [{'op': 'flush', 'frames': 1}], [{'op': 'read', 'frames': '1'}],
+                [{'op': 'unknown'}], [], [{'op': 'flush'}] * 4097]):
+            result, receipt = self.run_timeline(source, commands, name='invalid-' + str(index))
+            self.assertNotEqual(result.returncode, 0, receipt)
+            self.assertEqual(receipt['status'], 'invalid-input')
+
     def test_generated_eac3_bed(self):
         if BED is None:
             self.skipTest('explicit generated E-AC-3 fixture not supplied')

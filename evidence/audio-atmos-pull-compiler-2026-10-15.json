@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "evidence_class": "compiler-only",
+  "date": "2026-10-15",
+  "base_commit": "29ac9e8797579bf99b12deee528b98b1e61b1d4d",
+  "source_sha256": {
+    "probes/atmos/Program.cs": "2f5f347d94446b8ec7f5ac5c29bf2c34424cbff02dcc1de9ad20ab405b80f0d5",
+    "probes/atmos/OfflinePullRenderer.cs": "97bfc7cfaf7209f357587186e11e160540d0afc2acda44119ec444711037e799",
+    "probes/atmos/atmos-probe": "8e4a1e3c8efcf26433386402c5126e0d641725a91a8ea32ce64608ba7e30d629",
+    "probes/atmos/regressions/Program.cs": "09eb4b77d0f3853cf069833576bf789f054d446c4bc7598a5aede7475a27e4c5",
+    "probes/atmos/regressions/PullRegression.cs": "3836ce8b389cec2d0e036d210d906749d9e9d7ae32b184accd557d8ec08b9ca2"
+  },
+  "cavern_commit": "7d85d1880666ca5ea323848cff47ce7f50b29f7d",
+  "cavern_provenance": "Existing source_manifest.json patches applied and verified by baseline build.sh; compiled references reused unchanged",
+  "sdk": "8.0.414",
+  "msbuild": "17.11.41+18f1ecf82",
+  "runtime": "8.0.20",
+  "platform": "Debian 12 linux-x64; native x86_64, not emulated",
+  "sdk_image": "mcr.microsoft.com/dotnet/sdk:8.0.414-bookworm-slim@sha256:ff8311847c54c04d1a14c488362807997d59b61372da5095a95f89cbcda7f9b7",
+  "compiler_image_id": "sha256:3056a4788bd963d927d0f90ab40bb6d002c59276b28e4c82347dfc3e85f2f4cb",
+  "isolation": {
+    "rootless": true,
+    "cpu_limit": 2,
+    "memory_limit_bytes": 6442450944,
+    "memory_plus_swap_limit_bytes": 6442450944,
+    "network": "none",
+    "devices_exposed": false,
+    "runtime_sockets_exposed": false
+  },
+  "compilations": [
+    {
+      "project": "probes/atmos/AtmosProbe.csproj",
+      "exit_code": 0,
+      "warnings": 0,
+      "errors": 0
+    },
+    {
+      "project": "probes/atmos/regressions/BlockBufferRegression.csproj",
+      "exit_code": 0,
+      "warnings": 0,
+      "errors": 0
+    }
+  ],
+  "unit_tests_executed": false,
+  "acceptance": "Compilation only; review, regression execution, media fidelity and physical acceptance remain separate.",
+  "compilation_snapshot": "final frozen C# snapshot revision3",
+  "commands": [
+    "dotnet publish probes/atmos/AtmosProbe.csproj -c Release --self-contained false -o NEW_OUTPUT -p:CavernPath=RETAINED_PATCHED_CAVERN_REFERENCES --ignore-failed-sources",
+    "dotnet publish probes/atmos/regressions/BlockBufferRegression.csproj -c Release --self-contained false -o NEW_REGRESSION_OUTPUT -p:CavernPath=RETAINED_PATCHED_CAVERN_REFERENCES --ignore-failed-sources"
+  ]
+}

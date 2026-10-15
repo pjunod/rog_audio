@@ -198,12 +198,122 @@ pre-review receipts are historical, separate from this final qualification.
 | Realtime/desktop/PipeWire | No integration, install or activation; offline timing includes I/O/startup |
 | Sonos Arc/eARC | Deferred to the final audio lane |
 
-The smallest prototype is this player-side file-to-WAV command. Later app
-integration must retain encoded audio/metadata before downmixing and render
-once. The offline result has no timestamp, seek/flush, gap or live EOS API;
-create a new decoder/renderer per input. Establish decoder/JOC and QMF delay,
-tail handling, seek state, allocation and block cost before a playback API.
-There is no always-running service or physical-device output in this batch.
+## Bounded pull API and file timelines (2026-10-15)
+
+The reusable [OfflinePullRenderer](OfflinePullRenderer.cs) is an offline,
+single-context API in `AtmosProbe.dll`. The existing `render` command uses
+this same path. Compilation is recorded separately from review and test
+acceptance; the new methods are prepared, not yet executed. Dependency pins
+and all three patch bytes remain unchanged.
+
+```csharp
+using AtmosProbe;
+using var renderer = OfflinePullRenderer.Open(bytes, synthetic: false,
+    layout: "7.1.4");
+float[] pcm = new float[4096 * renderer.Channels];
+PullRead read = renderer.Read(pcm, 4096);
+renderer.Seek(48000); // Exact integer PTS, one second at 48 kHz.
+renderer.Flush();     // Replay to the current PTS; begin another epoch.
+```
+
+`Open` snapshots explicit input bytes before parsing. Synthetic scenes and
+raw E-AC-3 retain the input/layout limits above. `Length` is the validated
+input duration in samples, `Channels` is 2 or 12, and `Position` is the next
+sample PTS. `Read` accepts 1–4096 frames and a caller-owned interleaved float
+array with capacity for the full request. It writes only
+`PullRead.Frames * Channels` elements at the beginning; the suffix is
+untouched. No buffer returned by Cavern escapes to the caller. A successful
+read remains stable across subsequent reads/seeks. Discard the written prefix
+if a read throws. Input/limit errors use `InvalidInput`, unsupported format
+or clipping uses `Unsupported`; other decoder failures remain exceptions.
+
+The internal DSP quantum stays 256 frames. Reads consume a pending block
+before asking the renderer for another, so arbitrary caller chunk sizes do
+not move metadata updates or synthetic object-position boundaries. Output
+starts at sample 0 in a `1/48000` timebase, with no delay compensation.
+The final block is trimmed to the validated input duration; the read returning
+the final samples has `EndOfStream = true`. Later reads return zero frames,
+the same end PTS/epoch and `EndOfStream = true`, without rendering a tail.
+These EOF calls still count against the command budget.
+
+`Seek(samplePts)` accepts the closed interval `[0, Length]`. It detaches all
+old sources, disposes the previous renderer, constructs a fresh decoder and
+listener at frame zero, then renders and discards forward to the requested
+sample. A partial discarded block retains its remainder for the next read.
+This intentionally replays OAMD carry-forward, JOC/QMF and renderer/filter
+history instead of jumping into an encoded frame with missing state.
+`Flush()` performs the same replay at the current PTS. Every successful seek
+or flush increments `Epoch`, including a seek to the current position or EOF.
+There is no timestamp-gap or input-append operation.
+
+Cavern layout/environment settings are process-global. The API holds a single
+active-context lease and serializes its operations; opening a competing
+context fails before changing a layout. Dispose the first context before
+opening a different layout. A failed open releases its lease. Raw Cavern
+listeners or direct global-setting mutations must not coexist with this API;
+its lock cannot govern code outside the adapter. Dispose is idempotent.
+A DSP/decoder failure faults the context and detaches/disposes its engine;
+dispose the context to release the lease before reopening.
+
+Limits are cumulative for each opened context: at most 4096 read/seek/flush
+requests, including invalid requests, and 67,500 charged 256-frame work units
+(360 seconds of DSP frames). Encoded decoder construction/reconstruction is
+conservatively charged six extra units for its initial decoded frame; those
+units are not measured render calls. Replay blocks count fully, including
+blocks discarded by seeks. `Open` accepts smaller positive budgets through
+`maximumCommands` and `maximumDspBlocks`; it rejects larger values. The API
+checks a read/seek's work requirement before changing usable state, and
+neither successful nor rejected seeks reset either budget. The existing
+launcher wall/CPU/heap limits remain additional bounds for CLI use. The
+library alone is not a process, filesystem or network sandbox.
+
+`Profile`/report `dsp_processing` records total render calls, cumulative
+charged units/commands, DSP elapsed time and maximum block time, plus total
+and maximum approximate process-wide allocation deltas. The timed region
+contains the object update and `Listener.Render()` call, including upstream
+allocation and discard-forward work. It excludes initial/replay engine setup,
+input parsing, buffer copies, hashes, validation and WAV I/O. The existing
+`processing` field is retained for render reports. Build-host timing and
+allocations do not qualify realtime performance, laptop hardware or physical
+latency. No tail flush, decoder/QMF/filter delay measurement, delay
+compensation, HRTF or independent Dolby reference comparison was added.
+
+A file timeline exercises this boundary without writing WAV or using devices:
+
+```bash
+private-atmos/build/atmos-probe timeline \
+  --input private-atmos/moving.json --layout 7.1.4 \
+  --timeline private-atmos/timeline.json --report private-atmos/timeline-report.json
+```
+
+The explicit timeline file is at most 256 KiB and contains schema 1 plus
+1–4096 commands. Every command has exactly its documented fields:
+
+```json
+{"schema_version":1,"commands":[
+  {"op":"read","frames":117},
+  {"op":"seek","sample":1000},
+  {"op":"read","frames":300},
+  {"op":"flush"},
+  {"op":"read","frames":300}
+]}
+```
+
+The report records each event's sample PTS and epoch; reads also contain the
+actual frame count, EOF flag and SHA-256 of little-endian interleaved float32
+PCM. It labels synthetic, bed fallback and unqualified JOC timelines
+separately. It is a file-only exercise, with the same new-report collision
+policy as other commands. Same-engine continuation/seek equality checks
+internal state consistency; it is not an independent Dolby fidelity result.
+
+Eight new focused methods cover split-read continuity/stable caller buffers,
+seek/flush/EOF history, competing-context recovery and bounds, cumulative
+budgets, nonfinite output rejection, and synthetic/generated-bed/invalid
+file timelines. Existing synthetic render and generated-bed methods are
+invalidated by the shared render-loop change and need one post-review run.
+Generated bed and synthetic fixtures cannot exercise encoded JOC/OAMD replay;
+that remains an explicit coverage gap. Prior official-vector diagnostics and
+source-bound JOC guards remain inherited evidence, not new API qualification.
 
 ## Official vectors and observed channel energy
 
@@ -263,7 +373,7 @@ A publication regression simulates a competing writer replacing the linked
 WAV before report collision and checks that its inode/data remains. These
 regressions use generated arrays and reflection, with no Dolby payload.
 
-The current suite has sixteen methods, adding an encoded-duration scanner
+The inherited suite has sixteen methods, adding an encoded-duration scanner
 boundary case. The inherited fifteen-method receipt remains unchanged; the
 three affected probe methods and five analyzer methods passed once after
 independent review, as recorded in the [new acceptance receipt](../../evidence/audio-atmos-official-vectors-acceptance-2026-10-14.json). Without

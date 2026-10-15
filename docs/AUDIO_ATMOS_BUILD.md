@@ -55,6 +55,28 @@ skips. [The acceptance receipt](../evidence/audio-atmos-official-vectors-accepta
 binds the reviewed source; the earlier complete-vector diagnostics are retained
 on their original hashes and are not a fresh post-review vector render.
 
+## Offline pull boundary implementation (2026-10-15)
+
+The [pull API and timeline contract](../probes/atmos/README.md#bounded-pull-api-and-file-timelines-2026-10-15)
+is implemented for explicit synthetic/raw E-AC-3 files. Existing file renders
+now use the same pull engine. It retains 256-frame DSP, bounded caller reads,
+exact 48 kHz sample PTS, discontinuity epochs, frame-zero replay seeks/flush,
+caller-owned output and trimmed/idempotent EOF. A sole active context protects
+Cavern's global layout; replay/setup work and command budgets are cumulative.
+File-only timeline reports include PCM hashes and separate DSP timing and
+allocation fields, excluding WAV I/O and engine startup.
+
+The [compiler-only receipt](../evidence/audio-atmos-pull-compiler-2026-10-15.json)
+binds native Linux x86_64 source compilation under the bounded build host.
+New regression sources are prepared; independent adversarial review and one
+selected acceptance run remain pending. Existing render tests need rerunning
+because their shared loop changed. No private reference media was transferred
+or exercised, no audio device was opened, and no laptop/service was changed.
+Synthetic/generated-bed replay equality checks internal state only; encoded
+JOC/OAMD replay, independent Dolby fidelity, unflushed tails, uncompensated
+unknown decoder/filter delay and physical/realtime qualification remain open.
+The original Cavern pin and three dependency patches are unchanged.
+
 ## 1. Establish the exact candidate and compiler loop
 
 Fetch Cavern at the revision in [implementation](AUDIO_IMPLEMENTATION.md).
