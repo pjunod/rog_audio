@@ -227,6 +227,17 @@ python3 scripts/validate_atmos_live.py \
   --report private-live/header-retry.json
 ```
 
+The `live-ci` image stage uses the repository's pinned Ubuntu base with
+PipeWire 1.6.8 / WirePlumber 0.5.17 and copies the existing pinned .NET SDK
+8.0.414 / runtime 8.0.20 from the build stage. The separate legacy `ci`
+stage and its encoder remain unchanged. Modern live fixture generation uses
+FFmpeg 8.1.2; the generated-bed producer method must qualify that new fixture
+once. Exact direct package versions are in the
+[source manifest](../probes/atmos/source_manifest.json). The older
+`live-ci-legacy` diagnostic stage remains available, with its failed
+partial-fragment captures retained as evidence; it is not the default live lane.
+Changing the CI backend does not create a runtime version gate.
+
 The [separate virtual-sink lane](../probes/atmos/live-ci.sh) uses a pinned native PipeWire daemon with no
 `/dev/snd` or desktop session socket. It checks streamed capture/hash/count,
 initial seek/attenuation, target mismatch/loss, cancellation and node cleanup.

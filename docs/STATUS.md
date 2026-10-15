@@ -50,6 +50,21 @@ Companion to [installation](SPEAKER_INSTALL.md), [review](REVIEW.md),
 [implementation](AUDIO_IMPLEMENTATION.md). Source, synthetic, read-only and
 physical evidence remain separate.
 
+## October 15 live CI — target native stack selected
+
+The pending default `live-ci` image now uses the existing pinned Ubuntu base,
+PipeWire 1.6.8 and WirePlumber 0.5.17, matching the observed laptop package
+versions. It copies the unchanged pinned .NET SDK/runtime. The legacy build
+and offline CI stages remain unchanged; the older live diagnostic image and
+its partial-tail failures remain distinguishable. This changes the selected
+CI backend, not the player's runtime admission rules.
+
+The modern fixture encoder is FFmpeg 8.1.2. Its generated-bed producer method
+requires one focused fixture check in addition to the twelve pending
+startup/worker methods. Image build, compiler-only sanity, focused review
+and selected acceptance are pending. Decoder/renderer DLLs and prior passing
+methods are retained unless a result is specifically invalidated.
+
 ## October 15 steady-state delivery — registry work leaves the feeder
 
 The guarded startup batch `9e42453` passed focused source review. Its four
