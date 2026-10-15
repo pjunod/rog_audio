@@ -525,13 +525,14 @@ capture retention; the unconditional diagnostic tail cleared at `7730093`.
 | Persistent route worker | `d1aa227` | Native query creation and bounded parsing leave the PCM feeder; one bounded sequence-checked response, watchdog and process-group cleanup |
 | Modern selected CI image | `5902c3c` | Pinned target PipeWire/WirePlumber stack and unchanged SDK/runtime; old offline/build stages and legacy diagnostics remain distinct |
 | Native stdin closure | `c2e63f7` | Only BrokenPipeError at the player write becomes early termination; committed-prefix counters remain, no drain or route-cause claim is added, and other I/O errors are unchanged |
+| Persistent harness registry monitor | `4f65188` | Bounded chronological event/cache processing preserves 50 ms observations without repeated process launches; the sole stdout cleanup finding was fixed before tests |
 
 These clearances concern source correctness within each delta. They do not
-turn a failed sample comparison into a pass. Thirty-three distinct live unit
+turn a failed sample comparison into a pass. Thirty-seven distinct live unit
 methods and three existing dispatcher smoke methods have passing receipts.
-The thirteen selected startup/worker/modern-fixture methods passed. Five of
-seven modern integration cases passed; a missing 12-channel capture block and
-policy target-loss classification remain under diagnosis. Earlier failed comparisons remain retained in the
+Exact stereo, 12-channel and initial-seek captures now pass. Cancellation and
+manual target removal still fail the positive-media precondition because the
+action timer fires during startup silence; that harness correction is pending. Earlier failed comparisons remain retained in the
 [status ledger](STATUS.md). The original renderer binaries and their prior
 source-bound regression results remain unchanged. No physical playback or
 Sonos acceptance is implied.

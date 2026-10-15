@@ -1,14 +1,14 @@
 # Status — implementation and physical acceptance
 
-**Updated:** 2026-10-15 · **State:** thirty-three distinct live unit methods and
+**Updated:** 2026-10-15 · **State:** thirty-seven distinct live unit methods and
 three existing dispatch smoke methods have passing source-bound receipts.
-The reviewed modern build and thirteen selected startup/worker/fixture checks
-passed. Five of seven current integration cases passed: exact stereo and
-initial-seek PCM, layout rejection, cancellation and manual target loss.
-The 12-channel capture lost one 256-frame block after an exact startup;
-the policy-driven target-loss case stopped safely but returned a generic I/O
-failure instead of the expected route-loss classification. Both failures are
-retained and under isolated diagnosis. Full live JOC acceptance remains pending.
+The persistent-monitor harness now passes exact stereo, 12-channel and
+initial-seek PCM, layout rejection and policy-driven target loss. Cancellation
+and manual target removal stopped correctly but their fixed-delay actions
+fired during startup silence, before any media was submitted. Their positive
+media-count assertions remain failures. A bounded actual-media action barrier
+is being implemented for all three destructive cases; the four unaffected
+success/mismatch results are retained. Full live JOC acceptance remains pending.
 Signed manual annotations and the bounded
 file-only Atmos API passed independent review and all 27 selected unit methods
 once. Fresh JOC rendering and four split continuity groups passed; the original
@@ -41,7 +41,7 @@ remain different software quantities, not physical latency or Mac parity.
 | Startup/stop | Reviewed helper, prior save/automatic-start checks and ROG service autostart evidence retained | End-to-end post-login routing; repeated boot/resume/hotplug separately |
 | Signed annotation analysis | Eleven reviewed methods passed once; signed bounds and provenance retained | Actual private annotations from the later recording session |
 | Source-level chain latency | Accepted minimum-phase IR/preset audit found no justified removable fixed delay; no tuning change | Actual same-path physical recording |
-| Live Atmos prototype | 33 distinct units + 3 dispatch smokes have passing receipts; modern stereo, seek, mismatch, cancellation and manual target loss passed | Diagnose one missing 12-channel capture block and policy target-loss error; preserve passed cases; full JOC follows |
+| Live Atmos prototype | 37 distinct units + 3 dispatch smokes passed; exact stereo, 12-channel and seek captures plus mismatch and policy target loss passed | Review actual-media barrier, check only affected destructive cases, then full live JOC; no laptop or Sonos playback |
 | Host Atmos | Sixteen affected methods passed once; fresh full JOC render and four isolated timeline groups passed | Original long sequence resource failure retained; independent fidelity and later live integration |
 | Physical interaction timing | Emitter source/ten-method acceptance and earlier staging retained; no pilot/physical samples | Owner-ready coordinated same-keyboard/phone capture, still deferred |
 | Sonos Arc/eARC | Untouched and last | TV route and received-format qualification after internal audio |
@@ -50,6 +50,29 @@ Companion to [installation](SPEAKER_INSTALL.md), [review](REVIEW.md),
 [manual annotations](MANUAL_LATENCY_ANNOTATIONS.md) and
 [implementation](AUDIO_IMPLEMENTATION.md). Source, synthetic, read-only and
 physical evidence remain separate.
+
+## October 15 persistent-monitor acceptance — exact 12-channel capture
+
+The sole new review finding was an unclosed monitor stdout descriptor;
+`4f65188` closes it in `finally` and cleared re-review. All six selected unit
+methods passed: three new monitor methods, two affected parser methods and
+the pending native-pipe-closure regression. Thirty-seven distinct live methods
+now have source-bound passing receipts, plus the retained three CLI smokes.
+
+All seven observer-invalidated integration cases ran with the same 50 ms
+observation cadence and CPU/memory/graph/PCM bounds. Exact stereo, exact
+12-channel (96,000 frames), exact initial seek (95,223 frames), mismatch and
+policy target loss passed. Each case used one native monitor with an observed
+65,536-byte output pipe; both production PCM pipes remained 4,096 bytes.
+
+Cancellation and manual target loss returned the correct failure status,
+removed owned nodes and showed no fallback, but failed the required positive
+submitted-media count. The fixed one-second action timer fired during startup
+silence. The correction will observe finite nonzero generated PCM through an
+owned, bounded capture before starting that timer. It applies to all three
+destructive cases to remove the same timing assumption consistently; the prior
+policy pass remains historical and the four unaffected cases are retained.
+These failures are test-precondition failures, not successful acceptance.
 
 ## October 15 remaining failures — native pipe closure and observer workload
 
