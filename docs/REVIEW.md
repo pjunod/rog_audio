@@ -527,12 +527,34 @@ capture retention; the unconditional diagnostic tail cleared at `7730093`.
 | Native stdin closure | `c2e63f7` | Only BrokenPipeError at the player write becomes early termination; committed-prefix counters remain, no drain or route-cause claim is added, and other I/O errors are unchanged |
 | Persistent harness registry monitor | `4f65188` | Bounded chronological event/cache processing preserves 50 ms observations without repeated process launches; the sole stdout cleanup finding was fixed before tests |
 
-These clearances concern source correctness within each delta. They do not
-turn a failed sample comparison into a pass. Thirty-seven distinct live unit
-methods and three existing dispatcher smoke methods have passing receipts.
-Exact stereo, 12-channel and initial-seek captures now pass. Cancellation and
-manual target removal still fail the positive-media precondition because the
-action timer fires during startup silence; that harness correction is pending. Earlier failed comparisons remain retained in the
-[status ledger](STATUS.md). The original renderer binaries and their prior
-source-bound regression results remain unchanged. No physical playback or
-Sonos acceptance is implied.
+Later source clearances and results supersede the earlier implementation
+checkpoints above without discarding their failures:
+
+| Reviewed correction | Source clearance | Scope |
+|---|---|---|
+| Positive-media destructive-action barrier | `b14b1e8` | Cancellation and removal wait for finite captured media instead of elapsed startup time; capture is isolated to owned monitor ports |
+| Bounded live renderer releases | `528152b` | Live reads release 1536 frames; channel-scaled pipe capacity is verified; offline renderer API remains unchanged |
+| Native playback callback and final-buffer ordering | `ce2d20f` | Blocking stdin I/O moves to a reader thread; bounded ring/control/drain checks and correctly aligned storage resolve the independent allocation finding |
+| Concurrent test fixture prefill | `b476179` | Test writes fit actual free space, resolving its 4080/4096-frame startup deadlock while retaining exact ordering and completion assertions |
+
+Fifty-one distinct live unit methods and three existing dispatcher smoke
+methods have passing source-bound receipts. Of twenty-one selected native
+methods, twenty passed initially; the concurrent fixture timed out. After
+review of its test-only correction, only that failed method ran again and
+passed. Production playback bytes and the other twenty passes were retained.
+
+The earlier seven ordinary integration passes belong to the older transport.
+Native playback subsequently passed exact stereo capture, then failed the
+96,000-frame twelve-channel comparison with a 512-frame deletion. Native
+input/consumption/drain counts were exact and ring underflows zero; these
+counters do not qualify the complete graph or capture observer. The remaining
+native transport cases and full JOC stopped at that failure. A single profiler
+diagnostic did not reproduce the deletion and gives no causal attribution.
+
+The capture observer is being changed independently to remove file writes
+from its processing callback and report its own loss/error accounting.
+That invalidates the measurement path, including the previous stereo pass;
+new observer methods and affected captures need review and acceptance. All
+historical failures remain retained in the [status ledger](STATUS.md). Full
+exact JOC capture remains required before merging. No physical playback,
+independent Dolby fidelity or Sonos acceptance is implied.

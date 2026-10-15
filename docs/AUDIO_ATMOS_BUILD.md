@@ -206,6 +206,12 @@ claimed. The measurements describe the bounded build host, not laptop latency.
 The [live playback contract](LIVE_ATMOS.md) covers the new bounded managed
 producer and Python supervisor. It submits streaming float PCM to one
 explicit PipeWire sink without changing speaker tuning or defaults. The
-pinned Linux baseline and changed producer compile with no warnings/errors;
-independent review, affected methods and isolated native acceptance remain
-pending. Sonos is untouched.
+pinned Linux baseline and changed producer compile with no warnings/errors.
+The [native helper contract](LIVE_ATMOS_NATIVE.md) adds a fixed ring and
+nonblocking processing callback without changing the managed renderer or
+speaker chain. Independent review and fifty-one distinct live unit methods
+have passing source-bound results; isolated exact twelve-channel capture and
+full JOC acceptance remain incomplete. The harness capture observer is being
+hardened separately after an unattributed deletion. See the dated
+[status ledger](STATUS.md) and [review history](REVIEW.md) for retained failures
+and the affected-only test sequence. Sonos is untouched.
