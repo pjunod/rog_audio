@@ -7,6 +7,7 @@ import os
 from pathlib import Path
 import resource
 import signal
+import struct
 import subprocess
 import tempfile
 import time
@@ -20,6 +21,87 @@ JOC_LEADING_ZERO_FRAMES = 24065
 MAPS = {'stereo-speakers': ['FL', 'FR'],
         '7.1.4': ['FL', 'FR', 'FC', 'LFE', 'RL', 'RR', 'SL', 'SR',
                   'TFL', 'TFR', 'TRL', 'TRR']}
+MAX_CAPTURE_BYTES = 268435456
+
+
+def pcm_comparison(captured, channels, offset, expected=None, *, frames=None, expected_hash=None):
+    """Return diagnostic evidence before the caller asserts full PCM equality."""
+    width = channels * 4
+    length = len(expected) if expected is not None else frames * width
+    expected_hash = hashlib.sha256(expected).hexdigest() if expected is not None else expected_hash
+    aligned = offset is not None and offset >= 0 and offset % width == 0
+    payload = captured[offset:offset + length] if aligned else b''
+    payload_hash = hashlib.sha256(payload).hexdigest() if aligned else None
+    first_nonzero = next((index for index, value in enumerate(captured) if value), None)
+    result = {'captured_bytes': len(captured), 'captured_complete_frames': len(captured) // width,
+        'capture_partial_frame_bytes': len(captured) % width,
+        'captured_pcm_sha256': hashlib.sha256(captured).hexdigest(),
+        'capture_first_nonzero_frame': first_nonzero // width if first_nonzero is not None else None,
+        'expected_bytes': length, 'expected_frames': length // width,
+        'expected_pcm_sha256': expected_hash, 'payload_offset_bytes': offset,
+        'payload_offset_frames': offset // width if aligned else None,
+        'alignment_found': aligned, 'payload_bytes': len(payload),
+        'payload_complete_frames': len(payload) // width, 'payload_pcm_sha256': payload_hash,
+        'missing_payload_bytes': max(0, length - len(payload)),
+        'first_mismatch_byte': None, 'last_mismatch_byte': None,
+        'first_mismatch_frame': None, 'first_mismatch_channel': None,
+        'first_expected_sample_bits': None, 'first_captured_sample_bits': None,
+        'pcm_exact': aligned and len(payload) == length and
+                     (payload == expected if expected is not None else payload_hash == expected_hash)}
+    if expected is not None and aligned and not result['pcm_exact']:
+        shared = min(len(payload), length)
+        first = None
+        last = max(len(payload), length) - 1 if len(payload) != length else None
+        # Compare large chunks in C, inspecting individual bytes only inside
+        # the first/last differing chunk. Diagnostics stay bounded for JOC.
+        for start in range(0, shared, 65536):
+            left, right = expected[start:start + min(65536, shared - start)], payload[start:start + min(65536, shared - start)]
+            if left != right:
+                first = start + next(i for i, pair in enumerate(zip(left, right)) if pair[0] != pair[1])
+                break
+        if first is None and len(payload) != length:
+            first = shared
+        if last is None:
+            for stop in range(shared, 0, -65536):
+                start = max(0, stop - 65536)
+                left, right = expected[start:stop], payload[start:stop]
+                if left != right:
+                    last = stop - 1 - next(i for i, pair in enumerate(zip(reversed(left), reversed(right))) if pair[0] != pair[1])
+                    break
+        result.update(first_mismatch_byte=first, last_mismatch_byte=last)
+        if first is not None:
+            sample = first // 4 * 4
+            result.update(first_mismatch_frame=first // width,
+                          first_mismatch_channel=(first % width) // 4,
+                          first_expected_sample_bits=struct.unpack_from('<I', expected, sample)[0] if sample + 4 <= length else None,
+                          first_captured_sample_bits=struct.unpack_from('<I', payload, sample)[0] if sample + 4 <= len(payload) else None)
+    return result
+
+
+def retain_failure_artifacts(private, destination, case):
+    """Explicit private failure output; no automatic public capture retention."""
+    target = destination / case
+    target.mkdir(mode=0o700)
+    records = []
+    for original, name in ((private / 'capture.pcm', 'capture.pcm'),
+                           (private / 'expected.pcm', 'expected-stream.bin')):
+        if not original.is_file():
+            continue
+        size = original.stat().st_size
+        if size > MAX_CAPTURE_BYTES:
+            raise ValueError('failure artifact exceeds capture bound')
+        descriptor = os.open(target / name, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+        digest = hashlib.sha256()
+        copied = 0
+        with original.open('rb') as source, os.fdopen(descriptor, 'wb') as output:
+            while value := source.read(65536):
+                copied += len(value)
+                if copied > MAX_CAPTURE_BYTES:
+                    raise ValueError('failure artifact exceeds capture bound')
+                output.write(value)
+                digest.update(value)
+        records.append({'path': case + '/' + name, 'bytes': copied, 'sha256': digest.hexdigest()})
+    return records
 
 
 def run(command, env, timeout=5):
@@ -148,7 +230,7 @@ def scene_file(private, seconds):
     return path
 
 
-def one_case(name, probe, config, parent, joc_input=None):
+def one_case(name, probe, config, parent, joc_input=None, failure_artifacts=None):
     started = time.monotonic()
     result = {'case': name, 'status': 'failed', 'physical_audio': False}
     with tempfile.TemporaryDirectory(prefix='case-', dir=parent) as directory:
@@ -222,7 +304,7 @@ def one_case(name, probe, config, parent, joc_input=None):
                 capture_path = private / 'capture.pcm'
                 capture_handle = capture_path.open('xb')
                 def capture_limits():
-                    resource.setrlimit(resource.RLIMIT_FSIZE, (268435456, 268435456))
+                    resource.setrlimit(resource.RLIMIT_FSIZE, (MAX_CAPTURE_BYTES, MAX_CAPTURE_BYTES))
                     resource.setrlimit(resource.RLIMIT_CORE, (0, 0))
                 capture = subprocess.Popen(['pw-cat', '--record', '--format', 'f32',
                     '--rate', '48000', '--channels', str(len(channels)),
@@ -313,16 +395,10 @@ def one_case(name, probe, config, parent, joc_input=None):
                 captured = capture_path.read_bytes()
                 if name == 'success-joc':
                     first_byte = next((i for i, value in enumerate(captured) if value), None)
-                    assert first_byte is not None, 'JOC monitor stayed silent'
-                    first_frame = first_byte // (len(channels) * 4)
-                    offset = (first_frame - JOC_LEADING_ZERO_FRAMES) * len(channels) * 4
-                    length = JOC_FRAMES * len(channels) * 4
-                    payload = captured[offset:offset + length] if offset >= 0 else b''
+                    first_frame = first_byte // (len(channels) * 4) if first_byte is not None else None
+                    offset = (first_frame - JOC_LEADING_ZERO_FRAMES) * len(channels) * 4 if first_frame is not None else None
                     expected_hash = JOC_PCM_SHA256
-                    assert len(payload) == length, 'JOC PCM missing/truncated'
-                    assert hashlib.sha256(payload).hexdigest() == expected_hash, 'JOC monitor PCM differs from prior accepted render'
-                    assert report['producer']['status'] == 'joc-stream-unqualified'
-                    assert report['producer']['object_metadata_consumed'] is True
+                    comparison = pcm_comparison(captured, len(channels), offset, frames=JOC_FRAMES, expected_hash=expected_hash)
                     result.update(joc_input_sha256=JOC_SHA256,
                         comparison='prior accepted Cavern full-render PCM; same-engine continuity, not independent fidelity',
                         expected_first_nonzero_frame=JOC_LEADING_ZERO_FRAMES)
@@ -330,13 +406,16 @@ def one_case(name, probe, config, parent, joc_input=None):
                     anchor = pcm[:min(len(pcm), 4096 * len(channels) * 4)]
                     offset = captured.find(anchor)
                     expected_hash = hashlib.sha256(pcm).hexdigest()
-                    assert captured[offset:offset + len(pcm)] == pcm, 'monitor PCM differs or truncates'
-                assert offset >= 0 and offset % (len(channels) * 4) == 0, 'PCM start absent/unaligned'
+                    comparison = pcm_comparison(captured, len(channels), offset, expected=pcm)
+                # Persist all diagnostic fields before any capture assertion.
+                result.update(comparison)
+                result['compared_frames'] = frames
+                assert comparison['alignment_found'], 'PCM start absent/unaligned'
+                assert comparison['pcm_exact'], 'monitor PCM differs or truncates'
+                if name == 'success-joc':
+                    assert report['producer']['status'] == 'joc-stream-unqualified'
+                    assert report['producer']['object_metadata_consumed'] is True
                 assert report['submitted_pcm_sha256'] == expected_hash
-                result.update(expected_pcm_sha256=expected_hash,
-                              captured_pcm_sha256=hashlib.sha256(captured).hexdigest(),
-                              captured_bytes=len(captured), payload_offset_frames=offset // (len(channels) * 4),
-                              compared_frames=frames, pcm_exact=True)
             elif name == 'mismatch':
                 assert code == 2 and report['status'] == 'target-channel-map-mismatch'
                 assert observed_stream is None and report['submitted_bytes'] == 0
@@ -359,6 +438,11 @@ def one_case(name, probe, config, parent, joc_input=None):
             stop(manager, group=True)
             stop(daemon)
             daemon_log.close()
+        if result['status'] == 'failed' and failure_artifacts is not None:
+            try:
+                result['retained_failure_artifacts'] = retain_failure_artifacts(private, failure_artifacts, name)
+            except (OSError, ValueError) as exc:
+                result['failure_artifact_error'] = type(exc).__name__
             if result['status'] != 'passed':
                 result['private_daemon_log_tail'] = (private / 'daemon.log').read_bytes()[-8192:].decode(errors='replace')
     result['elapsed_seconds'] = round(time.monotonic() - started, 3)
@@ -372,6 +456,7 @@ def main():
     parser.add_argument('--case', action='append', choices=CASES)
     parser.add_argument('--joc-input', type=Path, help='explicit publisher vector elementary stream, never fetched here')
     parser.add_argument('--report', type=Path, required=True)
+    parser.add_argument('--failure-artifacts', type=Path, help='new private directory for bounded captures from failed cases only')
     args = parser.parse_args()
     if args.case and len(set(args.case)) != len(args.case):
         parser.error('duplicate cases')
@@ -379,6 +464,11 @@ def main():
         parser.error('report collision')
     if Path('/dev/snd').exists():
         parser.error('hardware device mount forbidden')
+    if args.failure_artifacts:
+        args.failure_artifacts = args.failure_artifacts.parent.resolve(strict=True) / args.failure_artifacts.name
+        report_target = args.report.parent.resolve(strict=True) / args.report.name
+        if os.path.lexists(args.failure_artifacts) or args.failure_artifacts == report_target:
+            parser.error('failure-artifact directory collision')
     selected = args.case or tuple(name for name in CASES if name != 'success-joc')
     if 'success-joc' in selected and args.joc_input is None:
         parser.error('success-joc requires --joc-input')
@@ -399,9 +489,11 @@ def main():
             items['build/' + name] = hashlib.sha256((args.probe.parent / name).read_bytes()).hexdigest()
         return items
     report['source_before_sha256'] = bindings()
+    if args.failure_artifacts:
+        args.failure_artifacts.mkdir(mode=0o700)
     with tempfile.TemporaryDirectory(prefix='.live-integration-', dir=args.report.parent) as parent:
         for name in selected:
-            report['results'].append(one_case(name, args.probe, args.config, Path(parent), args.joc_input))
+            report['results'].append(one_case(name, args.probe, args.config, Path(parent), args.joc_input, args.failure_artifacts))
         report['source_after_sha256'] = bindings()
         report['source_unchanged'] = report['source_before_sha256'] == report['source_after_sha256']
         report['passed'] = sum(item['status'] == 'passed' for item in report['results'])

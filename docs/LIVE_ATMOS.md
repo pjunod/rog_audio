@@ -109,9 +109,14 @@ and checks its ordered channel map. Before submitting PCM, it requires all
 matching channel links from its unique playback node to that same node.
 During streaming and drain it checks for disappearance, serial replacement,
 layout change, lost links and links to unrelated nodes. It fails and stops
-both children on a routing error. Polling is every 500 ms; the stream's
-native target properties additionally prevent fallback and reconnection
-between observations. A partial or missing route on a still-present playback
+both children on a routing error. During PCM transfer, at most one registry
+child runs asynchronously with the same 2-second/4-MiB bounds. A new
+observation starts 500 ms after the previous result; completed results are
+validated while the supervisor continues feeding the fixed PCM queue. No
+PCM is submitted before the first complete route verification. Startup and
+drain retain synchronous bounded observations. The stream's native target
+properties additionally prevent fallback and reconnection between
+observations. A partial or missing route on a still-present playback
 node fails immediately during drain, even if the child exits successfully
 a moment later. Only complete playback-node disappearance can coincide with
 normal client teardown after its drain callback; the supervisor accepts that
@@ -224,3 +229,21 @@ no-fallback behavior. The other cases use explicit test-owned links.
 captured stream against the retained source-bound PCM hash; it does not
 rerun the earlier accepted full offline render. These distinctions keep
 synthetic, official-input and actual desktop policy evidence separate.
+
+Failed full-PCM comparisons retain capture/expected/payload frame and byte
+counts, SHA-256 values, alignment offset and first/last mismatch positions
+before the assertion. Generated-scene comparisons also report the first
+mismatching channel and exact 32-bit sample representations; a missing
+anchor or missing tail is explicit. These diagnostics do not relax the full
+byte comparison or turn a failed capture into a successful playback result.
+
+A direct isolated `live_integration.py` invocation can add
+`--failure-artifacts NEW_PRIVATE_DIR`. It creates mode-0700 directories and
+mode-0600 capture/expected-stream files only for failed cases, at most
+256 MiB per file, with sizes and hashes in the detailed report. Existing
+paths collide. The expected-stream file includes the producer readiness
+header before its raw float PCM; the capture file is raw float PCM. This
+optional private output is separate from the cleaned temporary case tree;
+retain it for diagnosis and remove it deliberately after its receipt is
+preserved. The ordinary CI report keeps diagnostic metrics without retaining
+raw payloads. Personal-media captures must remain private.

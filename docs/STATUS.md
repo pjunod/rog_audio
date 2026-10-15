@@ -1,9 +1,11 @@
 # Status — implementation and physical acceptance
 
-**Updated:** 2026-10-15 · **State:** reviewed live Atmos source at `4890d18`
-passed eighteen new unit methods and three existing dispatch smoke methods
-once. The isolated sink-mismatch case passed; six other integration cases
-failed and await diagnosis. Live playback acceptance remains incomplete.
+**Updated:** 2026-10-15 · **State:** twenty-one new live unit methods and
+three existing dispatch smoke methods passed once across reviewed source
+`4890d18` and the three parser additions at `daa6dd2`. Sink mismatch passed
+initially; cancellation and both target-loss cases passed on a failed-only
+retry. Three successful-drain cases still fail full monitor PCM comparison.
+Live playback acceptance remains incomplete.
 Signed manual annotations and the bounded
 file-only Atmos API passed independent review and all 27 selected unit methods
 once. Fresh JOC rendering and four split continuity groups passed; the original
@@ -36,7 +38,7 @@ remain different software quantities, not physical latency or Mac parity.
 | Startup/stop | Reviewed helper, prior save/automatic-start checks and ROG service autostart evidence retained | End-to-end post-login routing; repeated boot/resume/hotplug separately |
 | Signed annotation analysis | Eleven reviewed methods passed once; signed bounds and provenance retained | Actual private annotations from the later recording session |
 | Source-level chain latency | Accepted minimum-phase IR/preset audit found no justified removable fixed delay; no tuning change | Actual same-path physical recording |
-| Live Atmos prototype | Reviewed `4890d18`: 18 new units + 3 dispatch smokes passed once; sink mismatch passed; six isolated integration cases failed | Diagnose capture/registry setup, review focused fixes, retry only failed or invalidated cases; no laptop playback or Sonos test |
+| Live Atmos prototype | 21 new units + 3 dispatch smokes passed once; mismatch, cancellation and both target-loss cases passed; three drained streams still fail full captured PCM | Retain comparison evidence, diagnose without weakening full match, review fixes and retry only failed or invalidated cases; no laptop playback or Sonos test |
 | Host Atmos | Sixteen affected methods passed once; fresh full JOC render and four isolated timeline groups passed | Original long sequence resource failure retained; independent fidelity and later live integration |
 | Physical interaction timing | Emitter source/ten-method acceptance and earlier staging retained; no pilot/physical samples | Owner-ready coordinated same-keyboard/phone capture, still deferred |
 | Sonos Arc/eARC | Untouched and last | TV route and received-format qualification after internal audio |
@@ -45,6 +47,34 @@ Companion to [installation](SPEAKER_INSTALL.md), [review](REVIEW.md),
 [manual annotations](MANUAL_LATENCY_ANNOTATIONS.md) and
 [implementation](AUDIO_IMPLEMENTATION.md). Source, synthetic, read-only and
 physical evidence remain separate.
+
+## October 15 failed-only retry — delivery succeeds, monitor match remains open
+
+The focused review cleared `daa6dd2`'s bounded chronological JSON parser and
+owned manual client-port setup. Its three new parser methods passed once;
+the earlier eighteen live methods and three dispatch smoke methods were
+retained. No C# or decoder/renderer binary changed.
+
+Only the six failed ordinary integration cases were retried. `cancel`,
+`target-loss` and `policy-target-loss` passed, including owned-node cleanup
+and no observed fallback. `success-stereo`, `success-714` and `success-seek`
+reported completed/drained native playback with exact frame counts and
+matching producer/submitted PCM hashes, but failed the full monitor PCM
+comparison. Those are failed acceptance cases, despite successful delivery.
+
+Their capture comparison asserted before persisting useful metrics, and
+case cleanup removed the temporary payloads. A focused harness fix now
+records bounded comparison evidence before assertions and offers explicit
+private failed-capture retention. A separate direct generated-PCM diagnostic
+confirmed an internal zero gap near the first synchronous registry poll.
+The transport now observes the registry asynchronously while feeding PCM,
+with the same single-child, 2-second/4-MiB observation bounds and fixed
+transport buffers. Focused review, four new unit methods and three affected
+transport-method retries are pending before six affected integration cases.
+Unchanged parser, producer and dispatch results remain retained.
+Official JOC streaming and the separate target-version stack remain unrun.
+No laptop playback, speaker tuning change, microphone/physical recording
+or Sonos action has occurred.
 
 ## October 15 live acceptance — units passed, integration remains incomplete
 
@@ -70,7 +100,8 @@ retries remain pending. No accepted methods have been repeated.
 The official JOC streaming case and the separate target-version PipeWire
 stack have not run. A focused source review precedes any failed/invalidated
 case retry; passing units and the mismatch case are retained. There was no
-laptop playback, configuration change, recording or Sonos test. Physical
+laptop playback, configuration change, microphone/physical recording or
+Sonos test. Physical
 latency, loaded tuning, sound quality and independent Dolby fidelity remain
 unmeasured.
 

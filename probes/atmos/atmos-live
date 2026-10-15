@@ -74,6 +74,76 @@ def snapshot(env):
     return data
 
 
+class RegistryObservation:
+    """At most one bounded child; transfer keeps feeding while it observes."""
+    def __init__(self, env):
+        self.env = env
+        self.child = self.output = None
+        self.started = None
+
+    @property
+    def active(self):
+        return self.child is not None
+
+    def start(self):
+        if self.active:
+            raise RuntimeError('registry observation already active')
+        self.output = tempfile.TemporaryFile()
+        previous_mask = signal.pthread_sigmask(signal.SIG_BLOCK,
+            {signal.SIGINT, signal.SIGTERM, signal.SIGHUP})
+        def limits():
+            resource.setrlimit(resource.RLIMIT_FSIZE, (MAX_SNAPSHOT, MAX_SNAPSHOT))
+            resource.setrlimit(resource.RLIMIT_CORE, (0, 0))
+            signal.pthread_sigmask(signal.SIG_SETMASK, previous_mask)
+        try:
+            self.started = time.monotonic()
+            self.child = subprocess.Popen(['pw-dump'], stdin=subprocess.DEVNULL,
+                stdout=self.output, stderr=subprocess.DEVNULL, env=self.env, preexec_fn=limits)
+        except BaseException:
+            self.output.close()
+            self.output = None
+            raise
+        finally:
+            # Register the child before a queued cancellation can be delivered.
+            signal.pthread_sigmask(signal.SIG_SETMASK, previous_mask)
+
+    def poll(self):
+        if not self.active:
+            return None
+        code = self.child.poll()
+        if code is None:
+            if time.monotonic() - self.started >= SNAPSHOT_SECONDS:
+                self.close()
+                raise PlaybackError('pipewire-registry-unavailable')
+            return None
+        try:
+            if code != 0:
+                raise PlaybackError('pipewire-registry-unavailable')
+            self.output.seek(0)
+            try:
+                return parse_registry(self.output.read(MAX_SNAPSHOT + 1))
+            except ValueError as exc:
+                raise PlaybackError('pipewire-registry-unavailable') from exc
+        finally:
+            self.close()
+
+    def close(self):
+        child, output = self.child, self.output
+        self.child = self.output = None
+        try:
+            if child is not None:
+                stop_children([child])
+        finally:
+            if output is not None:
+                output.close()
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *_):
+        self.close()
+
+
 def props(item):
     return item.get('info', {}).get('props', {})
 
@@ -268,71 +338,78 @@ def transfer(producer, player, expected, target, stream_name, channels, env, rep
     linked = False
     started = last_progress = last_registry = time.monotonic()
     deadline = started + expected / frame_bytes / RATE + 60
+    report['registry_observation'] = {'mode': 'asynchronous-subprocess', 'maximum_inflight': 1,
+                                      'wall_seconds': SNAPSHOT_SECONDS, 'maximum_bytes': MAX_SNAPSHOT}
     report['queue_capacity_bytes'] = capacity
     report['maximum_queued_bytes'] = 0
     digest = hashlib.sha256()
-    while not (eof and not pending):
-        now = time.monotonic()
-        if now >= deadline:
-            raise PlaybackError('playback-wall-timeout')
-        if now - last_progress > STALL_SECONDS:
-            raise PlaybackError('playback-stall-timeout')
-        if player.poll() is not None:
-            raise PlaybackError('pipewire-player-ended-early')
-        if now - last_registry >= 0.5:
-            linked = verify_links(snapshot(env), target, stream_name, channels)
-            last_registry = time.monotonic()
-            if report.get('links_verified') and not linked:
-                raise PlaybackError('stream-links-lost')
-            if linked:
-                report['links_verified'] = True
-        with selectors.DefaultSelector() as selector:
-            if not eof and len(pending) < capacity:
-                selector.register(producer.stdout, selectors.EVENT_READ, 'read')
-            # Prebuffer up to one caller block before first submission. A shorter
-            # stream starts only after exact producer EOF; there is no full-file
-            # staging for streams longer than this fixed 4096-frame queue.
-            if linked and pending and (received >= capacity or eof):
-                selector.register(player.stdin, selectors.EVENT_WRITE, 'write')
-            for key, _ in selector.select(0.05):
-                if key.data == 'read':
-                    value = os.read(producer.stdout.fileno(), capacity - len(pending))
-                    if value:
-                        received += len(value)
-                        report['received_complete_frames'] = received // frame_bytes
-                        if received > expected:
-                            raise PlaybackError('producer-extra-pcm')
-                        pending.extend(value)
-                        report['maximum_queued_bytes'] = max(report['maximum_queued_bytes'], len(pending))
-                        last_progress = time.monotonic()
+    with RegistryObservation(env) as observation:
+        while not (eof and not pending):
+            now = time.monotonic()
+            if now >= deadline:
+                raise PlaybackError('playback-wall-timeout')
+            if now - last_progress > STALL_SECONDS:
+                raise PlaybackError('playback-stall-timeout')
+            if player.poll() is not None:
+                raise PlaybackError('pipewire-player-ended-early')
+            if not observation.active and now - last_registry >= 0.5:
+                observation.start()
+            data = observation.poll()
+            if data is not None:
+                linked = verify_links(data, target, stream_name, channels)
+                last_registry = time.monotonic()
+                if report.get('links_verified') and not linked:
+                    raise PlaybackError('stream-links-lost')
+                if linked:
+                    report['links_verified'] = True
+            with selectors.DefaultSelector() as selector:
+                if not eof and len(pending) < capacity:
+                    selector.register(producer.stdout, selectors.EVENT_READ, 'read')
+                # Prebuffer up to one caller block before first submission. A shorter
+                # stream starts only after exact producer EOF; there is no full-file
+                # staging for streams longer than this fixed 4096-frame queue.
+                if linked and pending and (received >= capacity or eof):
+                    selector.register(player.stdin, selectors.EVENT_WRITE, 'write')
+                for key, _ in selector.select(0.05):
+                    if key.data == 'read':
+                        value = os.read(producer.stdout.fileno(), capacity - len(pending))
+                        if value:
+                            received += len(value)
+                            report['received_complete_frames'] = received // frame_bytes
+                            if received > expected:
+                                raise PlaybackError('producer-extra-pcm')
+                            pending.extend(value)
+                            report['maximum_queued_bytes'] = max(report['maximum_queued_bytes'], len(pending))
+                            last_progress = time.monotonic()
+                        else:
+                            eof = True
+                            if received != expected:
+                                raise PlaybackError('producer-truncated-pcm')
                     else:
-                        eof = True
-                        if received != expected:
-                            raise PlaybackError('producer-truncated-pcm')
-                else:
-                    # Writes no larger than PIPE_BUF are atomic on a pipe; keep
-                    # them frame aligned even for twelve-channel PCM.
-                    count = min(len(pending), 4096)
-                    count -= count % frame_bytes
-                    if count:
-                        data = bytes(pending[:count])
-                        checked_pcm(data)
-                        try:
-                            written = os.write(player.stdin.fileno(), data)
-                        except BlockingIOError:
-                            continue
-                        digest.update(data[:written])
-                        del pending[:written]
-                        submitted += written
-                        report['submitted_complete_frames'] = submitted // frame_bytes
-                        report['submitted_bytes'] = submitted
-                        last_progress = time.monotonic()
-        report['received_complete_frames'] = received // frame_bytes
+                        # Writes no larger than PIPE_BUF are atomic on a pipe; keep
+                        # them frame aligned even for twelve-channel PCM.
+                        count = min(len(pending), 4096)
+                        count -= count % frame_bytes
+                        if count:
+                            data = bytes(pending[:count])
+                            checked_pcm(data)
+                            try:
+                                written = os.write(player.stdin.fileno(), data)
+                            except BlockingIOError:
+                                continue
+                            digest.update(data[:written])
+                            del pending[:written]
+                            submitted += written
+                            report['submitted_complete_frames'] = submitted // frame_bytes
+                            report['submitted_bytes'] = submitted
+                            last_progress = time.monotonic()
+            report['received_complete_frames'] = received // frame_bytes
+        # Release a final partial native read before waiting for observer cleanup.
+        player.stdin.close()
+        player.stdin = None
     report['submitted_pcm_sha256'] = digest.hexdigest()
     if not report.get('links_verified') and expected:
         raise PlaybackError('stream-links-unverified')
-    player.stdin.close()
-    player.stdin = None
     wait_for_drain(player, target, stream_name, channels, env)
     # pw-cat's success means its stream drained, not that speakers were heard.
     report['drained_frames'] = submitted // frame_bytes

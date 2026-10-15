@@ -24,6 +24,9 @@ loader.exec_module(live)
 ci_spec = importlib.util.spec_from_file_location('live_ci_options', ROOT / 'probes/atmos/live_ci_options.py')
 ci_options = importlib.util.module_from_spec(ci_spec)
 ci_spec.loader.exec_module(ci_options)
+integration_spec = importlib.util.spec_from_file_location('live_integration', ROOT / 'probes/atmos/live_integration.py')
+integration = importlib.util.module_from_spec(integration_spec)
+integration_spec.loader.exec_module(integration)
 BUILD = None
 BED = None
 
@@ -50,6 +53,29 @@ def scene(samples=10001):
     return {'schema_version': 1, 'sample_rate': 48000, 'samples': samples, 'objects': [{
         'amplitude': 0.125, 'frequency_hz': 997,
         'keyframes': [{'sample': 0, 'position': [-1, 0, 1]}]}]}
+
+
+class ImmediateObservation:
+    """A ready registry for transport-only tests, without native IPC."""
+    active = False
+
+    def __init__(self, _env):
+        pass
+
+    def start(self):
+        self.active = True
+
+    def poll(self):
+        if not self.active:
+            return None
+        self.active = False
+        return registry()
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *_):
+        self.active = False
 
 
 class LiveTests(unittest.TestCase):
@@ -161,6 +187,109 @@ class LiveTests(unittest.TestCase):
         with self.assertRaisesRegex(live.PlaybackError, 'target-disappeared'):
             live.verify_links(result, {'id': 42, 'serial': '142'}, 'stream-test', ['FL', 'FR'])
 
+    def test_async_registry_has_one_inflight_child_and_collects_completed_events(self):
+        child = mock.Mock(stdin=None, stdout=None)
+        child.poll.return_value = None
+        child.wait.return_value = 0
+        with mock.patch.object(live.subprocess, 'Popen', return_value=child) as launch:
+            observation = live.RegistryObservation({'PIPEWIRE_REMOTE': 'isolated'})
+            observation.start()
+            output = launch.call_args.kwargs['stdout']
+            self.assertEqual(launch.call_args.args[0], ['pw-dump'])
+            self.assertEqual(launch.call_args.kwargs['env'], {'PIPEWIRE_REMOTE': 'isolated'})
+            self.assertIsNone(observation.poll())
+            with self.assertRaises(RuntimeError):
+                observation.start()
+            self.assertEqual(launch.call_count, 1)
+            output.write(json.dumps(registry()).encode() + b'\n[{"id":42,"info":null}]')
+            child.poll.return_value = 0
+            result = observation.poll()
+            self.assertFalse(observation.active)
+            self.assertTrue(output.closed)
+            with self.assertRaisesRegex(live.PlaybackError, 'target-disappeared'):
+                live.verify_links(result, {'id': 42, 'serial': '142'}, 'stream-test', ['FL', 'FR'])
+
+    def test_async_registry_timeout_parse_failure_and_cancellation_close_resources(self):
+        child = mock.Mock(stdin=None, stdout=None)
+        child.poll.return_value = None
+        child.wait.return_value = 0
+        with mock.patch.object(live.subprocess, 'Popen', return_value=child) as launch, \
+                mock.patch.object(live.time, 'monotonic', side_effect=[10, 13, 13, 13]):
+            observation = live.RegistryObservation({})
+            observation.start()
+            output = launch.call_args.kwargs['stdout']
+            with self.assertRaisesRegex(live.PlaybackError, 'registry-unavailable'):
+                observation.poll()
+            self.assertFalse(observation.active)
+            self.assertTrue(output.closed)
+            child.terminate.assert_called_once()
+        for payload, code in ((b'[] trailing', 0), (b'[]' + b' ' * MAX_REGISTRY_BYTES, 0), (b'[]', 2)):
+            child = mock.Mock(stdin=None, stdout=None)
+            child.poll.return_value = code
+            child.wait.return_value = code
+            with mock.patch.object(live.subprocess, 'Popen', return_value=child) as launch:
+                observation = live.RegistryObservation({})
+                observation.start()
+                output = launch.call_args.kwargs['stdout']
+                output.write(payload)
+                with self.assertRaisesRegex(live.PlaybackError, 'registry-unavailable'):
+                    observation.poll()
+                self.assertFalse(observation.active)
+                self.assertTrue(output.closed)
+        child = mock.Mock(stdin=None, stdout=None)
+        child.poll.return_value = None
+        child.wait.return_value = 0
+        with mock.patch.object(live.subprocess, 'Popen', return_value=child) as launch, \
+                self.assertRaisesRegex(live.PlaybackError, 'cancelled'):
+            with live.RegistryObservation({}) as observation:
+                observation.start()
+                output = launch.call_args.kwargs['stdout']
+                raise live.PlaybackError('cancelled')
+        self.assertTrue(output.closed)
+        child.terminate.assert_called_once()
+
+    def test_capture_comparison_preserves_mismatch_and_truncation_evidence(self):
+        expected = struct.pack('<16f', *([.125] * 16))
+        prefix = bytes(3 * 8)
+        changed = bytearray(expected)
+        struct.pack_into('<f', changed, 11 * 4, .25)
+        result = integration.pcm_comparison(prefix + changed, 2, len(prefix), expected=expected)
+        self.assertFalse(result['pcm_exact'])
+        self.assertEqual(result['payload_complete_frames'], 8)
+        self.assertEqual(result['first_mismatch_frame'], 5)
+        self.assertEqual(result['first_mismatch_channel'], 1)
+        self.assertEqual(result['first_expected_sample_bits'], struct.unpack('<I', struct.pack('<f', .125))[0])
+        self.assertEqual(result['first_captured_sample_bits'], struct.unpack('<I', struct.pack('<f', .25))[0])
+        self.assertEqual(result['captured_pcm_sha256'], hashlib.sha256(prefix + changed).hexdigest())
+        truncated = integration.pcm_comparison(prefix + expected[:-8], 2, len(prefix), expected=expected)
+        self.assertFalse(truncated['pcm_exact'])
+        self.assertEqual(truncated['missing_payload_bytes'], 8)
+        self.assertEqual(truncated['first_mismatch_frame'], 7)
+        self.assertIsNone(truncated['first_captured_sample_bits'])
+        absent = integration.pcm_comparison(prefix, 2, -1, expected=expected)
+        self.assertFalse(absent['alignment_found'])
+        self.assertIsNone(absent['first_mismatch_byte'])
+        exact = integration.pcm_comparison(prefix + expected, 2, len(prefix), expected=expected)
+        self.assertTrue(exact['pcm_exact'])
+
+    def test_failed_capture_artifacts_are_private_bounded_and_exclusive(self):
+        source, output = self.root / 'source', self.root / 'artifacts'
+        source.mkdir()
+        output.mkdir(mode=0o700)
+        (source / 'capture.pcm').write_bytes(b'\0' * 16)
+        (source / 'expected.pcm').write_bytes(b'header\n' + b'\0' * 16)
+        records = integration.retain_failure_artifacts(source, output, 'case-test')
+        self.assertEqual(len(records), 2)
+        self.assertEqual((output / 'case-test').stat().st_mode & 0o777, 0o700)
+        for record in records:
+            path = output / record['path']
+            self.assertEqual(path.stat().st_mode & 0o777, 0o600)
+            self.assertEqual(record['sha256'], hashlib.sha256(path.read_bytes()).hexdigest())
+        with self.assertRaises(FileExistsError):
+            integration.retain_failure_artifacts(source, output, 'case-test')
+        with mock.patch.object(integration, 'MAX_CAPTURE_BYTES', 8), self.assertRaises(ValueError):
+            integration.retain_failure_artifacts(source, output, 'oversize')
+
     def test_cli_rejects_invalid_input_volume_and_collisions(self):
         source = self.root / 'scene.json'
         source.write_text(json.dumps(scene()))
@@ -193,7 +322,8 @@ class LiveTests(unittest.TestCase):
         try:
             live.bounded_pipe(producer.stdout)
             live.bounded_pipe(player.stdin)
-            with mock.patch.object(live, 'snapshot', return_value=registry()):
+            with mock.patch.object(live, 'snapshot', return_value=registry()), \
+                    mock.patch.object(live, 'RegistryObservation', ImmediateObservation):
                 live.transfer(producer, player, len(payload) if expected is None else expected,
                               {'id': 42, 'serial': '142'}, 'stream-test', ['FL', 'FR'], {}, report)
             return report, sink.read_bytes()
