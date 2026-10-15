@@ -571,3 +571,13 @@ The [acceptance ledger](../evidence/live-atmos-acceptance-2026-10-15.json) recor
 source/artifact bindings and retained failures. This scoped software result
 does not qualify full JOC at 256 frames, laptop or Sonos playback, hard realtime
 behavior, physical latency or independent Dolby fidelity.
+
+### PR 17 final audit and repository checks
+
+Independent final review cleared `d40c0db` after matching the public ledger,
+latest private receipts, source/artifact hashes and all 63 live method IDs.
+No public privacy finding remained. The repository documentation, tracked-path,
+profile-manifest and JSON checker passed, as did Git whitespace validation.
+Gitleaks 8.30.1 scanned the 54-commit PR range with no leaks. These checks did
+not rerun unit tests or execute audio. The public receipt remains byte-bound
+to SHA256 `fecf23813457494f77b7b16c938283c958644665b3f931d9782f4b5a8c401737`.

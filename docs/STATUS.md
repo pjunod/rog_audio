@@ -8,7 +8,8 @@ Full 73.504-second JOC capture matched all 3,528,192 media frames at an observed
 two-CPU quota and 6 GiB limit. The separate 512 final transport-padding frames
 are outside media counts/hashes. Earlier ordinary 256-frame results remain
 inherited media evidence; full JOC at 256 frames remains unqualified, with
-all failures retained. Final evidence/document review and merge are in progress.
+all failures retained. Final independent evidence/document review and repository/privacy checks passed.
+The source batch is accepted for merge; distribution packaging is separate.
 Signed manual annotations and the bounded
 file-only Atmos API passed independent review and all 27 selected unit methods
 once. Fresh JOC rendering and four split continuity groups passed; the original
@@ -44,7 +45,7 @@ remain different software quantities, not physical latency or Mac parity.
 | Startup/stop | Reviewed helper, prior save/automatic-start checks and ROG service autostart evidence retained | End-to-end post-login routing; repeated boot/resume/hotplug separately |
 | Signed annotation analysis | Eleven reviewed methods passed once; signed bounds and provenance retained | Actual private annotations from the later recording session |
 | Source-level chain latency | Accepted minimum-phase IR/preset audit found no justified removable fixed delay; no tuning change | Actual same-path physical recording |
-| Live Atmos prototype | 63 distinct methods + 3 smokes; exact full JOC at observed 1024/48k with two-CPU affinity; earlier ordinary 256 media passes retained | Final evidence review/merge/package; no 256 full JOC, laptop, independent fidelity or physical qualification |
+| Live Atmos prototype | 63 distinct methods + 3 smokes; exact full JOC at observed 1024/48k with two-CPU affinity; earlier ordinary 256 media passes retained | Distribution and coordinated laptop trial; no 256 full JOC, independent fidelity or physical qualification |
 | Host Atmos | Sixteen affected methods passed once; fresh full JOC render and four isolated timeline groups passed | Original long sequence resource failure retained; independent fidelity and later live integration |
 | Physical interaction timing | Emitter source/ten-method acceptance and earlier staging retained; no pilot/physical samples | Owner-ready coordinated same-keyboard/phone capture, still deferred |
 | Sonos Arc/eARC | Untouched and last | TV route and received-format qualification after internal audio |
