@@ -7,8 +7,9 @@ passes and reviewed corrections. The first full 73.504-second official JOC
 stream submitted and drained all 3,528,192 frames with the expected source PCM
 hash, but failed exact captured-output matching. Retained comparison evidence
 shows actual delivery gaps, including an early missing 256-frame block; the
-final audio remains present later. A bounded prefix diagnostic is separating
-producer batching from native feeding/scheduling before another correction.
+final audio remains present later. A bounded prefix comparison reproduced both
+small-pipe feeding gaps and decode-batch starvation. A smaller live caller batch
+and bounded player reserve are being implemented; their acceptance is pending.
 The live preview is not ready for publication or laptop playback yet.
 Signed manual annotations and the bounded
 file-only Atmos API passed independent review and all 27 selected unit methods
@@ -42,7 +43,7 @@ remain different software quantities, not physical latency or Mac parity.
 | Startup/stop | Reviewed helper, prior save/automatic-start checks and ROG service autostart evidence retained | End-to-end post-login routing; repeated boot/resume/hotplug separately |
 | Signed annotation analysis | Eleven reviewed methods passed once; signed bounds and provenance retained | Actual private annotations from the later recording session |
 | Source-level chain latency | Accepted minimum-phase IR/preset audit found no justified removable fixed delay; no tuning change | Actual same-path physical recording |
-| Live Atmos prototype | 38 distinct units + 3 dispatch smokes passed; all seven ordinary cases green; full JOC submitted hash/count/drain correct but capture failed | Diagnose full-stream delivery gaps using a bounded prefix comparison, then review and retry only affected checks; no laptop or Sonos playback |
+| Live Atmos prototype | 38 distinct units + 3 dispatch smokes passed; all seven ordinary cases green; full JOC submitted hash/count/drain correct but capture failed | Review the smaller live caller batch and bounded player reserve, then validate affected checks and full JOC; no laptop or Sonos playback |
 | Host Atmos | Sixteen affected methods passed once; fresh full JOC render and four isolated timeline groups passed | Original long sequence resource failure retained; independent fidelity and later live integration |
 | Physical interaction timing | Emitter source/ten-method acceptance and earlier staging retained; no pilot/physical samples | Owner-ready coordinated same-keyboard/phone capture, still deferred |
 | Sonos Arc/eARC | Untouched and last | TV route and received-format qualification after internal audio |
@@ -51,6 +52,40 @@ Companion to [installation](SPEAKER_INSTALL.md), [review](REVIEW.md),
 [manual annotations](MANUAL_LATENCY_ANNOTATIONS.md) and
 [implementation](AUDIO_IMPLEMENTATION.md). Source, synthetic, read-only and
 physical evidence remain separate.
+
+## October 15 prefix diagnosis — feeding gaps and decode starvation
+
+A complete 156-syncframe excerpt contains 239,616 frames (4.992 seconds).
+The retained-PCM control bypasses decoding. With the original 4,096-byte
+player pipe, it submitted the expected hash but failed capture matching.
+Its longest media write gap was 14.369 ms while 4,011 frames remained queued;
+no CPU throttling was recorded for that control. The same control captured
+exactly with a player-only 1,024-frame request, rounded by Linux to 65,536
+bytes for twelve channels. The producer pipe, 4,096-frame supervisor queue,
+frame-aligned write size and 256-frame virtual graph remained unchanged.
+
+The instrumented JOC producer used the same Release/Optimize settings as the
+accepted build. It produced and submitted the exact retained-prefix hash,
+but capture still failed with that reserve. Its 4,096-frame caller reads
+reached 202.896 ms; a 47.018 ms maximum single DSP block is a different
+quantity. At the first nonzero capture mismatch, the supervisor queue emptied
+while a caller read was still running; the native playback xrun increased
+without a capture xrun. This supports a smaller live caller batch as well as
+the player reserve. The run also had CPU throttling and a later 51.36 ms
+feeding gap despite a healthy queue, so these diagnostics do not establish
+that the proposed combined correction solves every full-stream gap.
+
+The candidate uses 1,536-frame live reads, within the existing offline
+command/work budgets, and the bounded player reserve. Review and affected
+acceptance remain pending. The offline pull API, speaker DSP, graph settings,
+laptop tuning and rollback are unchanged. Original failures remain retained.
+Two initial setup attempts hit an incorrectly combined outer/capture file
+limit before PCM. Subsequent startup attempts identified SIGXFSZ from the
+added outer diagnostic file limit; one selector mistake also repeated the
+failed PCM control. These are diagnostic/setup failures, not passing tests.
+The erroneous outer limit was removed; the reviewed capture limit and
+2-CPU/6-GiB container bounds remained in force. No full reference rerender,
+laptop playback, physical measurement or Sonos test occurred.
 
 ## October 15 ordinary acceptance complete — full JOC delivery still fails
 
