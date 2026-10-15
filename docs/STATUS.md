@@ -29,7 +29,7 @@ remain different software quantities, not physical latency or Mac parity.
 | ASUS speaker tuning | Prior 1024 hour/demo accepted; new service/preset/control bindings present | Full post-login physical route, fresh IR load and negotiated period |
 | ThinkPad speaker tuning | Prior 256 hour/demo accepted at −16/cap 14.1375; current state unknown | Reachable read-only refresh; physical qualification |
 | Startup/stop | Reviewed helper, prior save/automatic-start checks and ROG service autostart evidence retained | End-to-end post-login routing; repeated boot/resume/hotplug separately |
-| Signed annotation analysis | New bounded offline tool/example/ten methods implemented; no units run | Combined adversarial review, then one focused acceptance pass |
+| Signed annotation analysis | New bounded offline tool/example/eleven methods implemented; no units run | Combined adversarial review, then one focused acceptance pass |
 | Source-level chain latency | Accepted minimum-phase IR/preset audit found no justified removable fixed delay; no tuning change | Actual same-path physical recording |
 | Host Atmos | Prior full official vectors/eight-method acceptance retained; bounded file-only pull API implemented and compiled | Review/selected API acceptance; independent fidelity and later live integration |
 | Physical interaction timing | Emitter source/ten-method acceptance and earlier staging retained; no pilot/physical samples | Owner-ready coordinated same-keyboard/phone capture, still deferred |

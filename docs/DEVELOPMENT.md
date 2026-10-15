@@ -118,7 +118,7 @@ IDs, skips and empty results fail. A new optional `--report` is mode 0600.
 See [reference acceptance commands](ATMOS_REFERENCE.md#run-only-the-reviewed-analyzer-methods).
 
 
-The `manual-annotations` lane runs only the ten generated/manual-sample
+The `manual-annotations` lane runs only the eleven generated/manual-sample
 analysis methods through `python3 scripts/validate_manual_annotations.py`.
 It does not capture sound, hash personal recordings in CI, build Cavern or
 repeat the older latency/emitter/speaker suites. Choose that lane explicitly;
@@ -141,3 +141,12 @@ empty results fail the lane; reports bind source hashes and synthetic-only
 scope. See [manual annotation acceptance](MANUAL_LATENCY_ANNOTATIONS.md#run-only-the-reviewed-focused-methods)
 for the first-pass command and schema/measurement limits. Do not rerun the
 accepted first pass later as a hosted badge.
+
+
+Manual-annotation acceptance snapshots the analyser, runner, test module and
+its dynamically read generated JSON fixture before loading project code.
+Reports retain those initial hashes and compare them with a second snapshot
+after execution. Any changed/unreadable source fails acceptance even if the
+methods themselves passed; no passing result is rebound to after-only hashes.
+The provenance regression uses a controlled fake loader/runner and an owned
+fake project tree, without recursively executing the real unit suite.

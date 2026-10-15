@@ -126,7 +126,7 @@ creation/write failed. Error messages omit private paths and input values.
 
 ## Run only the reviewed focused methods
 
-After independent review, run the ten new methods once through the focused
+After independent review, run the eleven new methods once through the focused
 runner. This does not repeat the older analyser or emitter suites:
 
 ```bash
@@ -140,7 +140,14 @@ PYTHONDONTWRITEBYTECODE=1 python3 scripts/validate_manual_annotations.py \
 ```
 
 The manually dispatched `manual-annotations` CI lane uses the same runner and
-supports exact failed `test_ids`; it has no push trigger. Reports bind the
-three source/test files, test counts and synthetic-only scope. A result-path
-collision is refused before tests execute. Public summaries need separate
-privacy/scope review; raw recordings and annotation reports remain private.
+supports exact failed `test_ids`; it has no push trigger. `source_sha256`
+retains hashes of the three source/test files and generated JSON fixture
+captured before project-code loading. `source_sha256_after` is compared after
+execution; an unreadable or changed file sets `source_unchanged: false` and
+fails acceptance even when methods pass. After-only hashes cannot rebind old
+in-memory code to untested disk bytes. The provenance regression uses a fake
+controlled loader/runner, without recursively running the real suite.
+
+Reports retain test counts and synthetic-only scope. A result-path collision
+is refused before tests execute. Public summaries need separate privacy/scope
+review; raw recordings and annotation reports remain private.

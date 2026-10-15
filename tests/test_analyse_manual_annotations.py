@@ -255,3 +255,50 @@ class AnnotationTests(unittest.TestCase):
         self.assertEqual(completed.returncode, 2)
         self.assertNotIn('PRIVATE', completed.stderr)
         self.assertFalse((self.scratch / 'report.json').exists())
+
+
+    def test_acceptance_source_changes_fail_without_running_a_nested_suite(self):
+        import validate_manual_annotations as validation
+        project = self.scratch / 'fake-project'
+        initial = {}
+        for name in validation.SOURCES:
+            source = project / name
+            source.parent.mkdir(parents=True, exist_ok=True)
+            source.write_bytes(b'GENERATED-BEFORE-LOAD')
+            initial[name] = hashlib.sha256(source.read_bytes()).hexdigest()
+        fixture = project / 'tests/audio/synthetic-manual-annotations.json'
+        sentinel = object()
+
+        def controlled_load(_names):
+            fixture.write_bytes(b'GENERATED-AFTER-LOAD')
+            return sentinel
+
+        fake_result = types.SimpleNamespace(testsRun=1, failures=[], errors=[],
+                                           skipped=[], wasSuccessful=lambda: True)
+        fake_runner = mock.Mock()
+        fake_runner.run.return_value = fake_result
+        output = self.scratch / 'provenance-report.json'
+        stderr = io.StringIO()
+        original_path = list(sys.path)
+        try:
+            with mock.patch.object(validation, 'ROOT', project), \
+                 mock.patch.object(validation.unittest.defaultTestLoader,
+                                   'loadTestsFromNames', side_effect=controlled_load) as loader, \
+                 mock.patch.object(validation.unittest, 'TextTestRunner', return_value=fake_runner), \
+                 contextlib.redirect_stderr(stderr):
+                status = validation.main(['--report', str(output)])
+        finally:
+            sys.path[:] = original_path
+        self.assertEqual(status, 1)
+        loader.assert_called_once()
+        fake_runner.run.assert_called_once_with(sentinel)
+        result = json.loads(output.read_text())
+        self.assertFalse(result['passed'])
+        self.assertFalse(result['source_unchanged'])
+        self.assertEqual(result['source_sha256'], initial)
+        self.assertNotEqual(result['source_sha256_after'][
+            'tests/audio/synthetic-manual-annotations.json'], initial[
+            'tests/audio/synthetic-manual-annotations.json'])
+        self.assertEqual(result['source_failure_reason'], 'source_changed_during_acceptance')
+        self.assertNotIn(str(self.scratch), stderr.getvalue())
+        self.assertEqual(stat.S_IMODE(output.stat().st_mode), 0o600)

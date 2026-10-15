@@ -46,7 +46,7 @@ caller-owned PCM reads, sample timestamps, seek/flush and explicit EOS. Its
 passed; review and selected regression acceptance remain pending.
 
 [Signed manual annotation analysis](docs/MANUAL_LATENCY_ANNOTATIONS.md) is
-implemented with generated examples and ten proposed focused methods; review
+implemented with generated examples and eleven proposed focused methods; review
 and acceptance are pending. It preserves negative click-to-chirp intervals,
 rejections and declared onset bounds without recording or inferring physical
 validity. The [accepted-filter audit](evidence/speaker-chain-algorithmic-delay-audit-2026-10-15.json)
