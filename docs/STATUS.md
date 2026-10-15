@@ -8,8 +8,10 @@ fixture passed after a reviewed test-only correction. No passing method was
 repeated for that correction. Native stereo capture passed, but the next
 twelve-channel capture lost 512 frames despite exact native input/consumption
 and zero ring underruns. Remaining transport cases and full JOC stopped.
-The unchanged target-mismatch case remains retained. A bounded native-profiler
-diagnostic will distinguish playback/server deadlines from capture loss. Earlier full captures
+The unchanged target-mismatch case remains retained. A bounded profiler retry
+was exact with zero node errors, so it did not reproduce or attribute the loss.
+The capture observer is being hardened to remove blocking callback file I/O
+and report its own losses; accepted playback source and tests stay unchanged. Earlier full captures
 and private diagnostics remain failed and retained. The live preview is not
 ready for publication or laptop playback yet.
 Signed manual annotations and the bounded
@@ -44,7 +46,7 @@ remain different software quantities, not physical latency or Mac parity.
 | Startup/stop | Reviewed helper, prior save/automatic-start checks and ROG service autostart evidence retained | End-to-end post-login routing; repeated boot/resume/hotplug separately |
 | Signed annotation analysis | Eleven reviewed methods passed once; signed bounds and provenance retained | Actual private annotations from the later recording session |
 | Source-level chain latency | Accepted minimum-phase IR/preset audit found no justified removable fixed delay; no tuning change | Actual same-path physical recording |
-| Live Atmos prototype | Reviewed native helper; 51 distinct units + 3 dispatch smokes passed; native stereo exact; twelve-channel capture deleted 512 frames | Attribute failed capture before correction; later transport/JOC stopped; unchanged mismatch and other passes retained |
+| Live Atmos prototype | 51 distinct units + 3 dispatch smokes passed; native stereo exact; twelve-channel formal capture failed; profiler retry exact but unattributed | Build/review a bounded capture observer with loss accounting, then affected acceptance; later transport/JOC stopped |
 | Host Atmos | Sixteen affected methods passed once; fresh full JOC render and four isolated timeline groups passed | Original long sequence resource failure retained; independent fidelity and later live integration |
 | Physical interaction timing | Emitter source/ten-method acceptance and earlier staging retained; no pilot/physical samples | Owner-ready coordinated same-keyboard/phone capture, still deferred |
 | Sonos Arc/eARC | Untouched and last | TV route and received-format qualification after internal audio |
@@ -53,6 +55,30 @@ Companion to [installation](SPEAKER_INSTALL.md), [review](REVIEW.md),
 [manual annotations](MANUAL_LATENCY_ANNOTATIONS.md) and
 [implementation](AUDIO_IMPLEMENTATION.md). Source, synthetic, read-only and
 physical evidence remain separate.
+
+## October 15 capture observer — hardening an unqualified measurement path
+
+The single bounded profiler diagnostic captured all 96,000 twelve-channel
+frames exactly, with playback, capture and driver xrun counters all zero,
+zero ring underflows and no CPU throttling. Profiling changes the workload;
+this result neither replaces the retained formal failure nor attributes its
+512-frame deletion. All twenty-one diagnostic evidence files were independently
+hash-verified. No buffer/quantum sweep or further repeat-until-pass run is planned.
+
+Source inspection independently establishes that the current `pw-cat` capture
+observer performs file writes inside its processing callback and supplies no
+capture-loss receipt. The selected correction is a harness-only native capture
+client with a fixed ring, separate file writer, explicit ARM/STOP and overflow,
+write/error accounting. Available timeline metadata will be interpreted from
+its actual API contract; absent metadata will remain unknown. This removes
+a measurement weakness without claiming it caused the earlier deletion.
+
+Production playback/core/client, managed renderer and runtime remain unchanged,
+with their passing methods retained. The changed observer will invalidate the
+stereo measurement path while preserving its earlier pass historically. New
+observer methods and affected capture paths require independent review before
+execution; exact PCM criteria and the 256/48 kHz, two-CPU/6-GiB environment remain.
+Speaker tuning, rollback and all laptop/Sonos sessions remain untouched.
 
 ## October 15 native transport — stereo exact, twelve-channel deletion
 
