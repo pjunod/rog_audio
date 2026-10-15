@@ -72,6 +72,8 @@ retained-reference PCM comparison. The finite-nonzero media barrier remains
 required before destructive actions. After an intentional target removal,
 a structured partial source-removal receipt is allowed without pretending
 that capture completed; unexpected overflow/write failure remains a failure.
+Cancellation leaves the monitored sink present and requires healthy complete
+capture accounting, including after the player receives SIGTERM.
 The player must still fail appropriately, show positive submitted frames,
 avoid fallback and remove its owned nodes. Available playback.json is
 embedded and privately retained even if observer failure interrupts normal

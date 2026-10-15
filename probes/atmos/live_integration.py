@@ -29,6 +29,11 @@ MAX_MEDIA_OBSERVATION_BYTES = 65536
 DESTRUCTIVE_CASES = ('cancel', 'target-loss', 'policy-target-loss')
 
 
+def capture_source_end_allowed(case, action):
+    """Only intentional sink removal permits a partial observer receipt."""
+    return action and case in ('target-loss', 'policy-target-loss')
+
+
 def pcm_comparison(captured, channels, offset, expected=None, *, frames=None, expected_hash=None):
     """Return diagnostic evidence before the caller asserts full PCM equality."""
     width = channels * 4
@@ -537,11 +542,11 @@ def one_case(name, probe, config, parent, joc_input=None, failure_artifacts=None
             while player.poll() is None:
                 assert time.monotonic() < deadline, 'player exceeded harness deadline'
                 if capture_client is not None:
-                    capture_client.poll(allow_source_end=action)
+                    capture_client.poll(allow_source_end=capture_source_end_allowed(name, action))
                 data = monitor.snapshot()
                 if capture_client is not None:
                     capture_active = capture_links_active(data, sink_id, capture_node['id'], channels)
-                    if not action:
+                    if not capture_source_end_allowed(name, action):
                         assert capture_active, 'capture monitor route lost'
                 streams = nodes(data, 'rog-atmos-')
                 assert len(streams) <= 1, 'multiple playback nodes'
@@ -644,7 +649,7 @@ def one_case(name, probe, config, parent, joc_input=None, failure_artifacts=None
                 assert report['submitted_complete_frames'] > 0
                 assert report['pipewire_drain_completed'] is False
             if capture_client is not None and name in DESTRUCTIVE_CASES:
-                capture_client.finish(require_complete=False)
+                capture_client.finish(require_complete=not capture_source_end_allowed(name, action))
             result['status'] = 'passed'
         except Exception as exc:
             result['failure'] = type(exc).__name__ + ': ' + str(exc)

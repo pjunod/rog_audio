@@ -321,21 +321,30 @@ raise SystemExit(2 if MODE.startswith('source-') else 0)
                 observer.close()
             self.assertIsNotNone(observer.child.returncode)
             self.assertEqual(observer.endpoint.fileno(), -1)
-        for mode in ('source-end', 'source-write-error'):
-            observer = native_capture.CaptureObserver(self.capture_helper(mode), self.root / (mode + '.pcm'), 2, {})
-            try:
-                observer.arm()
-                if mode == 'source-write-error':
-                    with self.assertRaises(native_capture.CaptureError):
-                        observer.finish(require_complete=False)
-                else:
-                    value = observer.finish(require_complete=False)
-                    self.assertEqual(value['status'], 'capture-pipewire-failure')
-                    self.assertFalse(value['complete'])
-                    self.assertEqual(observer.child.returncode, 2)
-                    self.assertEqual(observer.receipt()['native'], value)
-            finally:
-                observer.close()
+        for case, action, mode, allowed in (
+                ('cancel', True, 'source-end', False),
+                ('target-loss', False, 'source-end', False),
+                ('policy-target-loss', False, 'source-end', False),
+                ('target-loss', True, 'source-end', True),
+                ('policy-target-loss', True, 'source-end', True),
+                ('target-loss', True, 'source-write-error', False)):
+            with self.subTest(case=case, action=action, mode=mode):
+                path = self.root / f'{case}-{action}-{mode}.pcm'
+                observer = native_capture.CaptureObserver(self.capture_helper(mode), path, 2, {})
+                try:
+                    observer.arm()
+                    require_complete = not integration.capture_source_end_allowed(case, action)
+                    if not allowed:
+                        with self.assertRaises(native_capture.CaptureError):
+                            observer.finish(require_complete=require_complete)
+                    else:
+                        value = observer.finish(require_complete=require_complete)
+                        self.assertEqual(value['status'], 'capture-pipewire-failure')
+                        self.assertFalse(value['complete'])
+                        self.assertEqual(observer.child.returncode, 2)
+                        self.assertEqual(observer.receipt()['native'], value)
+                finally:
+                    observer.close()
 
     def test_capture_observer_cleanup_reaps_unresponsive_child(self):
         observer = native_capture.CaptureObserver(self.capture_helper('unresponsive'), self.root / 'stalled.pcm', 2, {})
