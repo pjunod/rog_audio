@@ -1,10 +1,13 @@
 # Status — implementation and physical acceptance
 
-**Updated:** 2026-10-15 · **State:** twenty-one new live unit methods and
-three existing dispatch smoke methods passed once across reviewed source
-`4890d18` and the three parser additions at `daa6dd2`. Sink mismatch passed
-initially; cancellation and both target-loss cases passed on a failed-only
-retry. Three successful-drain cases still fail full monitor PCM comparison.
+**Updated:** 2026-10-15 · **State:** twenty-five new live unit methods and
+three existing dispatch smoke methods have passed on their reviewed sources.
+Stereo streaming now matches all 96,000 captured PCM frames exactly;
+cancellation and both target-loss cases passed. The 7.1.4 and initial-seek
+captures still fail full PCM matching. Their separate target-version runs
+stalled before any PCM submission. A silent private-client diagnostic traced
+that startup failure to the newer backend's required raw option; the
+capability-selected fix awaits focused review and failed-case retry.
 Live playback acceptance remains incomplete.
 Signed manual annotations and the bounded
 file-only Atmos API passed independent review and all 27 selected unit methods
@@ -38,7 +41,7 @@ remain different software quantities, not physical latency or Mac parity.
 | Startup/stop | Reviewed helper, prior save/automatic-start checks and ROG service autostart evidence retained | End-to-end post-login routing; repeated boot/resume/hotplug separately |
 | Signed annotation analysis | Eleven reviewed methods passed once; signed bounds and provenance retained | Actual private annotations from the later recording session |
 | Source-level chain latency | Accepted minimum-phase IR/preset audit found no justified removable fixed delay; no tuning change | Actual same-path physical recording |
-| Live Atmos prototype | 21 new units + 3 dispatch smokes passed once; mismatch, cancellation and both target-loss cases passed; three drained streams still fail full captured PCM | Retain comparison evidence, diagnose without weakening full match, review fixes and retry only failed or invalidated cases; no laptop playback or Sonos test |
+| Live Atmos prototype | 25 new units + 3 dispatch smokes accepted across source-bound attempts; stereo PCM, mismatch, cancellation and both target-loss cases passed; 7.1.4/seek still fail; target-version runs stalled before submission | Diagnose retained captures and target link setup, review evidenced fixes, retry only failed or invalidated cases; no laptop playback or Sonos test |
 | Host Atmos | Sixteen affected methods passed once; fresh full JOC render and four isolated timeline groups passed | Original long sequence resource failure retained; independent fidelity and later live integration |
 | Physical interaction timing | Emitter source/ten-method acceptance and earlier staging retained; no pilot/physical samples | Owner-ready coordinated same-keyboard/phone capture, still deferred |
 | Sonos Arc/eARC | Untouched and last | TV route and received-format qualification after internal audio |
@@ -47,6 +50,40 @@ Companion to [installation](SPEAKER_INSTALL.md), [review](REVIEW.md),
 [manual annotations](MANUAL_LATENCY_ANNOTATIONS.md) and
 [implementation](AUDIO_IMPLEMENTATION.md). Source, synthetic, read-only and
 physical evidence remain separate.
+
+## October 15 asynchronous delivery — stereo exact, two captures remain open
+
+Focused review cleared `7730093`'s asynchronous registry observation,
+EOF-before-observer-cleanup ordering and retained capture-failure evidence.
+Its seven selected unit methods passed: four new methods and three transport
+methods invalidated by the changed observation timing. Twenty-five distinct
+new live methods and the earlier three CLI dispatch smoke methods now have
+accepted source-bound results; unchanged parser and producer methods were
+not repeated.
+
+The six affected ordinary integration cases then ran. `success-stereo`
+matched all 96,000 captured frames exactly. `cancel`, `target-loss` and
+`policy-target-loss` passed again because their routing observation timing
+had changed. `success-714` and `success-seek` still failed full capture
+matching despite completed/drained delivery and exact producer/submitted
+hashes and counts. Their bounded private captures are retained. Read-only
+analysis found channel-dependent startup offsets in 7.1.4 and an exact
+94,976-frame seek prefix followed by a missing final 247-frame partial
+quantum; these observations do not establish the cause.
+
+A separate failed-only compatibility run of those two cases on PipeWire
+1.6.8/WirePlumber 0.5.17 stalled before submission with 4,096 prebuffered
+frames and no verified full route. That is a distinct setup failure, not
+proof of compatibility or a retest of a passing case. A silent owned-client
+diagnostic confirmed that `--raw` creates the newer playback node before
+stdin has data; omitting it blocks format probing. The shared bounded
+capability observation now selects that advertised option for playback and
+virtual capture. Two new capability methods and the changed command method
+await focused review and execution. Source inspection also found different
+old/new partial-buffer bookkeeping, but its role in the missing tail remains
+unconfirmed until the target stack reaches playback. The full PCM criterion
+and finite transport bounds remain unchanged. No microphone/physical
+recording, laptop playback, tuning change or Sonos test occurred.
 
 ## October 15 failed-only retry — delivery succeeds, monitor match remains open
 

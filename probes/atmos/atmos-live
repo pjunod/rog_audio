@@ -20,6 +20,7 @@ import tempfile
 import time
 import uuid
 from registry_json import MAX_REGISTRY_BYTES, parse_registry
+from pw_cat import raw_mode_options
 
 RATE = 48000
 CHANNELS = {'stereo-speakers': ['FL', 'FR'],
@@ -215,13 +216,13 @@ def verify_links(registry, target, stream_name, channels):
     return sorted(linked) == sorted(channels)
 
 
-def pw_command(target, channels, stream_name):
+def pw_command(target, channels, stream_name, raw_options):
     properties = {'node.name': stream_name, 'media.name': 'ROG Atmos prototype',
                   'target.object': target['serial'], 'node.dont-fallback': True,
                   'node.dont-reconnect': True, 'node.dont-move': True,
                   'stream.dont-remix': True, 'channelmix.disable': True,
                   'state.restore-props': False}
-    return ['pw-cat', '--playback', '--format', 'f32', '--rate', str(RATE),
+    return ['pw-cat', *raw_options, '--playback', '--format', 'f32', '--rate', str(RATE),
             '--channels', str(len(channels)), '--channel-map', ','.join(channels),
             '--target', target['serial'], '--properties', json.dumps(properties), '-']
 
@@ -427,6 +428,11 @@ def playback(args, private, report):
     channels = CHANNELS[args.layout]
     target = resolve_target(snapshot(env), args.target, channels)
     report['target_serial'] = target['serial']
+    try:
+        raw_options = raw_mode_options(env)
+    except ValueError as exc:
+        raise PlaybackError('pw-cat-capabilities-unavailable') from exc
+    report['pw_cat_explicit_raw'] = bool(raw_options)
     stream_name = 'rog-atmos-' + uuid.uuid4().hex
     receipt = private / 'producer.json'
     source = private / ('input.json' if args.input.suffix.lower() == '.json' else 'input.eac3')
@@ -466,7 +472,7 @@ def playback(args, private, report):
             report['drained_frames'] = 0
             report['empty_stream_no_player'] = True
         else:
-            player = subprocess.Popen(pw_command(target, channels, stream_name), stdin=subprocess.PIPE,
+            player = subprocess.Popen(pw_command(target, channels, stream_name, raw_options), stdin=subprocess.PIPE,
                                       stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
                                       env=env, bufsize=0, pipesize=4096)
             children.append(player)

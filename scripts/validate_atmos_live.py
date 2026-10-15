@@ -15,7 +15,7 @@ ROOT = Path(__file__).resolve().parents[1]
 def source_manifest():
     names = ['probes/atmos/Program.cs', 'probes/atmos/LiveStream.cs',
              'probes/atmos/OfflinePullRenderer.cs', 'probes/atmos/atmos-live',
-             'probes/atmos/live-ci.sh', 'probes/atmos/live_ci_options.py', 'probes/atmos/registry_json.py', 'probes/atmos/live_integration.py',
+             'probes/atmos/live-ci.sh', 'probes/atmos/live_ci_options.py', 'probes/atmos/registry_json.py', 'probes/atmos/pw_cat.py', 'probes/atmos/live_integration.py',
              'tests/test_atmos_live.py', 'scripts/validate_atmos_live.py']
     return {name: hashlib.sha256((ROOT / name).read_bytes()).hexdigest() for name in names}
 

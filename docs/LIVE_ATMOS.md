@@ -132,10 +132,17 @@ the explicitly selected PipeWire remote/runtime directory is preserved.
 The chosen .NET host directory supplies `DOTNET_ROOT` with multilevel lookup
 disabled. No shell receives media paths or target names.
 
-The source-inspected native backend is
+The source-inspected native backends include
 [`pw-cat` 0.3.65](https://github.com/PipeWire/pipewire/blob/0.3.65/src/tools/pw-cat.c).
 That version takes raw PCM from `-` plus explicit format/rate/channel options;
-it has no `--raw` option. A normal session manager supplies channel links in
+it has no `--raw` option. In
+[`pw-cat` 1.6.8](https://github.com/PipeWire/pipewire/blob/1.6.8/src/tools/pw-cat.c),
+`--raw` bypasses file-format probing before the playback node is created.
+The launcher and isolated capture harness observe `pw-cat --help` with a
+2-second / 64-KiB bound and add `--raw` only when advertised. A failed or
+malformed capability observation stops startup. The report records
+`pw_cat_explicit_raw`; this observation is not playback qualification.
+A normal session manager supplies channel links in
 desktop use. The policy-free isolated harness configures only its own client adapter
 DSP ports and explicit test links because its private daemon has no desktop
 session manager. The normal player does not apply those harness setters.

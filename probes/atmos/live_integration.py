@@ -12,6 +12,7 @@ import subprocess
 import tempfile
 import time
 from registry_json import parse_registry
+from pw_cat import raw_mode_options
 
 CASES = ('success-stereo', 'success-714', 'success-seek', 'mismatch', 'cancel', 'target-loss', 'policy-target-loss', 'success-joc')
 JOC_SHA256 = 'c190089bbb0600b8bcba27dbe07c370252c3c2605fd285b4f596b9c2a9d59432'
@@ -306,7 +307,9 @@ def one_case(name, probe, config, parent, joc_input=None, failure_artifacts=None
                 def capture_limits():
                     resource.setrlimit(resource.RLIMIT_FSIZE, (MAX_CAPTURE_BYTES, MAX_CAPTURE_BYTES))
                     resource.setrlimit(resource.RLIMIT_CORE, (0, 0))
-                capture = subprocess.Popen(['pw-cat', '--record', '--format', 'f32',
+                raw_options = raw_mode_options(env)
+                result['capture_explicit_raw'] = bool(raw_options)
+                capture = subprocess.Popen(['pw-cat', *raw_options, '--record', '--format', 'f32',
                     '--rate', '48000', '--channels', str(len(channels)),
                     '--channel-map', ','.join(channels), '--target', '0',
                     '--properties', json.dumps({'node.name': 'integration-capture',
@@ -480,12 +483,12 @@ def main():
     args.config = args.config.resolve(strict=True)
     source_files = ('Program.cs', 'LiveStream.cs', 'OfflinePullRenderer.cs', 'ObjectFrameGuard.cs',
                     'atmos-live', 'atmos-probe', 'live_integration.py', 'live-pipewire.conf',
-                    'live-ci.sh', 'live_ci_options.py', 'registry_json.py', 'build.sh', 'source_manifest.json', 'Dockerfile', 'AtmosProbe.csproj',
+                    'live-ci.sh', 'live_ci_options.py', 'registry_json.py', 'pw_cat.py', 'build.sh', 'source_manifest.json', 'Dockerfile', 'AtmosProbe.csproj',
                     'global.json', '../../tests/test_atmos_live.py', '../../scripts/validate_atmos_live.py')
     def bindings():
         items = {name: hashlib.sha256((Path(__file__).parent / name).read_bytes()).hexdigest()
                  for name in source_files if (Path(__file__).parent / name).is_file()}
-        for name in ('AtmosProbe.dll', 'Cavern.dll', 'Cavern.Format.dll', 'atmos-live', 'registry_json.py'):
+        for name in ('AtmosProbe.dll', 'Cavern.dll', 'Cavern.Format.dll', 'atmos-live', 'registry_json.py', 'pw_cat.py'):
             items['build/' + name] = hashlib.sha256((args.probe.parent / name).read_bytes()).hexdigest()
         return items
     report['source_before_sha256'] = bindings()

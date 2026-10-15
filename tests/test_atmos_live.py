@@ -17,6 +17,7 @@ from unittest import mock
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'probes/atmos'))
 from registry_json import MAX_REGISTRY_BYTES, parse_registry
+import pw_cat
 loader = importlib.machinery.SourceFileLoader('atmos_live', str(ROOT / 'probes/atmos/atmos-live'))
 spec = importlib.util.spec_from_loader(loader.name, loader)
 live = importlib.util.module_from_spec(spec)
@@ -125,7 +126,9 @@ class LiveTests(unittest.TestCase):
         self.assertEqual(env['PIPEWIRE_REMOTE'], 'isolated')
         self.assertEqual(env['DOTNET_EnableDiagnostics'], '0')
         self.assertFalse(any(key in env for key in ('PIPEWIRE_PROPS', 'PIPEWIRE_QUANTUM', 'PIPEWIRE_NODE')))
-        command = live.pw_command({'serial': '142'}, ['FL', 'FR'], 'stream-test')
+        command = live.pw_command({'serial': '142'}, ['FL', 'FR'], 'stream-test', [])
+        modern = live.pw_command({'serial': '142'}, ['FL', 'FR'], 'stream-test', ['--raw'])
+        self.assertEqual(modern, ['pw-cat', '--raw', *command[1:]])
         self.assertNotIn('--raw', command)
         self.assertEqual(command[command.index('--target') + 1], '142')
         properties = json.loads(command[command.index('--properties') + 1])
@@ -133,6 +136,37 @@ class LiveTests(unittest.TestCase):
                      'stream.dont-remix', 'channelmix.disable'):
             self.assertIs(properties[name], True)
         self.assertFalse(any('force-' in name or 'quantum' in name for name in properties))
+
+    def test_raw_capability_old_and_modern_help_select_exact_options(self):
+        common = b'  -p, --playback  Playback\n  -r, --record  Record\n      --format FORMAT\n'
+        for advertised, expected in ((b'', []), (b'  -a, --raw  Raw PCM\n', ['--raw'])):
+            with self.subTest(options=expected):
+                def help_command(command, **options):
+                    self.assertEqual(command, ['pw-cat', '--help'])
+                    self.assertEqual(options['timeout'], 2)
+                    self.assertEqual(options['stdin'], subprocess.DEVNULL)
+                    self.assertEqual(options['env']['LC_ALL'], 'C')
+                    self.assertEqual(options['env']['PIPEWIRE_REMOTE'], 'private')
+                    options['stdout'].write(common + advertised)
+                    return subprocess.CompletedProcess(command, 0)
+                with mock.patch.object(pw_cat.subprocess, 'run', side_effect=help_command):
+                    self.assertEqual(pw_cat.raw_mode_options({'PIPEWIRE_REMOTE': 'private'}), expected)
+
+    def test_raw_capability_failure_timeout_and_output_bound_fail_closed(self):
+        for payload, code in ((b'', 0), (b'not pw-cat help', 0),
+                              (b'x' * (pw_cat.MAX_HELP_BYTES + 1), 0),
+                              (b'--playback --record --format', 1)):
+            with self.subTest(length=len(payload), code=code):
+                def help_command(command, **options):
+                    options['stdout'].write(payload)
+                    return subprocess.CompletedProcess(command, code)
+                with mock.patch.object(pw_cat.subprocess, 'run', side_effect=help_command):
+                    with self.assertRaisesRegex(ValueError, 'capabilities-unavailable'):
+                        pw_cat.raw_mode_options({})
+        for error in (subprocess.TimeoutExpired('pw-cat', 2), FileNotFoundError('pw-cat')):
+            with mock.patch.object(pw_cat.subprocess, 'run', side_effect=error):
+                with self.assertRaisesRegex(ValueError, 'capabilities-unavailable'):
+                    pw_cat.raw_mode_options({})
 
     def test_header_and_pcm_validation(self):
         header = {'protocol': 'rog-atmos-pcm-v1', 'sample_rate': 48000, 'channels': 2,

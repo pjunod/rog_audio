@@ -50,5 +50,6 @@ dotnet publish "$probe/regressions/BlockBufferRegression.csproj" -c Release --se
 cp "$probe/atmos-probe" "$out/atmos-probe"
 cp "$probe/atmos-live" "$out/atmos-live"
 cp "$probe/registry_json.py" "$out/registry_json.py"
+cp "$probe/pw_cat.py" "$out/pw_cat.py"
 cp "$probe/source_manifest.json" "$out/source_manifest.json"
 cp "$dep/LICENSE.md" "$out/CAVERN-LICENSE.md"
