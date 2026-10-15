@@ -10,8 +10,9 @@ It skips 256 frames near 0.733 seconds; the exact final tail is present 6,144
 frames later. The first failed run and all diagnostics remain retained.
 Private runtime-concurrency and larger-player-pipe diagnostics also failed.
 A bounded native-profiler run associates the first mismatch with playback
-deadline misses while capture/driver counters are still clean. A native
-playback helper is being prepared to remove blocking I/O from its callback. The live preview is
+deadline misses while capture/driver counters are still clean. The native
+playback helper is implemented and compiled at `dd2d076`; independent
+adversarial review is active, with affected tests still unrun. The live preview is
 not ready for publication or laptop playback yet.
 Signed manual annotations and the bounded
 file-only Atmos API passed independent review and all 27 selected unit methods
@@ -54,6 +55,31 @@ Companion to [installation](SPEAKER_INSTALL.md), [review](REVIEW.md),
 [manual annotations](MANUAL_LATENCY_ANNOTATIONS.md) and
 [implementation](AUDIO_IMPLEMENTATION.md). Source, synthetic, read-only and
 physical evidence remain separate.
+
+## October 15 native playback correction — compiled, under review
+
+Implementation `2316d22` replaces blocking playback stdin callbacks with a
+bounded native ring, separate input thread and explicit control protocol.
+The final-buffer ordering correction `dd2d076` requires successful queueing
+of the last actual media buffer before permitting drain. It includes a
+focused real-callback regression; no test-only mode enters the production
+helper. [The native contract](LIVE_ATMOS_NATIVE.md) documents capacities,
+startup/media accounting, failure behavior, native source and ABI requirements.
+
+The established isolated GCC/PipeWire compiler loop passed before native
+changes. One ignored-write warning and one test-driver member-name collision
+were retained as compile failures, then corrected. Helper and both test
+executables compile with strict warnings; none has executed. The final helper
+has a GLIBC 2.38 symbol floor and links the native PipeWire library dynamically.
+Its compiler image is separate from the unchanged acceptance runtime image;
+managed renderer/Cavern artifacts and bundled runtime stay unchanged.
+
+Independent adversarial review is active on `dd2d076`. The proposed next
+validation is twenty-one new/affected unit methods, six affected ordinary
+integration cases and the failed full JOC case. The unchanged target-mismatch
+case and unrelated passing methods remain retained. Final selection may
+change if review fixes invalidate another path. No successful full capture,
+laptop installation, hardware playback or Sonos qualification is implied.
 
 ## October 15 remaining mismatch — native playback/capture attribution
 
