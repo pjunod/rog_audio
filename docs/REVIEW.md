@@ -537,24 +537,28 @@ checkpoints above without discarding their failures:
 | Native playback callback and final-buffer ordering | `ce2d20f` | Blocking stdin I/O moves to a reader thread; bounded ring/control/drain checks and correctly aligned storage resolve the independent allocation finding |
 | Concurrent test fixture prefill | `b476179` | Test writes fit actual free space, resolving its 4080/4096-frame startup deadlock while retaining exact ordering and completion assertions |
 
-Fifty-one distinct live unit methods and three existing dispatcher smoke
-methods have passing source-bound receipts. Of twenty-one selected native
-methods, twenty passed initially; the concurrent fixture timed out. After
-review of its test-only correction, only that failed method ran again and
-passed. Production playback bytes and the other twenty passes were retained.
+Further independent clearances cover the native capture observer (`988cb25`),
+next-demand EOF handling (`45eff18`), final-request suffix fill (`aabf092`)
+and intentional native target-loss guard (`f1fc791`). Capture uses a fixed
+ring, a separate writer, exact active monitor links, bounded descriptors and
+explicit loss counters. Cancellation requires complete capture; only deliberate
+target removal permits the narrowly checked source-end exception. The private
+acceptance runner's file-retention race and cleanup were also reviewed and fixed.
 
-The earlier seven ordinary integration passes belong to the older transport.
-Native playback subsequently passed exact stereo capture, then failed the
-96,000-frame twelve-channel comparison with a 512-frame deletion. Native
-input/consumption/drain counts were exact and ring underflows zero; these
-counters do not qualify the complete graph or capture observer. The remaining
-native transport cases and full JOC stopped at that failure. A single profiler
-diagnostic did not reproduce the deletion and gives no causal attribution.
+Sixty-one distinct live unit methods and three existing dispatcher smoke
+methods have passing source-bound receipts. Only failed or invalidated methods
+were repeated. Stereo and twelve-channel captures each match 96,000 frames;
+initial seek matches 95,223 media frames, with nine separately counted final
+transport-padding frames. Cancellation and both target-removal cases pass.
+The separate mismatch rejection remains accepted. The earlier 512-frame
+deletion and both partial-tail failures remain distinct historical failures.
 
-The capture observer is being changed independently to remove file writes
-from its processing callback and report its own loss/error accounting.
-That invalidates the measurement path, including the previous stereo pass;
-new observer methods and affected captures need review and acceptance. All
-historical failures remain retained in the [status ledger](STATUS.md). Full
-exact JOC capture remains required before merging. No physical playback,
-independent Dolby fidelity or Sonos acceptance is implied.
+Full JOC stopped on a capture-clock comparison before full PCM acceptance.
+The observer reports no ring overflow or writer errors; playback reports no
+native underflow. Those counters do not establish end-to-end continuity.
+Bounded first-anomaly timing diagnostics are being added to distinguish the
+live driver snapshot from the queued buffer timestamp. The fatal failure and
+exact PCM requirements remain intact. Review and only affected tests precede
+the failed-path retry. See the [status ledger](STATUS.md). Full exact JOC
+capture remains required before merging; no physical playback, independent
+Dolby fidelity or Sonos acceptance is implied.

@@ -209,9 +209,13 @@ explicit PipeWire sink without changing speaker tuning or defaults. The
 pinned Linux baseline and changed producer compile with no warnings/errors.
 The [native helper contract](LIVE_ATMOS_NATIVE.md) adds a fixed ring and
 nonblocking processing callback without changing the managed renderer or
-speaker chain. Independent review and fifty-one distinct live unit methods
-have passing source-bound results; isolated exact twelve-channel capture and
-full JOC acceptance remain incomplete. The harness capture observer is being
-hardened separately after an unattributed deletion. See the dated
-[status ledger](STATUS.md) and [review history](REVIEW.md) for retained failures
-and the affected-only test sequence. Sonos is untouched.
+speaker chain. Independent review and sixty-one distinct live unit methods
+have passing source-bound results. Stereo, twelve-channel and initial-seek
+capture, cancellation and both target-removal cases pass. Full JOC stopped
+early at a capture-clock comparison; its exact full-media acceptance remains
+incomplete. The separate [native capture observer](LIVE_ATMOS_CAPTURE.md)
+uses bounded buffering, a writer thread and loss/error accounting. Its clock
+snapshot association is under investigation without weakening exact PCM
+acceptance. See the dated [status ledger](STATUS.md) and
+[review history](REVIEW.md) for retained failures and affected-only tests.
+Sonos is untouched.
