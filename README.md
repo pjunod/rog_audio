@@ -13,17 +13,19 @@ voicing, final limiters and stock protection were preserved; both generated
 demos and settings-bound software hours passed. Those are exact historical
 conditions, not fresh observations of an active audio path.
 
-[The October 15 read-only refresh](evidence/speaker-postboot-observation-2026-10-15.json)
-finds the ROG's enabled service/preset/native controls present after a new
-boot. It is at the display-manager greeter, where the operator lacks sound
-[device access](evidence/speaker-postboot-route-diagnosis-2026-10-15.json);
-physical routing must be checked after normal desktop login. The ThinkPad
-was unreachable once, so its current state is unknown. No repair, service
-restart, playback or recording occurred. Physical measurement remains deferred.
+[The earlier October 15 read-only refresh](evidence/speaker-live-preparation-observation-2026-10-15.json)
+finds the ROG service and all twelve protected files unchanged from the
+earlier postboot observation. Physical and tuned stereo sink nodes are
+present; the idle graph has zero links, so active full routing and fresh IR
+loading remain unverified. ThinkPad timed out once and its current state is
+unknown. The [latest bounded connectivity check](evidence/speaker-connectivity-refresh-2026-10-15.json)
+timed out on both laptops before its read-only script ran, so both current
+states are unknown. No service change, playback or recording occurred.
+Physical measurement remains deferred.
 
 | System | Last qualified software | Accepted software timing at 48 kHz | Programme settings | October 15 / remaining evidence |
 |---|---|---|---|---|
-| ROG G16 | +rog3 and PR 12 helper/unit backport | 1024-frame graph cycle: 21.333 ms | −20 LUFS; cap 2.6475 dB | Prior hour/demo passed; service/preset present at greeter; post-login full route unverified |
+| ROG G16 | +rog3 and PR 12 helper/unit backport | 1024-frame graph cycle: 21.333 ms | −20 LUFS; cap 2.6475 dB | Prior hour/demo and unchanged-file observation retained; latest connection timed out, current state unknown |
 | ThinkPad X1 Extreme | +rog3 and PR 12 helper/unit backport | 256-frame graph cycle: 5.333 ms | −16 LUFS; cap 14.1375 dB | Prior hour/demo passed; unreachable in new check, current state unknown |
 | M4 Air | Stock output; matched browser/emitter files previously staged | 512-frame HAL buffer: 10.667 ms | Unchanged in prior observation | Route/armed pilot and physical comparison pending |
 | Sonos Arc/eARC | Deferred | Unmeasured | Unassessed | Follows internal-speaker acceptance |
@@ -47,6 +49,14 @@ same-engine checks, not independent Dolby fidelity or realtime qualification.
 negative click-to-chirp intervals, rejected attempts and declared onset bounds
 without recording or inferring physical validity. The [accepted-filter audit](evidence/speaker-chain-algorithmic-delay-audit-2026-10-15.json)
 found no justified removable fixed delay; original filters/limiter stay intact.
+The [live player prototype](docs/LIVE_ATMOS.md) streams rendered PCM into
+an explicit PipeWire sink. Its [software acceptance](evidence/live-atmos-acceptance-2026-10-15.json)
+records 63 distinct live methods and a bit-exact full JOC media capture under
+the explicit 48-kHz/1024-frame, two-CPU/6-GiB isolated condition. Ordinary
+256-frame media receipts remain inherited; full JOC failures at 256 are retained.
+This does not qualify ThinkPad 256-frame playback or either laptop's live path.
+The [native playback helper contract](docs/LIVE_ATMOS_NATIVE.md) covers its
+callback, buffering, control and build boundaries.
 Independent fidelity, binaural/realtime support and physical qualification
 remain open. Sonos Arc/eARC remains last.
 
@@ -58,8 +68,8 @@ the required standalone service companion, release notes and checksums.
 binds the tag and five exact assets; v0.2.2 assets remain unchanged.
 The +rog4 native payload matches the accepted +rog3 engine. The last qualified laptop conditions
 use +rog3 with the separate helper/unit backport; no +rog4 package rewrite
-occurred in this work. The new ROG inspection confirms +rog3; ThinkPad state
-was not refreshed. The sealed kit metadata remains its preparation-era snapshot;
+occurred in this work. The earlier ROG inspection confirmed +rog3; the latest connection attempts
+could not refresh either laptop. The sealed kit metadata remains its preparation-era snapshot;
 outer release notes record the later scoped demos and completed software hours.
 
 [Current status and dated receipts](docs/STATUS.md) preserve the earlier
@@ -91,6 +101,8 @@ Display work remains in [rog_hdr_dv](https://github.com/pjunod/rog_hdr_dv).
 - [Physical latency method](docs/PHYSICAL_LATENCY_METHOD.md) — local key-to-chirp emitter and proposed phone-recorded comparison, with repeat counts and measurement limits.
 - [Manual latency annotations](docs/MANUAL_LATENCY_ANNOTATIONS.md) — signed sample intervals, exclusions, private byte verification and declared uncertainty.
 - [Atmos build](docs/AUDIO_ATMOS_BUILD.md) — offline object rendering and format limits.
+- [Live Atmos](docs/LIVE_ATMOS.md) — bounded PCM streaming to one explicit matching PipeWire sink, with initial seek, attenuation and private delivery reports.
+- [Native capture observer](docs/LIVE_ATMOS_CAPTURE.md) — isolated sink-monitor recording, bounded callback/writer accounting and evidence limits.
 - [Atmos references](docs/ATMOS_REFERENCE.md) — official JOC test inputs, bounded file rendering and observed channel energy.
 - [Development](docs/DEVELOPMENT.md) — review, CI and selective test policy.
 - [Operations](docs/OPERATIONS.md) — baseline, result interpretation and physical tests.

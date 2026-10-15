@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "kind": "authored-allowlisted-read-only-live-preparation-observation",
+  "date": "2026-10-15",
+  "method": "One bounded read-only SSH observation per host; no setters, restarts, playback, recording, installation or route changes.",
+  "source_script_sha256": "95179f42d6ed5fe9b657468634ac9763f28a157a5a00e9a5aff6526cb8c64fbd",
+  "hosts": {
+    "lab5": {
+      "observation_utc": "2026-10-15T13:27:21Z",
+      "reachable": true,
+      "native_binary_sha256": "3f110d6a2d1e2c743cc552b58930679acd0c00e45f5771a23d4b7702ca31206d",
+      "native_binary_matches_accepted": true,
+      "service": {
+        "active": true,
+        "running": true,
+        "enabled": true,
+        "restarts_in_current_invocation": 0,
+        "same_invocation_as_earlier_october_15_observation": true
+      },
+      "protected_file_count": 12,
+      "protected_file_hashes_stable_before_after": true,
+      "protected_file_hashes_identical_to_earlier_october_15_snapshot": 12,
+      "protected_file_hashes_matching_prior_accepted_gate": 11,
+      "prior_gate_difference": "Main configuration preset usage count/order only, as explained in earlier postboot receipt; no tuning edit.",
+      "physical_alsa_node_count": 3,
+      "internal_stereo_sink_visible": true,
+      "tuned_virtual_stereo_sink_visible": true,
+      "observed_link_count": 0,
+      "active_full_tuned_chain_observed": false,
+      "fresh_ir_load_observed": false,
+      "playback_observed": false,
+      "private_receipt_sha256": "128c031dbe0785102bae6b46a4fbca760b4ef38640a790f0120b7a0e00c5cffe"
+    },
+    "lab6": {
+      "observation_utc": "2026-10-15T13:27:28Z",
+      "reachable": false,
+      "attempts": 1,
+      "ssh_returncode": 255,
+      "reason": "Connection timeout",
+      "current_state_known": false,
+      "private_receipt_sha256": "564c04c12f580151b95aad3c56d7ba551b22061b6d602918acadf18ca65b4f88"
+    }
+  },
+  "limitations": [
+    "Idle nodes and stable preset bytes do not prove a loaded IR, active full tuned chain, audible playback, physical latency or sound quality.",
+    "Earlier accepted laptop playback and software-hour receipts retain their original exact conditions.",
+    "No Sonos inspection or testing was performed."
+  ],
+  "settings_or_service_changes": false,
+  "playback_or_recording": false
+}

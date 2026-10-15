@@ -6,7 +6,7 @@ on:
         description: 'Reviewed lane to run; do not repeat already passing lanes'
         required: true
         type: choice
-        options: [all, repository, speaker, installation, latency, coreaudio, audio-path, atmos, atmos-energy, manual-annotations]
+        options: [all, repository, speaker, installation, latency, coreaudio, audio-path, atmos, atmos-energy, atmos-live, manual-annotations]
         default: all
       selection:
         description: 'all, or a stage from the selected lane; use test_ids for failed cases'
@@ -233,3 +233,45 @@ jobs:
           python3 scripts/validate_manual_annotations.py --report build/manual-annotations-result.json "${args[@]}"
       - if: always()
         run: if test -f build/manual-annotations-result.json; then cat build/manual-annotations-result.json; fi
+
+  atmos-live:
+    if: inputs.lane == 'atmos-live'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    env:
+      SELECTION: ${{ inputs.selection }}
+      TEST_IDS: ${{ inputs.test_ids }}
+      ATMOS_CONTAINER_ENGINE: docker
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - name: Prepare pinned live-only toolchain
+        shell: bash
+        run: |
+          mkdir -p build/Cavern
+          git -C build/Cavern init
+          git -C build/Cavern remote add origin https://github.com/VoidXH/Cavern.git
+          git -C build/Cavern fetch --depth=1 origin 7d85d1880666ca5ea323848cff47ce7f50b29f7d
+          git -C build/Cavern checkout --detach FETCH_HEAD
+          docker build --target live-ci -t rog-audio-atmos-live:reviewed -f probes/atmos/Dockerfile probes/atmos
+          docker build --target live-compiler -t rog-audio-atmos-live-compiler:reviewed -f probes/atmos/Dockerfile probes/atmos
+      - name: Run only selected reviewed live methods or cases
+        shell: bash
+        run: |
+          case "$SELECTION" in all|units|integration) ;; *) echo 'selection must be all, units or integration' >&2; exit 2;; esac
+          read -r -a ids <<< "$TEST_IDS"
+          args=()
+          if [[ "$SELECTION" == integration ]]; then
+            for id in "${ids[@]}"; do args+=(--case "$id"); done
+          elif [[ "$SELECTION" == units ]]; then
+            for id in "${ids[@]}"; do args+=(--test-id "$id"); done
+          elif (( ${#ids[@]} )); then
+            echo 'select units or integration for exact retries' >&2; exit 2
+          fi
+          sh probes/atmos/live-ci.sh --image rog-audio-atmos-live:reviewed \
+            --compiler-image rog-audio-atmos-live-compiler:reviewed \
+            --source build/Cavern --report build/atmos-live-result.json \
+            --stage "$SELECTION" "${args[@]}"
+      - if: always()
+        run: if test -f build/atmos-live-result.json; then cat build/atmos-live-result.json; fi

@@ -12,6 +12,8 @@ third-party dependencies.
 | speaker-tuning-to-easyeffects | MIT, Antoine Cellerier and contributors; fetched at the source manifest's exact revision |
 | EasyEffects and local runtime patch | GPL-3.0-or-later, Wellington Wallace/upstream contributors; local routing header uses the same terms; corresponding patched source travels with binary artifacts |
 | Ubuntu EasyEffects packaging compatibility patch | Original Sebastian Ramacher attribution retained; packaging CC0-1.0 terms and full notice in patches/easyeffects/ubuntu/COPYRIGHT |
+| PipeWire native playback and isolated capture helpers | Original rog_audio code under MIT; callback/stream setup adapted from PipeWire 1.6.8 audio-src-ring.c, copyright 2024 Wim Taymans, MIT; full notice in probes/atmos/native/PIPEWIRE-EXAMPLE-LICENSE |
+| Native PipeWire shared library/headers | External system dependency, PipeWire upstream MIT and component notices; pinned package/source identity and actual linked ABI recorded separately, library not bundled here |
 | Cavern | Bence Sgánetz (VoidX); upstream component-specific licence, retained with built artifacts; see pinned source and Atmos contract |
 | Dolby gst-home-audio | Upstream wrapper terms; proprietary runtime libraries are separate and are not supplied here |
 

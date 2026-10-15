@@ -200,3 +200,26 @@ The 67500-block work ceiling does not promise completion within the launcher's
 60 CPU-second budget. Replay still starts from zero; no fast-seek index, delay
 compensation, tail flush, independent Dolby fidelity or device qualification is
 claimed. The measurements describe the bounded build host, not laptop latency.
+
+## Live player implementation (2026-10-15)
+
+The [live playback contract](LIVE_ATMOS.md) covers the new bounded managed
+producer and Python supervisor. It submits streaming float PCM to one
+explicit PipeWire sink without changing speaker tuning or defaults. The
+pinned Linux baseline and changed producer compile with no warnings/errors.
+The [native helper contract](LIVE_ATMOS_NATIVE.md) adds a fixed ring and
+nonblocking processing callback without changing the managed renderer or
+speaker chain. Independent review and sixty-three distinct live unit methods
+have passing source-bound results, with three existing dispatcher smokes
+retained. Earlier ordinary 256-frame media cases pass; full JOC now passes
+exact 3,528,192-frame capture at observed 1024/48k, two-logical-CPU affinity,
+unchanged two-CPU quota and 6 GiB cap. The separate 512-frame final padding is
+excluded from media counts/hashes. The [native capture observer](LIVE_ATMOS_CAPTURE.md)
+uses bounded buffering, a writer thread and explicit loss/error accounting.
+
+The [acceptance ledger](../evidence/live-atmos-acceptance-2026-10-15.json) and
+[status ledger](STATUS.md) retain the 256-frame full-stream failures and every
+changed condition. This qualifies same-engine virtual-sink continuity under
+the 1024 condition, not hard realtime, physical laptop output, independent
+Dolby fidelity or ThinkPad Atmos at 256. Speaker tuning/rollback stay intact;
+Sonos is untouched.

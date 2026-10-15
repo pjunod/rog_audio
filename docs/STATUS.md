@@ -1,17 +1,31 @@
 # Status — implementation and physical acceptance
 
-**Updated:** 2026-10-15 · **State:** signed manual annotations and the bounded
+**Updated:** 2026-10-15 · **State:** the bounded live Atmos software batch has
+passed its selected acceptance. Sixty-three distinct live unit methods and
+three existing dispatch smoke methods have passing source-bound results.
+Full 73.504-second JOC capture matched all 3,528,192 media frames at an observed
+1024-frame/48-kHz graph period, with two-logical-CPU affinity, the existing
+two-CPU quota and 6 GiB limit. The separate 512 final transport-padding frames
+are outside media counts/hashes. Earlier ordinary 256-frame results remain
+inherited media evidence; full JOC at 256 frames remains unqualified, with
+all failures retained. Final independent evidence/document review and repository/privacy checks passed.
+The source batch is accepted for merge; distribution packaging is separate.
+Signed manual annotations and the bounded
 file-only Atmos API passed independent review and all 27 selected unit methods
 once. Fresh JOC rendering and four split continuity groups passed; the original
 combined sequence hit a process limit and remains recorded separately.
-Earlier laptop demo/hour passes remain exact-condition history. The ROG service
-started after a new boot at the greeter; ThinkPad was unreachable once.
+Earlier laptop demo/hour passes remain exact-condition history. A later read-only
+ROG refresh found physical and tuned stereo nodes present with all twelve
+protected files unchanged; its idle graph had no links. A later bounded
+[connectivity refresh](../evidence/speaker-connectivity-refresh-2026-10-15.json)
+at 18:06 UTC timed out on both laptops, so their current running state is
+unknown. No remote inspection, playback or change ran during those attempts.
 Physical recording is deferred at the owner's request.
 
 | System | Last qualified software | Last qualified timing | Programme settings | October 15 observation / open evidence |
 |---|---|---|---|---|
-| ROG | +rog3, merged helper/unit backport | Graph 1024/48 kHz, 21.333 ms | −20 LUFS, cap 2.6475 dB | Service/preset/native controls present after new boot; greeter owns sound devices; post-login full route/IR/period unverified |
-| ThinkPad | +rog3, merged helper/unit backport | Graph 256/48 kHz, 5.333 ms | −16 LUFS, cap 14.1375 dB | Single connection timeout; current boot/tuning state unknown |
+| ROG | +rog3, merged helper/unit backport | Graph 1024/48 kHz, 21.333 ms | −20 LUFS, cap 2.6475 dB | Earlier physical/tuned sink nodes and twelve unchanged files; 18:06 UTC connection timeout; current route/IR/period unknown |
+| ThinkPad | +rog3, merged helper/unit backport | Graph 256/48 kHz, 5.333 ms | −16 LUFS, cap 14.1375 dB | 18:06 UTC connection timeout; current boot/tuning state unknown |
 | M4 Air | Stock output in retained observation | HAL 512/48 kHz, 10.667 ms | Unchanged in retained observation | Prior files/browser staged; physical comparison pending |
 | Sonos | Deferred | Unmeasured | Unassessed | Internal-speaker acceptance first |
 
@@ -25,12 +39,13 @@ remain different software quantities, not physical latency or Mac parity.
 
 | Work | State | Next evidence |
 |---|---|---|
-| Hardware/session | ROG inspected read-only after new boot at greeter; ThinkPad unreachable once | Normal desktop login, bounded route/ACL check; refresh ThinkPad when reachable |
-| ASUS speaker tuning | Prior 1024 hour/demo accepted; new service/preset/control bindings present | Full post-login physical route, fresh IR load and negotiated period |
+| Hardware/session | Latest read-only connection attempts timed out on both; earlier ROG protected files were unchanged | Reachable read-only refresh, then coordinated playback to observe full active route |
+| ASUS speaker tuning | Prior 1024 hour/demo accepted; earlier service/preset/control bindings present; current host unreachable | Full post-login physical route, fresh IR load and negotiated period |
 | ThinkPad speaker tuning | Prior 256 hour/demo accepted at −16/cap 14.1375; current state unknown | Reachable read-only refresh; physical qualification |
 | Startup/stop | Reviewed helper, prior save/automatic-start checks and ROG service autostart evidence retained | End-to-end post-login routing; repeated boot/resume/hotplug separately |
 | Signed annotation analysis | Eleven reviewed methods passed once; signed bounds and provenance retained | Actual private annotations from the later recording session |
 | Source-level chain latency | Accepted minimum-phase IR/preset audit found no justified removable fixed delay; no tuning change | Actual same-path physical recording |
+| Live Atmos prototype | 63 distinct methods + 3 smokes; exact full JOC at observed 1024/48k with two-CPU affinity; earlier ordinary 256 media passes retained | Distribution and coordinated laptop trial; no 256 full JOC, independent fidelity or physical qualification |
 | Host Atmos | Sixteen affected methods passed once; fresh full JOC render and four isolated timeline groups passed | Original long sequence resource failure retained; independent fidelity and later live integration |
 | Physical interaction timing | Emitter source/ten-method acceptance and earlier staging retained; no pilot/physical samples | Owner-ready coordinated same-keyboard/phone capture, still deferred |
 | Sonos Arc/eARC | Untouched and last | TV route and received-format qualification after internal audio |
@@ -39,6 +54,719 @@ Companion to [installation](SPEAKER_INSTALL.md), [review](REVIEW.md),
 [manual annotations](MANUAL_LATENCY_ANNOTATIONS.md) and
 [implementation](AUDIO_IMPLEMENTATION.md). Source, synthetic, read-only and
 physical evidence remain separate.
+
+## October 15 selected software acceptance — exact full JOC at 1024
+
+[The source-bound acceptance ledger](../evidence/live-atmos-acceptance-2026-10-15.json)
+retains every attempt and review. The final harness correction `312e9cf`
+cleared independent adversarial review before its four selected methods ran;
+all four passed once. The two new methods bring distinct live coverage to
+sixty-three. Existing dispatch smoke passes and unaffected methods are retained.
+The metadata review finding was resolved with bounded full settings snapshots
+before media and after capture, not continuous completeness claims based on
+lossy monitor updates.
+
+The sole 1024-frame full-JOC run passed: all 3,528,192 rendered, submitted,
+drained and captured media frames matched SHA256
+`4c97fef1e51add1e08ff4a5bbc5b9df81cbc5cc0eb0b65c8077d99ae701cef19`.
+Before/after settings and the native maximum callback independently recorded
+48 kHz/1024 frames; final padding was 512 frames separately. Native ring
+underflows/missing media and capture clock gaps/overflow/writer errors/rejected
+frames were zero. Two logical CPUs on distinct cores were selected while
+retaining the two-CPU quota and 6 GiB cap. Quota throttling was zero. Playback
+wall time was 74.654186 seconds; waited child CPU time was 52.980557 seconds.
+The maximum observed DSP block took 35.078107 ms; this is not a hard realtime
+guarantee or a physical output-delay measurement.
+
+This is exact same-engine virtual-sink continuity under the stated condition.
+It does not establish independent Dolby fidelity, sustained reliability at
+256 frames, laptop acoustic output, physical latency or Sonos reception.
+Earlier ordinary 256 results qualify their recorded media behavior; they do
+not retroactively test the new before/after settings assertions. ROG's historical
+speaker period is also 1024, but no live laptop Atmos deployment or new
+speaker-tuning change was performed. ThinkPad 256 Atmos remains unqualified.
+The earlier 256 failures remain below without retroactive causal attribution.
+
+## October 15 profiler — capture startup deadlines; explicit 1024 condition next
+
+Independent review found and resolved a private profiler-wrapper cleanup
+path before its sole execution. The bounded diagnostic stopped at startup
+with a capture-clock gap (expected tick 13,056, actual 13,312). The profiler
+recorded capture-follower xrun count four at the rejected tick; the sink/driver
+count was zero and no playback node appeared. Quota throttling was zero.
+Profiler exit and cleanup were clean. All thirty evidence files were verified.
+
+This correlates capture-follower deadline errors with this startup failure,
+while leaving the earlier 47.392-second insertion unattributed. The added
+profiler workload is explicit. No further 256-frame attempt is planned here.
+The harness is gaining explicit isolated 256/512/1024-frame selection with
+requested/effective graph evidence. Default 256 remains unchanged. The next
+full-JOC condition will use 1024 frames with the same two-CPU affinity/quota
+and unchanged production binaries. That corresponds to the ROG's historical
+speaker period but will not qualify physical routing or ThinkPad 256-frame
+live Atmos. Neither laptop's graph or tuning is being changed.
+
+## October 15 affinity retry — full stream, one inserted silent quantum
+
+The independently reviewed launch restricted inherited affinity to logical
+CPUs 0 and 1 on distinct physical cores, retaining the existing two-CPU quota,
+6 GiB limit, 256-frame graph, source binaries and exact reference. All
+3,528,192 rendered/submitted/drained frames were reported complete and the
+submitted PCM hash matched. The captured payload hash did not match. Recorder
+clock/ring/writer errors, native ring underflows and quota throttling were
+all zero; these counters do not cover every node's graph deadline.
+
+Read-only byte comparison proved an exact 2,274,816-frame prefix, then one
+256-frame all-channel-zero insertion, then the entire remaining 1,253,376
+reference frames exactly at the shifted offset. There were no other numeric
+changes or deleted reference frames. The discrepancy begins at 47.392 seconds.
+All twenty-one attempt files and eight analysis files were independently
+hash-verified. This attempt remains a failure, not a timing-qualified pass.
+
+The next bounded diagnostic adds the native graph profiler under the same
+condition to observe playback, sink, capture and driver deadline evidence.
+It will rerun only the failed full JOC case. No laptop configuration or
+speaker tuning changed; Sonos remains untouched.
+
+## October 15 clock diagnostics — skipped cycle; bounded affinity retry prepared
+
+The five-file `cada9ea` diagnostic change cleared independent review and
+strict capture-only compilation. Its expanded clock regression passed once;
+the other sixty methods and prior ordinary cases remain retained. Full JOC
+failed again before comparison, after 5.108 seconds. All twenty-three new
+receipt files were independently hash-verified.
+
+The first anomaly expected tick 81,664 but observed 81,920. Both queued-buffer
+timestamps exactly matched their live-clock snapshots; the two snapshots
+were 10,666,666 ns apart, corresponding to two 256-frame cycles at 48 kHz.
+This attempt therefore does not support the stale-buffer hypothesis. The
+recorder rejected 256 frames with no ring overflow or writer error. Four
+quota-throttled periods totalled 165,794 microseconds, without event timing
+to establish causation.
+
+Read-only scheduling inspection found eight permitted logical CPUs under
+an aggregate two-CPU quota. A single failed-JOC retry will restrict inherited
+affinity to two logical CPUs on distinct physical cores while retaining the
+same quota, 6 GiB limit, graph quantum, buffers and exact comparison. This is
+a changed execution condition, not a production source fix or an established
+cause. Original failures remain recorded; no passing unit or ordinary case
+will repeat for this scheduling experiment.
+
+## October 15 full JOC attempt — capture-clock failure retained
+
+Independent review cleared `f1fc791`. Its one new native-removal guard method
+passed once, followed by the failed-only policy-removal retry. Production
+helper, capture observer and managed renderer bytes were unchanged. Earlier
+five ordinary passes remain valid; the separate channel-mismatch pass is also
+retained. All thirty-one new evidence files were independently hash-verified.
+
+Full JOC then stopped after 5.656 seconds with
+`capture-timeline-discontinuity`. The observer accepted and wrote 100,864
+frames and rejected 1,024; it reported one clock gap, no ring overflow and no
+writer error. Cleanup cancelled playback, which reported no native ring
+underflow. No full PCM comparison was reached. The current receipt does not
+record the rejected clock stamp, so it cannot distinguish a missed graph
+interval from a repeated or stale clock observation. Five cgroup throttled
+periods totalled 289,951 microseconds; causation is unestablished. The partial
+capture and raw failure receipt remain preserved. No laptop or Sonos action
+was performed.
+
+## October 15 final-buffer correction — exact seek; policy status check pending
+
+The reviewed `aabf092` helper fills only the unused suffix of the final
+requested output buffer and reports `tail_padding_frames` separately. Strict
+compiler iterations nine and ten remain distinct; the final refinement counts
+physically queued padding even if an input error races, while forbidding
+successful drain after the error. All fourteen compiler-evidence files were
+independently verified. Four affected native/client methods passed once;
+the other fifty-six method passes were retained.
+
+Stereo and twelve-channel captures each matched all 96,000 expected frames,
+with zero padding. Seek matched all 95,223 expected media frames exactly,
+with nine padding frames after the final 247-frame media block. Cancellation
+and manual target removal passed their positive-media, no-fallback and cleanup
+checks. The recorder reported complete accounting and no ring/writer loss.
+These source-bound results resolve the observed partial-tail acceptance
+failure without retroactively identifying the original 512-frame deletion.
+
+Policy-managed target removal returned application/native
+`native-pipewire-failure`, exit 2, after deliberate target destruction. It
+submitted 57,344 media frames, reported no drain, made no fallback links and
+removed its owned playback nodes. The harness rejected that native status,
+which was missing from its older allowed-status list. The failure remains
+retained; it is not relabelled as a pass. A narrow reviewed guard correction
+will require the same removal conditions and matching native failure evidence.
+All thirty-four acceptance files were independently hash-verified. Full JOC
+has not started; no passing native or capture method will repeat for a
+harness-only status correction unless its behavior is actually invalidated.
+
+## October 15 EOF handoff — reviewed correction, same retained seek failure
+
+The four-file `45eff18` correction cleared independent adversarial review and
+strict compilation. It prevents an empty EOF buffer and requires a later
+process demand before drain, in addition to successful final media queueing,
+validated EOF and complete consumption. The sole affected actual-callback
+method passed once; the other fifty-nine live method passes were retained.
+Stereo and twelve-channel exact capture passed again because their changed
+successful-drain lifecycle needed requalification.
+
+Seek still failed at frame 94,976 with the same captured payload hash. Separate
+read-only analysis again found 256 all-zero frames before the complete exact
+247-frame tail. Native and recorder counts were complete and their reported
+error counters zero. All twenty-eight attempt files and two analysis files
+were independently hash-verified. This failure remains distinct from the
+prior attempt; no destructive or full JOC case ran.
+
+Pinned adapter source waits for a complete output quantum before publishing
+its split buffer. The next bounded candidate fills only the unused suffix of
+the last requested transport buffer (nine neutral frames after 247 actual
+frames in this case), reports padding separately and leaves media/hash/EOF
+counts unchanged. Actual callback and capability/counter regressions will be
+reviewed before execution. This is a source-supported correction candidate,
+not a claim that the precise internal adapter delay has been proven. There
+is no graph/quantum change, arbitrary sleep or weaker exact-PCM criterion.
+
+## October 15 recorder acceptance — exact stereo/714; delayed seek tail
+
+At reviewed `988cb25`, all eleven selected recorder/harness methods passed
+once. The other forty-nine live methods and three dispatch smokes were not
+repeated. Stereo and twelve-channel 96,000-frame captures then matched their
+expected PCM exactly, with complete recorder accounting and zero overflow,
+writer errors or usable-clock gaps.
+
+The initial-seek case produced/submitted/consumed 95,223 frames with the correct
+hash and reported drain, but exact capture failed. Read-only analysis of the
+retained bytes found 94,976 exact frames, then one 256-frame all-zero interval,
+then the entire 247-frame expected tail exactly. The tail is delayed, not
+absent. The recorder received/accepted/wrote 158,720 frames with zero overflow,
+writer errors or clock gaps; optional header/PTS metadata was unavailable.
+All twenty-eight acceptance evidence files and both separate read-only
+analysis files were independently hash-verified. No failed capture was rerun
+for diagnosis, and no passing unit method was repeated.
+
+Pinned PipeWire source shows `pw-cat` initiates drain on the next process
+request without queueing an empty EOF buffer. The native helper currently
+queues a zero-size buffer after media and can initiate drain directly after
+its final media queue. The selected narrow correction follows that upstream
+sequence while preserving exact media counts, the final successful queue and
+EOF checks. Source/bytes support investigating this boundary; they do not
+prove every internal adapter event or explain the earlier 512-frame deletion.
+
+Only the actual-callback ordering method is invalidated among unit methods;
+recorder/core/managed tests remain retained. The changed successful-drain
+lifecycle also invalidates stereo/714 capture qualification, so those and the
+failed seek will run after review. Cancellation, both target-loss cases and
+full JOC have not yet run with the recorder. No padding, arbitrary sleep,
+weaker comparison, graph change, laptop change or Sonos test is proposed.
+
+## October 15 recorder review — clear; selected acceptance starting
+
+Independent adversarial review cleared `988cb25` and the exact private
+acceptance runner after three pre-test findings were resolved:
+
+| Finding | Correction |
+|---|---|
+| Early evidence hardlink could race the recorder's single-link private-file check | Retain only after positive written output proves validation and armed writer startup |
+| Temporary capture-file disappearance could skip wrapper child cleanup | Record ordinary disappearance; other errors fail distinctly and always terminate/reap the owned process group |
+| Cancellation could accept a partial source-end receipt while its sink still existed | Only intentional target removal permits partial source end; cancellation requires healthy routing and complete capture |
+
+The existing observer regression now exercises cancellation, pre-action
+removal, deliberate removal and independent writer-error distinctions.
+Capture C/client/compiler recipe and production playback bytes are unchanged
+by these corrections. Compile artifacts are reused by exact source hash.
+
+Eleven selected methods are authorized to run once, followed only on success
+by six ordinary capture cases and the full 73.504-second JOC comparison.
+Each failed phase stops progression and retains evidence; unchanged methods
+and target-mismatch acceptance stay retained. This section records source
+clearance and execution start, not a test or capture pass.
+
+## October 15 native recorder — compiled, awaiting adversarial clearance
+
+Capture-only implementation `a135f23` adds the [bounded observer](LIVE_ATMOS_CAPTURE.md),
+its separate compiler recipe and loss receipts. The final strict compile
+passed with no test or graph execution; all seven compile-evidence files were
+independently hash-verified. The native helper has the same GLIBC 2.38 floor
+and PipeWire/libc dependencies as the playback helper. Production playback
+source, launcher, managed renderer, runtime and binary hashes are unchanged.
+
+Independent review includes the observer, changed harness, eleven selected
+methods and the private sequential acceptance runner. Nine methods are new;
+two existing methods changed for monitor-port identity and private failure
+retention. The other forty-nine live methods and three dispatcher smoke
+receipts remain valid. Six ordinary capture cases and the separate complete
+JOC comparison require the new observer. The earlier stereo pass remains
+historical and the original 512-frame deletion remains unattributed.
+
+No test has run on this candidate. The runner will stop at the first failure
+and retain capture evidence. Speaker tuning and rollback remain untouched;
+the latest read-only connection attempts timed out before inspection on both
+laptops. Sonos and physical measurements remain deferred.
+
+## October 15 capture observer — hardening an unqualified measurement path
+
+The single bounded profiler diagnostic captured all 96,000 twelve-channel
+frames exactly, with playback, capture and driver xrun counters all zero,
+zero ring underflows and no CPU throttling. Profiling changes the workload;
+this result neither replaces the retained formal failure nor attributes its
+512-frame deletion. All twenty-one diagnostic evidence files were independently
+hash-verified. No buffer/quantum sweep or further repeat-until-pass run is planned.
+
+Source inspection independently establishes that the current `pw-cat` capture
+observer performs file writes inside its processing callback and supplies no
+capture-loss receipt. The selected correction is a harness-only native capture
+client with a fixed ring, separate file writer, explicit ARM/STOP and overflow,
+write/error accounting. Available timeline metadata will be interpreted from
+its actual API contract; absent metadata will remain unknown. This removes
+a measurement weakness without claiming it caused the earlier deletion.
+
+Production playback/core/client, managed renderer and runtime remain unchanged,
+with their passing methods retained. The changed observer will invalidate the
+stereo measurement path while preserving its earlier pass historically. New
+observer methods and affected capture paths require independent review before
+execution; exact PCM criteria and the 256/48 kHz, two-CPU/6-GiB environment remain.
+Speaker tuning, rollback and all laptop/Sonos sessions remain untouched.
+
+## October 15 native transport — stereo exact, twelve-channel deletion
+
+At reviewed `b476179`, the failed concurrency method passed alone. The first
+native stereo case then captured all 96,000 media frames exactly, with ordered
+routing and owned-node cleanup. The next twelve-channel case completed native
+input, consumption and drain for all 96,000 frames, with zero ring underflow
+events or missing-media frames, but its captured payload differed.
+
+Read-only unique-anchor comparison found the first 48,640 frames exact, then
+a 512-frame deletion. The remaining stream and exact final 8,192-frame tail
+are shifted 512 frames earlier. This is not a floating-point tolerance issue
+or zero insertion. The native counter measures ring starvation, not every
+playback/server deadline or capture failure, so attribution remains open.
+
+All twenty-two evidence files were independently hash-verified; failed raw
+capture and expected stream remain retained privately. The isolated container
+exited and was removed. Seek, cancellation, both target-loss cases and full
+JOC have not run through this helper. One bounded profiler diagnostic targets
+only the failed twelve-channel case with unchanged source, buffers, 256/48 kHz
+virtual graph and two-CPU/6-GiB limits. No passing unit/stereo case repeats,
+and no new parameter sweep, laptop or Sonos playback is planned.
+
+## October 15 native unit acceptance — twenty passes plus one failed-only retry
+
+Independent review found one allocation-alignment issue: the native ring's
+64-byte alignment exceeded the guarantee of ordinary allocation. Correction
+`ce2d20f` uses aligned, zero-initialized storage in the helper and its I/O
+driver and cleared focused review. All twenty-one selected methods then ran
+once: twenty passed and one concurrent fixture hit its ten-second timeout.
+The timeout, exact source/artifact bindings and exited/removed container are
+retained; no native transport case started during that failed phase.
+
+The test writer used fixed 85-frame chunks. It filled 4,080 of 4,096 frames,
+then waited for 85 free frames while the consumer waited for a full prebuffer.
+Production input already caps reads to actual available space. Test-only
+correction `b476179` caps its chunk similarly, retaining the exact 100,000-frame
+order, full startup prebuffer, EOF assertions and ten-second bound. Independent
+review cleared it; only that failed method retried and passed. Production
+helper and I/O binary bytes are unchanged, and the other twenty passes remain
+valid. The six affected ordinary cases now run through the native helper;
+full JOC follows only after they pass. Managed renderer, runtime, speaker
+tuning, rollback and Sonos remain unchanged.
+
+The dated sections below retain earlier checkpoints; the opening summary
+states current acceptance.
+
+## October 15 native playback correction — compiled, under review
+
+Implementation `2316d22` replaces blocking playback stdin callbacks with a
+bounded native ring, separate input thread and explicit control protocol.
+The final-buffer ordering correction `dd2d076` requires successful queueing
+of the last actual media buffer before permitting drain. It includes a
+focused real-callback regression; no test-only mode enters the production
+helper. [The native contract](LIVE_ATMOS_NATIVE.md) documents capacities,
+startup/media accounting, failure behavior, native source and ABI requirements.
+
+The established isolated GCC/PipeWire compiler loop passed before native
+changes. One ignored-write warning and one test-driver member-name collision
+were retained as compile failures, then corrected. Helper and both test
+executables compile with strict warnings; none has executed. The final helper
+has a GLIBC 2.38 symbol floor and links the native PipeWire library dynamically.
+Its compiler image is separate from the unchanged acceptance runtime image;
+managed renderer/Cavern artifacts and bundled runtime stay unchanged.
+
+Independent adversarial review is active on `dd2d076`. The proposed next
+validation is twenty-one new/affected unit methods, six affected ordinary
+integration cases and the failed full JOC case. The unchanged target-mismatch
+case and unrelated passing methods remain retained. Final selection may
+change if review fixes invalidate another path. No successful full capture,
+laptop installation, hardware playback or Sonos qualification is implied.
+
+## October 15 remaining mismatch — native playback/capture attribution
+
+Two private diagnostics retained the reviewed renderer and changed one
+parameter each. The producer-only `DOTNET_PROCESSOR_COUNT=1` hint still
+failed: a 768-frame deletion begins at source frame 785,705, after which the
+remaining 2,741,719 frames match at the shifted offset. This hint is not a
+hard CPU/thread limit and was not added to the implementation.
+
+A separate player-pipe request of 4,096 frames, with the default processor
+count restored, also failed. Linux allocated 262,144 bytes for twelve
+channels, adding 85.333 ms of byte capacity above the canonical allocation.
+The first mismatch replaces 256 frames with zeros at source frame 26,412;
+55 later alignment changes leave the exact final tail 17,408 frames later.
+An initial search matched ambiguous silence; that is not evidence of repeated
+media. Neither diagnostic altered canonical source or qualifies acceptance.
+All original reports remain retained, with eighteen files independently
+hash-verified for each diagnostic.
+
+Further buffer experiments have stopped. Both raw playback reads and raw
+capture writes occur inside `pw-cat` processing callbacks in the pinned
+PipeWire source. Capture currently writes to a regular filesystem file, so
+playback and observer scheduling remain distinct possible causes. One bounded
+native-profiler run uses the canonical `528152b` source and parameters,
+without managed or feeder tracing. It reproduced the mismatch. A corrected alignment identifies the first 25
+nonzero source frames replaced by zeros. Nearby native playback xrun counts
+increase while capture and driver counters are still zero; later capture and
+driver xruns are separate. The profiler adds workload, and this correlation
+does not assign every earlier or later discrepancy to the same cause. All
+27 diagnostic evidence files were independently hash-verified.
+
+The next correction replaces native playback's blocking callback I/O with a
+preallocated ring and separate input thread. A fixed 4,096-frame ring and
+4,096-byte input pipe retain explicit bounds; for twelve channels the ring
+alone adds about 56.89 ms of capacity above the former pipe allocation.
+Callback-generated startup silence, submitted media, actual media underflow
+and native drain will be reported separately. This is a scheduling correction,
+not a measured latency reduction. A matching isolated native compiler loop
+must pass before C/build changes; completed implementation then receives
+independent adversarial review and affected-only validation. Decoder source,
+Cavern pins and unrelated passing tests remain unchanged. Speaker tuning,
+rollback, laptop sessions and Sonos remain untouched.
+
+## October 15 reviewed batching/reserve correction — full JOC still fails
+
+Independent review cleared `528152b` with no findings. Release compilation,
+twelve selected methods and all six affected ordinary integration cases
+passed; the unchanged mismatch case remains accepted. The source and built
+runtime copies were unchanged through validation. The corrected live producer
+uses 1,536-frame reads; the player requests 1,024 frames of pipe capacity.
+The original dependency DLLs, offline API and laptop settings are unchanged.
+
+The full JOC retry produced, submitted and drained all 3,528,192 expected
+frames with the retained reference hash, but captured payload hash `a9316394`
+differs. Read-only unique-anchor analysis found the first 256-frame skip at
+source frame 35,189 (0.7331 seconds), fifteen alignment changes, and the exact
+last 8,192 frames displaced by +6,144 frames (128 ms). The run took 75.266
+seconds including playback setup/drain; these are software observations, not
+physical delay measurements. No profiler/feeder timing trace was inserted,
+so this capture alone cannot attribute the remaining skips to queue starvation
+or scheduling. The first full failure remains separate and unchanged.
+
+Source inspection found per-channel and per-object ThreadPool jobs and waits
+inside the pinned JOC path. One private full-stream diagnostic will set only
+`DOTNET_PROCESSOR_COUNT=1` for the producer, keeping the accepted DLL, batches,
+pipe, graph and resource bounds. This is a runtime concurrency hint, not a
+hard one-CPU/one-worker limit. Its result is pending. No further unit methods,
+passing ordinary cases, full reference render or laptop playback repeat.
+
+## October 15 prefix diagnosis — feeding gaps and decode starvation
+
+A complete 156-syncframe excerpt contains 239,616 frames (4.992 seconds).
+The retained-PCM control bypasses decoding. With the original 4,096-byte
+player pipe, it submitted the expected hash but failed capture matching.
+Its longest media write gap was 14.369 ms while 4,011 frames remained queued;
+no CPU throttling was recorded for that control. The same control captured
+exactly with a player-only 1,024-frame request, rounded by Linux to 65,536
+bytes for twelve channels. The producer pipe, 4,096-frame supervisor queue,
+frame-aligned write size and 256-frame virtual graph remained unchanged.
+
+The instrumented JOC producer used the same Release/Optimize settings as the
+accepted build. It produced and submitted the exact retained-prefix hash,
+but capture still failed with that reserve. Its 4,096-frame caller reads
+reached 202.896 ms; a 47.018 ms maximum single DSP block is a different
+quantity. At the first nonzero capture mismatch, the supervisor queue emptied
+while a caller read was still running; the native playback xrun increased
+without a capture xrun. This supports a smaller live caller batch as well as
+the player reserve. The run also had CPU throttling and a later 51.36 ms
+feeding gap despite a healthy queue, so these diagnostics do not establish
+that the proposed combined correction solves every full-stream gap.
+
+The candidate uses 1,536-frame live reads, within the existing offline
+command/work budgets, and the bounded player reserve. Review and affected
+acceptance remain pending. The offline pull API, speaker DSP, graph settings,
+laptop tuning and rollback are unchanged. Original failures remain retained.
+Two initial setup attempts hit an incorrectly combined outer/capture file
+limit before PCM. Subsequent startup attempts identified SIGXFSZ from the
+added outer diagnostic file limit; one selector mistake also repeated the
+failed PCM control. These are diagnostic/setup failures, not passing tests.
+The erroneous outer limit was removed; the reviewed capture limit and
+2-CPU/6-GiB container bounds remained in force. No full reference rerender,
+laptop playback, physical measurement or Sonos test occurred.
+
+## October 15 ordinary acceptance complete — full JOC delivery still fails
+
+The actual-media barrier cleared source review at `b14b1e8`. Its one new
+unit method and all three affected destructive cases passed. The four earlier
+success/mismatch cases remain accepted at `4f65188`; no unaffected test was
+repeated. Cancellation and target removal now happen after finite nonzero
+PCM reaches the controlled virtual sink, with positive submitted counts,
+no observed fallback and owned-node cleanup.
+
+The first full official 7.1.4 JOC live run then failed captured PCM comparison.
+The publisher MP4 and extracted elementary stream matched their pinned
+hashes. All 3,528,192 frames were rendered, submitted and drained, and the
+producer/submitted PCM matched the retained full-render reference. Captured
+output differed. Read-only comparison found a 256-frame missing block replaced
+by silence near media frame 24,346; the final 8,192 reference frames remain
+exact later, after accumulated delay. This is a failed live acceptance result,
+not a decoder/reference mismatch or a missing-tail success claim.
+
+The original capture and comparison receipts are retained. A short complete-
+syncframe prefix diagnostic will compare the managed producer with already
+retained reference PCM under the same graph/resource limits, recording batch
+and scheduling timing. No full offline reference rerender, blind full-vector
+retry, laptop playback or Sonos test is part of that diagnosis.
+
+## October 15 persistent-monitor acceptance — exact 12-channel capture
+
+The sole new review finding was an unclosed monitor stdout descriptor;
+`4f65188` closes it in `finally` and cleared re-review. All six selected unit
+methods passed: three new monitor methods, two affected parser methods and
+the pending native-pipe-closure regression. Thirty-seven distinct live methods
+now have source-bound passing receipts, plus the retained three CLI smokes.
+
+All seven observer-invalidated integration cases ran with the same 50 ms
+observation cadence and CPU/memory/graph/PCM bounds. Exact stereo, exact
+12-channel (96,000 frames), exact initial seek (95,223 frames), mismatch and
+policy target loss passed. Each case used one native monitor with an observed
+65,536-byte output pipe; both production PCM pipes remained 4,096 bytes.
+
+Cancellation and manual target loss returned the correct failure status,
+removed owned nodes and showed no fallback, but failed the required positive
+submitted-media count. The fixed one-second action timer fired during startup
+silence. The correction will observe finite nonzero generated PCM through an
+owned, bounded capture before starting that timer. It applies to all three
+destructive cases to remove the same timing assumption consistently; the prior
+policy pass remains historical and the four unaffected cases are retained.
+These failures are test-precondition failures, not successful acceptance.
+
+## October 15 remaining failures — native pipe closure and observer workload
+
+A private instrumented policy-loss run confirmed `BrokenPipeError(32)` at the
+player stdin write. The scoped fix `c2e63f7` maps only that exception to the
+existing early-player-termination status. It cleared focused adversarial
+review; its new partial-count/unrelated-I/O regression remains pending.
+
+A five-second generated twelve-channel diagnostic without repeated harness
+registry processes captured all PCM exactly with no media-period playback,
+capture or driver xruns. Its 237 startup playback xruns remain recorded.
+A separate ten-second diagnostic added the harness-equivalent 50 ms query
+workload: 122 native query processes, seven media-period playback xrun
+increments, one capture xrun and two CPU-throttled periods. Native cycle clocks
+correlate the reproduced missing 256-frame block and zero gaps with playback
+xruns; capture's later xrun has locally exact PCM. These are diagnostic
+observations under different workloads, not formal acceptance or proof of the
+cause of the original unprofiled failure.
+
+The harness correction uses one bounded native registry monitor at the same
+50 ms observation cadence. Exact PCM, channel/target/fallback checks, graph
+settings, two-CPU/6-GiB limits and runtime PCM pipe bounds remain unchanged.
+All seven harness cases will be checked once after source review because the
+observer implementation changed. Earlier outcomes stay in this ledger;
+no lighter observer workload is retroactively assigned to an earlier result.
+Full live JOC and preview packaging follow that acceptance.
+
+## October 15 modern acceptance — five cases passed, two under diagnosis
+
+Reviewed source `5902c3c` built successfully on the pinned modern image under
+two CPUs and 6 GiB. Compiler-only sanity and all thirteen selected unit methods
+passed; the original distributable renderer DLLs remained unchanged. This adds
+six new startup/worker methods to the twenty-seven earlier distinct methods;
+changed methods and the new FFmpeg fixture were checked selectively.
+
+The first seven-case modern run passed exact stereo (96,000 frames), exact
+initial seek (95,223 frames, including the final partial block), mismatch,
+cancellation and manual target loss. The 12-channel capture begins exactly,
+then skips one 256-frame block at media frame 15,891. Its submitted hash/count
+and native drain succeeded, but capture acceptance failed. The capture alone
+cannot establish whether playback or capture scheduling lost that block.
+Policy-driven target loss stopped with no observed fallback and removed owned
+nodes, but returned `process-or-io-failure` instead of the required route-loss
+classification. Private captures, commands, source/build hashes and failure
+logs are retained. Only those failures are being diagnosed before any retry;
+passing cases are not repeated without an invalidating change. Official live
+JOC, portable preview packaging and final acceptance remain pending.
+
+The entries below preserve earlier observations and their then-pending work;
+this newer entry supersedes their current-state descriptions. No laptop
+playback, tuning/configuration change or Sonos testing occurred.
+
+## October 15 live CI — target native stack selected
+
+The pending default `live-ci` image now uses the existing pinned Ubuntu base,
+PipeWire 1.6.8 and WirePlumber 0.5.17, matching the observed laptop package
+versions. It copies the unchanged pinned .NET SDK/runtime. The legacy build
+and offline CI stages remain unchanged; the older live diagnostic image and
+its partial-tail failures remain distinguishable. This changes the selected
+CI backend, not the player's runtime admission rules.
+
+The modern fixture encoder is FFmpeg 8.1.2. Its generated-bed producer method
+requires one focused fixture check in addition to the twelve pending
+startup/worker methods. Image build, compiler-only sanity, focused review
+and selected acceptance are pending. Decoder/renderer DLLs and prior passing
+methods are retained unless a result is specifically invalidated.
+
+## October 15 steady-state delivery — registry work leaves the feeder
+
+The guarded startup batch `9e42453` passed focused source review. Its four
+new methods and four affected methods remain unrun while the independent
+later-gap diagnosis is addressed; no passing case was repeated.
+
+A five-second twelve-channel generated-PCM diagnostic attributed internal
+zero gaps to 7.52–12.43 ms observer-process startup pauses and 2.16–6.09 ms
+registry parsing on the feeder. A 4-KiB twelve-channel pipe holds only
+1.78 ms of frames. A single diagnostic comparison with a 16-KiB player pipe
+reduced but did not eliminate the gaps; it remains recorded separately.
+Neither diagnostic was a decoder/fidelity qualification or a formal case retry.
+
+The pending fix creates one persistent route worker before startup priming.
+That worker owns native query creation, bounded snapshot parsing and exact
+route validation. The feeder receives only sequence-bound linked/active/error
+responses of at most 1 KiB, with one request in flight and a 2-second watchdog.
+Its selector is reused. Private process-group cleanup includes an active
+query and reaps the worker. Media queue, pipe bounds and exact PCM requirements
+remain unchanged. Two new worker failure/cleanup methods, two changed observer
+methods and the eight pending startup/routing/transport methods await focused
+review and selected execution. Twenty-seven earlier live methods and three
+CLI smoke methods retain their source-bound historical receipts.
+
+## October 15 startup activation — media held until every link is active
+
+Focused review cleared `566ac60`'s bounded raw-mode capability observation.
+Its two new methods and changed backend-command method passed once, raising
+the distinct accepted live methods to twenty-seven. Three earlier CLI smoke
+methods remain retained. The failed-only target-version 7.1.4 and seek retry
+then reached completed/drained delivery with matching producer/submitted
+counts and hashes, but failed exact captured PCM matching.
+
+Private generated-PCM diagnostics and retained media captures found that
+all channel pairs could exist while most playback links were still
+negotiating. Capture monitor links were already active. Media consumed in
+that interval lost channel-specific prefixes. The newer backend delivered
+the seek case's final 247-frame partial fragment exactly; 7.1.4 additionally
+showed a later 256-frame zero gap and offset change. These are separate
+observations, and the later gap remains under diagnosis.
+
+The pending fix submits bounded startup zeros only after every correct
+owned channel pair exists, waits for all of them to become active, then
+submits the untouched media. Its report separates priming and media counts;
+media hashes and exact capture criteria are unchanged. A 45-second / 2,160,000-frame
+priming bound prevents an inactive route from consuming indefinitely.
+The isolated capture harness explicitly waits for all monitor links to
+become active before launching playback. Four new startup methods and four
+affected routing/transport methods await focused review and selected execution.
+No microphone/physical recording, laptop playback, tuning change or Sonos
+test occurred.
+
+## October 15 asynchronous delivery — stereo exact, two captures remain open
+
+Focused review cleared `7730093`'s asynchronous registry observation,
+EOF-before-observer-cleanup ordering and retained capture-failure evidence.
+Its seven selected unit methods passed: four new methods and three transport
+methods invalidated by the changed observation timing. Twenty-five distinct
+new live methods and the earlier three CLI dispatch smoke methods now have
+accepted source-bound results; unchanged parser and producer methods were
+not repeated.
+
+The six affected ordinary integration cases then ran. `success-stereo`
+matched all 96,000 captured frames exactly. `cancel`, `target-loss` and
+`policy-target-loss` passed again because their routing observation timing
+had changed. `success-714` and `success-seek` still failed full capture
+matching despite completed/drained delivery and exact producer/submitted
+hashes and counts. Their bounded private captures are retained. Read-only
+analysis found channel-dependent startup offsets in 7.1.4 and an exact
+94,976-frame seek prefix followed by a missing final 247-frame partial
+quantum; these observations do not establish the cause.
+
+A separate failed-only compatibility run of those two cases on PipeWire
+1.6.8/WirePlumber 0.5.17 stalled before submission with 4,096 prebuffered
+frames and no verified full route. That is a distinct setup failure, not
+proof of compatibility or a retest of a passing case. A silent owned-client
+diagnostic confirmed that `--raw` creates the newer playback node before
+stdin has data; omitting it blocks format probing. The shared bounded
+capability observation now selects that advertised option for playback and
+virtual capture. Two new capability methods and the changed command method
+await focused review and execution. Source inspection also found different
+old/new partial-buffer bookkeeping, but its role in the missing tail remains
+unconfirmed until the target stack reaches playback. The full PCM criterion
+and finite transport bounds remain unchanged. No microphone/physical
+recording, laptop playback, tuning change or Sonos test occurred.
+
+## October 15 failed-only retry — delivery succeeds, monitor match remains open
+
+The focused review cleared `daa6dd2`'s bounded chronological JSON parser and
+owned manual client-port setup. Its three new parser methods passed once;
+the earlier eighteen live methods and three dispatch smoke methods were
+retained. No C# or decoder/renderer binary changed.
+
+Only the six failed ordinary integration cases were retried. `cancel`,
+`target-loss` and `policy-target-loss` passed, including owned-node cleanup
+and no observed fallback. `success-stereo`, `success-714` and `success-seek`
+reported completed/drained native playback with exact frame counts and
+matching producer/submitted PCM hashes, but failed the full monitor PCM
+comparison. Those are failed acceptance cases, despite successful delivery.
+
+Their capture comparison asserted before persisting useful metrics, and
+case cleanup removed the temporary payloads. A focused harness fix now
+records bounded comparison evidence before assertions and offers explicit
+private failed-capture retention. A separate direct generated-PCM diagnostic
+confirmed an internal zero gap near the first synchronous registry poll.
+The transport now observes the registry asynchronously while feeding PCM,
+with the same single-child, 2-second/4-MiB observation bounds and fixed
+transport buffers. Focused review, four new unit methods and three affected
+transport-method retries are pending before six affected integration cases.
+Unchanged parser, producer and dispatch results remain retained.
+Official JOC streaming and the separate target-version stack remain unrun.
+No laptop playback, speaker tuning change, microphone/physical recording
+or Sonos action has occurred.
+
+## October 15 live acceptance — units passed, integration remains incomplete
+
+After independent adversarial review and both P2 fixes, source `4890d18`
+passed all eighteen new live-player unit methods and the three affected
+existing CLI dispatch smoke methods once, without failures, errors or skips.
+The tests covered producer output, initial seek/attenuation, exact EOF,
+finite PCM, bounded transport, drain-route enforcement, signal cleanup and
+selective CI stage handling. The unchanged DSP/regression suites retain
+prior source-bound receipts.
+
+Seven ordinary isolated PipeWire cases then ran once. `mismatch` passed.
+`success-stereo`, `success-714` and `success-seek` failed during bounded
+capture setup; `cancel`, `target-loss` and `policy-target-loss` reported
+`pipewire-registry-unavailable` before their intended route action. These
+failures are retained, not counted as playback acceptance. Source and build
+artifacts remained unchanged during those runs. Daemon/registry inspection confirmed missing policy-free client DSP port
+configuration and concatenated native JSON snapshot/removal arrays under
+client churn. Focused fixes configure only harness-owned client ports and
+share a bounded chronological registry parser; review and failed-case
+retries remain pending. No accepted methods have been repeated.
+
+The official JOC streaming case and the separate target-version PipeWire
+stack have not run. A focused source review precedes any failed/invalidated
+case retry; passing units and the mismatch case are retained. There was no
+laptop playback, configuration change, microphone/physical recording or
+Sonos test. Physical
+latency, loaded tuning, sound quality and independent Dolby fidelity remain
+unmeasured.
+
+## October 15 live preparation — tuned bytes preserved, no audible test
+
+[The later read-only refresh](../evidence/speaker-live-preparation-observation-2026-10-15.json)
+finds the ROG service active/running/enabled with zero restarts in the same
+invocation. All twelve protected file hashes are stable before/after and
+identical to the earlier October 15 observation; eleven match the earlier
+accepted gate, with the documented preset usage-count/order difference. Three
+physical ALSA nodes, the internal stereo sink and tuned virtual stereo sink
+are now visible. The idle graph has zero links, so full active routing, fresh
+IR loading and physical playback remain unverified. ThinkPad timed out on
+one bounded connection. No settings, service, playback or recording changed.
 
 ## October 15 postboot refresh — service present, desktop route not yet ready
 

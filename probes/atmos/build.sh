@@ -48,5 +48,8 @@ dotnet build "$dep/Cavern.Format/Cavern.Format.csproj" -c Release --ignore-faile
 dotnet publish "$probe/AtmosProbe.csproj" -c Release --self-contained false -o "$out" -p:CavernPath="$dep" --ignore-failed-sources
 dotnet publish "$probe/regressions/BlockBufferRegression.csproj" -c Release --self-contained false -o "$out/regressions" -p:CavernPath="$dep" --ignore-failed-sources
 cp "$probe/atmos-probe" "$out/atmos-probe"
+cp "$probe/atmos-live" "$out/atmos-live"
+cp "$probe/registry_json.py" "$out/registry_json.py"
+cp "$probe/pw_cat.py" "$out/pw_cat.py"
 cp "$probe/source_manifest.json" "$out/source_manifest.json"
 cp "$dep/LICENSE.md" "$out/CAVERN-LICENSE.md"

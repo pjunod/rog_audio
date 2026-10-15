@@ -504,3 +504,80 @@ exhaustion without independently proving the kill cause. Only the failed
 diagnostic was split into four isolated groups. All eight read hashes and
 PTS/epoch/EOS checks matched the retained full-render PCM. This proves scoped
 same-engine continuity, not every seek in one context or independent fidelity.
+
+
+## PR 17 — live PipeWire playback
+
+Independent source review found two P2 issues in the initial live-player
+batch: incomplete channel links could be ignored near native exit, and retry
+selectors could execute unrelated acceptance stages. Both were fixed and
+cleared at `4890d18` before the first selected test execution. A later review
+found that bounded daemon diagnostics incorrectly depended on optional raw
+capture retention; the unconditional diagnostic tail cleared at `7730093`.
+
+| Reviewed correction | Source clearance | Scope |
+|---|---|---|
+| Exact drain-route checks and strict retry selection | `4890d18` | Missing links on a surviving node fail; only whole-node successful teardown permits the bounded exit race; selectors cannot broaden stages |
+| Chronological native registry events and private client ports | `daa6dd2` | Bounded JSON array sequences preserve removals and serial identity; manual test ports belong only to isolated clients |
+| Nonblocking registry child observation and failure evidence | `7730093` | Feeding continues while the query runs; retained capture metrics precede comparison assertions; every failed case retains a bounded daemon tail |
+| Advertised raw-mode compatibility | `566ac60` | Bounded capability discovery selects native raw input/output without version gating; package and receipt bind the shared helper |
+| Guarded startup silence and all-active media start | `9e42453` | Only verified target/channel pairs receive bounded silence; actual media waits for every channel to be active and keeps its own frame/hash accounting |
+| Persistent route worker | `d1aa227` | Native query creation and bounded parsing leave the PCM feeder; one bounded sequence-checked response, watchdog and process-group cleanup |
+| Modern selected CI image | `5902c3c` | Pinned target PipeWire/WirePlumber stack and unchanged SDK/runtime; old offline/build stages and legacy diagnostics remain distinct |
+| Native stdin closure | `c2e63f7` | Only BrokenPipeError at the player write becomes early termination; committed-prefix counters remain, no drain or route-cause claim is added, and other I/O errors are unchanged |
+| Persistent harness registry monitor | `4f65188` | Bounded chronological event/cache processing preserves 50 ms observations without repeated process launches; the sole stdout cleanup finding was fixed before tests |
+
+Later source clearances and results supersede the earlier implementation
+checkpoints above without discarding their failures:
+
+| Reviewed correction | Source clearance | Scope |
+|---|---|---|
+| Positive-media destructive-action barrier | `b14b1e8` | Cancellation and removal wait for finite captured media instead of elapsed startup time; capture is isolated to owned monitor ports |
+| Bounded live renderer releases | `528152b` | Live reads release 1536 frames; channel-scaled pipe capacity is verified; offline renderer API remains unchanged |
+| Native playback callback and final-buffer ordering | `ce2d20f` | Blocking stdin I/O moves to a reader thread; bounded ring/control/drain checks and correctly aligned storage resolve the independent allocation finding |
+| Concurrent test fixture prefill | `b476179` | Test writes fit actual free space, resolving its 4080/4096-frame startup deadlock while retaining exact ordering and completion assertions |
+
+Further independent clearances cover the native capture observer (`988cb25`),
+next-demand EOF handling (`45eff18`), final-request suffix fill (`aabf092`)
+and intentional native target-loss guard (`f1fc791`). Capture uses a fixed
+ring, a separate writer, exact active monitor links, bounded descriptors and
+explicit loss counters. Cancellation requires complete capture; only deliberate
+target removal permits the narrowly checked source-end exception. The private
+acceptance runner's file-retention race and cleanup were also reviewed and fixed.
+
+Sixty-three distinct live unit methods and three existing dispatcher smoke
+methods have passing source-bound receipts. Only failed or invalidated methods
+were repeated. Stereo and twelve-channel captures each match 96,000 frames;
+initial seek matches95,223 media frames with nine separate padding frames.
+Cancellation, both target-removal cases and channel-mismatch rejection remain
+accepted inherited media evidence at their earlier256-frame condition.
+
+The first-clock diagnostic cleared at `cada9ea`. Its observed timestamp
+association preserved the actual graph-cycle failures; the subsequent profiler
+found startup capture-follower deadline errors without explaining an earlier
+mid-stream silent-quantum insertion. All failures remain retained.
+
+The explicit graph-quantum change first received a P2 for treating monitor
+metadata deltas as complete snapshots. `312e9cf` resolved it with bounded full
+snapshots before media and after capture, a shared startup deadline and actual
+callback-size evidence. Its four selected methods then passed once. The new
+snapshot assertions are not retroactively covered by earlier ordinary receipts.
+
+Full JOC passed exact capture of 3,528,192 media frames at observed 1024/48k,
+with 512 final transport-padding frames outside media counts/hashes, affinity
+to two logical CPUs, unchanged two-CPU quota and 6 GiB cap. Production helper,
+capture observer and managed artifacts were unchanged by the quantum work.
+The [acceptance ledger](../evidence/live-atmos-acceptance-2026-10-15.json) records
+source/artifact bindings and retained failures. This scoped software result
+does not qualify full JOC at 256 frames, laptop or Sonos playback, hard realtime
+behavior, physical latency or independent Dolby fidelity.
+
+### PR 17 final audit and repository checks
+
+Independent final review cleared `d40c0db` after matching the public ledger,
+latest private receipts, source/artifact hashes and all 63 live method IDs.
+No public privacy finding remained. The repository documentation, tracked-path,
+profile-manifest and JSON checker passed, as did Git whitespace validation.
+Gitleaks 8.30.1 scanned the 54-commit PR range with no leaks. These checks did
+not rerun unit tests or execute audio. The public receipt remains byte-bound
+to SHA256 `fecf23813457494f77b7b16c938283c958644665b3f931d9782f4b5a8c401737`.
