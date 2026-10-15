@@ -1,14 +1,13 @@
 # Status — implementation and physical acceptance
 
-**Updated:** 2026-10-15 · **State:** twenty-five new live unit methods and
+**Updated:** 2026-10-15 · **State:** twenty-seven new live unit methods and
 three existing dispatch smoke methods have passed on their reviewed sources.
-Stereo streaming now matches all 96,000 captured PCM frames exactly;
-cancellation and both target-loss cases passed. The 7.1.4 and initial-seek
-captures still fail full PCM matching. Their separate target-version runs
-stalled before any PCM submission. A silent private-client diagnostic traced
-that startup failure to the newer backend's required raw option; the
-capability-selected fix awaits focused review and failed-case retry.
-Live playback acceptance remains incomplete.
+Stereo streaming matched all 96,000 captured PCM frames exactly;
+cancellation and both target-loss cases passed. Target-version 7.1.4 and
+initial-seek runs now complete and drain after the raw-mode compatibility
+fix, but still fail full PCM matching. Retained captures show channel-specific
+startup loss; 7.1.4 also has a later gap. Guarded startup priming awaits
+focused review and selected validation. Live playback acceptance remains incomplete.
 Signed manual annotations and the bounded
 file-only Atmos API passed independent review and all 27 selected unit methods
 once. Fresh JOC rendering and four split continuity groups passed; the original
@@ -41,7 +40,7 @@ remain different software quantities, not physical latency or Mac parity.
 | Startup/stop | Reviewed helper, prior save/automatic-start checks and ROG service autostart evidence retained | End-to-end post-login routing; repeated boot/resume/hotplug separately |
 | Signed annotation analysis | Eleven reviewed methods passed once; signed bounds and provenance retained | Actual private annotations from the later recording session |
 | Source-level chain latency | Accepted minimum-phase IR/preset audit found no justified removable fixed delay; no tuning change | Actual same-path physical recording |
-| Live Atmos prototype | 25 new units + 3 dispatch smokes accepted across source-bound attempts; stereo PCM, mismatch, cancellation and both target-loss cases passed; 7.1.4/seek still fail; target-version runs stalled before submission | Diagnose retained captures and target link setup, review evidenced fixes, retry only failed or invalidated cases; no laptop playback or Sonos test |
+| Live Atmos prototype | 27 new units + 3 dispatch smokes accepted across source-bound attempts; stereo PCM, mismatch, cancellation and both target-loss cases passed; modern 7.1.4/seek drain but still fail PCM | Review guarded startup priming and diagnose later 7.1.4 gap; retry only failed or invalidated methods/cases; no laptop playback or Sonos test |
 | Host Atmos | Sixteen affected methods passed once; fresh full JOC render and four isolated timeline groups passed | Original long sequence resource failure retained; independent fidelity and later live integration |
 | Physical interaction timing | Emitter source/ten-method acceptance and earlier staging retained; no pilot/physical samples | Owner-ready coordinated same-keyboard/phone capture, still deferred |
 | Sonos Arc/eARC | Untouched and last | TV route and received-format qualification after internal audio |
@@ -50,6 +49,34 @@ Companion to [installation](SPEAKER_INSTALL.md), [review](REVIEW.md),
 [manual annotations](MANUAL_LATENCY_ANNOTATIONS.md) and
 [implementation](AUDIO_IMPLEMENTATION.md). Source, synthetic, read-only and
 physical evidence remain separate.
+
+## October 15 startup activation — media held until every link is active
+
+Focused review cleared `566ac60`'s bounded raw-mode capability observation.
+Its two new methods and changed backend-command method passed once, raising
+the distinct accepted live methods to twenty-seven. Three earlier CLI smoke
+methods remain retained. The failed-only target-version 7.1.4 and seek retry
+then reached completed/drained delivery with matching producer/submitted
+counts and hashes, but failed exact captured PCM matching.
+
+Private generated-PCM diagnostics and retained media captures found that
+all channel pairs could exist while most playback links were still
+negotiating. Capture monitor links were already active. Media consumed in
+that interval lost channel-specific prefixes. The newer backend delivered
+the seek case's final 247-frame partial fragment exactly; 7.1.4 additionally
+showed a later 256-frame zero gap and offset change. These are separate
+observations, and the later gap remains under diagnosis.
+
+The pending fix submits bounded startup zeros only after every correct
+owned channel pair exists, waits for all of them to become active, then
+submits the untouched media. Its report separates priming and media counts;
+media hashes and exact capture criteria are unchanged. A 45-second / 2,160,000-frame
+priming bound prevents an inactive route from consuming indefinitely.
+The isolated capture harness explicitly waits for all monitor links to
+become active before launching playback. Four new startup methods and four
+affected routing/transport methods await focused review and selected execution.
+No microphone/physical recording, laptop playback, tuning change or Sonos
+test occurred.
 
 ## October 15 asynchronous delivery — stereo exact, two captures remain open
 

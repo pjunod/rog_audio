@@ -89,8 +89,11 @@ processing callback. `pw-cat` owns the native output callback and may starve
 if its input is late. The prototype does not measure underruns or prove
 realtime scheduling. A buffer bound is not a latency measurement.
 
-Startup/header preparation has a 45-second wall bound, and decoding retains
-the 60 CPU-second, 128-descriptor and 512 MiB managed-heap launcher bounds.
+Startup/header preparation has a 45-second wall bound. Route activation has
+a separate 45-second wall bound and at most 2,160,000 startup zero frames.
+The first bound reached stops startup. These zeros do not replace media.
+Decoding retains the 60 CPU-second, 128-descriptor and 512 MiB managed-heap
+launcher bounds.
 Transfer has a wall bound of remaining media duration plus 60 seconds, a
 15-second no-progress watchdog, and a 15-second final drain bound. Each
 registry observation has a 2-second/4 MiB bound. The shared registry parser
@@ -107,14 +110,24 @@ launcher; use the isolated acceptance container for untrusted inputs.
 The supervisor resolves one `Audio/Sink` to a positive unique `object.serial`
 and checks its ordered channel map. Before submitting PCM, it requires all
 matching channel links from its unique playback node to that same node.
+Some native callbacks begin consuming stdin before every link finishes
+negotiating. After verifying all exact pairs, the supervisor may feed
+bounded startup silence while it waits for every link to report `active`.
+It holds the media prebuffer unchanged until that observation, then sends
+the complete media without dropping or padding its samples. Startup silence
+uses the same bounded pipe and is counted separately from all media hashes,
+frame counts and source receipts. Missing, wrong or failed routes stop
+priming. The private capture harness also waits for all its monitor links
+to become active before launching playback.
 During streaming and drain it checks for disappearance, serial replacement,
 layout change, lost links and links to unrelated nodes. It fails and stops
 both children on a routing error. During PCM transfer, at most one registry
 child runs asynchronously with the same 2-second/4-MiB bounds. A new
 observation starts 500 ms after the previous result; completed results are
 validated while the supervisor continues feeding the fixed PCM queue. No
-PCM is submitted before the first complete route verification. Startup and
-drain retain synchronous bounded observations. The stream's native target
+bytes are submitted before the first complete route verification; actual
+media also requires the all-active observation. Drain retains synchronous
+bounded observations. The stream's native target
 properties additionally prevent fallback and reconnection between
 observations. A partial or missing route on a still-present playback
 node fails immediately during drain, even if the child exits successfully
@@ -164,6 +177,9 @@ chain's filters loaded, or that Dolby reference output matched.
 
 | Field | What it proves |
 |---|---|
+| `startup_priming_frames` | Zero frames sent only to the verified route before media activation; excluded from media counts |
+| `media_start_verified_active` | Every matching link reported active before the first media frame was submitted |
+| `backend_submitted_frames` | Startup zero frames plus submitted media frames; not hardware presentation |
 | `expected_frames` | Validated input duration minus requested initial sample |
 | `rendered_frames` | Completed producer receipt's written PCM frames; null after incomplete producer failure |
 | `received_complete_frames` | Whole PCM frames received by the supervisor |

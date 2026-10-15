@@ -31,6 +31,8 @@ STALL_SECONDS = 15
 DRAIN_SECONDS = 15
 SNAPSHOT_SECONDS = 2
 MAX_SNAPSHOT = MAX_REGISTRY_BYTES
+REGISTRY_INTERVAL_SECONDS = 0.5
+MAX_PRIMING_FRAMES = RATE * STARTUP_SECONDS
 
 
 class PlaybackError(Exception):
@@ -179,7 +181,7 @@ def resolve_target(registry, target, channels):
     return {'id': item['id'], 'serial': serial}
 
 
-def verify_links(registry, target, stream_name, channels):
+def verify_links(registry, target, stream_name, channels, *, require_active=False):
     sinks = [item for item in registry if item.get('id') == target['id'] and
              item.get('type') == 'PipeWire:Interface:Node' and
              str(props(item).get('object.serial', '')) == target['serial'] and
@@ -198,6 +200,7 @@ def verify_links(registry, target, stream_name, channels):
     ports = {item['id']: props(item) for item in registry
              if item.get('type') == 'PipeWire:Interface:Port'}
     linked = []
+    active = []
     for item in registry:
         if item.get('type') != 'PipeWire:Interface:Link':
             continue
@@ -213,7 +216,10 @@ def verify_links(registry, target, stream_name, channels):
         if info.get('state') == 'error':
             raise PlaybackError('stream-link-error')
         linked.append(out_channel)
-    return sorted(linked) == sorted(channels)
+        if info.get('state') == 'active':
+            active.append(out_channel)
+    return sorted(linked) == sorted(channels) and (
+        not require_active or sorted(active) == sorted(channels))
 
 
 def pw_command(target, channels, stream_name, raw_options):
@@ -336,24 +342,31 @@ def transfer(producer, player, expected, target, stream_name, channels, env, rep
     pending = bytearray()
     received = submitted = 0
     eof = False
-    linked = False
+    linked = media_ready = False
+    primed = 0
     started = last_progress = last_registry = time.monotonic()
     deadline = started + expected / frame_bytes / RATE + 60
     report['registry_observation'] = {'mode': 'asynchronous-subprocess', 'maximum_inflight': 1,
                                       'wall_seconds': SNAPSHOT_SECONDS, 'maximum_bytes': MAX_SNAPSHOT}
     report['queue_capacity_bytes'] = capacity
     report['maximum_queued_bytes'] = 0
+    report['startup_priming_frames'] = 0
+    report['backend_submitted_frames'] = 0
+    report['startup_priming_limit_frames'] = MAX_PRIMING_FRAMES
+    report['media_start_verified_active'] = False
     digest = hashlib.sha256()
     with RegistryObservation(env) as observation:
         while not (eof and not pending):
             now = time.monotonic()
+            if not media_ready and now - started >= STARTUP_SECONDS:
+                raise PlaybackError('stream-startup-timeout')
             if now >= deadline:
                 raise PlaybackError('playback-wall-timeout')
             if now - last_progress > STALL_SECONDS:
                 raise PlaybackError('playback-stall-timeout')
             if player.poll() is not None:
                 raise PlaybackError('pipewire-player-ended-early')
-            if not observation.active and now - last_registry >= 0.5:
+            if not observation.active and now - last_registry >= REGISTRY_INTERVAL_SECONDS:
                 observation.start()
             data = observation.poll()
             if data is not None:
@@ -363,13 +376,17 @@ def transfer(producer, player, expected, target, stream_name, channels, env, rep
                     raise PlaybackError('stream-links-lost')
                 if linked:
                     report['links_verified'] = True
+                    if not media_ready and verify_links(data, target, stream_name, channels, require_active=True):
+                        media_ready = True
+                        report['media_start_verified_active'] = True
+                        report['startup_route_seconds'] = time.monotonic() - started
             with selectors.DefaultSelector() as selector:
                 if not eof and len(pending) < capacity:
                     selector.register(producer.stdout, selectors.EVENT_READ, 'read')
-                # Prebuffer up to one caller block before first submission. A shorter
+                # Prebuffer up to one caller block before first media submission. A shorter
                 # stream starts only after exact producer EOF; there is no full-file
                 # staging for streams longer than this fixed 4096-frame queue.
-                if linked and pending and (received >= capacity or eof):
+                if linked and (not media_ready or (pending and (received >= capacity or eof))):
                     selector.register(player.stdin, selectors.EVENT_WRITE, 'write')
                 for key, _ in selector.select(0.05):
                     if key.data == 'read':
@@ -389,20 +406,35 @@ def transfer(producer, player, expected, target, stream_name, channels, env, rep
                     else:
                         # Writes no larger than PIPE_BUF are atomic on a pipe; keep
                         # them frame aligned even for twelve-channel PCM.
-                        count = min(len(pending), 4096)
-                        count -= count % frame_bytes
-                        if count:
+                        if not media_ready:
+                            # pw-cat's blocking stdin callback can prevent the remaining
+                            # links from negotiating. Only exact verified pairs may receive
+                            # startup zeros; no media leaves the prebuffer until all active.
+                            remaining = MAX_PRIMING_FRAMES - primed
+                            if remaining <= 0:
+                                raise PlaybackError('stream-priming-frame-limit')
+                            count = min(4096 // frame_bytes, remaining) * frame_bytes
+                            data = bytes(count)
+                        else:
+                            count = min(len(pending), 4096)
+                            count -= count % frame_bytes
                             data = bytes(pending[:count])
                             checked_pcm(data)
+                        if count:
                             try:
                                 written = os.write(player.stdin.fileno(), data)
                             except BlockingIOError:
                                 continue
-                            digest.update(data[:written])
-                            del pending[:written]
-                            submitted += written
-                            report['submitted_complete_frames'] = submitted // frame_bytes
-                            report['submitted_bytes'] = submitted
+                            if not media_ready:
+                                primed += written // frame_bytes
+                                report['startup_priming_frames'] = primed
+                            else:
+                                digest.update(data[:written])
+                                del pending[:written]
+                                submitted += written
+                                report['submitted_complete_frames'] = submitted // frame_bytes
+                                report['submitted_bytes'] = submitted
+                            report['backend_submitted_frames'] = primed + submitted // frame_bytes
                             last_progress = time.monotonic()
             report['received_complete_frames'] = received // frame_bytes
         # Release a final partial native read before waiting for observer cleanup.

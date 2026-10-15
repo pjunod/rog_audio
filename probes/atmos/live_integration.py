@@ -194,6 +194,30 @@ def scoped_links(data, source_id, target_id, channels, env, monitor=False):
     return True
 
 
+def capture_links_active(data, source_id, target_id, channels):
+    """The capture callback has no stdin dependency; wait before media starts."""
+    ports = {item['id']: props(item) for item in data
+             if item.get('type') == 'PipeWire:Interface:Port'}
+    active = []
+    for item in data:
+        if item.get('type') != 'PipeWire:Interface:Link':
+            continue
+        info = item.get('info', {})
+        if info.get('input-node-id') != target_id:
+            continue
+        source = ports.get(info.get('output-port-id'), {})
+        target = ports.get(info.get('input-port-id'), {})
+        if (info.get('output-node-id') != source_id or
+                source.get('audio.channel') != target.get('audio.channel') or
+                source.get('audio.channel') not in channels):
+            raise AssertionError('unexpected capture route')
+        if info.get('state') == 'error':
+            raise AssertionError('capture link error')
+        if info.get('state') == 'active':
+            active.append(source['audio.channel'])
+    return sorted(active) == sorted(channels)
+
+
 def expected_pcm(probe, scene, layout, private, env, start=0, volume=1):
     receipt = private / 'expected.json'
     output = private / 'expected.pcm'
@@ -319,6 +343,8 @@ def one_case(name, probe, config, parent, joc_input=None, failure_artifacts=None
                 capture_node = wait_for(lambda: next(iter(nodes(registry(env), 'integration-capture')), None))
                 configure_client_ports(capture_node, channels, env, capture=True)
                 wait_for(lambda: scoped_links(registry(env), sink_id, capture_node['id'], channels, env, monitor=True))
+                wait_for(lambda: capture_links_active(registry(env), sink_id, capture_node['id'], channels))
+                result['capture_links_active_before_playback'] = True
             selected_layout = '7.1.4' if name == 'mismatch' else layout
             playback_started = time.monotonic()
             usage_before = resource.getrusage(resource.RUSAGE_CHILDREN)
@@ -386,6 +412,9 @@ def one_case(name, probe, config, parent, joc_input=None, failure_artifacts=None
             if name.startswith('success'):
                 assert code == 0 and report['status'] == 'completed'
                 assert linked and report['pipewire_drain_completed'] is True
+                assert report['media_start_verified_active'] is True
+                assert report['backend_submitted_frames'] == (
+                    report['submitted_complete_frames'] + report['startup_priming_frames'])
                 frames = JOC_FRAMES if name == 'success-joc' else len(pcm) // (len(channels) * 4)
                 result['media_duration_seconds'] = frames / 48000
                 result['playback_wall_to_media_ratio'] = playback_seconds / (frames / 48000)

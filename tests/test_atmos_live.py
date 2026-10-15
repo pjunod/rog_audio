@@ -342,7 +342,8 @@ class LiveTests(unittest.TestCase):
             with self.assertRaises(SystemExit):
                 live.arguments(base)
 
-    def transfer_case(self, payload, *, expected=None, player_code=None, producer_code=None):
+    def transfer_case(self, payload, *, expected=None, player_code=None, producer_code=None,
+                      observation=ImmediateObservation, report=None):
         source = self.root / 'payload.pcm'
         source.write_bytes(payload)
         producer = subprocess.Popen([sys.executable, '-c', producer_code or
@@ -352,17 +353,109 @@ class LiveTests(unittest.TestCase):
         player = subprocess.Popen([sys.executable, '-c', player_code or
                                   'import pathlib,sys;pathlib.Path(sys.argv[1]).write_bytes(sys.stdin.buffer.read())', str(sink)],
                                   stdin=subprocess.PIPE, stdout=subprocess.DEVNULL, bufsize=0, pipesize=4096)
-        report = {'received_complete_frames': 0, 'submitted_complete_frames': 0}
+        if report is None:
+            report = {'received_complete_frames': 0, 'submitted_complete_frames': 0}
         try:
             live.bounded_pipe(producer.stdout)
             live.bounded_pipe(player.stdin)
             with mock.patch.object(live, 'snapshot', return_value=registry()), \
-                    mock.patch.object(live, 'RegistryObservation', ImmediateObservation):
+                    mock.patch.object(live, 'RegistryObservation', observation):
                 live.transfer(producer, player, len(payload) if expected is None else expected,
                               {'id': 42, 'serial': '142'}, 'stream-test', ['FL', 'FR'], {}, report)
             return report, sink.read_bytes()
         finally:
             live.stop_children([producer, player])
+
+    def test_startup_priming_waits_for_active_links_and_preserves_media(self):
+        payload = struct.pack('<f', .125) * 2 * 10001
+        sink = self.root / 'sink.pcm'
+        case = self
+        class NegotiatingObservation(ImmediateObservation):
+            phase = 0
+            def poll(self):
+                if not self.active:
+                    return None
+                self.active = False
+                self.phase += 1
+                data = registry()
+                if self.phase == 1:
+                    case.assertEqual(sink.read_bytes() if sink.exists() else b'', b'')
+                    return data[:-1]  # No bytes may cross an incomplete route.
+                if self.phase == 2 or not sink.exists() or not sink.stat().st_size:
+                    data[-1]['info']['state'] = 'negotiating'
+                return data
+        code = ('import os,sys\nwith open(sys.argv[1], "wb", buffering=0) as output:\n'
+                ' while data := os.read(0, 4096): output.write(data)\n')
+        with mock.patch.object(live, 'REGISTRY_INTERVAL_SECONDS', .01):
+            report, output = self.transfer_case(payload, observation=NegotiatingObservation, player_code=code)
+        primed = report['startup_priming_frames']
+        self.assertGreater(primed, 0)
+        self.assertEqual(output, bytes(primed * 8) + payload)
+        self.assertEqual(report['submitted_pcm_sha256'], hashlib.sha256(payload).hexdigest())
+        self.assertEqual(report['submitted_complete_frames'], 10001)
+        self.assertEqual(report['backend_submitted_frames'], primed + 10001)
+        self.assertEqual(report['drained_frames'], 10001)
+        self.assertTrue(report['media_start_verified_active'])
+        self.assertLessEqual(report['maximum_queued_bytes'], 4096 * 8)
+
+    def test_startup_priming_rejects_route_loss_before_media(self):
+        class LosingObservation(ImmediateObservation):
+            phase = 0
+            def poll(self):
+                if not self.active:
+                    return None
+                self.active = False
+                self.phase += 1
+                data = registry()
+                data[-1]['info']['state'] = 'init'
+                return data if self.phase == 1 else data[:-1]
+        report = {'submitted_complete_frames': 0}
+        with mock.patch.object(live, 'REGISTRY_INTERVAL_SECONDS', .01):
+            with self.assertRaisesRegex(live.PlaybackError, 'stream-links-lost'):
+                self.transfer_case(struct.pack('<f', .125) * 20002,
+                                   observation=LosingObservation, report=report)
+        self.assertFalse(report['media_start_verified_active'])
+        self.assertEqual(report['submitted_complete_frames'], 0)
+
+    def test_startup_priming_frame_and_time_budgets_are_finite(self):
+        class PendingObservation(ImmediateObservation):
+            def poll(self):
+                data = super().poll()
+                if data is not None:
+                    data[-1]['info']['state'] = 'negotiating'
+                return data
+        for limits, error in (({'MAX_PRIMING_FRAMES': 4}, 'priming-frame-limit'),
+                              ({'STARTUP_SECONDS': .1, 'MAX_PRIMING_FRAMES': 100000000}, 'startup-timeout')):
+            report = {'submitted_complete_frames': 0}
+            with self.subTest(error=error), \
+                    mock.patch.multiple(live, REGISTRY_INTERVAL_SECONDS=0, **limits):
+                with self.assertRaisesRegex(live.PlaybackError, error):
+                    self.transfer_case(struct.pack('<f', .125) * 20002,
+                                       observation=PendingObservation, report=report)
+                self.assertEqual(report['submitted_complete_frames'], 0)
+                self.assertFalse(report['media_start_verified_active'])
+                self.assertLessEqual(report['startup_priming_frames'],
+                                     report['startup_priming_limit_frames'])
+
+    def test_startup_and_capture_require_every_matching_link_active(self):
+        data = registry()
+        target = {'id': 42, 'serial': '142'}
+        self.assertTrue(live.verify_links(data, target, 'stream-test', ['FL', 'FR'], require_active=True))
+        self.assertTrue(integration.capture_links_active(data, 7, 42, ['FL', 'FR']))
+        for state in ('init', 'negotiating', 'paused'):
+            data[-1]['info']['state'] = state
+            self.assertTrue(live.verify_links(data, target, 'stream-test', ['FL', 'FR']))
+            self.assertFalse(live.verify_links(data, target, 'stream-test', ['FL', 'FR'], require_active=True))
+            self.assertFalse(integration.capture_links_active(data, 7, 42, ['FL', 'FR']))
+        data[-1]['info']['state'] = 'error'
+        with self.assertRaisesRegex(live.PlaybackError, 'stream-link-error'):
+            live.verify_links(data, target, 'stream-test', ['FL', 'FR'], require_active=True)
+        with self.assertRaisesRegex(AssertionError, 'capture link error'):
+            integration.capture_links_active(data, 7, 42, ['FL', 'FR'])
+        data[-1]['info']['state'] = 'active'
+        data[-1]['info']['output-node-id'] = 99
+        with self.assertRaisesRegex(AssertionError, 'unexpected capture route'):
+            integration.capture_links_active(data, 7, 42, ['FL', 'FR'])
 
     def test_bounded_transfer_exact_eof_and_drain(self):
         payload = struct.pack('<f', .125) * 2 * 13001
