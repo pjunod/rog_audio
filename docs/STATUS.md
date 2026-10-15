@@ -2,19 +2,15 @@
 
 **Updated:** 2026-10-15 · **State:** sixty distinct live unit methods and
 three existing dispatch smoke methods have passing source-bound results.
-The reviewed native recorder passed all eleven selected methods once. Its
-first stereo and twelve-channel captures matched exactly. The next initial-
-seek case failed at its final partial block: the first 94,976 frames were
-exact, then 256 zero frames preceded the complete 247-frame tail. Recorder
-accounting was complete with zero overflow, writer or clock-gap errors.
-Validation stopped; cancellation, both target-loss cases and full JOC remain
-pending. The reviewed next-demand EOF correction passed its focused callback method
-and exact stereo/714, but seek retained the same delayed tail. The next
-source-supported candidate fills only the unused final transport-buffer
-suffix, with padding accounted separately from media; review and affected
-acceptance remain required.
-Earlier full captures and the original unattributed 512-frame deletion remain
-failed and retained. The live preview is not ready to merge or publish yet.
+Reviewed `aabf092` passed all four affected native/client methods. Exact stereo,
+twelve-channel and initial-seek capture now pass; the 95,223-frame seek has
+nine separately accounted transport-padding frames and no inserted media gap.
+Cancellation and manual target removal also pass. The policy-managed removal
+stopped playback correctly, but its explicit native PipeWire error was not in
+the harness's accepted removal statuses. That narrow harness correction is
+being prepared; full JOC has not started. Earlier failed attempts, including
+the unattributed 512-frame deletion, remain retained. The live preview is not
+ready to merge or publish until the remaining acceptance passes.
 Signed manual annotations and the bounded
 file-only Atmos API passed independent review and all 27 selected unit methods
 once. Fresh JOC rendering and four split continuity groups passed; the original
@@ -50,7 +46,7 @@ remain different software quantities, not physical latency or Mac parity.
 | Startup/stop | Reviewed helper, prior save/automatic-start checks and ROG service autostart evidence retained | End-to-end post-login routing; repeated boot/resume/hotplug separately |
 | Signed annotation analysis | Eleven reviewed methods passed once; signed bounds and provenance retained | Actual private annotations from the later recording session |
 | Source-level chain latency | Accepted minimum-phase IR/preset audit found no justified removable fixed delay; no tuning change | Actual same-path physical recording |
-| Live Atmos prototype | 60 distinct methods + 3 smokes passed; next-demand EOF fix did not resolve delayed partial tail | Build/review separately accounted final-buffer suffix fill; affected units/captures, then pending destructive/full JOC |
+| Live Atmos prototype | 60 distinct methods + 3 smokes passed; all three exact captures, cancel and manual target loss pass | Review/test narrow policy-removal status handling; retry affected removal case, then full JOC |
 | Host Atmos | Sixteen affected methods passed once; fresh full JOC render and four isolated timeline groups passed | Original long sequence resource failure retained; independent fidelity and later live integration |
 | Physical interaction timing | Emitter source/ten-method acceptance and earlier staging retained; no pilot/physical samples | Owner-ready coordinated same-keyboard/phone capture, still deferred |
 | Sonos Arc/eARC | Untouched and last | TV route and received-format qualification after internal audio |
@@ -59,6 +55,35 @@ Companion to [installation](SPEAKER_INSTALL.md), [review](REVIEW.md),
 [manual annotations](MANUAL_LATENCY_ANNOTATIONS.md) and
 [implementation](AUDIO_IMPLEMENTATION.md). Source, synthetic, read-only and
 physical evidence remain separate.
+
+## October 15 final-buffer correction — exact seek; policy status check pending
+
+The reviewed `aabf092` helper fills only the unused suffix of the final
+requested output buffer and reports `tail_padding_frames` separately. Strict
+compiler iterations nine and ten remain distinct; the final refinement counts
+physically queued padding even if an input error races, while forbidding
+successful drain after the error. All fourteen compiler-evidence files were
+independently verified. Four affected native/client methods passed once;
+the other fifty-six method passes were retained.
+
+Stereo and twelve-channel captures each matched all 96,000 expected frames,
+with zero padding. Seek matched all 95,223 expected media frames exactly,
+with nine padding frames after the final 247-frame media block. Cancellation
+and manual target removal passed their positive-media, no-fallback and cleanup
+checks. The recorder reported complete accounting and no ring/writer loss.
+These source-bound results resolve the observed partial-tail acceptance
+failure without retroactively identifying the original 512-frame deletion.
+
+Policy-managed target removal returned application/native
+`native-pipewire-failure`, exit 2, after deliberate target destruction. It
+submitted 57,344 media frames, reported no drain, made no fallback links and
+removed its owned playback nodes. The harness rejected that native status,
+which was missing from its older allowed-status list. The failure remains
+retained; it is not relabelled as a pass. A narrow reviewed guard correction
+will require the same removal conditions and matching native failure evidence.
+All thirty-four acceptance files were independently hash-verified. Full JOC
+has not started; no passing native or capture method will repeat for a
+harness-only status correction unless its behavior is actually invalidated.
 
 ## October 15 EOF handoff — reviewed correction, same retained seek failure
 
