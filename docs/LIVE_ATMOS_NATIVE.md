@@ -62,9 +62,18 @@ frame bytes, early EOF and EOF before BEGIN fail explicitly.
 
 Completion requires exact complete stdin EOF, all priming/media frames
 consumed from the ring, successful queueing of the final actual-media buffer,
-and PipeWire's drained event.
-A separate callback publication after `queue_buffer` prevents an EOF or
-older mainloop event from flushing before the final partial buffer is queued.
+a subsequent graph process demand, and PipeWire's drained event.
+A separate callback publication after successful `queue_buffer` prevents an EOF
+or older mainloop event from flushing before the final partial buffer is queued.
+The next process request publishes a second prerequisite without queueing an
+empty EOF buffer. The mainloop waits for both publications and validated input
+EOF before requesting drain. This follows the EOF sequence in pinned
+[PipeWire 1.6.8 pw-cat](https://github.com/PipeWire/pipewire/blob/1.6.8/src/tools/pw-cat.c).
+It changes neither media samples nor their count, and adds no tail padding or
+sleep. The previous isolated seek capture contained the complete final
+247-frame fragment one graph cycle late; that observation does not by itself
+prove the exact internal adapter cause. Exact capture acceptance remains
+required after the lifecycle correction.
 A final bounded packet reports the completion states and counters before exit. Python
 requires exact agreement with its priming/submitted counts and zero native
 underflows before publishing a successful drain count. Native counters cover

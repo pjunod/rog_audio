@@ -27,7 +27,7 @@ cc -std=c11 -O2 -Wall -Wextra -Werror -pthread \
 cc -std=c11 -O2 -Wall -Wextra -Werror -pthread $(pkg-config --cflags libpipewire-0.3) \
     "$probe/native/test_io.c" "$probe/native/playback_core.c" \
     $(pkg-config --libs libpipewire-0.3) \
-    -Wl,--wrap=pw_stream_dequeue_buffer,--wrap=pw_stream_queue_buffer -o "$scratch/native-io-tests"
+    -Wl,--wrap=pw_stream_dequeue_buffer,--wrap=pw_stream_queue_buffer,--wrap=pw_stream_flush -o "$scratch/native-io-tests"
 cp "$probe/native/PIPEWIRE-EXAMPLE-LICENSE" "$scratch/PIPEWIRE-EXAMPLE-LICENSE"
 cp "$probe/native_playback.py" "$scratch/native_playback.py"
 tar --sort=name --mtime=@0 --owner=0 --group=0 --numeric-owner -cf "$scratch/native-source.tar" -C "$probe" \

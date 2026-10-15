@@ -29,7 +29,7 @@ struct playback {
     int control, wake;
     pthread_t reader;
     bool reader_started, draining, drained, connected;
-    atomic_bool stop, queued_all;
+    atomic_bool stop, queued_all, demand_after_final;
     struct spa_audio_info_raw format;
 };
 static void notify(struct playback *p) { pw_loop_signal_event(p->loop, p->event); }
@@ -74,6 +74,7 @@ static void on_event(void *opaque, uint64_t count)
     if (write(p->wake, &wake, sizeof(wake)) < 0 && errno != EAGAIN) rog_fail(&p->core, ROG_IO);
     if (atomic_load(&p->core.error)) { pw_main_loop_quit(p->main_loop); return; }
     if (!p->draining && atomic_load_explicit(&p->queued_all, memory_order_acquire) &&
+            atomic_load_explicit(&p->demand_after_final, memory_order_acquire) &&
             atomic_load_explicit(&p->core.eof, memory_order_acquire) && rog_consumed_all(&p->core)) {
         p->draining = true;
         if (pw_stream_flush(p->stream, true) < 0) {
@@ -84,6 +85,13 @@ static void on_event(void *opaque, uint64_t count)
 static void on_process(void *opaque)
 {
     struct playback *p = opaque;
+    /* Follow pw-cat's EOF sequence: queue the final actual data, then let the
+     * next graph demand initiate drain. Do not queue an empty EOF buffer. */
+    if (atomic_load_explicit(&p->queued_all, memory_order_acquire)) {
+        atomic_store_explicit(&p->demand_after_final, true, memory_order_release);
+        notify(p);
+        return;
+    }
     struct pw_buffer *b = pw_stream_dequeue_buffer(p->stream);
     if (b == NULL) return;
     struct spa_buffer *buffer = b->buffer;
@@ -114,7 +122,8 @@ static void on_process(void *opaque)
 static void on_drained(void *opaque)
 {
     struct playback *p = opaque;
-    if (!p->draining || !atomic_load(&p->queued_all) || !atomic_load(&p->core.eof) || !rog_consumed_all(&p->core)) {
+    if (!p->draining || !atomic_load(&p->queued_all) || !atomic_load(&p->demand_after_final) ||
+            !atomic_load(&p->core.eof) || !rog_consumed_all(&p->core)) {
         rog_fail(&p->core, ROG_PIPEWIRE);
     } else p->drained = true;
     pw_main_loop_quit(p->main_loop);
@@ -214,6 +223,7 @@ int main(int argc, char **argv)
     p->control = (int)fd; p->wake = -1;
     atomic_init(&p->stop, false);
     atomic_init(&p->queued_all, false);
+    atomic_init(&p->demand_after_final, false);
     if (fcntl(STDIN_FILENO, F_SETFL, fcntl(STDIN_FILENO, F_GETFL) | O_NONBLOCK) < 0) goto done;
     pw_init(NULL, NULL);
     p->main_loop = pw_main_loop_new(NULL);
