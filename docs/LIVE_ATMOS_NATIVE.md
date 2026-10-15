@@ -60,8 +60,9 @@ A declared last partial callback queues exactly the remaining media frames,
 without counting its absent padding as missing media. Extra input, incomplete
 frame bytes, early EOF and EOF before BEGIN fail explicitly.
 
-Completion requires three distinct states: exact complete stdin EOF, all
-priming/media frames consumed from the ring, and PipeWire's drained event.
+Completion requires exact complete stdin EOF, all priming/media frames
+consumed from the ring, successful queueing of the final actual-media buffer,
+and PipeWire's drained event.
 A separate callback publication after `queue_buffer` prevents an EOF or
 older mainloop event from flushing before the final partial buffer is queued.
 A final bounded packet reports the completion states and counters before exit. Python

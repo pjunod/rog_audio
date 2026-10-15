@@ -30,8 +30,10 @@ int main(void)
     assert(dup2(input_pipe[0], STDIN_FILENO) == STDIN_FILENO);
     close(input_pipe[0]);
     assert(socketpair(AF_UNIX, SOCK_SEQPACKET | SOCK_CLOEXEC, 0, control) == 0);
-    struct playback *p = calloc(1, sizeof(*p));
-    assert(p && rog_init(&p->core, 12));
+    struct playback *p = aligned_alloc(_Alignof(struct playback), sizeof(struct playback));
+    assert(p && (uintptr_t)p % _Alignof(struct playback) == 0);
+    memset(p, 0, sizeof(*p));
+    assert(rog_init(&p->core, 12));
     atomic_init(&p->stop, false);
     atomic_init(&p->queued_all, false);
     p->control = control[1];

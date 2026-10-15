@@ -207,8 +207,10 @@ int main(int argc, char **argv)
     if (fd <= STDERR_FILENO || fd > 127) return 2;
     int type = 0; socklen_t length = sizeof(type);
     if (getsockopt((int)fd, SOL_SOCKET, SO_TYPE, &type, &length) < 0 || type != SOCK_SEQPACKET) return 2;
-    struct playback *p = calloc(1, sizeof(*p));
-    if (!p || !rog_init(&p->core, (uint32_t)atoi(argv[4]))) { free(p); return 2; }
+    struct playback *p = aligned_alloc(_Alignof(struct playback), sizeof(struct playback));
+    if (!p) return 2;
+    memset(p, 0, sizeof(*p));
+    if (!rog_init(&p->core, (uint32_t)atoi(argv[4]))) { free(p); return 2; }
     p->control = (int)fd; p->wake = -1;
     atomic_init(&p->stop, false);
     atomic_init(&p->queued_all, false);
