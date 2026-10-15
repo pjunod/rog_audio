@@ -47,6 +47,11 @@ static class Program {
             report["input_sha256"] = Convert.ToHexString(SHA256.HashData(bytes)).ToLowerInvariant();
             string layout = opts.GetValueOrDefault("--layout", "stereo-speakers");
             if (layout is not ("stereo-speakers" or "7.1.4")) throw new Unsupported("unsupported_layout");
+            if (args[0] == "stream") {
+                LiveStream.Run(bytes, path.EndsWith(".json", StringComparison.OrdinalIgnoreCase), layout,
+                    opts.GetValueOrDefault("--start-sample", "0"), opts.GetValueOrDefault("--volume", "1"), report);
+                Save(reportPath); return 0;
+            }
             if (args[0] == "timeline") {
                 Timeline(bytes, path.EndsWith(".json", StringComparison.OrdinalIgnoreCase), layout, opts["--timeline"]);
                 Save(reportPath); return 0;
@@ -71,15 +76,16 @@ static class Program {
     }
 
     static Dictionary<string,string> Parse(string[] args) {
-        if (args.Length == 0 || args[0] is not ("inspect" or "render" or "timeline")) throw new InvalidInput("command");
+        if (args.Length == 0 || args[0] is not ("inspect" or "render" or "timeline" or "stream")) throw new InvalidInput("command");
         var result = new Dictionary<string,string>();
         for (int i = 1; i < args.Length; i++) {
             string key = args[i];
-            if (key is not ("--input" or "--report" or "--output" or "--layout" or "--timeline") || ++i == args.Length || !result.TryAdd(key,args[i])) throw new InvalidInput("option");
+            if (key is not ("--input" or "--report" or "--output" or "--layout" or "--timeline" or "--start-sample" or "--volume") || ++i == args.Length || !result.TryAdd(key,args[i])) throw new InvalidInput("option");
         }
         if (!result.ContainsKey("--input") || !result.ContainsKey("--report") || (args[0] == "render" && !result.ContainsKey("--output"))) throw new InvalidInput("required_option");
         if (args[0] != "render" && result.ContainsKey("--output")) throw new InvalidInput("output_option");
         if ((args[0] == "timeline") != result.ContainsKey("--timeline")) throw new InvalidInput("timeline_option");
+        if (args[0] != "stream" && (result.ContainsKey("--start-sample") || result.ContainsKey("--volume"))) throw new InvalidInput("stream_option");
         return result;
     }
 

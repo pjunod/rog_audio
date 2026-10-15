@@ -1,0 +1,276 @@
+"""Focused live-player contracts; no host PipeWire or audio devices are used."""
+import contextlib
+import hashlib
+import importlib.machinery
+import importlib.util
+import json
+import os
+from pathlib import Path
+import signal
+import struct
+import subprocess
+import sys
+import tempfile
+import unittest
+from unittest import mock
+
+ROOT = Path(__file__).resolve().parents[1]
+loader = importlib.machinery.SourceFileLoader('atmos_live', str(ROOT / 'probes/atmos/atmos-live'))
+spec = importlib.util.spec_from_loader(loader.name, loader)
+live = importlib.util.module_from_spec(spec)
+loader.exec_module(live)
+BUILD = None
+BED = None
+
+
+def registry(channels=None):
+    channels = channels or ['FL', 'FR']
+    result = [{'id': 42, 'type': 'PipeWire:Interface:Node', 'info': {'props': {
+        'media.class': 'Audio/Sink', 'node.name': 'tuned-sink',
+        'object.serial': 142, 'audio.position': ','.join(channels)}}},
+        {'id': 7, 'type': 'PipeWire:Interface:Node', 'info': {'props': {'node.name': 'stream-test'}}}]
+    for index, channel in enumerate(channels):
+        result += [{'id': 100 + index, 'type': 'PipeWire:Interface:Port',
+                    'info': {'props': {'audio.channel': channel}}},
+                   {'id': 200 + index, 'type': 'PipeWire:Interface:Port',
+                    'info': {'props': {'audio.channel': channel}}},
+                   {'id': 300 + index, 'type': 'PipeWire:Interface:Link', 'info': {
+                       'output-node-id': 7, 'input-node-id': 42,
+                       'output-port-id': 100 + index, 'input-port-id': 200 + index,
+                       'state': 'active'}}]
+    return result
+
+
+def scene(samples=10001):
+    return {'schema_version': 1, 'sample_rate': 48000, 'samples': samples, 'objects': [{
+        'amplitude': 0.125, 'frequency_hz': 997,
+        'keyframes': [{'sample': 0, 'position': [-1, 0, 1]}]}]}
+
+
+class LiveTests(unittest.TestCase):
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory(prefix='atmos-live-unit-')
+        self.root = Path(self.tmp.name)
+
+    def tearDown(self):
+        self.tmp.cleanup()
+
+    def test_explicit_target_and_channel_contract(self):
+        data = registry()
+        expected = {'id': 42, 'serial': '142'}
+        self.assertEqual(live.resolve_target(data, 'tuned-sink', ['FL', 'FR']), expected)
+        self.assertEqual(live.resolve_target(data, '142', ['FL', 'FR']), expected)
+        for target, channels in [('absent', ['FL', 'FR']), ('tuned-sink', ['FR', 'FL'])]:
+            with self.assertRaises(live.PlaybackError):
+                live.resolve_target(data, target, channels)
+        with self.assertRaises(live.PlaybackError):
+            live.resolve_target(data + [data[0]], 'tuned-sink', ['FL', 'FR'])
+        data[0]['info']['props']['object.serial'] = '١٤٢'
+        with self.assertRaises(live.PlaybackError):
+            live.resolve_target(data, 'tuned-sink', ['FL', 'FR'])
+
+    def test_exact_channel_links_and_target_lifetime(self):
+        target = {'id': 42, 'serial': '142'}
+        data = registry()
+        self.assertTrue(live.verify_links(data, target, 'stream-test', ['FL', 'FR']))
+        self.assertFalse(live.verify_links(data[:-1], target, 'stream-test', ['FL', 'FR']))
+        data[-1]['info']['input-node-id'] = 99
+        with self.assertRaisesRegex(live.PlaybackError, 'unrequested'):
+            live.verify_links(data, target, 'stream-test', ['FL', 'FR'])
+        data = registry()
+        data[-2]['info']['props']['audio.channel'] = 'FL'
+        with self.assertRaisesRegex(live.PlaybackError, 'channel-link'):
+            live.verify_links(data, target, 'stream-test', ['FL', 'FR'])
+        data = registry()
+        data[0]['info']['props']['object.serial'] = 143
+        with self.assertRaisesRegex(live.PlaybackError, 'disappeared'):
+            live.verify_links(data, target, 'stream-test', ['FL', 'FR'])
+
+    def test_backend_command_and_environment_cannot_override_target(self):
+        with mock.patch.dict(os.environ, {'PIPEWIRE_PROPS': 'target.object=wrong',
+                'PIPEWIRE_QUANTUM': '1/1', 'PIPEWIRE_NODE': 'wrong',
+                'PIPEWIRE_REMOTE': 'isolated', 'DOTNET_EnableDiagnostics': '1'}, clear=True):
+            env = live.child_environment()
+        self.assertEqual(env['PIPEWIRE_REMOTE'], 'isolated')
+        self.assertEqual(env['DOTNET_EnableDiagnostics'], '0')
+        self.assertFalse(any(key in env for key in ('PIPEWIRE_PROPS', 'PIPEWIRE_QUANTUM', 'PIPEWIRE_NODE')))
+        command = live.pw_command({'serial': '142'}, ['FL', 'FR'], 'stream-test')
+        self.assertNotIn('--raw', command)
+        self.assertEqual(command[command.index('--target') + 1], '142')
+        properties = json.loads(command[command.index('--properties') + 1])
+        for name in ('node.dont-fallback', 'node.dont-reconnect', 'node.dont-move',
+                     'stream.dont-remix', 'channelmix.disable'):
+            self.assertIs(properties[name], True)
+        self.assertFalse(any('force-' in name or 'quantum' in name for name in properties))
+
+    def test_header_and_pcm_validation(self):
+        header = {'protocol': 'rog-atmos-pcm-v1', 'sample_rate': 48000, 'channels': 2,
+                  'start_sample': 7, 'input_samples': 100, 'format': 'f32le'}
+        self.assertEqual(live.validate_header(header, 'stereo-speakers', 7), 93 * 8)
+        for key, value in [('input_samples', True), ('input_samples', 4320001),
+                           ('channels', 12), ('start_sample', 0), ('format', 's16')]:
+            with self.assertRaises(live.PlaybackError):
+                live.validate_header(dict(header, **{key: value}), 'stereo-speakers', 7)
+        live.checked_pcm(struct.pack('<3f', -1, 0, 1))
+        for value in (float('nan'), float('inf'), -1.01, 1.01):
+            with self.assertRaises(live.PlaybackError):
+                live.checked_pcm(struct.pack('<f', value))
+
+    def test_cli_rejects_invalid_input_volume_and_collisions(self):
+        source = self.root / 'scene.json'
+        source.write_text(json.dumps(scene()))
+        base = ['--input', str(source), '--target', 'tuned-sink', '--report',
+                str(self.root / 'report.json'), '--dotnet', sys.executable]
+        with contextlib.redirect_stderr(open(os.devnull, 'w')), mock.patch.object(live.platform, 'system', return_value='Linux'):
+            for value in ('nan', 'inf', '1.1', '-.1'):
+                with self.assertRaises(SystemExit):
+                    live.arguments(base + ['--volume', value])
+            fifo = self.root / 'fifo'
+            os.mkfifo(fifo)
+            with self.assertRaises(SystemExit):
+                live.arguments(['--input', str(fifo)] + base[2:])
+            output = self.root / 'report.json'
+            output.symlink_to(self.root / 'absent')
+            with self.assertRaises(SystemExit):
+                live.arguments(base)
+
+    def transfer_case(self, payload, *, expected=None, player_code=None, producer_code=None):
+        source = self.root / 'payload.pcm'
+        source.write_bytes(payload)
+        producer = subprocess.Popen([sys.executable, '-c', producer_code or
+                                    'import pathlib,sys;sys.stdout.buffer.write(pathlib.Path(sys.argv[1]).read_bytes())', str(source)],
+                                    stdout=subprocess.PIPE, stdin=subprocess.DEVNULL, bufsize=0, pipesize=4096)
+        sink = self.root / 'sink.pcm'
+        player = subprocess.Popen([sys.executable, '-c', player_code or
+                                  'import pathlib,sys;pathlib.Path(sys.argv[1]).write_bytes(sys.stdin.buffer.read())', str(sink)],
+                                  stdin=subprocess.PIPE, stdout=subprocess.DEVNULL, bufsize=0, pipesize=4096)
+        report = {'received_complete_frames': 0, 'submitted_complete_frames': 0}
+        try:
+            live.bounded_pipe(producer.stdout)
+            live.bounded_pipe(player.stdin)
+            with mock.patch.object(live, 'snapshot', return_value=registry()):
+                live.transfer(producer, player, len(payload) if expected is None else expected,
+                              {'id': 42, 'serial': '142'}, 'stream-test', ['FL', 'FR'], {}, report)
+            return report, sink.read_bytes()
+        finally:
+            live.stop_children([producer, player])
+
+    def test_bounded_transfer_exact_eof_and_drain(self):
+        payload = struct.pack('<f', .125) * 2 * 13001
+        report, output = self.transfer_case(payload)
+        self.assertEqual(output, payload)
+        self.assertEqual(report['drained_frames'], 13001)
+        self.assertEqual(report['submitted_pcm_sha256'], hashlib.sha256(payload).hexdigest())
+        self.assertLessEqual(report['maximum_queued_bytes'], 4096 * 8)
+        self.assertTrue(report['pipewire_drain_completed'])
+
+    def test_transfer_rejects_short_extra_and_nonfinite_pcm(self):
+        for data, expected, message in [(b'\0' * 80, 88, 'truncated'),
+                                        (b'\0' * 80, 72, 'extra'),
+                                        (struct.pack('<2f', float('nan'), 0), 8, 'pcm-invalid')]:
+            with self.subTest(message=message), self.assertRaisesRegex(live.PlaybackError, message):
+                self.transfer_case(data, expected=expected)
+
+    def test_stall_watchdog_and_child_cleanup(self):
+        with mock.patch.object(live, 'STALL_SECONDS', .1):
+            with self.assertRaisesRegex(live.PlaybackError, 'stall'):
+                self.transfer_case(b'', expected=100, producer_code='import time;time.sleep(20)')
+        child = subprocess.Popen([sys.executable, '-c', 'import time;time.sleep(20)'],
+                                 stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+        live.stop_children([child])
+        self.assertIsNotNone(child.returncode)
+        self.assertTrue(child.stdin.closed)
+        self.assertTrue(child.stdout.closed)
+
+    def test_signal_failure_report_is_private_and_exclusive(self):
+        source = self.root / 'scene.json'
+        source.write_text(json.dumps(scene()))
+        report = self.root / 'report.json'
+        arguments = ['--input', str(source), '--target', 'tuned-sink', '--report',
+                     str(report), '--dotnet', sys.executable]
+        with mock.patch.object(live.platform, 'system', return_value='Linux'), \
+                mock.patch.object(live, 'playback', side_effect=lambda *_: signal.raise_signal(signal.SIGTERM)), \
+                contextlib.redirect_stdout(open(os.devnull, 'w')):
+            self.assertEqual(live.main(arguments), 2)
+        self.assertEqual(json.loads(report.read_text())['status'], 'cancelled-signal-15')
+        self.assertEqual(report.stat().st_mode & 0o777, 0o600)
+        self.assertFalse(list(self.root.glob('.atmos-live-*')))
+        original = report.read_bytes()
+        with contextlib.redirect_stderr(open(os.devnull, 'w')), self.assertRaises(SystemExit), \
+                mock.patch.object(live.platform, 'system', return_value='Linux'):
+            live.main(arguments)
+        self.assertEqual(report.read_bytes(), original)
+
+    def producer(self, *, layout='stereo-speakers', start=0, volume=1, data=None, suffix='.json'):
+        if BUILD is None:
+            self.skipTest('explicit reviewed Linux build required')
+        source = self.root / ('input' + suffix)
+        source.write_bytes(json.dumps(scene() if data is None else data).encode() if suffix == '.json' else data)
+        receipt = self.root / 'producer.json'
+        result = subprocess.run(['dotnet', str(BUILD / 'AtmosProbe.dll'), 'stream', '--input', str(source),
+                                 '--report', str(receipt), '--layout', layout, '--start-sample', str(start),
+                                 '--volume', str(volume)], capture_output=True, timeout=90,
+                                 preexec_fn=live.producer_limits, env=live.child_environment())
+        report = json.loads(receipt.read_text())
+        receipt.unlink()
+        header, pcm = result.stdout.split(b'\n', 1) if result.stdout else (b'{}', b'')
+        return result, json.loads(header), pcm, report
+
+    def test_producer_stereo_partial_eof_and_hash(self):
+        result, header, pcm, report = self.producer()
+        self.assertEqual(result.returncode, 0, report)
+        self.assertEqual(live.validate_header(header, 'stereo-speakers', 0), len(pcm))
+        self.assertEqual(len(pcm), 10001 * 8)
+        live.checked_pcm(pcm)
+        self.assertEqual(report['stream']['pcm_sha256'], hashlib.sha256(pcm).hexdigest())
+        self.assertEqual(report['stream']['written_frames'], 10001)
+        self.assertEqual(report['status'], 'synthetic-stream')
+
+    def test_producer_surround_seek_attenuation_and_eof(self):
+        result, _, original, report = self.producer(layout='7.1.4')
+        self.assertEqual(result.returncode, 0, report)
+        result, header, sought, report = self.producer(layout='7.1.4', start=777, volume=.5)
+        self.assertEqual(result.returncode, 0, report)
+        self.assertEqual(live.validate_header(header, '7.1.4', 777), len(sought))
+        expected = struct.pack('<' + 'f' * (len(sought) // 4),
+                               *[item[0] * .5 for item in struct.iter_unpack('<f', original[777 * 48:])])
+        self.assertEqual(sought, expected)
+        result, header, pcm, report = self.producer(start=10001)
+        self.assertEqual(result.returncode, 0, report)
+        self.assertEqual(live.validate_header(header, 'stereo-speakers', 10001), 0)
+        self.assertEqual(pcm, b'')
+
+    def test_producer_invalid_options_and_input_fail_before_pcm(self):
+        for options in ({'volume': 1.1}, {'volume': 'NaN'}, {'start': 10002}, {'data': {'invalid': True}}):
+            result, _, pcm, report = self.producer(**options)
+            self.assertEqual(result.returncode, 2, report)
+            self.assertEqual(pcm, b'')
+            self.assertEqual(report['status'], 'invalid-input')
+
+    def test_producer_cli_rejects_stream_only_options_on_offline_commands(self):
+        if BUILD is None:
+            self.skipTest('explicit reviewed Linux build required')
+        for command in ('inspect', 'render', 'timeline'):
+            for option in ('--volume', '--start-sample'):
+                arguments = ['dotnet', str(BUILD / 'AtmosProbe.dll'), command,
+                             '--input', str(self.root / 'absent.eac3'),
+                             '--report', str(self.root / 'report.json'), option, '0']
+                if command == 'render':
+                    arguments += ['--output', str(self.root / 'output.wav')]
+                if command == 'timeline':
+                    arguments += ['--timeline', str(self.root / 'absent-timeline.json')]
+                result = subprocess.run(arguments, capture_output=True, timeout=10,
+                                        env=live.child_environment(), preexec_fn=live.producer_limits)
+                self.assertEqual(result.returncode, 2)
+                self.assertEqual(result.stdout, b'')
+                self.assertFalse((self.root / 'report.json').exists())
+
+    def test_producer_generated_bed_metadata_and_exact_count(self):
+        if BED is None:
+            self.skipTest('explicit generated bed fixture required')
+        result, header, pcm, report = self.producer(data=BED.read_bytes(), suffix='.eac3')
+        self.assertEqual(result.returncode, 0, report)
+        self.assertEqual(len(pcm), header['input_samples'] * 8)
+        self.assertEqual(report['status'], 'bed-fallback-stream')
+        self.assertIs(report['object_metadata_consumed'], False)
+        live.checked_pcm(pcm)

@@ -150,3 +150,14 @@ after execution. Any changed/unreadable source fails acceptance even if the
 methods themselves passed; no passing result is rebound to after-only hashes.
 The provenance regression uses a controlled fake loader/runner and an owned
 fake project tree, without recursively executing the real unit suite.
+
+## Live Atmos selection
+
+The manual-only `atmos-live` workflow lane is independent of legacy Atmos and
+speaker acceptance. Select `units` for the full IDs exposed by
+[`validate_atmos_live.py`](../scripts/validate_atmos_live.py), `integration`
+for exact private virtual-sink case IDs, or `all` for this new lane's initial
+acceptance. [Live playback](LIVE_ATMOS.md#acceptance--run-selected-methods-only-after-independent-review)
+documents commands and evidence limits. Review and fix the complete source
+before the first method run; retry only failed or invalidated methods/cases.
+No push trigger, host sound device or desktop session socket is added.

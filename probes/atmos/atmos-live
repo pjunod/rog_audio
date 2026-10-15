@@ -1,0 +1,485 @@
+#!/usr/bin/env python3
+"""Bounded Atmos-to-PipeWire prototype; requires an explicit matching sink."""
+import argparse
+import array
+import fcntl
+import hashlib
+import json
+import math
+import os
+from pathlib import Path
+import platform
+import resource
+import selectors
+import shutil
+import signal
+import stat
+import subprocess
+import sys
+import tempfile
+import time
+import uuid
+
+RATE = 48000
+CHANNELS = {'stereo-speakers': ['FL', 'FR'],
+            '7.1.4': ['FL', 'FR', 'FC', 'LFE', 'RL', 'RR', 'SL', 'SR',
+                      'TFL', 'TFR', 'TRL', 'TRR']}
+STARTUP_SECONDS = 45
+STALL_SECONDS = 15
+DRAIN_SECONDS = 15
+SNAPSHOT_SECONDS = 2
+MAX_SNAPSHOT = 4 * 1024 * 1024
+
+
+class PlaybackError(Exception):
+    pass
+
+
+def child_environment():
+    # Preserve the selected server/socket, but remove properties and quantum/rate
+    # overrides which could defeat the target and graph-preservation contract.
+    env = {k: v for k, v in os.environ.items()
+           if not k.startswith(('PIPEWIRE_', 'SPA_', 'DOTNET_', 'COMPlus_')) or
+           k in ('PIPEWIRE_REMOTE', 'PIPEWIRE_RUNTIME_DIR')}
+    env.update(DOTNET_GCHeapHardLimit='20000000', DOTNET_EnableDiagnostics='0',
+               DOTNET_CLI_TELEMETRY_OPTOUT='1')
+    return env
+
+
+def producer_limits():
+    resource.setrlimit(resource.RLIMIT_CPU, (60, 60))
+    resource.setrlimit(resource.RLIMIT_NOFILE, (128, 128))
+    resource.setrlimit(resource.RLIMIT_CORE, (0, 0))
+
+
+def snapshot(env):
+    # An on-disk, size-limited stdout avoids unbounded captured registry output.
+    with tempfile.TemporaryFile() as output:
+        def limits():
+            resource.setrlimit(resource.RLIMIT_FSIZE, (MAX_SNAPSHOT, MAX_SNAPSHOT))
+            resource.setrlimit(resource.RLIMIT_CORE, (0, 0))
+        try:
+            result = subprocess.run(['pw-dump'], stdout=output,
+                                    stderr=subprocess.DEVNULL, env=env,
+                                    timeout=SNAPSHOT_SECONDS, preexec_fn=limits)
+            if result.returncode != 0:
+                raise PlaybackError('pipewire-registry-unavailable')
+            output.seek(0)
+            data = json.load(output)
+        except (subprocess.TimeoutExpired, ValueError) as exc:
+            raise PlaybackError('pipewire-registry-unavailable') from exc
+    if not isinstance(data, list):
+        raise PlaybackError('pipewire-registry-invalid')
+    return data
+
+
+def props(item):
+    return item.get('info', {}).get('props', {})
+
+
+def positions(item):
+    info = item.get('info', {})
+    value = props(item).get('audio.position')
+    if isinstance(value, str):
+        value = value.strip('[] ').replace(',', ' ').replace('"', '').split()
+    if isinstance(value, list):
+        return value
+    for fmt in info.get('params', {}).get('EnumFormat', []):
+        if isinstance(fmt, dict) and isinstance(fmt.get('position'), list):
+            return fmt['position']
+    return None
+
+
+def resolve_target(registry, target, channels):
+    candidates = [item for item in registry
+                  if item.get('type') == 'PipeWire:Interface:Node' and
+                  props(item).get('media.class') == 'Audio/Sink' and
+                  target in (str(props(item).get('object.serial', '')),
+                             props(item).get('node.name'))]
+    if len(candidates) != 1:
+        raise PlaybackError('target-missing-or-ambiguous')
+    item = candidates[0]
+    serial = str(props(item).get('object.serial', ''))
+    if not serial.isascii() or not serial.isdecimal() or int(serial) <= 0:
+        raise PlaybackError('target-serial-invalid')
+    if positions(item) != channels:
+        raise PlaybackError('target-channel-map-mismatch')
+    return {'id': item['id'], 'serial': serial}
+
+
+def verify_links(registry, target, stream_name, channels):
+    sinks = [item for item in registry if item.get('id') == target['id'] and
+             item.get('type') == 'PipeWire:Interface:Node' and
+             str(props(item).get('object.serial', '')) == target['serial'] and
+             props(item).get('media.class') == 'Audio/Sink' and
+             positions(item) == channels]
+    if len(sinks) != 1:
+        raise PlaybackError('target-disappeared-or-changed')
+    streams = [item for item in registry if
+               item.get('type') == 'PipeWire:Interface:Node' and
+               props(item).get('node.name') == stream_name]
+    if not streams:
+        return False
+    if len(streams) != 1:
+        raise PlaybackError('stream-identity-ambiguous')
+    stream = streams[0]['id']
+    ports = {item['id']: props(item) for item in registry
+             if item.get('type') == 'PipeWire:Interface:Port'}
+    linked = []
+    for item in registry:
+        if item.get('type') != 'PipeWire:Interface:Link':
+            continue
+        info = item.get('info', {})
+        if info.get('output-node-id') != stream:
+            continue
+        if info.get('input-node-id') != target['id']:
+            raise PlaybackError('stream-linked-to-unrequested-node')
+        out_channel = ports.get(info.get('output-port-id'), {}).get('audio.channel')
+        in_channel = ports.get(info.get('input-port-id'), {}).get('audio.channel')
+        if out_channel != in_channel or out_channel not in channels:
+            raise PlaybackError('stream-channel-link-mismatch')
+        if info.get('state') == 'error':
+            raise PlaybackError('stream-link-error')
+        linked.append(out_channel)
+    return sorted(linked) == sorted(channels)
+
+
+def pw_command(target, channels, stream_name):
+    properties = {'node.name': stream_name, 'media.name': 'ROG Atmos prototype',
+                  'target.object': target['serial'], 'node.dont-fallback': True,
+                  'node.dont-reconnect': True, 'node.dont-move': True,
+                  'stream.dont-remix': True, 'channelmix.disable': True,
+                  'state.restore-props': False}
+    return ['pw-cat', '--playback', '--format', 'f32', '--rate', str(RATE),
+            '--channels', str(len(channels)), '--channel-map', ','.join(channels),
+            '--target', target['serial'], '--properties', json.dumps(properties), '-']
+
+
+def stop_children(children):
+    blocked = signal.pthread_sigmask(signal.SIG_BLOCK, {signal.SIGINT, signal.SIGTERM, signal.SIGHUP})
+    try:
+        for child in children:
+            if child.poll() is None:
+                try:
+                    child.terminate()
+                except ProcessLookupError:
+                    pass
+        deadline = time.monotonic() + 2
+        for child in children:
+            try:
+                child.wait(timeout=max(0.01, deadline - time.monotonic()))
+            except subprocess.TimeoutExpired:
+                try:
+                    child.kill()
+                except ProcessLookupError:
+                    pass
+                child.wait(timeout=2)
+            for stream in (child.stdin, child.stdout):
+                if stream:
+                    stream.close()
+    finally:
+        signal.pthread_sigmask(signal.SIG_SETMASK, blocked)
+
+
+def bounded_pipe(stream):
+    fcntl.fcntl(stream.fileno(), fcntl.F_SETPIPE_SZ, 4096)
+    os.set_blocking(stream.fileno(), False)
+    capacity = fcntl.fcntl(stream.fileno(), fcntl.F_GETPIPE_SZ)
+    if capacity != 4096:
+        raise PlaybackError('unsupported-pipe-capacity')
+    return capacity
+
+
+def read_header(child):
+    data = bytearray()
+    deadline = time.monotonic() + STARTUP_SECONDS
+    with selectors.DefaultSelector() as selector:
+        selector.register(child.stdout, selectors.EVENT_READ)
+        while time.monotonic() < deadline:
+            if not selector.select(0.1):
+                continue
+            value = os.read(child.stdout.fileno(), 1)
+            if not value:
+                raise PlaybackError('producer-ended-before-ready')
+            if value == b'\n':
+                try:
+                    return json.loads(data)
+                except ValueError as exc:
+                    raise PlaybackError('producer-header-invalid') from exc
+            data += value
+            if len(data) > 4096:
+                raise PlaybackError('producer-header-invalid')
+    raise PlaybackError('producer-startup-timeout')
+
+
+def validate_header(header, layout, start):
+    channels = CHANNELS[layout]
+    if (not isinstance(header, dict) or header.get('protocol') != 'rog-atmos-pcm-v1' or
+            header.get('sample_rate') != RATE or header.get('channels') != len(channels) or
+            header.get('start_sample') != start or
+            type(header.get('input_samples')) is not int or
+            not start <= header['input_samples'] <= 90 * RATE or
+            header.get('format') != 'f32le'):
+        raise PlaybackError('producer-header-invalid')
+    return (header['input_samples'] - start) * len(channels) * 4
+
+
+def checked_pcm(data):
+    values = array.array('f')
+    values.frombytes(data)
+    if sys.byteorder != 'little':
+        values.byteswap()
+    if any(not math.isfinite(value) or abs(value) > 1 for value in values):
+        raise PlaybackError('producer-pcm-invalid')
+
+
+def transfer(producer, player, expected, target, stream_name, channels, env, report):
+    frame_bytes = len(channels) * 4
+    capacity = 4096 * frame_bytes
+    pending = bytearray()
+    received = submitted = 0
+    eof = False
+    linked = False
+    started = last_progress = last_registry = time.monotonic()
+    deadline = started + expected / frame_bytes / RATE + 60
+    report['queue_capacity_bytes'] = capacity
+    report['maximum_queued_bytes'] = 0
+    digest = hashlib.sha256()
+    while not (eof and not pending):
+        now = time.monotonic()
+        if now >= deadline:
+            raise PlaybackError('playback-wall-timeout')
+        if now - last_progress > STALL_SECONDS:
+            raise PlaybackError('playback-stall-timeout')
+        if player.poll() is not None:
+            raise PlaybackError('pipewire-player-ended-early')
+        if now - last_registry >= 0.5:
+            linked = verify_links(snapshot(env), target, stream_name, channels)
+            last_registry = time.monotonic()
+            if report.get('links_verified') and not linked:
+                raise PlaybackError('stream-links-lost')
+            if linked:
+                report['links_verified'] = True
+        with selectors.DefaultSelector() as selector:
+            if not eof and len(pending) < capacity:
+                selector.register(producer.stdout, selectors.EVENT_READ, 'read')
+            # Prebuffer up to one caller block before first submission. A shorter
+            # stream starts only after exact producer EOF; there is no full-file
+            # staging for streams longer than this fixed 4096-frame queue.
+            if linked and pending and (received >= capacity or eof):
+                selector.register(player.stdin, selectors.EVENT_WRITE, 'write')
+            for key, _ in selector.select(0.05):
+                if key.data == 'read':
+                    value = os.read(producer.stdout.fileno(), capacity - len(pending))
+                    if value:
+                        received += len(value)
+                        report['received_complete_frames'] = received // frame_bytes
+                        if received > expected:
+                            raise PlaybackError('producer-extra-pcm')
+                        pending.extend(value)
+                        report['maximum_queued_bytes'] = max(report['maximum_queued_bytes'], len(pending))
+                        last_progress = time.monotonic()
+                    else:
+                        eof = True
+                        if received != expected:
+                            raise PlaybackError('producer-truncated-pcm')
+                else:
+                    # Writes no larger than PIPE_BUF are atomic on a pipe; keep
+                    # them frame aligned even for twelve-channel PCM.
+                    count = min(len(pending), 4096)
+                    count -= count % frame_bytes
+                    if count:
+                        data = bytes(pending[:count])
+                        checked_pcm(data)
+                        try:
+                            written = os.write(player.stdin.fileno(), data)
+                        except BlockingIOError:
+                            continue
+                        digest.update(data[:written])
+                        del pending[:written]
+                        submitted += written
+                        report['submitted_complete_frames'] = submitted // frame_bytes
+                        report['submitted_bytes'] = submitted
+                        last_progress = time.monotonic()
+        report['received_complete_frames'] = received // frame_bytes
+    report['submitted_pcm_sha256'] = digest.hexdigest()
+    if not report.get('links_verified') and expected:
+        raise PlaybackError('stream-links-unverified')
+    player.stdin.close()
+    player.stdin = None
+    drain_deadline = time.monotonic() + DRAIN_SECONDS
+    while player.poll() is None:
+        if time.monotonic() >= drain_deadline:
+            raise PlaybackError('pipewire-drain-timeout')
+        verify_links(snapshot(env), target, stream_name, channels)
+        time.sleep(0.05)
+    if player.returncode != 0:
+        raise PlaybackError('pipewire-player-failure')
+    # pw-cat's success means its stream drained, not that speakers were heard.
+    report['drained_frames'] = submitted // frame_bytes
+    report['pipewire_drain_completed'] = True
+    try:
+        if producer.wait(timeout=2) != 0:
+            raise PlaybackError('producer-failure')
+    except subprocess.TimeoutExpired as exc:
+        raise PlaybackError('producer-exit-timeout') from exc
+
+
+def playback(args, private, report):
+    children = []
+    env = child_environment()
+    channels = CHANNELS[args.layout]
+    target = resolve_target(snapshot(env), args.target, channels)
+    report['target_serial'] = target['serial']
+    stream_name = 'rog-atmos-' + uuid.uuid4().hex
+    receipt = private / 'producer.json'
+    source = private / ('input.json' if args.input.suffix.lower() == '.json' else 'input.eac3')
+    descriptor = os.open(args.input, os.O_RDONLY | os.O_NONBLOCK | os.O_NOFOLLOW)
+    try:
+        info = os.fstat(descriptor)
+        if not stat.S_ISREG(info.st_mode) or not 0 < info.st_size <= 67108864:
+            raise PlaybackError('input-not-bounded-regular-file')
+        with os.fdopen(descriptor, 'rb', closefd=False) as handle:
+            data = handle.read(67108865)
+        if len(data) != info.st_size:
+            raise PlaybackError('input-changed-during-snapshot')
+        source.write_bytes(data)
+        report['input_sha256'] = hashlib.sha256(data).hexdigest()
+        del data
+    finally:
+        os.close(descriptor)
+    command = [str(args.dotnet), str(Path(__file__).resolve().with_name('AtmosProbe.dll')),
+               'stream', '--input', str(source), '--report', str(receipt),
+               '--layout', args.layout, '--start-sample', str(args.start_sample),
+               '--volume', str(args.volume)]
+    env['DOTNET_ROOT'] = str(args.dotnet.parent)
+    env['DOTNET_MULTILEVEL_LOOKUP'] = '0'
+    try:
+        producer = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL,
+                                    stdin=subprocess.DEVNULL, env=env, preexec_fn=producer_limits,
+                                    bufsize=0, pipesize=4096)
+        children.append(producer)
+        report['producer_pipe_capacity_bytes'] = bounded_pipe(producer.stdout)
+        header = read_header(producer)
+        expected = validate_header(header, args.layout, args.start_sample)
+        report['expected_frames'] = expected // (len(channels) * 4)
+        if expected == 0:
+            if producer.wait(timeout=2) != 0 or os.read(producer.stdout.fileno(), 1):
+                raise PlaybackError('producer-invalid-empty-stream')
+            report['submitted_pcm_sha256'] = hashlib.sha256(b'').hexdigest()
+            report['drained_frames'] = 0
+            report['empty_stream_no_player'] = True
+        else:
+            player = subprocess.Popen(pw_command(target, channels, stream_name), stdin=subprocess.PIPE,
+                                      stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+                                      env=env, bufsize=0, pipesize=4096)
+            children.append(player)
+            report['player_pipe_capacity_bytes'] = bounded_pipe(player.stdin)
+            transfer(producer, player, expected, target, stream_name, channels, env, report)
+        report['status'] = 'completed'
+    finally:
+        stop_children(children)
+        if receipt.is_file() and receipt.stat().st_size <= 65536:
+            try:
+                report['producer'] = json.loads(receipt.read_text())
+            except ValueError:
+                report['producer_receipt_invalid'] = True
+    if not isinstance(report.get('producer'), dict) or report['producer'].get('status') not in (
+            'synthetic-stream', 'joc-stream-unqualified', 'bed-fallback-stream'):
+        raise PlaybackError('producer-receipt-missing-or-failed')
+    output = report['producer'].get('stream', {})
+    if output.get('written_frames') != report['expected_frames']:
+        raise PlaybackError('producer-receipt-frame-mismatch')
+    report['rendered_frames'] = output['written_frames']
+    if (output.get('pcm_sha256') != report['submitted_pcm_sha256'] or
+            report['producer'].get('input_sha256') != report['input_sha256']):
+        raise PlaybackError('producer-receipt-hash-mismatch')
+
+
+def arguments(argv=None):
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--input', required=True, type=Path)
+    parser.add_argument('--target', required=True)
+    parser.add_argument('--layout', choices=CHANNELS, default='stereo-speakers')
+    parser.add_argument('--start-sample', type=int, default=0)
+    parser.add_argument('--volume', type=float, default=1)
+    parser.add_argument('--report', type=Path, required=True)
+    parser.add_argument('--dotnet', type=Path,
+                        help='explicit runtime host; otherwise bundled runtime/dotnet or PATH')
+    args = parser.parse_args(argv)
+    if platform.system() != 'Linux' or sys.byteorder != 'little':
+        parser.error('little-endian Linux required')
+    if not args.target or len(args.target) > 1024 or '\0' in args.target:
+        parser.error('explicit target name or object.serial required')
+    if not 0 <= args.start_sample <= 90 * RATE:
+        parser.error('start sample must be within the supported 90-second timeline')
+    if not math.isfinite(args.volume) or not 0 <= args.volume <= 1:
+        parser.error('volume must be finite attenuation between 0 and 1')
+    args.report = args.report.parent.resolve(strict=True) / args.report.name
+    if os.path.lexists(args.report):
+        parser.error('report collision')
+    # Opening only regular files avoids FIFO/device blocking before .NET bounds.
+    descriptor = os.open(args.input, os.O_RDONLY | os.O_NONBLOCK | os.O_NOFOLLOW)
+    try:
+        info = os.fstat(descriptor)
+        if not stat.S_ISREG(info.st_mode) or not 0 < info.st_size <= 67108864:
+            parser.error('bounded regular input file required')
+    finally:
+        os.close(descriptor)
+    args.input = args.input.resolve(strict=True)
+    bundled = Path(__file__).resolve().parent / 'runtime' / 'dotnet'
+    args.dotnet = args.dotnet or (bundled if bundled.is_file() else shutil.which('dotnet'))
+    if not args.dotnet:
+        parser.error('a bundled, explicit or PATH .NET runtime is required')
+    args.dotnet = Path(args.dotnet).resolve(strict=True)
+    if not args.dotnet.is_file() or not os.access(args.dotnet, os.X_OK):
+        parser.error('runtime host must be executable')
+    return args
+
+
+def main(argv=None):
+    args = arguments(argv)
+    report = {'schema_version': 1, 'status': 'pending', 'evidence_class': 'private-live-software',
+              'sample_rate': RATE, 'layout': args.layout, 'channels': CHANNELS[args.layout],
+              'start_sample': args.start_sample, 'volume_attenuation': args.volume,
+              'rendered_frames': None, 'received_complete_frames': 0, 'submitted_complete_frames': 0,
+              'submitted_bytes': 0, 'drained_frames': None, 'pipewire_drain_completed': False,
+              'physical_playback_observed': False, 'underruns': None,
+              'limits': {'startup_seconds': STARTUP_SECONDS, 'stall_seconds': STALL_SECONDS,
+                         'drain_seconds': DRAIN_SECONDS, 'input_seconds': 90},
+              'warnings': ['No physical observation, independent Dolby fidelity, HRTF, delay compensation or tail flush.',
+                           'Stereo is speaker panning. PipeWire/pw-cat underruns and hardware presentation are unmeasured.',
+                           'Runtime pause, seek and input append are unsupported; restart with --start-sample.']}
+    previous = {}
+    def interrupted(signum, _frame):
+        raise PlaybackError('cancelled-signal-' + str(signum))
+    try:
+        for number in (signal.SIGINT, signal.SIGTERM, signal.SIGHUP):
+            previous[number] = signal.signal(number, interrupted)
+        with tempfile.TemporaryDirectory(prefix='.atmos-live-', dir=args.report.parent) as directory:
+            private = Path(directory)
+            try:
+                playback(args, private, report)
+            except PlaybackError as exc:
+                report['status'] = str(exc)
+            except (OSError, ValueError, KeyError, TypeError, subprocess.SubprocessError):
+                report['status'] = 'process-or-io-failure'
+            output = private / 'report.json'
+            descriptor = os.open(output, os.O_CREAT | os.O_EXCL | os.O_WRONLY, 0o600)
+            with os.fdopen(descriptor, 'w') as handle:
+                json.dump(report, handle, indent=2, allow_nan=False)
+                handle.write('\n')
+            os.link(output, args.report)
+    finally:
+        for number, handler in previous.items():
+            signal.signal(number, handler)
+    print(report['status'])
+    return 0 if report['status'] == 'completed' else 2
+
+
+if __name__ == '__main__':
+    try:
+        raise SystemExit(main())
+    except (OSError, ValueError):
+        print('input/report unavailable or publication collision', file=sys.stderr)
+        raise SystemExit(2)

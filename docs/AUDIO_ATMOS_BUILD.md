@@ -200,3 +200,12 @@ The 67500-block work ceiling does not promise completion within the launcher's
 60 CPU-second budget. Replay still starts from zero; no fast-seek index, delay
 compensation, tail flush, independent Dolby fidelity or device qualification is
 claimed. The measurements describe the bounded build host, not laptop latency.
+
+## Live player implementation (2026-10-15)
+
+The [live playback contract](LIVE_ATMOS.md) covers the new bounded managed
+producer and Python supervisor. It submits streaming float PCM to one
+explicit PipeWire sink without changing speaker tuning or defaults. The
+pinned Linux baseline and changed producer compile with no warnings/errors;
+independent review, affected methods and isolated native acceptance remain
+pending. Sonos is untouched.

@@ -195,7 +195,7 @@ pre-review receipts are historical, separate from this final qualification.
 | TrueHD Atmos | Unsupported here; Cavernize's inspected adapter invokes external `truehdd.exe` and downloads floating releases; no pinned Linux decoder supplied |
 | Binaural/headphones | Unsupported; no HRTF source/licence or fidelity qualification |
 | Dolby gst-home-audio | Alternate public contract; proprietary native libraries not supplied |
-| Realtime/desktop/PipeWire | No integration, install or activation; offline timing includes I/O/startup |
+| Realtime/desktop/PipeWire | Explicit-sink live prototype implemented; review/isolated acceptance pending; realtime and physical behavior unqualified |
 | Sonos Arc/eARC | Deferred to the final audio lane |
 
 ## Bounded pull API and file timelines (2026-10-15)
@@ -397,3 +397,15 @@ The 67500-block work ceiling does not promise completion within the launcher's
 60 CPU-second budget. Replay still starts from zero; no fast-seek index, delay
 compensation, tail flush, independent Dolby fidelity or device qualification is
 claimed. The measurements describe the bounded build host, not laptop latency.
+
+## Live player prototype (2026-10-15)
+
+[`atmos-live`](atmos-live) supervises a managed `stream` producer and native
+`pw-cat` with bounded backpressure, an explicit sink serial, exact channel
+links, cancellation and separate rendered/submitted/drained counters. The
+[operator contract](../../docs/LIVE_ATMOS.md) documents the 90-second raw
+E-AC-3 bound, initial seek, attenuation, tuned-sink selection and unmeasured
+physical/realtime limits. Independent review and selective acceptance are
+pending. The offline `inspect`, `render` and `timeline` interfaces remain
+stable; `stream` is the private producer protocol, not a standalone device
+player. No dependency patch bytes changed.

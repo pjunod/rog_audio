@@ -1,16 +1,18 @@
 # Status — implementation and physical acceptance
 
-**Updated:** 2026-10-15 · **State:** signed manual annotations and the bounded
+**Updated:** 2026-10-15 · **State:** live Atmos playback implementation is in
+progress; no live acceptance is claimed. Signed manual annotations and the bounded
 file-only Atmos API passed independent review and all 27 selected unit methods
 once. Fresh JOC rendering and four split continuity groups passed; the original
 combined sequence hit a process limit and remains recorded separately.
-Earlier laptop demo/hour passes remain exact-condition history. The ROG service
-started after a new boot at the greeter; ThinkPad was unreachable once.
+Earlier laptop demo/hour passes remain exact-condition history. A later read-only
+ROG refresh finds physical and tuned stereo nodes present with all twelve
+protected files unchanged; its idle graph has no links. ThinkPad timed out once.
 Physical recording is deferred at the owner's request.
 
 | System | Last qualified software | Last qualified timing | Programme settings | October 15 observation / open evidence |
 |---|---|---|---|---|
-| ROG | +rog3, merged helper/unit backport | Graph 1024/48 kHz, 21.333 ms | −20 LUFS, cap 2.6475 dB | Service/preset/native controls present after new boot; greeter owns sound devices; post-login full route/IR/period unverified |
+| ROG | +rog3, merged helper/unit backport | Graph 1024/48 kHz, 21.333 ms | −20 LUFS, cap 2.6475 dB | Later physical/tuned sink nodes present; twelve files unchanged; idle graph has zero links; active route/IR/period unverified |
 | ThinkPad | +rog3, merged helper/unit backport | Graph 256/48 kHz, 5.333 ms | −16 LUFS, cap 14.1375 dB | Single connection timeout; current boot/tuning state unknown |
 | M4 Air | Stock output in retained observation | HAL 512/48 kHz, 10.667 ms | Unchanged in retained observation | Prior files/browser staged; physical comparison pending |
 | Sonos | Deferred | Unmeasured | Unassessed | Internal-speaker acceptance first |
@@ -25,12 +27,13 @@ remain different software quantities, not physical latency or Mac parity.
 
 | Work | State | Next evidence |
 |---|---|---|
-| Hardware/session | ROG inspected read-only after new boot at greeter; ThinkPad unreachable once | Normal desktop login, bounded route/ACL check; refresh ThinkPad when reachable |
+| Hardware/session | Later ROG read-only refresh finds physical and tuned sink nodes with unchanged protected files; ThinkPad timed out once | Coordinated playback needed to observe full active route; refresh ThinkPad when reachable |
 | ASUS speaker tuning | Prior 1024 hour/demo accepted; new service/preset/control bindings present | Full post-login physical route, fresh IR load and negotiated period |
 | ThinkPad speaker tuning | Prior 256 hour/demo accepted at −16/cap 14.1375; current state unknown | Reachable read-only refresh; physical qualification |
 | Startup/stop | Reviewed helper, prior save/automatic-start checks and ROG service autostart evidence retained | End-to-end post-login routing; repeated boot/resume/hotplug separately |
 | Signed annotation analysis | Eleven reviewed methods passed once; signed bounds and provenance retained | Actual private annotations from the later recording session |
 | Source-level chain latency | Accepted minimum-phase IR/preset audit found no justified removable fixed delay; no tuning change | Actual same-path physical recording |
+| Live Atmos prototype | In progress: bounded streaming producer and explicit PipeWire sink supervisor | Independent review, affected units and isolated virtual-sink acceptance; no laptop playback or Sonos test |
 | Host Atmos | Sixteen affected methods passed once; fresh full JOC render and four isolated timeline groups passed | Original long sequence resource failure retained; independent fidelity and later live integration |
 | Physical interaction timing | Emitter source/ten-method acceptance and earlier staging retained; no pilot/physical samples | Owner-ready coordinated same-keyboard/phone capture, still deferred |
 | Sonos Arc/eARC | Untouched and last | TV route and received-format qualification after internal audio |
@@ -39,6 +42,18 @@ Companion to [installation](SPEAKER_INSTALL.md), [review](REVIEW.md),
 [manual annotations](MANUAL_LATENCY_ANNOTATIONS.md) and
 [implementation](AUDIO_IMPLEMENTATION.md). Source, synthetic, read-only and
 physical evidence remain separate.
+
+## October 15 live preparation — tuned bytes preserved, no audible test
+
+[The later read-only refresh](../evidence/speaker-live-preparation-observation-2026-10-15.json)
+finds the ROG service active/running/enabled with zero restarts in the same
+invocation. All twelve protected file hashes are stable before/after and
+identical to the earlier October 15 observation; eleven match the earlier
+accepted gate, with the documented preset usage-count/order difference. Three
+physical ALSA nodes, the internal stereo sink and tuned virtual stereo sink
+are now visible. The idle graph has zero links, so full active routing, fresh
+IR loading and physical playback remain unverified. ThinkPad timed out on
+one bounded connection. No settings, service, playback or recording changed.
 
 ## October 15 postboot refresh — service present, desktop route not yet ready
 

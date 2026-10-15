@@ -1,0 +1,212 @@
+# Live Atmos — render bounded files into an explicit PipeWire sink
+
+Companion to the [offline Atmos contract](../probes/atmos/README.md) and
+[reference vectors](ATMOS_REFERENCE.md). This document owns the small Linux
+player's invocation, routing contract and interpretation. It is an
+implementation prototype awaiting independent review and selective acceptance;
+physical playback, independent Dolby fidelity and realtime qualification are
+unmeasured. Sonos Arc/eARC testing remains last.
+
+## Run the player through your existing tuned sink
+
+Build with the pinned [Atmos build recipe](AUDIO_ATMOS_BUILD.md), or use the
+reviewed private Linux build. The build copies `atmos-live` beside
+`AtmosProbe.dll`. You need Python 3.10 or newer, native PipeWire tools `pw-cat` and
+`pw-dump`, and a .NET 8 runtime. The launcher chooses sibling
+`runtime/dotnet`, then `dotnet` on `PATH`; `--dotnet` selects an explicit
+runtime host. No global SDK/runtime installation is required for a private
+bundle containing the pinned 8.0.20 runtime and its licence notices. The
+existing offline launcher keeps its established interface; put that same
+private runtime on `PATH` when using it.
+
+```bash
+mkdir -p -m 700 private-live  # Keep media and detailed reports private.
+private-build/atmos-live \
+  --input private-live/channel-id.eac3 \
+  --target rog_audio_speaker_sink \
+  --layout stereo-speakers --volume 0.5 \
+  --start-sample 0 --report private-live/playback.json
+```
+
+Choose the existing tuned virtual sink by its exact `node.name` or current
+`object.serial`. The ROG's observed tuned name is
+`rog_audio_speaker_sink`; discover the actual current sink on each machine
+with a read-only `pw-dump`. Do not substitute a physical sink merely because
+it is the default: that would bypass the existing speaker processor. The
+player does not select a target automatically or change any default device,
+volume, profile, EQ, graph quantum, service or persistent routing configuration.
+The ordinary act of creating a playback client is explicit in this command.
+
+`--volume` is a finite linear attenuation in `[0, 1]`, applied to rendered
+PCM. It does not adjust the sink or application mixer. The default is unity.
+`--start-sample` is an exact integer sample PTS at 48 kHz, from zero through
+validated input EOF. The initial seek replays from frame zero to preserve
+decoder/object/filter history before output starts; long seeks may hit the
+existing CPU budget. Seeking exactly to EOF succeeds without creating a
+PipeWire playback client.
+
+`stereo-speakers` pans objects to FL/FR. It supplies no HRTF, binaural
+headphone processing or height reproduction. Your existing tuned speaker
+chain still owns tonal correction and protection. `7.1.4` requires an explicit
+sink whose ordered positions exactly match
+`FL FR FC LFE RL RR SL SR TFL TFR TRL TRR`. These are PipeWire's names for
+the Cavern/WAV order `FL FR FC LFE BL BR SL SR TFL TFR TBL TBR`; no samples
+are reordered or synthesized by that spelling translation.
+
+## Boundaries — what actually streams
+
+```text
+ bounded raw E-AC-3 / synthetic scene snapshot
+              │  decode objects before metadata loss
+              ▼
+ .NET pull renderer, 256-frame DSP / 4096-frame caller buffer
+              │  readiness header, then interleaved float32 PCM
+              ▼
+ 4096-byte producer pipe → 4096-frame supervisor queue
+              │  finite samples, exact count and backpressure
+              ▼
+ 4096-byte player pipe → pw-cat stdin → selected PipeWire sink
+```
+
+The input is privately snapshotted as a bounded regular file before managed
+parsing. Raw E-AC-3 remains limited to 64 MiB, 48 kHz and 90 seconds by the
+existing scanner. Synthetic JSON remains limited to 10 seconds. JOC/OAMD
+consumption, conventional-channel fallback and unsupported formats keep the
+offline engine's explicit classifications. Stereo E-AC-3, TrueHD, arbitrary
+containers and changing stream configurations retain their existing limits.
+
+There is no complete rendered WAV or PCM file between decoder and output.
+The producer writes at most 4096 frames per caller block; a full pipe stops
+further decoding. The supervisor prebuffers one 4096-frame queue (85.333 ms
+at 48 kHz), or the complete shorter final fragment. Its writes are frame
+aligned and no larger than the 4096-byte atomic pipe-write bound. Each
+kernel pipe is explicitly limited to 4096 bytes before the child starts; a
+host unable to provide that exact pipe capacity is unsupported. These are application
+transport bounds, not the size or latency of PipeWire's internal buffers.
+
+The managed decoder runs in a separate process, outside the PipeWire
+processing callback. `pw-cat` owns the native output callback and may starve
+if its input is late. The prototype does not measure underruns or prove
+realtime scheduling. A buffer bound is not a latency measurement.
+
+Startup/header preparation has a 45-second wall bound, and decoding retains
+the 60 CPU-second, 128-descriptor and 512 MiB managed-heap launcher bounds.
+Transfer has a wall bound of remaining media duration plus 60 seconds, a
+15-second no-progress watchdog, and a 15-second final drain bound. Each
+registry observation has a 2-second/4 MiB bound. The whole playback can
+therefore take longer than the original 90-second offline wall timeout.
+Native allocations and filesystem/network access are not sandboxed by the
+launcher; use the isolated acceptance container for untrusted inputs.
+
+## Routing is pinned for the whole invocation
+
+The supervisor resolves one `Audio/Sink` to a positive unique `object.serial`
+and checks its ordered channel map. Before submitting PCM, it requires all
+matching channel links from its unique playback node to that same node.
+During streaming and drain it checks for disappearance, serial replacement,
+layout change, lost links and links to unrelated nodes. It fails and stops
+both children on a routing error. Polling is every 500 ms; the stream's
+native target properties additionally prevent fallback and reconnection
+between observations.
+
+The native client sets `target.object`, `node.dont-fallback`,
+`node.dont-reconnect`, `node.dont-move`, `stream.dont-remix` and
+`channelmix.disable`. These follow the official
+[PipeWire property contract](https://docs.pipewire.org/page_man_pipewire-props_7.html).
+`PIPEWIRE_*`, `SPA_*`, `DOTNET_*` and `COMPlus_*` overrides are sanitized;
+the explicitly selected PipeWire remote/runtime directory is preserved.
+The chosen .NET host directory supplies `DOTNET_ROOT` with multilevel lookup
+disabled. No shell receives media paths or target names.
+
+The source-inspected native backend is
+[`pw-cat` 0.3.65](https://github.com/PipeWire/pipewire/blob/0.3.65/src/tools/pw-cat.c).
+That version takes raw PCM from `-` plus explicit format/rate/channel options;
+it has no `--raw` option. A normal session manager supplies channel links in
+desktop use. The isolated harness creates only its own explicit test links
+because its private daemon has no desktop session manager.
+
+Ctrl-C, SIGTERM and SIGHUP stop the producer and player, wait briefly, then
+kill a child which will not stop. The player has no runtime pause, seek,
+input append, gap handling or interactive volume command. Stop it and start
+another invocation with `--start-sample` or attenuation; the initial prototype
+does not retain an old output queue across a restart.
+
+## Read the private report without inferring sound
+
+Exit zero and `status: completed` mean that validated PCM reached the
+requested native stream, both children exited successfully, exact byte/frame
+counts matched, and the producer/submitted PCM hashes matched. For a nonempty
+stream, `pw-cat` returned zero after its drain callback. This is software
+delivery evidence. It does not say that a speaker was audible, that a tuned
+chain's filters loaded, or that Dolby reference output matched.
+
+| Field | What it proves |
+|---|---|
+| `expected_frames` | Validated input duration minus requested initial sample |
+| `rendered_frames` | Completed producer receipt's written PCM frames; null after incomplete producer failure |
+| `received_complete_frames` | Whole PCM frames received by the supervisor |
+| `submitted_complete_frames` / `submitted_bytes` | Data accepted into the player's stdin pipe; not device presentation |
+| `drained_frames` | Submitted frames after successful native drain; null on failed drain |
+| `pipewire_drain_completed` | Native player's successful drained exit; false for an empty EOF invocation |
+| `producer.decoded_frames` | Encoded syncframes observed by Cavern; not PCM frames or physical samples |
+| `producer.object_metadata_consumed` | The actual JOC/synthetic object branch was used; false for bed fallback |
+| `underruns` | Null: no trustworthy underrun counter is collected |
+| `physical_playback_observed` | Always false: no acoustic observation is performed |
+
+A failure may leave submitted frames greater than zero: cancellation cannot
+unplay bytes already delivered. No successful drain count is invented from a
+write count. Error reports preserve the received/submitted prefix and any
+available producer receipt, with upstream/private exception text suppressed.
+The report is prepared in a private same-filesystem directory, mode 0600,
+then published with an exclusive hard link. Existing files, directories,
+broken symlinks and a raced publication collide; no public target is deleted.
+No report is promised for an invalid command or an unavailable/colliding
+report destination. Detailed reports from personal media remain private.
+
+## Acceptance — run selected methods only after independent review
+
+The [selectable unit runner](../scripts/validate_atmos_live.py) rejects unknown,
+duplicate, skipped and empty acceptance. It binds source manifests before
+and after execution. The five producer methods need the reviewed Linux build;
+the generated-bed method also needs an explicit locally generated fixture.
+
+```bash
+python3 scripts/validate_atmos_live.py \
+  --build private-build --bed-fixture private-live/bed.eac3 \
+  --report private-live/units.json
+# Retry only a failed or invalidated exact method, using repeated --test-id:
+python3 scripts/validate_atmos_live.py \
+  --test-id test_atmos_live.LiveTests.test_header_and_pcm_validation \
+  --report private-live/header-retry.json
+```
+
+The [separate virtual-sink lane](../probes/atmos/live-ci.sh) uses a pinned native PipeWire daemon with no
+`/dev/snd` or desktop session socket. It checks streamed capture/hash/count,
+initial seek/attenuation, target mismatch/loss, cancellation and node cleanup.
+Public official JOC-vector streaming is separate from generated-scene/bed
+unit evidence. None of those checks qualifies laptop hardware, physical
+latency, independent Dolby fidelity, binaural rendering or Sonos reception.
+Passing inherited offline receipts remain bound to their original sources.
+
+The manual-only `atmos-live` workflow lane accepts selection `units`,
+`integration` or `all`. Its `test_ids` input means exact full unittest IDs
+for `units` and exact case IDs for `integration`; the `all` selection takes
+no retries. It runs no legacy Atmos, speaker or laptop lane. The local
+container wrapper needs an already prepared pinned image and source checkout:
+
+```bash
+probes/atmos/live-ci.sh --image PRIVATE_PINNED_LIVE_IMAGE \
+  --source PRIVATE_PINNED_CAVERN --report private-live/integration.json \
+  --stage integration --case success-seek
+```
+
+The ordinary integration selection contains `success-stereo`, `success-714`,
+`success-seek`, `mismatch`, `cancel`, `target-loss` and `policy-target-loss`.
+The policy case uses a private WirePlumber 0.4/D-Bus session with hardware
+monitors disabled and an alternative sink available, to exercise native
+no-fallback behavior. The other cases use explicit test-owned links.
+`success-joc` is a separate opt-in case requiring `--joc-input` with the
+[exact official 7.1.4 E-AC-3 vector](ATMOS_REFERENCE.md). It compares the
+captured stream against the retained source-bound PCM hash; it does not
+rerun the earlier accepted full offline render. These distinctions keep
+synthetic, official-input and actual desktop policy evidence separate.
