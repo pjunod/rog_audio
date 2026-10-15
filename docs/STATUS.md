@@ -5,9 +5,11 @@ and three existing dispatch smoke methods now have passing source-bound
 results. The native playback helper cleared independent adversarial review;
 twenty selected methods passed initially and the sole failed concurrency
 fixture passed after a reviewed test-only correction. No passing method was
-repeated for that correction. Six affected native playback integration cases
-are running next; the unchanged target-mismatch case remains retained.
-The full JOC retry through this helper is still pending. Earlier full captures
+repeated for that correction. Native stereo capture passed, but the next
+twelve-channel capture lost 512 frames despite exact native input/consumption
+and zero ring underruns. Remaining transport cases and full JOC stopped.
+The unchanged target-mismatch case remains retained. A bounded native-profiler
+diagnostic will distinguish playback/server deadlines from capture loss. Earlier full captures
 and private diagnostics remain failed and retained. The live preview is not
 ready for publication or laptop playback yet.
 Signed manual annotations and the bounded
@@ -42,7 +44,7 @@ remain different software quantities, not physical latency or Mac parity.
 | Startup/stop | Reviewed helper, prior save/automatic-start checks and ROG service autostart evidence retained | End-to-end post-login routing; repeated boot/resume/hotplug separately |
 | Signed annotation analysis | Eleven reviewed methods passed once; signed bounds and provenance retained | Actual private annotations from the later recording session |
 | Source-level chain latency | Accepted minimum-phase IR/preset audit found no justified removable fixed delay; no tuning change | Actual same-path physical recording |
-| Live Atmos prototype | Reviewed native helper; 51 distinct units + 3 dispatch smokes have passing results; six affected native transport cases running; unchanged mismatch retained | Complete native transport and full JOC capture acceptance; preserve earlier failures and unrelated passes; no laptop or Sonos playback |
+| Live Atmos prototype | Reviewed native helper; 51 distinct units + 3 dispatch smokes passed; native stereo exact; twelve-channel capture deleted 512 frames | Attribute failed capture before correction; later transport/JOC stopped; unchanged mismatch and other passes retained |
 | Host Atmos | Sixteen affected methods passed once; fresh full JOC render and four isolated timeline groups passed | Original long sequence resource failure retained; independent fidelity and later live integration |
 | Physical interaction timing | Emitter source/ten-method acceptance and earlier staging retained; no pilot/physical samples | Owner-ready coordinated same-keyboard/phone capture, still deferred |
 | Sonos Arc/eARC | Untouched and last | TV route and received-format qualification after internal audio |
@@ -51,6 +53,28 @@ Companion to [installation](SPEAKER_INSTALL.md), [review](REVIEW.md),
 [manual annotations](MANUAL_LATENCY_ANNOTATIONS.md) and
 [implementation](AUDIO_IMPLEMENTATION.md). Source, synthetic, read-only and
 physical evidence remain separate.
+
+## October 15 native transport — stereo exact, twelve-channel deletion
+
+At reviewed `b476179`, the failed concurrency method passed alone. The first
+native stereo case then captured all 96,000 media frames exactly, with ordered
+routing and owned-node cleanup. The next twelve-channel case completed native
+input, consumption and drain for all 96,000 frames, with zero ring underflow
+events or missing-media frames, but its captured payload differed.
+
+Read-only unique-anchor comparison found the first 48,640 frames exact, then
+a 512-frame deletion. The remaining stream and exact final 8,192-frame tail
+are shifted 512 frames earlier. This is not a floating-point tolerance issue
+or zero insertion. The native counter measures ring starvation, not every
+playback/server deadline or capture failure, so attribution remains open.
+
+All twenty-two evidence files were independently hash-verified; failed raw
+capture and expected stream remain retained privately. The isolated container
+exited and was removed. Seek, cancellation, both target-loss cases and full
+JOC have not run through this helper. One bounded profiler diagnostic targets
+only the failed twelve-channel case with unchanged source, buffers, 256/48 kHz
+virtual graph and two-CPU/6-GiB limits. No passing unit/stereo case repeats,
+and no new parameter sweep, laptop or Sonos playback is planned.
 
 ## October 15 native unit acceptance — twenty passes plus one failed-only retry
 
