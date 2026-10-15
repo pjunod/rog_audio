@@ -752,6 +752,42 @@ raise SystemExit(2 if MODE.startswith('source-') else 0)
         finally:
             arrival.close()
 
+    def test_target_loss_native_failure_requires_intentional_removal_and_cleanup(self):
+        report = {'status': 'native-pipewire-failure', 'submitted_complete_frames': 57344,
+                  'pipewire_drain_completed': False, 'media_start_verified_active': True,
+                  'native_playback': {'status': 'native-pipewire-failure', 'drained': False,
+                                      'underflow_events': 0, 'missing_media_frames': 0}}
+        evidence = {'target_removed': True, 'unexpected_links': [], 'owned_nodes_removed': True}
+        for case in ('target-loss', 'policy-target-loss'):
+            integration.require_target_loss_result(case, True, 2, report, **evidence)
+        rejected = (
+            ('cancel', True, 2, {}, {}),
+            ('policy-target-loss', False, 2, {}, {}),
+            ('policy-target-loss', True, 0, {}, {}),
+            ('policy-target-loss', True, 2, {}, {'target_removed': False}),
+            ('policy-target-loss', True, 2, {}, {'owned_nodes_removed': False}),
+            ('policy-target-loss', True, 2, {}, {'unexpected_links': [99]}),
+            ('policy-target-loss', True, 2, {'submitted_complete_frames': 0}, {}),
+            ('policy-target-loss', True, 2, {'pipewire_drain_completed': True}, {}),
+            ('policy-target-loss', True, 2, {'media_start_verified_active': False}, {}),
+            ('policy-target-loss', True, 2, {'status': 'process-or-io-failure'}, {}),
+            ('policy-target-loss', True, 2, {'status': 'native-media-underrun'}, {}),
+            ('policy-target-loss', True, 2, {'native_playback': None}, {}),
+            ('policy-target-loss', True, 2, {'native_playback': {}}, {}))
+        for case, action, code, changes, missing in rejected:
+            with self.subTest(case=case, action=action, code=code, changes=changes, missing=missing):
+                with self.assertRaises(AssertionError):
+                    integration.require_target_loss_result(case, action, code, {**report, **changes},
+                                                           **{**evidence, **missing})
+        for changes in ({'status': 'native-io-failure'}, {'drained': True},
+                        {'underflow_events': 1}, {'missing_media_frames': 256}):
+            with self.subTest(native=changes), self.assertRaises(AssertionError):
+                integration.require_target_loss_result('policy-target-loss', True, 2,
+                    {**report, 'native_playback': {**report['native_playback'], **changes}}, **evidence)
+        # Existing non-native statuses retain their established action/count/drain contract.
+        for status in ('target-disappeared-or-changed', 'stream-links-lost', 'pipewire-player-ended-early'):
+            integration.require_target_loss_result('target-loss', True, 2, {**report, 'status': status})
+
     def test_capture_comparison_preserves_mismatch_and_truncation_evidence(self):
         expected = struct.pack('<16f', *([.125] * 16))
         prefix = bytes(3 * 8)

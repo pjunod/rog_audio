@@ -34,6 +34,25 @@ def capture_source_end_allowed(case, action):
     return action and case in ('target-loss', 'policy-target-loss')
 
 
+def require_target_loss_result(case, action, code, report, *, target_removed=False,
+                               unexpected_links=(), owned_nodes_removed=False):
+    """Accept native teardown errors only with intentional-removal evidence."""
+    assert action, 'target loss action missing'
+    assert code == 2 and report['submitted_complete_frames'] > 0, 'target loss did not stop active media'
+    assert report['pipewire_drain_completed'] is False, 'target loss falsely drained'
+    if report['status'] == 'native-pipewire-failure':
+        assert case in ('target-loss', 'policy-target-loss'), 'native failure outside target removal case'
+        native = report.get('native_playback', {})
+        assert isinstance(native, dict), 'native failure receipt missing'
+        assert target_removed and owned_nodes_removed and not unexpected_links, 'native failure lacks target removal/cleanup evidence'
+        assert report.get('media_start_verified_active') is True, 'native failure preceded active media'
+        assert (native.get('status') == 'native-pipewire-failure' and native.get('drained') is False and
+                native.get('underflow_events') == 0 and native.get('missing_media_frames') == 0), 'native failure receipt mismatch'
+    else:
+        assert report['status'] in ('target-disappeared-or-changed', 'stream-links-lost',
+                                    'pipewire-player-ended-early'), 'unexpected target loss status'
+
+
 def pcm_comparison(captured, channels, offset, expected=None, *, frames=None, expected_hash=None):
     """Return diagnostic evidence before the caller asserts full PCM equality."""
     width = channels * 4
@@ -644,10 +663,13 @@ def one_case(name, probe, config, parent, joc_input=None, failure_artifacts=None
                 assert action and code == 2 and report['status'] == 'cancelled-signal-15'
                 assert report['submitted_complete_frames'] > 0
             else:
-                assert action and code == 2 and report['status'] in (
-                    'target-disappeared-or-changed', 'stream-links-lost', 'pipewire-player-ended-early')
-                assert report['submitted_complete_frames'] > 0
-                assert report['pipewire_drain_completed'] is False
+                target_removed = False
+                if report['status'] == 'native-pipewire-failure':
+                    target_removed = not any(item.get('type') == 'PipeWire:Interface:Node' and
+                        str(props(item).get('object.serial')) == target_serial for item in monitor.snapshot())
+                    result['intentional_target_removed'] = target_removed
+                require_target_loss_result(name, action, code, report, target_removed=target_removed,
+                    unexpected_links=unexpected_links, owned_nodes_removed=result['owned_nodes_removed'])
             if capture_client is not None and name in DESTRUCTIVE_CASES:
                 capture_client.finish(require_complete=not capture_source_end_allowed(name, action))
             result['status'] = 'passed'

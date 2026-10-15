@@ -75,7 +75,12 @@ that capture completed; unexpected overflow/write failure remains a failure.
 Cancellation leaves the monitored sink present and requires healthy complete
 capture accounting, including after the player receives SIGTERM.
 The player must still fail appropriately, show positive submitted frames,
-avoid fallback and remove its owned nodes. Available playback.json is
+avoid fallback and remove its owned nodes. A native PipeWire teardown status
+is accepted only after intentional sink destruction, a fresh registry observation
+that the original sink serial is gone, positive active-media submission, no drain
+or fallback, owned playback-node cleanup, and a matching native failed receipt
+without ring underflow. Unrelated native, I/O or cancellation failures do not
+satisfy that target-removal case. Available playback.json is
 embedded and privately retained even if observer failure interrupts normal
 result collection.
 
