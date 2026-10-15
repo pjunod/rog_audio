@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Selected software integration cases in a private, hardware-free PipeWire graph."""
 import argparse
+import fcntl
 import hashlib
 import json
 import os
@@ -11,7 +12,7 @@ import struct
 import subprocess
 import tempfile
 import time
-from registry_json import parse_registry
+from registry_json import MAX_REGISTRY_BYTES, parse_registry
 from pw_cat import raw_mode_options
 
 CASES = ('success-stereo', 'success-714', 'success-seek', 'mismatch', 'cancel', 'target-loss', 'policy-target-loss', 'success-joc')
@@ -111,12 +112,144 @@ def run(command, env, timeout=5):
                           timeout=timeout, check=True).stdout
 
 
-def registry(env):
-    # This graph is created only by the harness inside an isolated container.
-    data = parse_registry(run(['pw-dump'], env))
-    if not isinstance(data, list):
-        raise AssertionError('invalid registry')
-    return data
+class RegistryMonitor:
+    """One native monitor; bounded framing and current-state cache, no polling forks."""
+    def __init__(self, env):
+        self.env = env
+        self.child = None
+        self.objects = {}
+        self.pending = bytearray()
+        self.scan = self.depth = 0
+        self.in_string = self.escaped = False
+        self.document_started = None
+        self.started = None
+        self.ready = self.failed = False
+        self.documents = self.bytes_received = self.processes_started = 0
+        self.pipe_capacity_bytes = None
+        self.maximum_cache_bytes = self.maximum_partial_bytes = self.maximum_document_bytes = 0
+
+    def start(self):
+        if self.child is not None or self.failed:
+            raise RuntimeError('registry monitor already started or closed')
+        previous = signal.pthread_sigmask(signal.SIG_BLOCK,
+            {signal.SIGINT, signal.SIGTERM, signal.SIGHUP})
+        def limits():
+            resource.setrlimit(resource.RLIMIT_CORE, (0, 0))
+            resource.setrlimit(resource.RLIMIT_NOFILE, (128, 128))
+            signal.pthread_sigmask(signal.SIG_SETMASK, previous)
+        try:
+            try:
+                self.started = time.monotonic()
+                self.child = subprocess.Popen(['pw-dump', '--monitor', '--no-colors'],
+                    stdin=subprocess.DEVNULL, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL,
+                    env=self.env, preexec_fn=limits, bufsize=0, pipesize=65536)
+                self.processes_started += 1
+                self.pipe_capacity_bytes = fcntl.fcntl(self.child.stdout.fileno(), fcntl.F_GETPIPE_SZ)
+                if not 0 < self.pipe_capacity_bytes <= 65536:
+                    raise ValueError('registry monitor pipe capacity')
+                os.set_blocking(self.child.stdout.fileno(), False)
+            finally:
+                signal.pthread_sigmask(signal.SIG_SETMASK, previous)
+        except BaseException:
+            self.close()
+            raise
+
+    def feed(self, value):
+        if self.failed:
+            raise ValueError('registry monitor unavailable')
+        try:
+            self._feed(value)
+        except (OSError, ValueError, RecursionError):
+            self.failed = True
+            raise
+
+    def _feed(self, value):
+        """Frame JSON arrays across arbitrary reads, including quoted brackets."""
+        self.pending.extend(value)
+        while self.scan < len(self.pending):
+            byte = self.pending[self.scan]
+            if self.depth == 0:
+                if byte in b' \t\r\n':
+                    self.scan += 1
+                    continue
+                if byte != ord('['):
+                    raise ValueError('registry monitor expected array')
+                self.depth = 1
+                self.document_started = time.monotonic()
+            elif self.in_string:
+                if self.escaped:
+                    self.escaped = False
+                elif byte == ord('\\'):
+                    self.escaped = True
+                elif byte == ord('"'):
+                    self.in_string = False
+            elif byte == ord('"'):
+                self.in_string = True
+            elif byte in b'[{':
+                self.depth += 1
+            elif byte in b']}':
+                self.depth -= 1
+                if self.depth == 0:
+                    document = bytes(self.pending[:self.scan + 1])
+                    if len(document) > MAX_REGISTRY_BYTES:
+                        raise ValueError('registry monitor document limit')
+                    self.maximum_document_bytes = max(self.maximum_document_bytes, len(document))
+                    parse_registry(document, objects=self.objects)
+                    cache_bytes = sum(len(json.dumps(item, ensure_ascii=False).encode())
+                                      for item in self.objects.values())
+                    if cache_bytes > MAX_REGISTRY_BYTES:
+                        raise ValueError('registry monitor cache limit')
+                    self.maximum_cache_bytes = max(self.maximum_cache_bytes, cache_bytes)
+                    self.documents += 1
+                    self.ready = True
+                    del self.pending[:self.scan + 1]
+                    self.scan = 0
+                    self.document_started = None
+                    continue
+            self.scan += 1
+        # Whitespace between documents need not accumulate indefinitely.
+        if self.depth == 0:
+            self.pending.clear()
+            self.scan = 0
+        if len(self.pending) > MAX_REGISTRY_BYTES:
+            raise ValueError('registry monitor partial-document limit')
+        self.maximum_partial_bytes = max(self.maximum_partial_bytes, len(self.pending))
+
+    def snapshot(self):
+        if self.failed or self.child is None:
+            raise ValueError('registry monitor unavailable')
+        try:
+            if self.child.poll() is not None:
+                raise ValueError('registry monitor exited')
+            received = 0
+            while True:
+                try:
+                    value = os.read(self.child.stdout.fileno(), 65536)
+                except BlockingIOError:
+                    break
+                if not value:
+                    raise ValueError('registry monitor EOF')
+                received += len(value)
+                self.bytes_received += len(value)
+                if received > MAX_REGISTRY_BYTES:
+                    raise ValueError('registry monitor pump limit')
+                self.feed(value)
+            now = time.monotonic()
+            if ((not self.ready and now - self.started >= 2) or
+                    (self.document_started is not None and now - self.document_started >= 2)):
+                raise ValueError('registry monitor incomplete or startup timeout')
+            if self.child.poll() is not None:
+                raise ValueError('registry monitor exited')
+            return list(self.objects.values())
+        except (OSError, ValueError, RecursionError):
+            self.failed = True
+            raise
+
+    def close(self):
+        child, self.child = self.child, None
+        self.failed = True
+        if child is not None:
+            stop(child)
 
 
 def props(item):
@@ -270,7 +403,7 @@ def one_case(name, probe, config, parent, joc_input=None, failure_artifacts=None
             env[key] = str(folder)
         env.update(XDG_RUNTIME_DIR=str(runtime), PIPEWIRE_RUNTIME_DIR=str(runtime),
                    PIPEWIRE_REMOTE='pipewire-live-atmos')
-        daemon = capture = player = manager = None
+        daemon = capture = player = manager = monitor = None
         policy_version = None
         daemon_log = (private / 'daemon.log').open('xb')
         capture_handle = None
@@ -278,6 +411,8 @@ def one_case(name, probe, config, parent, joc_input=None, failure_artifacts=None
             daemon = subprocess.Popen(['pipewire', '-c', str(config)], env=env,
                                       stdin=subprocess.DEVNULL, stdout=daemon_log, stderr=daemon_log)
             wait_for(lambda: (runtime / 'pipewire-live-atmos').is_socket())
+            monitor = RegistryMonitor(env)
+            monitor.start()
             if name == 'policy-target-loss':
                 wp = Path(env['XDG_CONFIG_HOME']) / 'wireplumber'
                 policy_version = run(['wireplumber', '--version'], env).decode().strip()
@@ -309,11 +444,11 @@ def one_case(name, probe, config, parent, joc_input=None, failure_artifacts=None
                     stdin=subprocess.DEVNULL, stdout=daemon_log, stderr=daemon_log,
                     env=env, start_new_session=True)
                 wait_for(lambda: any(item.get('type') == 'PipeWire:Interface:Client'
-                    and props(item).get('application.name') == 'WirePlumber' for item in registry(env)))
+                    and props(item).get('application.name') == 'WirePlumber' for item in monitor.snapshot()))
             layout = '7.1.4' if name in ('success-714', 'success-joc') else 'stereo-speakers'
             channels = MAPS[layout]
             sink_name = 'live-atmos-null' if layout == '7.1.4' else 'live-atmos-stereo'
-            sink = wait_for(lambda: next(iter(nodes(registry(env), sink_name)), None))
+            sink = wait_for(lambda: next(iter(nodes(monitor.snapshot(), sink_name)), None))
             sink_id = sink['id']
             target_serial = str(props(sink)['object.serial'])
             start, volume = (777, .5) if name == 'success-seek' else (0, 1)
@@ -340,10 +475,10 @@ def one_case(name, probe, config, parent, joc_input=None, failure_artifacts=None
                     'stream.dont-remix': True, 'channelmix.disable': True}), '-'],
                     stdin=subprocess.DEVNULL, stdout=capture_handle, stderr=subprocess.DEVNULL,
                     env=env, preexec_fn=capture_limits)
-                capture_node = wait_for(lambda: next(iter(nodes(registry(env), 'integration-capture')), None))
+                capture_node = wait_for(lambda: next(iter(nodes(monitor.snapshot(), 'integration-capture')), None))
                 configure_client_ports(capture_node, channels, env, capture=True)
-                wait_for(lambda: scoped_links(registry(env), sink_id, capture_node['id'], channels, env, monitor=True))
-                wait_for(lambda: capture_links_active(registry(env), sink_id, capture_node['id'], channels))
+                wait_for(lambda: scoped_links(monitor.snapshot(), sink_id, capture_node['id'], channels, env, monitor=True))
+                wait_for(lambda: capture_links_active(monitor.snapshot(), sink_id, capture_node['id'], channels))
                 result['capture_links_active_before_playback'] = True
             selected_layout = '7.1.4' if name == 'mismatch' else layout
             playback_started = time.monotonic()
@@ -360,7 +495,7 @@ def one_case(name, probe, config, parent, joc_input=None, failure_artifacts=None
             deadline = time.monotonic() + (150 if name == 'success-joc' else 70)
             while player.poll() is None:
                 assert time.monotonic() < deadline, 'player exceeded harness deadline'
-                data = registry(env)
+                data = monitor.snapshot()
                 streams = nodes(data, 'rog-atmos-')
                 assert len(streams) <= 1, 'multiple playback nodes'
                 if streams:
@@ -397,7 +532,7 @@ def one_case(name, probe, config, parent, joc_input=None, failure_artifacts=None
             assert (report_path.stat().st_mode & 0o777) == 0o600
             assert not unexpected_links, 'unexpected fallback link'
             assert report['physical_playback_observed'] is False
-            wait_for(lambda: not nodes(registry(env), 'rog-atmos-'), timeout=5)
+            wait_for(lambda: not nodes(monitor.snapshot(), 'rog-atmos-'), timeout=5)
             assert not list(private.glob('.atmos-live-*')), 'private child directory leaked'
             result.update(exit_code=code, playback_status=report['status'],
                           playback_report=report, unexpected_links=unexpected_links,
@@ -465,6 +600,18 @@ def one_case(name, probe, config, parent, joc_input=None, failure_artifacts=None
         finally:
             stop(player)
             stop(capture)
+            if monitor is not None:
+                result['registry_observation'] = {
+                    'mode': 'persistent-native-monitor', 'processes_started': monitor.processes_started,
+                    'requested_pipe_bytes': 65536, 'pipe_capacity_bytes': monitor.pipe_capacity_bytes,
+                    'document_limit_bytes': MAX_REGISTRY_BYTES,
+                    'cache_limit_bytes': MAX_REGISTRY_BYTES, 'partial_document_seconds': 2,
+                    'documents': monitor.documents, 'bytes_received': monitor.bytes_received,
+                    'maximum_document_bytes': monitor.maximum_document_bytes,
+                    'maximum_cache_bytes': monitor.maximum_cache_bytes,
+                    'maximum_partial_bytes': monitor.maximum_partial_bytes,
+                    'failed_before_cleanup': monitor.failed}
+                monitor.close()
             if capture_handle:
                 capture_handle.close()
             stop(manager, group=True)

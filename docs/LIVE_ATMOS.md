@@ -241,6 +241,21 @@ once. Exact direct package versions are in the
 partial-fragment captures retained as evidence; it is not the default live lane.
 Changing the CI backend does not create a runtime version gate.
 
+The isolated harness observes its private graph through one persistent
+`pw-dump --monitor --no-colors` client per case. It pumps that client's
+nonblocking 64-KiB output pipe at the existing 50-ms cadence instead of creating a new
+registry client on every observation. Complete changed objects and tombstones
+are applied chronologically; ID reuse retains the new serial. Each JSON
+document, pump and complete current-state cache has a 4-MiB bound. Startup
+and partial-document completion each have a 2-second bound. Malformed data,
+EOF or child failure stops the case; cached state is never silently reused
+after failure. The monitor is stopped and reaped during case cleanup.
+This changes observer workload because diagnostic client churn caused
+playback/capture xruns; it does not weaken channel, target, fallback or full
+PCM checks, or change runtime player buffers. Earlier failed captures retain
+their original observed results; the later diagnostic does not retroactively
+prove their cause.
+
 The [separate virtual-sink lane](../probes/atmos/live-ci.sh) uses a pinned native PipeWire daemon with no
 `/dev/snd` or desktop session socket. It checks streamed capture/hash/count,
 initial seek/attenuation, target mismatch/loss, cancellation and node cleanup.

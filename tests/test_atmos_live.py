@@ -318,6 +318,100 @@ class LiveTests(unittest.TestCase):
         self.assertTrue(child.stdin.closed and child.stdout.closed)
         self.assertFalse(Path('/proc', str(dump_pid)).exists(), 'active dump was not reaped')
 
+    def test_monitor_split_documents_preserve_updates_removals_and_id_reuse(self):
+        monitor = integration.RegistryMonitor({})
+        data = registry()
+        data[0]['info']['props']['description'] = 'brackets [}] and quote " plus é'
+        replacement = dict(data[0], info={'props': dict(data[0]['info']['props'], **{'object.serial': 144})})
+        changed_link = dict(data[-1], info=dict(data[-1]['info'], state='negotiating'))
+        documents = [data, [changed_link], [{'id': 42, 'info': None}], [replacement]]
+        for value in b' \n'.join(json.dumps(document, ensure_ascii=False).encode() for document in documents):
+            monitor.feed(bytes([value]))  # Includes splits inside UTF-8 and escaped strings.
+        current = list(monitor.objects.values())
+        self.assertEqual(live.resolve_target(current, 'tuned-sink', ['FL', 'FR']), {'id': 42, 'serial': '144'})
+        self.assertFalse(live.verify_links(current, {'id': 42, 'serial': '144'},
+                                          'stream-test', ['FL', 'FR'], require_active=True))
+        self.assertEqual(monitor.documents, 4)
+        self.assertFalse(monitor.pending)
+        monitor.feed(b'[{"id":42,"info":null}]')
+        with self.assertRaisesRegex(live.PlaybackError, 'target-disappeared'):
+            live.verify_links(list(monitor.objects.values()), {'id': 42, 'serial': '144'},
+                              'stream-test', ['FL', 'FR'])
+        # A removal in a separate document must not be lost by array replacement.
+        self.assertIn(7, monitor.objects)
+
+    def test_monitor_malformed_partial_document_and_complete_cache_bounds_fail_closed(self):
+        for malformed in (b'[] trailing', b'[{"id":1}]', b'[{"id":1,"id":2}]'):
+            monitor = integration.RegistryMonitor({})
+            with self.subTest(malformed=malformed), self.assertRaises(ValueError):
+                monitor.feed(malformed)
+            self.assertTrue(monitor.failed)
+            with self.assertRaisesRegex(ValueError, 'unavailable'):
+                monitor.feed(b'[]')
+        with mock.patch.object(integration, 'MAX_REGISTRY_BYTES', 512):
+            monitor = integration.RegistryMonitor({})
+            with self.assertRaisesRegex(ValueError, 'partial-document limit'):
+                monitor.feed(b'[' + b' ' * 512)
+            monitor = integration.RegistryMonitor({})
+            with self.assertRaisesRegex(ValueError, 'document limit'):
+                monitor.feed(b'[' + b' ' * 512 + b']')
+            first = {'id': 1, 'type': 'PipeWire:Interface:Node', 'info': {'props': {'padding': 'x' * 240}}}
+            second = dict(first, id=2)
+            monitor = integration.RegistryMonitor({})
+            monitor.feed(json.dumps([first]).encode())
+            with self.assertRaisesRegex(ValueError, 'cache limit'):
+                monitor.feed(json.dumps([second]).encode())
+            self.assertTrue(monitor.failed)
+
+    def test_monitor_child_eof_and_partial_timeout_do_not_serve_stale_cache(self):
+        original = subprocess.Popen
+        fixture = json.dumps(registry()).encode() + b'\n'
+        release = self.root / 'monitor-release'
+        scripts = (
+            'import os,time\nfrom pathlib import Path\nos.write(1,' + repr(fixture) + ')\n' +
+            'while not Path(' + repr(str(release)) + ').exists(): time.sleep(.005)\n' +
+            'os.close(1)\ntime.sleep(20)',
+            'import os,time\nos.write(1,b"[")\ntime.sleep(20)',
+            'import time\ntime.sleep(20)',
+            'raise SystemExit(3)')
+        for index, code in enumerate(scripts):
+            def launch(command, **options):
+                self.assertEqual(command, ['pw-dump', '--monitor', '--no-colors'])
+                return original([sys.executable, '-c', code], **options)
+            monitor = integration.RegistryMonitor(live.child_environment())
+            with self.subTest(case=index), mock.patch.object(integration.subprocess, 'Popen', side_effect=launch) as spawn:
+                try:
+                    monitor.start()
+                    child = monitor.child
+                    deadline = time.monotonic() + 2
+                    if index == 0:
+                        while not monitor.ready and time.monotonic() < deadline:
+                            monitor.snapshot()
+                            time.sleep(.005)
+                        self.assertTrue(monitor.ready)
+                        self.assertTrue(monitor.snapshot())
+                        release.write_text('close stdout')
+                    elif index == 1:
+                        while not monitor.pending and time.monotonic() < deadline:
+                            monitor.snapshot()
+                            time.sleep(.005)
+                        self.assertTrue(monitor.pending)
+                        monitor.document_started -= 3
+                    elif index == 2:
+                        monitor.started -= 3
+                    with self.assertRaises(ValueError):
+                        while time.monotonic() < deadline:
+                            monitor.snapshot()
+                            time.sleep(.005)
+                        self.fail('monitor did not fail within bound')
+                    with self.assertRaisesRegex(ValueError, 'unavailable'):
+                        monitor.snapshot()
+                    self.assertEqual(spawn.call_count, 1)
+                finally:
+                    monitor.close()
+                self.assertIsNotNone(child.returncode)
+                self.assertTrue(child.stdout.closed)
+
     def test_capture_comparison_preserves_mismatch_and_truncation_evidence(self):
         expected = struct.pack('<16f', *([.125] * 16))
         prefix = bytes(3 * 8)

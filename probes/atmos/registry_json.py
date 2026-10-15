@@ -13,13 +13,14 @@ def unique_object(pairs):
     return result
 
 
-def parse_registry(data):
+def parse_registry(data, *, objects=None):
     if not isinstance(data, bytes) or not 0 < len(data) <= MAX_REGISTRY_BYTES:
         raise ValueError('registry byte limit')
     text = data.decode('utf-8')
     decoder = json.JSONDecoder(object_pairs_hook=unique_object)
     position = 0
-    objects = {}
+    if objects is None:
+        objects = {}
     documents = 0
     while True:
         while position < len(text) and text[position] in ' \t\r\n':
