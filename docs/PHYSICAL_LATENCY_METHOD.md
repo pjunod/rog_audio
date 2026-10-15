@@ -127,9 +127,12 @@ physical measurement acceptance.
 ## 3. Preserve the tuned state and coordinate the capture window
 
 Complete software qualification before the coordinated recording session.
-Both laptops now run +rog3 with the separate reviewed helper/unit backport:
-ROG 1024/48000, target −20 LUFS/cap 2.6475 dB; ThinkPad 256/48000, target
-−16 LUFS/cap 14.1375 dB. Original IRs/non-AutoGain stages and final limiters
+The last qualified +rog3/helper-backport conditions were ROG 1024/48000,
+target −20 LUFS/cap 2.6475 dB, and ThinkPad 256/48000, target −16 LUFS/cap
+14.1375 dB. The [October 15 refresh](STATUS.md#october-15-postboot-refresh--service-present-desktop-route-not-yet-ready)
+finds the ROG at the greeter without operator sound-device access; normal
+desktop login and a read-only full-route check are still required. ThinkPad
+was unreachable once, so its current state is unknown. Original IRs/non-AutoGain stages and final limiters
 remain intact. Both [final settings-bound hours](STATUS.md#final-kept-settings-software-hours--2026-10-14) passed without added errors; current
 generated demos are accepted at the recorded conditions. Physical recording
 is deferred to another coordinated window; no page is to be armed or
@@ -285,17 +288,21 @@ at execution time. Keep raw indices, recordings and method detail in the
 private annotation receipt; the strict trial JSON has no arbitrary extra
 metadata fields. Use neutral aliases matching `[a-z][a-z0-9_-]{0,63}`.
 
-The current analyser accepts only nonnegative delays. It cannot represent a
-condition containing any valid negative click-to-chirp interval. Retain that
-whole condition as signed raw annotations and report signed min, median,
-nearest-rank p95 and max separately, with the same inclusion rules, counts
-and uncertainty. Do not feed only its nonnegative subset to the analyser,
-shift the values, replace negative presses or relabel valid values as invalid.
-Such changes would bias the fastest observations. This batch does not change
-the existing analyser. Use it only for a compatible method declared and
-validated during the pilot, when every included formal interval is
-representable; a later negative result requires the signed path for the
-whole condition rather than a post hoc change to the reference.
+The separate [manual annotation analyser](MANUAL_LATENCY_ANNOTATIONS.md)
+implements the signed path from raw sample positions, with per-recording and
+per-condition groups, per-block summaries, retained rejections and conservative
+onset ranges. Its [generated example](../tests/audio/synthetic-manual-annotations.json)
+is synthetic and contains a placeholder recording digest. Source implementation
+is distinct from pending independent review/focused acceptance; no physical
+recording has been collected by adding this tool.
+
+The older analyser below still accepts only nonnegative event-to-output delays.
+Use the new signed path for a whole condition containing any valid negative
+click-to-chirp interval. Do not feed only a nonnegative subset to the older
+analyser, shift values, replace negative presses or relabel valid rows invalid.
+The old strict v1 schema and its retained passing tests are unchanged. Its
+compatible alternative fields remain documented below; raw annotations use
+the new tool's separate schema and never masquerade as v1 trial JSON.
 
 | Trial field | Value for this method |
 |---|---|

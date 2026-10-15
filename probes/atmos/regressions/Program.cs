@@ -2,7 +2,7 @@ using System.Reflection;
 using Cavern.Format.Decoders;
 using Cavern.Format.Utilities;
 
-static class Regression {
+static partial class Regression {
     const BindingFlags Instance = BindingFlags.Instance|BindingFlags.Public|BindingFlags.NonPublic;
     static readonly Assembly Format = typeof(EnhancedAC3Decoder).Assembly;
     static Type JType => Format.GetType("Cavern.Format.Decoders.EnhancedAC3.JointObjectCoding",true)!;
@@ -113,6 +113,11 @@ static class Regression {
             case "late-sparse": LateSparse(); break;
             case "metadata-state": MetadataState(); break;
             case "scanner-duration": ScannerDuration(); break;
+            case "pull-continuation": PullContinuation(); break;
+            case "pull-seek-flush-eof": PullSeekFlushEof(); break;
+            case "pull-context-bounds": PullContextAndBounds(); break;
+            case "pull-budgets": PullBudgets(); break;
+            case "pull-nonfinite": PullNonfinite(); break;
             default: throw new ArgumentException("regression ID");
         }
         Console.WriteLine(args[0]+": pass"); return 0;

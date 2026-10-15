@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "evidence_class": "synthetic",
+  "recordings": [{
+    "recording_id": "generated-example",
+    "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+    "sample_rate_hz": 48000,
+    "frame_count": 240000,
+    "timebase_scale_bound_ppm": null,
+    "preprocessing": "generated-example-no-recording",
+    "unquantified_biases": ["keyboard-actuation-offset", "recorder-processing"]
+  }],
+  "conditions": [{
+    "condition_id": "synthetic-pilot",
+    "setup_id": "lab-example",
+    "route": "internal-speakers",
+    "settings_id": "generated-settings",
+    "method_id": "manual-onsets-v1",
+    "keyboard_id": "common-wired-key",
+    "geometry_id": "marked-position",
+    "signal_id": "chirp-v1",
+    "power_state": "ac",
+    "load_state": "idle",
+    "phase": "pilot"
+  }],
+  "trials": [
+    {"trial_id": "press-a", "recording_id": "generated-example", "condition_id": "synthetic-pilot", "block_id": "block-a",
+     "click": {"sample": 24000, "lower": 23999, "upper": 24001},
+     "chirp": {"sample": 23760, "lower": 23758, "upper": 23762}, "valid": true, "rejection_reasons": []},
+    {"trial_id": "press-b", "recording_id": "generated-example", "condition_id": "synthetic-pilot", "block_id": "block-a",
+     "click": {"sample": 72000, "lower": 71999, "upper": 72001},
+     "chirp": {"sample": 72000, "lower": 71998, "upper": 72002}, "valid": true, "rejection_reasons": []},
+    {"trial_id": "press-c", "recording_id": "generated-example", "condition_id": "synthetic-pilot", "block_id": "block-b",
+     "click": {"sample": 120000, "lower": 119999, "upper": 120001},
+     "chirp": {"sample": 120576, "lower": 120574, "upper": 120578}, "valid": true, "rejection_reasons": []},
+    {"trial_id": "press-d", "recording_id": "generated-example", "condition_id": "synthetic-pilot", "block_id": "block-b",
+     "click": {"sample": 168000, "lower": 167999, "upper": 168001},
+     "chirp": null, "valid": false, "rejection_reasons": ["missing-chirp"]}
+  ]
+}

@@ -6,20 +6,26 @@ Extreme. Built-in speakers and everyday media come
 first, measured latency against the M4 Air/M3 Max follows, and Sonos Arc/eARC
 Atmos is last.
 
-[The current live receipt](evidence/programme-service-autoload-and-current-settings-v2-2026-10-13.json)
-records both laptops running `8.2.8+rog3` with the reviewed synchronous-stop helper
-backported separately. Original IRs, non-AutoGain settings, final limiters,
-owner gains and stock protection are preserved. Login startup is enabled;
-two controlled automatic starts and real saved-state checks passed. Both
-final software hours passed with no added errors, and both current generated
-demos were accepted. Physical recording is deferred to another coordinated
-window; measurements and broader media qualification remain open.
+[The October 13 deployment receipt](evidence/programme-service-autoload-and-current-settings-v2-2026-10-13.json)
+and completed hours record both laptops on `8.2.8+rog3` with the reviewed
+synchronous-stop helper backported separately. Original IRs, non-AutoGain
+voicing, final limiters and stock protection were preserved; both generated
+demos and settings-bound software hours passed. Those are exact historical
+conditions, not fresh observations of an active audio path.
 
-| System | Current software | Software timing at 48 kHz | Programme settings | Current acceptance |
+[The October 15 read-only refresh](evidence/speaker-postboot-observation-2026-10-15.json)
+finds the ROG's enabled service/preset/native controls present after a new
+boot. It is at the display-manager greeter, where the operator lacks sound
+[device access](evidence/speaker-postboot-route-diagnosis-2026-10-15.json);
+physical routing must be checked after normal desktop login. The ThinkPad
+was unreachable once, so its current state is unknown. No repair, service
+restart, playback or recording occurred. Physical measurement remains deferred.
+
+| System | Last qualified software | Accepted software timing at 48 kHz | Programme settings | October 15 / remaining evidence |
 |---|---|---|---|---|
-| ROG G16 | +rog3 and PR 12 helper/unit backport | 1024-frame graph cycle: 21.333 ms | −20 LUFS; cap 2.6475 dB | Full hour passed without added errors; demo accepted, loudness improved |
-| ThinkPad X1 Extreme | +rog3 and PR 12 helper/unit backport | 256-frame graph cycle: 5.333 ms | −16 LUFS; cap 14.1375 dB | Full hour passed without added errors; sound/loudness demo accepted |
-| M4 Air | Stock output; matched browser/emitter files staged | 512-frame HAL buffer: 10.667 ms | Unchanged | Route/armed pilot and physical comparison pending |
+| ROG G16 | +rog3 and PR 12 helper/unit backport | 1024-frame graph cycle: 21.333 ms | −20 LUFS; cap 2.6475 dB | Prior hour/demo passed; service/preset present at greeter; post-login full route unverified |
+| ThinkPad X1 Extreme | +rog3 and PR 12 helper/unit backport | 256-frame graph cycle: 5.333 ms | −16 LUFS; cap 14.1375 dB | Prior hour/demo passed; unreachable in new check, current state unknown |
+| M4 Air | Stock output; matched browser/emitter files previously staged | 512-frame HAL buffer: 10.667 ms | Unchanged in prior observation | Route/armed pilot and physical comparison pending |
 | Sonos Arc/eARC | Deferred | Unmeasured | Unassessed | Follows internal-speaker acceptance |
 
 These graph/HAL terms do not measure speaker delay or prove Mac parity. The
@@ -29,12 +35,20 @@ differ. See [comparison and retained trials](docs/LATENCY_COMPARISON.md) and
 the [phone-recorded method](docs/PHYSICAL_LATENCY_METHOD.md). No physical latency
 or calibrated sound-quality result has been collected.
 
-Host Atmos has [complete official-vector diagnostics](docs/ATMOS_REFERENCE.md)
-for Dolby Channel ID 5.1.4/7.1.4 and [eight reviewed focused acceptance methods](evidence/audio-atmos-official-vectors-acceptance-2026-10-14.json)
-passed once. The bounded offline launcher and channel-energy analyzer changed;
-installed laptop speaker software remains as recorded above. Independent
-reference fidelity, binaural/realtime support and physical qualification remain
-open; vector payloads and detailed renders stay private.
+The [bounded Atmos pull API](probes/atmos/README.md) implements caller-owned
+PCM reads, sample timestamps, seek/flush and exact EOS. [PR 16 acceptance](evidence/audio-playback-and-annotations-acceptance-2026-10-15.json)
+records sixteen affected Atmos methods and eleven signed-annotation methods
+passed once after independent review and fixes. A fresh full official JOC
+render and four separate continuity groups passed; the original combined seek
+sequence hit a process limit and remains a recorded limitation. These are
+same-engine checks, not independent Dolby fidelity or realtime qualification.
+
+[Signed manual annotation analysis](docs/MANUAL_LATENCY_ANNOTATIONS.md) preserves
+negative click-to-chirp intervals, rejected attempts and declared onset bounds
+without recording or inferring physical validity. The [accepted-filter audit](evidence/speaker-chain-algorithmic-delay-audit-2026-10-15.json)
+found no justified removable fixed delay; original filters/limiter stay intact.
+Independent fidelity, binaural/realtime support and physical qualification
+remain open. Sonos Arc/eARC remains last.
 
 [v0.2.3 is published](https://github.com/pjunod/rog_audio/releases/tag/v0.2.3)
 with the [verified packaging-only +rog4 runtime](evidence/speaker-stop-packaging-only-rog4-2026-10-13.json),
@@ -42,9 +56,10 @@ corresponding source/notices, both [kept-settings-bound model kits](evidence/spe
 the required standalone service companion, release notes and checksums.
 [Publication verification](evidence/speaker-runtime-v023-publication-2026-10-14.json)
 binds the tag and five exact assets; v0.2.2 assets remain unchanged.
-The +rog4 native payload matches the accepted +rog3 engine. Actual laptops
-retain +rog3 with the separate helper/unit backport; no +rog4 package rewrite
-occurred. The sealed kit metadata remains its preparation-era snapshot;
+The +rog4 native payload matches the accepted +rog3 engine. The last qualified laptop conditions
+use +rog3 with the separate helper/unit backport; no +rog4 package rewrite
+occurred in this work. The new ROG inspection confirms +rog3; ThinkPad state
+was not refreshed. The sealed kit metadata remains its preparation-era snapshot;
 outer release notes record the later scoped demos and completed software hours.
 
 [Current status and dated receipts](docs/STATUS.md) preserve the earlier
@@ -74,6 +89,7 @@ Display work remains in [rog_hdr_dv](https://github.com/pjunod/rog_hdr_dv).
 - [CoreAudio timing](docs/COREAUDIO_LATENCY.md) — read-only Mac output terms, M4 Air observations and physical measurement limits.
 - [Latency comparison](docs/LATENCY_COMPARISON.md) — tuned laptop baselines, M4 Air reference and reversible experiments.
 - [Physical latency method](docs/PHYSICAL_LATENCY_METHOD.md) — local key-to-chirp emitter and proposed phone-recorded comparison, with repeat counts and measurement limits.
+- [Manual latency annotations](docs/MANUAL_LATENCY_ANNOTATIONS.md) — signed sample intervals, exclusions, private byte verification and declared uncertainty.
 - [Atmos build](docs/AUDIO_ATMOS_BUILD.md) — offline object rendering and format limits.
 - [Atmos references](docs/ATMOS_REFERENCE.md) — official JOC test inputs, bounded file rendering and observed channel energy.
 - [Development](docs/DEVELOPMENT.md) — review, CI and selective test policy.
@@ -122,6 +138,9 @@ mkdir -p -m 700 private  # Retain raw inventory and analysis outside Git.
 python3 scripts/inspect_audio.py --output private/audio-inventory.json
 python3 scripts/analyse_audio_latency.py \
   --input tests/audio/synthetic-trials.json --output private/audio-analysis.json
+python3 scripts/analyse_manual_annotations.py \
+  --input tests/audio/synthetic-manual-annotations.json \
+  --output private/synthetic-annotation-result.json
 ```
 
 Use a new clone name if that directory exists. Keep work and private outputs
@@ -159,6 +178,8 @@ recovered vendor files and separately fetched dependencies.
 - [x] Merge guarded 1024/2048 requests and pass the explicit ROG 1024 short trial.
 - [x] Review/test/deploy synchronous service stop and both current programme settings; retain both accepted demo listening results.
 - [x] Finish both settings-bound software hours without added errors; verify intact logs, preserved state and owned cleanup.
+- [x] Review and accept signed manual annotations and the bounded offline Atmos API; retain the documented long-sequence resource limit.
+- [ ] Verify the post-login ROG route and refresh the reachable ThinkPad state.
 - [ ] Qualify physical headphone/HDMI routing and resume.
 - [ ] Measure built-in speaker quality and latency against the Macs.
 - [ ] Qualify Sonos Arc/eARC last.

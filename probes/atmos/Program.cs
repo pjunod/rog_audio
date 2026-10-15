@@ -12,8 +12,8 @@ using CavernUnsupported = Cavern.Format.Exceptions.UnsupportedFeatureException;
 
 namespace AtmosProbe;
 
-sealed class Unsupported(string message) : Exception(message);
-sealed class InvalidInput(string message) : Exception(message);
+public sealed class Unsupported(string message) : Exception(message);
+public sealed class InvalidInput(string message) : Exception(message);
 
 static class Program {
     internal const string Pin = "7d85d1880666ca5ea323848cff47ce7f50b29f7d";
@@ -47,6 +47,10 @@ static class Program {
             report["input_sha256"] = Convert.ToHexString(SHA256.HashData(bytes)).ToLowerInvariant();
             string layout = opts.GetValueOrDefault("--layout", "stereo-speakers");
             if (layout is not ("stereo-speakers" or "7.1.4")) throw new Unsupported("unsupported_layout");
+            if (args[0] == "timeline") {
+                Timeline(bytes, path.EndsWith(".json", StringComparison.OrdinalIgnoreCase), layout, opts["--timeline"]);
+                Save(reportPath); return 0;
+            }
             bool render = args[0] == "render";
             if (path.EndsWith(".json", StringComparison.OrdinalIgnoreCase)) Synthetic(bytes, layout, render ? opts["--output"] : null);
             else Encoded(bytes, layout, render ? opts["--output"] : null);
@@ -67,20 +71,21 @@ static class Program {
     }
 
     static Dictionary<string,string> Parse(string[] args) {
-        if (args.Length == 0 || args[0] is not ("inspect" or "render")) throw new InvalidInput("command");
+        if (args.Length == 0 || args[0] is not ("inspect" or "render" or "timeline")) throw new InvalidInput("command");
         var result = new Dictionary<string,string>();
         for (int i = 1; i < args.Length; i++) {
             string key = args[i];
-            if (key is not ("--input" or "--report" or "--output" or "--layout") || ++i == args.Length || !result.TryAdd(key,args[i])) throw new InvalidInput("option");
+            if (key is not ("--input" or "--report" or "--output" or "--layout" or "--timeline") || ++i == args.Length || !result.TryAdd(key,args[i])) throw new InvalidInput("option");
         }
         if (!result.ContainsKey("--input") || !result.ContainsKey("--report") || (args[0] == "render" && !result.ContainsKey("--output"))) throw new InvalidInput("required_option");
-        if (args[0] == "inspect" && result.ContainsKey("--output")) throw new InvalidInput("inspect_option");
+        if (args[0] != "render" && result.ContainsKey("--output")) throw new InvalidInput("output_option");
+        if ((args[0] == "timeline") != result.ContainsKey("--timeline")) throw new InvalidInput("timeline_option");
         return result;
     }
 
     static void Save(string path) => File.WriteAllText(path, JsonSerializer.Serialize(report, Json) + "\n");
 
-    static Listener ListenerFor(string layout, int rate) {
+    internal static Listener ListenerFor(string layout, int rate) {
         // The false constructor never reads the user's persisted Cavern settings.
         var listener = new Listener(false) { SampleRate = rate, UpdateRate = Block,
             Normalizer = 0, Volume = 1, LFESeparation = true, DirectLFE = true, MaximumSources = 128 };
@@ -95,11 +100,11 @@ static class Program {
         return listener;
     }
 
-    sealed record Point(int sample, float[] position);
-    sealed record Obj(float amplitude, float frequency_hz, Point[] keyframes);
-    sealed record Scene(int schema_version, int sample_rate, int samples, Obj[] objects);
+    internal sealed record Point(int sample, float[] position);
+    internal sealed record Obj(float amplitude, float frequency_hz, Point[] keyframes);
+    internal sealed record Scene(int schema_version, int sample_rate, int samples, Obj[] objects);
 
-    static void Synthetic(byte[] bytes, string layout, string? output) {
+    internal static Scene ParseScene(byte[] bytes) {
         Scene scene = JsonSerializer.Deserialize<Scene>(bytes) ?? throw new InvalidInput("scene");
         if (scene.schema_version != 1 || scene.sample_rate != Rate || scene.samples is < Block or > 480000 || scene.objects is null || scene.objects.Length is < 1 or > 8) throw new InvalidInput("scene_limits");
         float total = 0;
@@ -114,6 +119,11 @@ static class Program {
             if (obj.keyframes[0].sample != 0) throw new InvalidInput("first_keyframe");
         }
         if (total > .5f) throw new InvalidInput("aggregate_gain");
+        return scene;
+    }
+
+    static void Synthetic(byte[] bytes, string layout, string? output) {
+        Scene scene = ParseScene(bytes);
         report["evidence_class"] = "synthetic-test";
         report["container"] = "synthetic-json-v1"; report["codec"] = "generated-sine-objects";
         report["atmos_signalling"] = null; report["decoder"] = "none";
@@ -121,21 +131,12 @@ static class Program {
         Warnings.Add("Synthetic object positions are not Dolby metadata or codec qualification.");
         report["input_samples"] = scene.samples;
         if (output == null) { report["status"] = "synthetic-inspected"; return; }
-        Listener listener = ListenerFor(layout, Rate);
-        var sources = new List<Source>();
-        foreach (Obj obj in scene.objects) {
-            float[] clip = new float[scene.samples];
-            for (int i = 0; i < clip.Length; i++) clip[i] = obj.amplitude * MathF.Sin(2*MathF.PI*obj.frequency_hz*i/Rate);
-            var source = new Source { Clip = new Clip(clip,1,Rate), VolumeRolloff = Rolloffs.Disabled, Position = Position(obj,0) };
-            sources.Add(source); listener.AttachSource(source);
-        }
-        Render(listener, output, scene.samples, layout, sample => {
-            for (int i = 0; i < sources.Count; i++) sources[i].Position = Position(scene.objects[i],sample);
-        });
+        using var pull = OfflinePullRenderer.Open(bytes, true, layout);
+        Render(pull, output, layout);
         report["status"] = "synthetic-rendered";
     }
 
-    static Vector3 Position(Obj obj, int sample) {
+    internal static Vector3 Position(Obj obj, int sample) {
         int i = 0;
         while (i+1 < obj.keyframes.Length && obj.keyframes[i+1].sample <= sample) i++;
         Point a = obj.keyframes[i];
@@ -146,7 +147,7 @@ static class Program {
     }
 
     // Deliberately restricted elementary-stream scanner. No extension-based codec badges.
-    static (int samples, int rate, int frameSamples, int frames) Scan(byte[] b) {
+    internal static (int samples, int rate, int frameSamples, int frames) Scan(byte[] b) {
         int pos = 0, samples = 0, rate = 0, frameSamples = 0, frames = 0, channelMode = -1;
         while (pos < b.Length) {
             if (b.Length-pos < 6 || b[pos] != 0x0b || b[pos+1] != 0x77) throw new Unsupported("not_raw_eac3_or_bad_sync");
@@ -172,11 +173,11 @@ static class Program {
         report["container"] = "raw-eac3"; report["codec"] = "E-AC-3";
         report["decoder"] = "Cavern.Format.EnhancedAC3Decoder";
         report["input_samples"] = scan.samples;
-        using var input = new MemoryStream(bytes,false);
-        var decoder = new ObservedDecoder(BlockBuffer<byte>.Create(input));
-        decoder.Seed(scan.frames);
-        if (decoder.SampleRate != Rate || decoder.FrameSize != scan.frameSamples || decoder.ChannelCount is < 1 or > 8) throw new Unsupported("decoder_configuration");
         if (output == null) {
+            using var input = new MemoryStream(bytes,false);
+            var decoder = new ObservedDecoder(BlockBuffer<byte>.Create(input));
+            decoder.Seed(scan.frames);
+            if (decoder.SampleRate != Rate || decoder.FrameSize != scan.frameSamples || decoder.ChannelCount is < 1 or > 8) throw new Unsupported("decoder_configuration");
             float[] buffer = new float[scan.frameSamples*decoder.ChannelCount];
             for (int i = 0; i < scan.frames; i++) decoder.DecodeBlock(buffer,0,buffer.Length);
             report["atmos_signalling"] = decoder.ObjectFrames > 0 ? "Cavern-parsed-JOC" : null;
@@ -190,53 +191,109 @@ static class Program {
             Warnings.Add("Signalling describes parsed frames; absence is not an independent bitstream metadata audit.");
             return;
         }
-        bool objects = decoder.HasObjects;
-        decoder.RequireObjects = objects;
-        decoder.RejectObjects = !objects;
-        Listener listener = ListenerFor(layout, Rate);
-        using Renderer renderer = objects ? new EnhancedAC3Renderer(decoder) : new BedRenderer(decoder);
-        listener.AttachSources(renderer.Objects);
-        Render(listener,output,scan.samples,layout,_=>{});
-        if (objects) decoder.VerifyNoSparse();
-        if (objects && decoder.ObjectFrames != scan.frames) throw new Unsupported("object_metadata_not_continuous");
+        // Inspection above uses no listener. Rendering owns the sole global layout lease.
+        using var pull = OfflinePullRenderer.Open(bytes, false, layout);
+        bool objects = pull.HasObjects;
+        Render(pull, output, layout);
+        var decoderResult = pull.Decoder!;
         report["atmos_signalling"] = objects ? "Cavern-parsed-JOC" : null;
         report["object_metadata_consumed"] = objects;
-        report["decoded_frames"] = decoder.Frames; report["object_frames"] = decoder.ObjectFrames;
-        report["oamd_fresh_object_frames"] = decoder.FreshOamdFrames;
-        report["oamd_reused_object_frames"] = decoder.ReusedOamdFrames;
-        report["object_configuration"] = decoder.ObjectConfiguration;
+        report["decoded_frames"] = decoderResult.Frames; report["object_frames"] = decoderResult.ObjectFrames;
+        report["oamd_fresh_object_frames"] = decoderResult.FreshOamdFrames;
+        report["oamd_reused_object_frames"] = decoderResult.ReusedOamdFrames;
+        report["object_configuration"] = decoderResult.ObjectConfiguration;
         report["status"] = objects ? "joc-rendered-unqualified" : "bed-fallback-rendered";
         Warnings.Add(objects ? "JOC decoded/rendered; independent reference fidelity, delay and gain comparison remain unqualified." : "Explicit conventional-channel fallback; not Atmos rendering.");
     }
 
-    static void Render(Listener listener, string output, int samples, string layout, Action<int> update) {
+    static void Timeline(byte[] bytes, bool synthetic, string layout, string timelinePath) {
+        var file = new FileInfo(timelinePath);
+        if (!file.Exists || file.Length is <= 0 or > 262144) throw new InvalidInput("timeline_size_limit");
+        using var doc = JsonDocument.Parse(File.ReadAllBytes(timelinePath));
+        var root = doc.RootElement;
+        if (root.ValueKind != JsonValueKind.Object || root.EnumerateObject().Count() != 2 ||
+            !root.TryGetProperty("schema_version", out var version) || version.ValueKind != JsonValueKind.Number || !version.TryGetInt32(out int v) || v != 1 ||
+            !root.TryGetProperty("commands", out var commands) || commands.ValueKind != JsonValueKind.Array ||
+            commands.GetArrayLength() is < 1 or > OfflinePullRenderer.MaximumCommands) throw new InvalidInput("timeline_schema");
+        var plan = new List<(string op, long value)>();
+        foreach (var command in commands.EnumerateArray()) {
+            if (command.ValueKind != JsonValueKind.Object || !command.TryGetProperty("op", out var opElement) ||
+                opElement.ValueKind != JsonValueKind.String) throw new InvalidInput("timeline_command");
+            string op = opElement.GetString()!;
+            long value = 0;
+            if (op == "flush") {
+                if (command.EnumerateObject().Count() != 1) throw new InvalidInput("timeline_command");
+            } else {
+                string field = op == "read" ? "frames" : op == "seek" ? "sample" : throw new InvalidInput("timeline_command");
+                if (command.EnumerateObject().Count() != 2 || !command.TryGetProperty(field, out var number) ||
+                    number.ValueKind != JsonValueKind.Number || !number.TryGetInt64(out value) || value < (op == "read" ? 1 : 0) ||
+                    value > (op == "read" ? OfflinePullRenderer.MaximumReadFrames : MaxEncodedSeconds * Rate))
+                    throw new InvalidInput("timeline_command");
+            }
+            plan.Add((op, value));
+        }
+        using var pull = OfflinePullRenderer.Open(bytes, synthetic, layout);
+        var events = new List<object>();
+        float[] buffer = new float[OfflinePullRenderer.MaximumReadFrames * pull.Channels];
+        foreach (var command in plan) {
+            if (command.op == "read") {
+                PullRead result = pull.Read(buffer, (int)command.value);
+                byte[] pcm = new byte[result.Frames * pull.Channels * sizeof(float)];
+                // .NET Linux target is little endian; specify portable float bit order explicitly.
+                for (int i = 0; i < result.Frames * pull.Channels; i++)
+                    System.Buffers.Binary.BinaryPrimitives.WriteInt32LittleEndian(pcm.AsSpan(i * 4, 4), BitConverter.SingleToInt32Bits(buffer[i]));
+                events.Add(new { op = "read", sample_pts = result.SamplePts, frames = result.Frames,
+                    epoch = result.Epoch, end_of_stream = result.EndOfStream,
+                    pcm_sha256 = Convert.ToHexString(SHA256.HashData(pcm)).ToLowerInvariant() });
+            } else {
+                if (command.op == "seek") pull.Seek(command.value); else pull.Flush();
+                events.Add(new { op = command.op, sample_pts = pull.Position, epoch = pull.Epoch });
+            }
+        }
+        bool objects = pull.HasObjects;
+        report["evidence_class"] = synthetic ? "synthetic-test" : "private-offline";
+        report["container"] = synthetic ? "synthetic-json-v1" : "raw-eac3";
+        report["codec"] = synthetic ? "generated-sine-objects" : "E-AC-3";
+        report["decoder"] = synthetic ? "none" : "Cavern.Format.EnhancedAC3Decoder";
+        report["atmos_signalling"] = objects ? "Cavern-parsed-JOC" : null;
+        report["object_metadata_consumed"] = synthetic || objects;
+        report["input_samples"] = pull.Length;
+        report["renderer"] = pull.RendererName;
+        report["timeline"] = new { timebase = "1/48000", layout, channels = pull.Channels, events };
+        report["dsp_processing"] = pull.Profile;
+        report["status"] = synthetic ? "synthetic-timeline" : objects ? "joc-timeline-unqualified" : "bed-fallback-timeline";
+        Warnings.Add("File-only timeline exercise; same-engine replay equality is internal correctness, not independent Dolby fidelity. Tail is not flushed and decoder/filter delay remains unknown.");
+    }
+
+    static void Render(OfflinePullRenderer pull, string output, string layout) {
         string[] channels = layout == "stereo-speakers" ? Stereo : Surround;
-        using var writer = new Wave(output,channels.Length,samples,listener.SampleRate,layout == "stereo-speakers" ? 3u : 0x2d63fu);
+        int samples = pull.Length;
+        using var writer = new Wave(output, channels.Length, samples, Rate, layout == "stereo-speakers" ? 3u : 0x2d63fu);
         double[] energy = new double[channels.Length]; float peak = 0;
         var watch = Stopwatch.StartNew();
         long alloc = GC.GetTotalAllocatedBytes(true);
-        for (int pos = 0; pos < samples; pos += Block) {
-            update(pos);
-            float[] block = listener.Render();
-            int count = Math.Min(Block,samples-pos)*channels.Length;
-            if (block.Length < count) throw new InvalidInput("render_length");
+        float[] buffer = new float[OfflinePullRenderer.MaximumReadFrames * channels.Length];
+        while (true) {
+            PullRead result = pull.Read(buffer, OfflinePullRenderer.MaximumReadFrames);
+            if (result.Frames == 0) break;
+            int count = result.Frames * channels.Length;
             for (int i = 0; i < count; i++) {
-                float value = block[i];
-                if (!float.IsFinite(value)) throw new InvalidInput("nonfinite_render");
-                peak = Math.Max(peak,Math.Abs(value)); energy[i%channels.Length] += value*value;
-                if (Math.Abs(value)>1) throw new Unsupported("render_clipping");
+                float value = buffer[i];
+                peak = Math.Max(peak, Math.Abs(value)); energy[i % channels.Length] += value * value;
             }
-            writer.Write(block,count);
+            writer.Write(buffer, count);
         }
         watch.Stop();
-        report["renderer"] = "Cavern.Listener/" + Listener.Renderer.GetType().Name;
-        report["output"] = new { layout, sample_rate = listener.SampleRate, channels, samples_per_channel = samples,
-            peak, rms = energy.Select(x=>Math.Sqrt(x/samples)).ToArray(), format = "WAVE-extensible-float32",
+        report["renderer"] = pull.RendererName;
+        report["output"] = new { layout, sample_rate = Rate, channels, samples_per_channel = samples,
+            peak, rms = energy.Select(x => Math.Sqrt(x / samples)).ToArray(), format = "WAVE-extensible-float32",
             gain = "unity listener; normalizer disabled; E-AC-3 object renderer upstream gain 0.707" };
         report["processing"] = new { elapsed_ms = watch.Elapsed.TotalMilliseconds,
-            allocated_bytes = GC.GetTotalAllocatedBytes(true)-alloc, block_samples = Block,
+            allocated_bytes = GC.GetTotalAllocatedBytes(true) - alloc, block_samples = Block,
             evidence = "single offline run, includes WAV I/O and startup; not realtime qualification" };
+        report["dsp_processing"] = pull.Profile;
     }
+
 }
 
 // Source-bound observation of the exact metadata branch used by the pinned renderer.

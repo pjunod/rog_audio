@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "kind": "authored-allowlisted-read-only-postboot-route-diagnosis",
+  "date": "2026-10-15",
+  "host": "lab5",
+  "source_script_sha256": "e335a5044ccb5cd9addbdaac422dfeec5e1c0b76ea7f1a0ecefc72c1178af83b",
+  "remote_source_sha256": "0b238af0752026385d5f8ff3d79c48dd9f1ac91511cf3d4204cad388f825a69e",
+  "private_evidence_sha256": "09cf46f3d2c63c57fc4101ac2c31795fc2aa650f093f850988e04243ac294106",
+  "prior_postboot_observation_sha256": "ce4c212e3b52271f782defc6526e32b63cbee698302ba99f80a4f073554c944c",
+  "server_identity": {
+    "core_name": "pipewire-0",
+    "core_version": "1.6.8",
+    "core_cookie_matches_prior_graph": true,
+    "core_process_matches_stock_pipewire_service": true,
+    "wireplumber_and_native_share_real_user_runtime": true,
+    "custom_pipewire_remote_or_config_environment_observed": false,
+    "home_or_system_pipewire_wireplumber_config_overrides_observed": false,
+    "socket_peer_is_user_service_manager_due_to_socket_activation": "Socket peer credentials identify the user service manager; graph core process identity matches the stock PipeWire daemon. No alternate test server observed."
+  },
+  "hardware_access": {
+    "alsa_hardware_cards_present": true,
+    "alsa_spa_plugin_installed": true,
+    "package_installation_present": true,
+    "operator_can_read_or_write_sound_device_nodes": false,
+    "operator_has_audio_group": false,
+    "sound_control_acls_grant_display_manager_greeter": true,
+    "sound_control_acls_grant_operator": false,
+    "local_seat_session_role": "display-manager greeter",
+    "operator_local_seat_session_observed": false,
+    "operator_sessions_present": "remote/user-manager sessions without local seat"
+  },
+  "diagnosis": "The observed user audio graph lacks physical ALSA nodes while the local seat is owned by the display-manager greeter. The operator lacks device ACL access; installed hardware/plugins and the correct user PipeWire server are present. This is an unmet device-access/session precondition, not evidence that speaker tuning was lost.",
+  "tuning": "Earlier same-day read-only receipt records accepted preset, IR/control files and nine native controls unchanged except usage counts/order in the main config.",
+  "proposed_next_step": "After a normal operator desktop login, recheck logind device ACLs and the physical PipeWire route read-only. Only then consider a human-ready physical pilot. Do not alter groups/permissions or bypass seat ownership; no service restart is proposed from this snapshot.",
+  "limits": [
+    "The greeter and device ACLs are directly observed; restoration after future login has not been tested.",
+    "No configured or negotiated live quantum, active full tuned chain, fresh IR load or acoustic pass is inferred from this pre-login observation.",
+    "ThinkPad remains unreachable from the single earlier attempt; no new ThinkPad connection."
+  ],
+  "settings_services_permissions_or_groups_changed": false,
+  "reboot_or_playback_or_microphone": false,
+  "sonos_changes": false
+}
