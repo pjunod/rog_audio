@@ -11,6 +11,8 @@
 #include <time.h>
 static struct pw_buffer *test_buffer;
 static int queue_result;
+static enum rog_error queue_error;
+static struct rog_core *queue_core;
 static unsigned queued_calls, drain_calls;
 struct pw_buffer *__wrap_pw_stream_dequeue_buffer(struct pw_stream *stream)
 {
@@ -22,6 +24,7 @@ int __wrap_pw_stream_queue_buffer(struct pw_stream *stream, struct pw_buffer *bu
     (void)stream;
     assert(buffer == test_buffer);
     queued_calls++;
+    if (queue_error) rog_fail(queue_core, queue_error);
     return queue_result;
 }
 int __wrap_pw_stream_flush(struct pw_stream *stream, bool drain)
@@ -42,6 +45,7 @@ int main(void)
     struct playback *p = aligned_alloc(_Alignof(struct playback), sizeof(struct playback));
     assert(p && (uintptr_t)p % _Alignof(struct playback) == 0);
     memset(p, 0, sizeof(*p));
+    queue_core = &p->core;
     assert(rog_init(&p->core, 12));
     atomic_init(&p->stop, false);
     atomic_init(&p->queued_all, false);
@@ -74,16 +78,30 @@ int main(void)
     on_process(p);
     assert(atomic_load(&p->core.error) == ROG_PIPEWIRE);
     assert(!atomic_load(&p->queued_all) && !atomic_load(&p->demand_after_final));
+    assert(p->tail_padding_frames == 0);
+    /* A concurrent input failure prevents drain but does not erase padding
+     * which the actual queue call already accepted. */
+    assert(rog_init(&p->core, 12));
+    assert(rog_begin(&p->core, "BEGIN 1 0 1\n", 12));
+    assert(rog_input(&p->core, frame, sizeof(frame)));
+    queue_result = 0; queue_error = ROG_TRUNCATED;
+    on_process(p);
+    assert(atomic_load(&p->core.error) == ROG_TRUNCATED);
+    assert(!atomic_load(&p->queued_all) && p->tail_padding_frames == 255);
+    queue_error = ROG_OK;
     /* Exercise actual partial and aligned callbacks, and late transport EOF.
      * Successful queue_buffer alone is insufficient: a later process request
      * must publish demand, without queueing any zero-size EOF buffer. */
     unsigned char media[256 * 48];
     for (size_t i = 0; i < sizeof(media); i++) media[i] = (unsigned char)(i % 251 + 1);
-    for (unsigned attempt = 0; attempt < 2; attempt++) {
-        unsigned frames = attempt == 0 ? 247 : 256;
+    const unsigned final_frames[] = {1, 247, 256};
+    for (unsigned attempt = 0; attempt < 3; attempt++) {
+        unsigned frames = final_frames[attempt];
         assert(rog_init(&p->core, 12));
         atomic_store(&p->queued_all, false); atomic_store(&p->demand_after_final, false);
         p->draining = p->drained = false;
+        p->tail_padding_frames = 0;
+        memset(output, 0xa5, sizeof(output));
         queue_result = 0; queued_calls = drain_calls = 0;
         char command[64];
         int count = snprintf(command, sizeof(command), "BEGIN 1 0 %u\n", frames);
@@ -93,12 +111,16 @@ int main(void)
             if (bytes > 4096) bytes = 4096;
             assert(rog_input(&p->core, media + offset, bytes)); offset += bytes;
         }
-        if (attempt == 0) assert(rog_input_eof(&p->core));
+        if (attempt != 1) assert(rog_input_eof(&p->core));
         on_process(p);
         assert(queued_calls == 1 && atomic_load(&p->queued_all));
         assert(!atomic_load(&p->demand_after_final));
-        assert(chunk.size == frames * 48 && pw_buffer.size == frames);
+        assert(chunk.size == 256 * 48 && pw_buffer.size == 256);
         assert(!memcmp(output, media, frames * 48));
+        for (size_t i = frames * 48; i < sizeof(output); i++) assert(output[i] == 0);
+        assert(p->tail_padding_frames == 256 - frames);
+        assert(atomic_load(&p->core.media_frames) == frames);
+        assert(atomic_load(&p->core.written) == frames && atomic_load(&p->core.consumed) == frames);
         on_event(p, 1);
         assert(!p->draining && drain_calls == 0);
         on_process(p);
@@ -112,12 +134,14 @@ int main(void)
         assert(p->draining && drain_calls == 1);
         on_process(p); on_event(p, 1);
         assert(queued_calls == 1 && drain_calls == 1);
+        assert(p->tail_padding_frames == 256 - frames);
         on_drained(p);
         assert(p->drained && !atomic_load(&p->core.error));
     }
     assert(rog_init(&p->core, 12)); atomic_store(&p->queued_all, false);
     atomic_store(&p->demand_after_final, false);
     p->draining = p->drained = false;
+    p->tail_padding_frames = 0;
     assert(pthread_create(&p->reader, NULL, read_input, p) == 0);
     unsigned char zeros[4096] = {0};
     size_t remaining = ROG_RING_FRAMES * 48;

@@ -357,7 +357,8 @@ raise SystemExit(2 if MODE.startswith('source-') else 0)
 
     def test_native_capabilities_require_exact_colocated_protocol(self):
         description = {'protocol': native_playback.PROTOCOL, 'ring_frames': 4096,
-                       'rate': 48000, 'channels': [2, 12], 'format': 'f32le'}
+                       'rate': 48000, 'channels': [2, 12], 'format': 'f32le',
+                       'final_buffer_policy': 'fill-request'}
         def command(payload, code=0):
             def run(argv, **options):
                 self.assertEqual(argv, ['/build/atmos-pw-playback', '--describe'])
@@ -365,7 +366,8 @@ raise SystemExit(2 if MODE.startswith('source-') else 0)
                 options['stdout'].write(payload)
                 return subprocess.CompletedProcess(argv, code)
             return run
-        for change in ({}, {'protocol': 'old'}, {'ring_frames': 65536}, {'format': 's16'}):
+        for change in ({}, {'protocol': 'old'}, {'ring_frames': 65536}, {'format': 's16'},
+                       {'final_buffer_policy': None}, {'final_buffer_policy': 'short-chunk'}):
             value = {**description, **change}
             with mock.patch.object(native_playback.subprocess, 'run', side_effect=command(json.dumps(value).encode())):
                 if change:
@@ -387,7 +389,7 @@ raise SystemExit(2 if MODE.startswith('source-') else 0)
         return {'protocol': native_playback.PROTOCOL, 'status': 'completed',
             'input_frames': priming + media, 'consumed_frames': priming + media,
             'stdin_priming_frames': priming, 'media_frames': media,
-            'startup_silence_frames': 256, 'prefill_silence_frames': 512,
+            'startup_silence_frames': 256, 'prefill_silence_frames': 512, 'tail_padding_frames': 247,
             'underflow_events': 0, 'missing_media_frames': 0, 'ring_capacity_frames': 4096,
             'maximum_ring_frames': 777, 'maximum_callback_frames': 256,
             'input_eof': True, 'ring_consumed': True, 'drained': True, **changes}
@@ -406,6 +408,7 @@ raise SystemExit(2 if MODE.startswith('source-') else 0)
             client.finish(5, 777)
             self.assertTrue(report['native_playback']['drained'])
             self.assertEqual(report['native_playback']['media_frames'], 777)
+            self.assertEqual(report['native_playback']['tail_padding_frames'], 247)
             with self.assertRaises(native_playback.NativeError):
                 client.begin(5, 777)
         finally:
@@ -443,10 +446,13 @@ raise SystemExit(2 if MODE.startswith('source-') else 0)
             server.close()
 
     def test_native_control_disconnect_and_failed_terminal_never_complete(self):
+        invalid_shapes = ({'tail_padding_frames': -1}, {'tail_padding_frames': True},
+                          {'tail_padding_frames': None}, {'tail_padding_frames': 256})
         for changes in ({'status': 'native-media-underrun', 'underflow_events': 1},
                         {'input_eof': False}, {'ring_consumed': False}, {'drained': False},
                         {'input_frames': 781}, {'consumed_frames': 781}, {'media_frames': 776},
-                        {'underflow_events': 1}, {'missing_media_frames': 256}):
+                        {'underflow_events': 1}, {'missing_media_frames': 256},
+                        *invalid_shapes, {'maximum_callback_frames': 0, 'tail_padding_frames': 0}):
             endpoint, server = socket.socketpair(socket.AF_UNIX, socket.SOCK_SEQPACKET)
             report = {}
             client = native_playback.NativeControl(endpoint, report)
@@ -456,7 +462,10 @@ raise SystemExit(2 if MODE.startswith('source-') else 0)
                 server.send(b'FINAL ' + json.dumps(self.native_final(**changes)).encode() + b'\n')
                 with self.assertRaises(native_playback.NativeError):
                     client.finish(5, 777)
-                self.assertEqual(report['native_playback'], self.native_final(**changes))
+                if changes in invalid_shapes:
+                    self.assertNotIn('native_playback', report)
+                else:
+                    self.assertEqual(report['native_playback'], self.native_final(**changes))
             finally:
                 client.close()
                 server.close()

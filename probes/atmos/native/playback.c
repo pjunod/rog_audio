@@ -29,6 +29,7 @@ struct playback {
     int control, wake;
     pthread_t reader;
     bool reader_started, draining, drained, connected;
+    uint32_t tail_padding_frames; /* Callback-owned; read after stream destruction. */
     atomic_bool stop, queued_all, demand_after_final;
     struct spa_audio_info_raw format;
 };
@@ -95,7 +96,8 @@ static void on_process(void *opaque)
     struct pw_buffer *b = pw_stream_dequeue_buffer(p->stream);
     if (b == NULL) return;
     struct spa_buffer *buffer = b->buffer;
-    uint32_t frames = 0;
+    uint32_t frames = 0, output_frames = 0;
+    bool final_media = false;
     if (buffer->n_datas != 1 || buffer->datas[0].data == NULL || buffer->datas[0].chunk == NULL) {
         rog_fail(&p->core, ROG_PIPEWIRE);
     } else {
@@ -103,18 +105,29 @@ static void on_process(void *opaque)
         uint32_t requested = data->maxsize / p->core.stride;
         if (b->requested && b->requested < requested) requested = b->requested;
         frames = rog_render(&p->core, data->data, requested);
+        final_media = frames > 0 && rog_consumed_all(&p->core);
+        output_frames = frames;
+        /* The split adapter emits a complete graph request. Keep final media
+         * intact and fill only its unused suffix, outside all media counters. */
+        if (final_media && frames < requested) {
+            memset((unsigned char *)data->data + frames * p->core.stride, 0,
+                   (requested - frames) * p->core.stride);
+            output_frames = requested;
+        }
         data->chunk->offset = 0;
         data->chunk->stride = p->core.stride;
-        data->chunk->size = frames * p->core.stride;
+        data->chunk->size = output_frames * p->core.stride;
     }
-    b->size = frames;
-    bool final_media = frames > 0 && rog_consumed_all(&p->core);
+    b->size = output_frames;
     int queued = pw_stream_queue_buffer(p->stream, b);
     if (queued < 0) rog_fail(&p->core, ROG_PIPEWIRE);
     /* Counters are visible before queue_buffer. Publish drain eligibility only
      * after the final buffer has actually been queued, including partial tails. */
-    if (final_media && queued >= 0 && !atomic_load(&p->core.error))
-        atomic_store_explicit(&p->queued_all, true, memory_order_release);
+    if (final_media && queued >= 0) {
+        p->tail_padding_frames = output_frames - frames;
+        if (!atomic_load(&p->core.error))
+            atomic_store_explicit(&p->queued_all, true, memory_order_release);
+    }
     /* PipeWire's ring example uses this RT-safe event handoff. No file/socket
      * read/write, allocation, logging, mutex or condition wait occurs here. */
     notify(p);
@@ -179,13 +192,13 @@ static void final_status(struct playback *p)
     int size = snprintf(packet, sizeof(packet),
         "FINAL {\"protocol\":\"%s\",\"status\":\"%s\",\"input_frames\":%u,"
         "\"consumed_frames\":%u,\"media_frames\":%u,\"stdin_priming_frames\":%u,"
-        "\"startup_silence_frames\":%u,\"prefill_silence_frames\":%u,"
+        "\"startup_silence_frames\":%u,\"prefill_silence_frames\":%u,\"tail_padding_frames\":%u,"
         "\"underflow_events\":%u,\"missing_media_frames\":%u,\"ring_capacity_frames\":%u,"
         "\"maximum_ring_frames\":%u,\"maximum_callback_frames\":%u,"
         "\"input_eof\":%s,\"ring_consumed\":%s,\"drained\":%s}\n",
         ROG_PROTOCOL, rog_error_name(error), atomic_load(&p->core.written), atomic_load(&p->core.consumed),
         atomic_load(&p->core.media_frames), atomic_load(&p->core.priming_frames),
-        atomic_load(&p->core.startup_silence), atomic_load(&p->core.prefill_silence),
+        atomic_load(&p->core.startup_silence), atomic_load(&p->core.prefill_silence), p->tail_padding_frames,
         atomic_load(&p->core.underflows), atomic_load(&p->core.missing), ROG_RING_FRAMES,
         atomic_load(&p->core.maximum_ring), atomic_load(&p->core.maximum_callback),
         atomic_load(&p->core.eof) ? "true" : "false", rog_consumed_all(&p->core) ? "true" : "false",
@@ -203,7 +216,7 @@ int main(int argc, char **argv)
 {
     if (argc == 2 && !strcmp(argv[1], "--describe")) {
         printf("{\"protocol\":\"%s\",\"ring_frames\":%u,\"rate\":48000,\"channels\":[2,12],"
-               "\"format\":\"f32le\",\"pipewire_library\":\"%s\"}\n", ROG_PROTOCOL, ROG_RING_FRAMES, pw_get_library_version());
+               "\"format\":\"f32le\",\"final_buffer_policy\":\"fill-request\",\"pipewire_library\":\"%s\"}\n", ROG_PROTOCOL, ROG_RING_FRAMES, pw_get_library_version());
         return 0;
     }
     if (argc != 9 || strcmp(argv[1], "--target") || !decimal(argv[2]) ||

@@ -31,7 +31,7 @@ def capabilities(helper, env):
             if (result.returncode or len(raw) > MAX_PACKET or not isinstance(value, dict) or
                     value.get('protocol') != PROTOCOL or value.get('ring_frames') != RING_FRAMES or
                     value.get('rate') != 48000 or value.get('channels') != [2, 12] or
-                    value.get('format') != 'f32le'):
+                    value.get('format') != 'f32le' or value.get('final_buffer_policy') != 'fill-request'):
                 raise ValueError('incompatible helper')
         except (OSError, ValueError, subprocess.TimeoutExpired) as exc:
             raise NativeError('native-helper-unavailable-or-incompatible') from exc
@@ -94,7 +94,7 @@ class NativeControl:
                 try:
                     final = json.loads(value[6:])
                     counters = ('input_frames', 'consumed_frames', 'media_frames',
-                        'stdin_priming_frames', 'startup_silence_frames', 'prefill_silence_frames',
+                        'stdin_priming_frames', 'startup_silence_frames', 'prefill_silence_frames', 'tail_padding_frames',
                         'underflow_events', 'missing_media_frames', 'maximum_ring_frames',
                         'maximum_callback_frames')
                     if (not isinstance(final, dict) or final.get('protocol') != PROTOCOL or
@@ -104,7 +104,9 @@ class NativeControl:
                                 for key in counters) or
                             any(type(final.get(key)) is not bool for key in ('input_eof', 'ring_consumed', 'drained')) or
                             final['maximum_ring_frames'] > RING_FRAMES or
-                            final['maximum_callback_frames'] > RING_FRAMES):
+                            final['maximum_callback_frames'] > RING_FRAMES or
+                            (final['tail_padding_frames'] and
+                             final['tail_padding_frames'] >= final['maximum_callback_frames'])):
                         raise ValueError('invalid native counters')
                 except (ValueError, TypeError) as exc:
                     raise NativeError('native-control-invalid-final') from exc
@@ -130,6 +132,7 @@ class NativeControl:
                 final['consumed_frames'] != priming_frames + media_frames or
                 final['stdin_priming_frames'] != priming_frames or final['media_frames'] != media_frames or
                 final['underflow_events'] or final['missing_media_frames'] or
+                not final['maximum_callback_frames'] or
                 not all(final[key] for key in ('input_eof', 'ring_consumed', 'drained'))):
             raise NativeError('native-playback-completion-mismatch')
 

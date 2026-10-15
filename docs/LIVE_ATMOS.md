@@ -145,6 +145,9 @@ waits for a full ring, or all remaining short media, before starting media.
 Callback-generated startup and prefill zeros have separate counters from
 stdin priming and media; no media is consumed while waiting. The final
 partial media chunk retains its exact frame count and is not an underrun.
+Only the unused suffix of its last requested output buffer is filled with
+neutral zeros, counted separately as `native_playback.tail_padding_frames`;
+this does not change media hashes, input EOF or drained media counts.
 Wrong/lost routes stop startup. The private capture harness also waits for
 all its monitor links to become active before launching playback.
 During streaming and drain it checks for disappearance, serial replacement,
@@ -217,7 +220,7 @@ chain's filters loaded, or that Dolby reference output matched.
 |---|---|
 | `player_pipe_requested_bytes` / `player_pipe_maximum_bytes` / `player_pipe_capacity_bytes` | Exact 4096-byte native input pipe; not physical latency |
 | `native_ring_capacity_frames` / `native_ring_capacity_bytes` | Separate preallocated native capacity, excluded from kernel-pipe and supervisor-queue counts |
-| `native_playback` | Native input/consumed/media/priming counts, startup/prefill silence, ring starvation, exact EOF and stream-drained event |
+| `native_playback` | Native input/consumed/media/priming counts, startup/prefill silence, separate final-buffer padding, ring starvation, exact EOF and stream-drained event |
 | `producer.stream.caller_frames` | Live producer release bound; fixed DSP block size and offline API remain separate |
 | `startup_priming_frames` | Zero frames sent only to the verified route before media activation; excluded from media counts |
 | `media_start_verified_active` | Every matching link reported active before the first media frame was submitted |

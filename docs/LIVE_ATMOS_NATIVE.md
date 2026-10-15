@@ -56,8 +56,13 @@ the declared boundary and waits for `min(4096, media remaining)` frames before
 starting media. Callback-generated startup/prefill silence is separately
 counted and never advances the media cursor. Once media starts, a shortage
 of required frames is `native-media-underrun`, not successful silence.
-A declared last partial callback queues exactly the remaining media frames,
-without counting its absent padding as missing media. Extra input, incomplete
+A declared last partial callback preserves exactly the remaining media frames
+and fills only the unused suffix of that final requested output buffer with
+neutral zeros. `tail_padding_frames` counts those extra transport frames only
+after successful queueing; it is zero for an aligned final buffer and strictly
+less than that callback's requested frames (at most 4096). It is separate from
+input, consumed/media, priming, startup silence and missing-media counts.
+Extra input, incomplete
 frame bytes, early EOF and EOF before BEGIN fail explicitly.
 
 Completion requires exact complete stdin EOF, all priming/media frames
@@ -69,11 +74,20 @@ The next process request publishes a second prerequisite without queueing an
 empty EOF buffer. The mainloop waits for both publications and validated input
 EOF before requesting drain. This follows the EOF sequence in pinned
 [PipeWire 1.6.8 pw-cat](https://github.com/PipeWire/pipewire/blob/1.6.8/src/tools/pw-cat.c).
-It changes neither media samples nor their count, and adds no tail padding or
-sleep. The previous isolated seek capture contained the complete final
-247-frame fragment one graph cycle late; that observation does not by itself
-prove the exact internal adapter cause. Exact capture acceptance remains
-required after the lifecycle correction.
+The next-demand correction alone did not change the retained seek failure:
+its complete final 247-frame fragment arrived after one silent 256-frame cycle.
+The final-request fill addresses the split adapter's full-duration output
+contract in pinned
+[PipeWire 1.6.8 audioconvert](https://github.com/PipeWire/pipewire/blob/1.6.8/spa/plugins/audioconvert/audioconvert.c).
+It changes neither media samples nor their count, and adds no sleep. For the
+observed 256-frame request, 247 media frames receive nine neutral suffix frames
+(0.1875 ms of transport audio). This is a source-supported correction candidate;
+the exact internal delay cause is not proven, and exact capture acceptance
+remains required. No complete extra quantum or DSP filter tail is generated.
+The capability description requires `final_buffer_policy: fill-request`; an
+older or incompatible colocated helper fails before playback. The Python client
+requires the separate nonnegative padding counter and bounds it below the
+largest callback request without including it in media/EOF accounting.
 A final bounded packet reports the completion states and counters before exit. Python
 requires exact agreement with its priming/submitted counts and zero native
 underflows before publishing a successful drain count. Native counters cover
