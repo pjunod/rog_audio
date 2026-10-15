@@ -7,7 +7,8 @@ target-removal cases pass. Full JOC remains incomplete: after two capture-clock
 failures, a two-CPU-affinity attempt completed all submitted/drained frames
 but captured one extra 256-frame block of silence at 47.392 seconds. Exact
 PCM therefore still fails despite zero current ring, clock and quota-throttle
-counters. A bounded graph-profiler diagnostic is being prepared. Historical
+counters. The profiler then observed capture-follower startup deadline errors. An explicit
+1024-frame isolated condition is being implemented for the next qualification. Historical
 failures remain distinct; the preview is not ready to merge or publish.
 Signed manual annotations and the bounded
 file-only Atmos API passed independent review and all 27 selected unit methods
@@ -53,6 +54,25 @@ Companion to [installation](SPEAKER_INSTALL.md), [review](REVIEW.md),
 [manual annotations](MANUAL_LATENCY_ANNOTATIONS.md) and
 [implementation](AUDIO_IMPLEMENTATION.md). Source, synthetic, read-only and
 physical evidence remain separate.
+
+## October 15 profiler — capture startup deadlines; explicit 1024 condition next
+
+Independent review found and resolved a private profiler-wrapper cleanup
+path before its sole execution. The bounded diagnostic stopped at startup
+with a capture-clock gap (expected tick 13,056, actual 13,312). The profiler
+recorded capture-follower xrun count four at the rejected tick; the sink/driver
+count was zero and no playback node appeared. Quota throttling was zero.
+Profiler exit and cleanup were clean. All thirty evidence files were verified.
+
+This correlates capture-follower deadline errors with this startup failure,
+while leaving the earlier 47.392-second insertion unattributed. The added
+profiler workload is explicit. No further 256-frame attempt is planned here.
+The harness is gaining explicit isolated 256/512/1024-frame selection with
+requested/effective graph evidence. Default 256 remains unchanged. The next
+full-JOC condition will use 1024 frames with the same two-CPU affinity/quota
+and unchanged production binaries. That corresponds to the ROG's historical
+speaker period but will not qualify physical routing or ThinkPad 256-frame
+live Atmos. Neither laptop's graph or tuning is being changed.
 
 ## October 15 affinity retry — full stream, one inserted silent quantum
 
