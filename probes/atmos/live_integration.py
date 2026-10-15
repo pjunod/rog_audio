@@ -443,8 +443,8 @@ def one_case(name, probe, config, parent, joc_input=None, failure_artifacts=None
                 result['retained_failure_artifacts'] = retain_failure_artifacts(private, failure_artifacts, name)
             except (OSError, ValueError) as exc:
                 result['failure_artifact_error'] = type(exc).__name__
-            if result['status'] != 'passed':
-                result['private_daemon_log_tail'] = (private / 'daemon.log').read_bytes()[-8192:].decode(errors='replace')
+        if result['status'] != 'passed':
+            result['private_daemon_log_tail'] = (private / 'daemon.log').read_bytes()[-8192:].decode(errors='replace')
     result['elapsed_seconds'] = round(time.monotonic() - started, 3)
     return result
 
