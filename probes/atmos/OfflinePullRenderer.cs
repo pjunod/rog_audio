@@ -61,7 +61,9 @@ public sealed class OfflinePullRenderer : IDisposable {
             Func<Engine> factory;
             int length;
             if (synthetic) {
-                Program.Scene scene = Program.ParseScene(bytes);
+                Program.Scene scene;
+                try { scene = Program.ParseScene(bytes); }
+                catch (System.Text.Json.JsonException) { throw new InvalidInput("scene_json"); }
                 length = scene.samples;
                 float[][] clips = scene.objects.Select(obj => Enumerable.Range(0, length)
                     .Select(i => obj.amplitude * MathF.Sin(2 * MathF.PI * obj.frequency_hz * i / SampleRate)).ToArray()).ToArray();

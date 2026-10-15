@@ -98,6 +98,14 @@ static partial class Regression {
         pull.Seek(0); Check(pull.Position == 0 && pull.Epoch == 5, "seek frame zero");
     }
     static void PullContextAndBounds() {
+        foreach (string malformed in new[] { "{", "{\"schema_version\":\"wrong-type\"}" }) {
+            try {
+                using var invalid = new PullHandle(System.Text.Encoding.UTF8.GetBytes(malformed));
+                throw new InvalidOperationException("malformed scene accepted");
+            } catch (Exception ex) when (ex.GetType().FullName == "AtmosProbe.InvalidInput" && ex.Message == "scene_json") { }
+            using var afterFailedOpen = new PullHandle();
+            afterFailedOpen.Read(new float[12], 1);
+        }
         using (var pull = new PullHandle()) {
             Reject(() => { using var second = new PullHandle(layout: "stereo-speakers"); }, "active_render_context");
             Check(pull.Channels == 12, "competing layout changed context");
