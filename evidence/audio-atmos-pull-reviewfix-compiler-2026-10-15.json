@@ -1,0 +1,58 @@
+{
+  "schema_version": 1,
+  "evidence_class": "compiler-only",
+  "date": "2026-10-15",
+  "base_commit": "29ac9e8797579bf99b12deee528b98b1e61b1d4d",
+  "source_sha256": {
+    "probes/atmos/Program.cs": "2f5f347d94446b8ec7f5ac5c29bf2c34424cbff02dcc1de9ad20ab405b80f0d5",
+    "probes/atmos/OfflinePullRenderer.cs": "99a5a9ef3f29a880db0e4b3c08a62ab6399db455b07c9ba7b9d175db9fb884c1",
+    "probes/atmos/atmos-probe": "8e4a1e3c8efcf26433386402c5126e0d641725a91a8ea32ce64608ba7e30d629",
+    "probes/atmos/regressions/Program.cs": "09eb4b77d0f3853cf069833576bf789f054d446c4bc7598a5aede7475a27e4c5",
+    "probes/atmos/regressions/PullRegression.cs": "26529048483d99d6e923d9ed74ca0def78c3cd11830e7f0aa2489fae3ec61655"
+  },
+  "cavern_commit": "7d85d1880666ca5ea323848cff47ce7f50b29f7d",
+  "cavern_provenance": "Existing source_manifest.json patches applied and verified by baseline build.sh; compiled references reused unchanged",
+  "sdk": "8.0.414",
+  "msbuild": "17.11.41+18f1ecf82",
+  "runtime": "8.0.20",
+  "platform": "Debian 12 linux-x64; native x86_64, not emulated",
+  "sdk_image": "mcr.microsoft.com/dotnet/sdk:8.0.414-bookworm-slim@sha256:ff8311847c54c04d1a14c488362807997d59b61372da5095a95f89cbcda7f9b7",
+  "compiler_image_id": "sha256:3056a4788bd963d927d0f90ab40bb6d002c59276b28e4c82347dfc3e85f2f4cb",
+  "isolation": {
+    "rootless": true,
+    "cpu_limit": 2,
+    "memory_limit_bytes": 6442450944,
+    "memory_plus_swap_limit_bytes": 6442450944,
+    "network": "none",
+    "devices_exposed": false,
+    "runtime_sockets_exposed": false
+  },
+  "compilations": [
+    {
+      "project": "probes/atmos/AtmosProbe.csproj",
+      "exit_code": 0,
+      "warnings": 0,
+      "errors": 0
+    },
+    {
+      "project": "probes/atmos/regressions/BlockBufferRegression.csproj",
+      "exit_code": 0,
+      "warnings": 0,
+      "errors": 0
+    }
+  ],
+  "unit_tests_executed": false,
+  "acceptance": "Compilation only; review, regression execution, media fidelity and physical acceptance remain separate.",
+  "compilation_snapshot": "fresh independent-review P2 malformed JSON exception normalization fix",
+  "commands": [
+    "dotnet publish probes/atmos/AtmosProbe.csproj -c Release --self-contained false -o NEW_OUTPUT -p:CavernPath=RETAINED_PATCHED_CAVERN_REFERENCES --ignore-failed-sources",
+    "dotnet publish probes/atmos/regressions/BlockBufferRegression.csproj -c Release --self-contained false -o NEW_REGRESSION_OUTPUT -p:CavernPath=RETAINED_PATCHED_CAVERN_REFERENCES --ignore-failed-sources"
+  ],
+  "source_commit": "57afa0fcd26a00bbcd8cf3e0fdf01cd2c6e629c4",
+  "canonical_commit": "69f0cd55ec2d9f0ec9cb85073e88c6a6487c217d",
+  "retained_artifact_sha256": {
+    "compile-reviewfix.log": "e4b998cf1315337912940a713c1cd20e60f80ddc8be2adbbb3a724748035b2d3",
+    "container-reviewfix-inspect.json": "ee1adaaa7c677cb9921ad23b4a39cb98b6463e33f8afe8283b1becf93bc5bdd1"
+  },
+  "container_exit_code": 0
+}
