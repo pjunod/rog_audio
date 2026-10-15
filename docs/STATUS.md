@@ -1,21 +1,17 @@
 # Status — implementation and physical acceptance
 
-**Updated:** 2026-10-15 · **State:** fifty-one distinct live unit methods
-and three existing dispatch smoke methods now have passing source-bound
-results. The native playback helper cleared independent adversarial review;
-twenty selected methods passed initially and the sole failed concurrency
-fixture passed after a reviewed test-only correction. No passing method was
-repeated for that correction. Native stereo capture passed, but the next
-twelve-channel capture lost 512 frames despite exact native input/consumption
-and zero ring underruns. Remaining transport cases and full JOC stopped.
-The unchanged target-mismatch case remains retained. A bounded profiler retry
-was exact with zero node errors, so it did not reproduce or attribute the loss.
-The capture-only candidate cleared independent adversarial review at
-`988cb25` after three harness corrections. Nine new recorder methods and two
-changed harness methods are entering acceptance; forty-nine unchanged method
-passes remain valid. Production playback source and binaries are unchanged. Earlier full captures
-and private diagnostics remain failed and retained. The live preview is not
-ready for publication or laptop playback yet.
+**Updated:** 2026-10-15 · **State:** sixty distinct live unit methods and
+three existing dispatch smoke methods have passing source-bound results.
+The reviewed native recorder passed all eleven selected methods once. Its
+first stereo and twelve-channel captures matched exactly. The next initial-
+seek case failed at its final partial block: the first 94,976 frames were
+exact, then 256 zero frames preceded the complete 247-frame tail. Recorder
+accounting was complete with zero overflow, writer or clock-gap errors.
+Validation stopped; cancellation, both target-loss cases and full JOC remain
+pending. The native EOF/drain sequence is being corrected against the pinned
+upstream process-demand sequence before review and affected-only acceptance.
+Earlier full captures and the original unattributed 512-frame deletion remain
+failed and retained. The live preview is not ready to merge or publish yet.
 Signed manual annotations and the bounded
 file-only Atmos API passed independent review and all 27 selected unit methods
 once. Fresh JOC rendering and four split continuity groups passed; the original
@@ -51,7 +47,7 @@ remain different software quantities, not physical latency or Mac parity.
 | Startup/stop | Reviewed helper, prior save/automatic-start checks and ROG service autostart evidence retained | End-to-end post-login routing; repeated boot/resume/hotplug separately |
 | Signed annotation analysis | Eleven reviewed methods passed once; signed bounds and provenance retained | Actual private annotations from the later recording session |
 | Source-level chain latency | Accepted minimum-phase IR/preset audit found no justified removable fixed delay; no tuning change | Actual same-path physical recording |
-| Live Atmos prototype | Recorder/harness 988cb25 reviewed and clear; 49 unchanged unit passes retained; prior capture failures retained | Run 9 new + 2 changed methods, six ordinary captures and full JOC |
+| Live Atmos prototype | 60 distinct methods + 3 smokes passed; native recorder stereo/714 exact; seek tail delayed one quantum | Review narrow native EOF correction, rerun affected callback method and successful drain captures, then pending destructive/full JOC cases |
 | Host Atmos | Sixteen affected methods passed once; fresh full JOC render and four isolated timeline groups passed | Original long sequence resource failure retained; independent fidelity and later live integration |
 | Physical interaction timing | Emitter source/ten-method acceptance and earlier staging retained; no pilot/physical samples | Owner-ready coordinated same-keyboard/phone capture, still deferred |
 | Sonos Arc/eARC | Untouched and last | TV route and received-format qualification after internal audio |
@@ -60,6 +56,39 @@ Companion to [installation](SPEAKER_INSTALL.md), [review](REVIEW.md),
 [manual annotations](MANUAL_LATENCY_ANNOTATIONS.md) and
 [implementation](AUDIO_IMPLEMENTATION.md). Source, synthetic, read-only and
 physical evidence remain separate.
+
+## October 15 recorder acceptance — exact stereo/714; delayed seek tail
+
+At reviewed `988cb25`, all eleven selected recorder/harness methods passed
+once. The other forty-nine live methods and three dispatch smokes were not
+repeated. Stereo and twelve-channel 96,000-frame captures then matched their
+expected PCM exactly, with complete recorder accounting and zero overflow,
+writer errors or usable-clock gaps.
+
+The initial-seek case produced/submitted/consumed 95,223 frames with the correct
+hash and reported drain, but exact capture failed. Read-only analysis of the
+retained bytes found 94,976 exact frames, then one 256-frame all-zero interval,
+then the entire 247-frame expected tail exactly. The tail is delayed, not
+absent. The recorder received/accepted/wrote 158,720 frames with zero overflow,
+writer errors or clock gaps; optional header/PTS metadata was unavailable.
+All twenty-eight acceptance evidence files and both separate read-only
+analysis files were independently hash-verified. No failed capture was rerun
+for diagnosis, and no passing unit method was repeated.
+
+Pinned PipeWire source shows `pw-cat` initiates drain on the next process
+request without queueing an empty EOF buffer. The native helper currently
+queues a zero-size buffer after media and can initiate drain directly after
+its final media queue. The selected narrow correction follows that upstream
+sequence while preserving exact media counts, the final successful queue and
+EOF checks. Source/bytes support investigating this boundary; they do not
+prove every internal adapter event or explain the earlier 512-frame deletion.
+
+Only the actual-callback ordering method is invalidated among unit methods;
+recorder/core/managed tests remain retained. The changed successful-drain
+lifecycle also invalidates stereo/714 capture qualification, so those and the
+failed seek will run after review. Cancellation, both target-loss cases and
+full JOC have not yet run with the recorder. No padding, arbitrary sleep,
+weaker comparison, graph change, laptop change or Sonos test is proposed.
 
 ## October 15 recorder review — clear; selected acceptance starting
 
