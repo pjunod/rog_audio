@@ -67,6 +67,9 @@ binds all four asset digests and the tag to `cc5bf674`; v0.2.3 remains the stabl
 latest release. See [download and use](docs/LIVE_ATMOS.md#download-the-published-preview)
 for dependencies and checksum verification. Publication adds no laptop,
 256-frame full-JOC, physical or Sonos qualification.
+[Owned NUC build cleanup](evidence/live-atmos-owned-cleanup-2026-10-15.json)
+removed the archived workspace, 46 stopped containers and three unshared
+images after verified offhost retention; a shared parent image was retained.
 
 [v0.2.3 is published](https://github.com/pjunod/rog_audio/releases/tag/v0.2.3)
 with the [verified packaging-only +rog4 runtime](evidence/speaker-stop-packaging-only-rog4-2026-10-13.json),
