@@ -2,7 +2,8 @@
 
 **Updated:** 2026-10-15 · **State:** signed manual-annotation analysis is
 implemented with review/acceptance pending; bounded file-only Atmos pull API
-is in development. Earlier demo/hour passes remain exact-condition history.
+is implemented and compiled; selected acceptance is pending. Earlier demo/hour
+passes remain exact-condition history.
 ROG's +rog3 tuning service started after a new externally initiated boot, but
 the operator is not logged into the desktop seat. ThinkPad was unreachable
 once; its current state remains unknown. Physical recording is still deferred.
@@ -30,7 +31,7 @@ remain different software quantities, not physical latency or Mac parity.
 | Startup/stop | Reviewed helper, prior save/automatic-start checks and ROG service autostart evidence retained | End-to-end post-login routing; repeated boot/resume/hotplug separately |
 | Signed annotation analysis | New bounded offline tool/example/ten methods implemented; no units run | Combined adversarial review, then one focused acceptance pass |
 | Source-level chain latency | Accepted minimum-phase IR/preset audit found no justified removable fixed delay; no tuning change | Actual same-path physical recording |
-| Host Atmos | Prior full official vectors/eight-method acceptance retained; bounded file-only pull API in development | Review/selected API acceptance; independent fidelity and later live integration |
+| Host Atmos | Prior full official vectors/eight-method acceptance retained; bounded file-only pull API implemented and compiled | Review/selected API acceptance; independent fidelity and later live integration |
 | Physical interaction timing | Emitter source/ten-method acceptance and earlier staging retained; no pilot/physical samples | Owner-ready coordinated same-keyboard/phone capture, still deferred |
 | Sonos Arc/eARC | Untouched and last | TV route and received-format qualification after internal audio |
 
@@ -66,7 +67,7 @@ Both receipts are imported byte-for-byte at SHA256 `ce4c212e` and `ce07cdff`.
 They preserve prior hours as historical passes without claiming a new physical
 or repeated-reboot pass. User-attended recording remains deferred.
 
-## Signed annotations and bounded Atmos API — implementation in progress
+## Signed annotations and bounded Atmos API — ready for final review
 
 The [new annotation tool](MANUAL_LATENCY_ANNOTATIONS.md) keeps signed sample
 intervals, conservative onset ranges, unknown timebase/bias declarations,
@@ -76,9 +77,12 @@ private file handling and the generated example have proposed new tests;
 construction syntax has been checked, but independent review and units have
 not run. The old v1 analyser and its accepted tests remain unchanged.
 
-The separate Atmos lane is implementing a reusable bounded file-only pull API
-with sample-tick timestamps, seek/flush/EOS state and continuity checks.
-It has no accepted result yet and does not enable desktop/headphone playback.
+The [file-only pull API](../probes/atmos/README.md) implements bounded caller
+reads, sample-tick timestamps, seek/flush/EOS state and continuity checks.
+[Native Linux API/regression compilation](../evidence/audio-atmos-pull-compiler-2026-10-15.json)
+passed with zero warnings/errors. Sixteen affected methods are selected from
+24 declared methods; no unit acceptance has run. Desktop/headphone playback
+and independent encoded-JOC replay fidelity remain unqualified.
 This work is being combined with the read-only receipts and source audit;
 there is no status-only PR or new physical measurement claim.
 

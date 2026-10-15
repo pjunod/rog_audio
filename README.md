@@ -40,8 +40,10 @@ for Dolby Channel ID 5.1.4/7.1.4 and [eight reviewed focused acceptance methods]
 passed once. The bounded offline launcher and channel-energy analyzer changed;
 installed laptop speaker software remains as recorded above. Independent
 reference fidelity, binaural/realtime support and physical qualification remain
-open; vector payloads and detailed renders stay private. A file-only bounded
-pull-render API is in development, not yet reviewed or qualified.
+open; vector payloads and detailed renders stay private. The [bounded pull-render API](probes/atmos/README.md) now implements
+caller-owned PCM reads, sample timestamps, seek/flush and explicit EOS. Its
+[native Linux compilation](evidence/audio-atmos-pull-compiler-2026-10-15.json)
+passed; review and selected regression acceptance remain pending.
 
 [Signed manual annotation analysis](docs/MANUAL_LATENCY_ANNOTATIONS.md) is
 implemented with generated examples and ten proposed focused methods; review
