@@ -816,7 +816,7 @@ raise SystemExit(2 if MODE.startswith('source-') else 0)
         values = {'clock.rate': 48000, 'clock.quantum': 1024, 'clock.min-quantum': 1024,
                   'clock.max-quantum': 1024, 'clock.force-rate': 0, 'clock.force-quantum': 0}
         def settings(changes=None):
-            return {'type': 'PipeWire:Interface:Metadata', 'props': {'metadata.name': 'settings'},
+            return {'id': 57, 'type': 'PipeWire:Interface:Metadata', 'props': {'metadata.name': 'settings'},
                     'metadata': [{'subject': 0, 'key': key, 'value': str(value)}
                                  for key, value in {**values, **(changes or {})}.items()]}
         self.assertIsNone(integration.observed_graph_settings([], 1024))
@@ -834,6 +834,40 @@ raise SystemExit(2 if MODE.startswith('source-') else 0)
         duplicate = settings(); duplicate['metadata'].append(duplicate['metadata'][0])
         with self.assertRaisesRegex(AssertionError, 'duplicate'):
             integration.observed_graph_settings([duplicate], 1024)
+        # Real pw-dump monitor metadata events contain changed entries only.
+        # They replace this cache object and cannot establish complete settings.
+        monitor = integration.RegistryMonitor({})
+        full = settings()
+        monitor.feed(json.dumps([full]).encode())
+        delta = settings(); delta['metadata'] = [delta['metadata'][1]]
+        monitor.feed(json.dumps([delta]).encode())
+        with self.assertRaisesRegex(AssertionError, 'disappeared'):
+            integration.observed_graph_settings(list(monitor.objects.values()), 1024, require_ready=True)
+        unrelated = settings(); unrelated['metadata'] = [{'subject': 0, 'key': 'log.level', 'value': 2}]
+        monitor.feed(json.dumps([unrelated]).encode())
+        self.assertIsNone(integration.observed_graph_settings(list(monitor.objects.values()), 1024))
+        calls = []
+        def snapshot(command, **options):
+            calls.append(options['timeout'])
+            self.assertEqual(command, ['pw-dump'])
+            self.assertEqual(options['stdin'], subprocess.DEVNULL)
+            self.assertEqual(options['timeout'], 2)
+            options['stdout'].write(json.dumps([full]).encode())
+            return subprocess.CompletedProcess(command, 0)
+        with mock.patch.object(integration.subprocess, 'run', side_effect=snapshot):
+            self.assertEqual(integration.full_graph_settings({}, 1024, require_ready=True), values)
+            full['metadata'].pop()  # A fresh snapshot sees the deleted clock key.
+            with self.assertRaisesRegex(AssertionError, 'disappeared'):
+                integration.full_graph_settings({}, 1024, require_ready=True)
+        self.assertEqual(calls, [2, 2])
+        # Publication retry has one total deadline; each query gets only the
+        # remaining budget, and absent initial values cannot extend it.
+        with mock.patch.object(integration, 'full_graph_settings', return_value=None) as query, \
+                mock.patch.object(integration.time, 'monotonic', side_effect=[0, 9.75, 10, 10]), \
+                mock.patch.object(integration.time, 'sleep'):
+            with self.assertRaisesRegex(AssertionError, 'startup wait expired'):
+                integration.wait_graph_settings({}, 1024)
+            query.assert_called_once_with({}, 1024, timeout=.25)
         self.assertIsNone(integration.observed_graph_callback({}, 1024))
         report = {'submitted_complete_frames': 1536, 'native_playback': {'maximum_callback_frames': 1024}}
         self.assertEqual(integration.observed_graph_callback(report, 1024), 1024)

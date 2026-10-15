@@ -89,6 +89,33 @@ def observed_graph_settings(data, quantum, *, require_ready=False):
     return values
 
 
+
+def full_graph_settings(env, quantum, *, timeout=2, require_ready=False):
+    """A fresh bounded snapshot, never the monitor's lossy metadata cache."""
+    with tempfile.TemporaryFile() as output:
+        def limits():
+            resource.setrlimit(resource.RLIMIT_FSIZE, (MAX_REGISTRY_BYTES, MAX_REGISTRY_BYTES))
+            resource.setrlimit(resource.RLIMIT_CORE, (0, 0))
+        result = subprocess.run(['pw-dump'], stdin=subprocess.DEVNULL, stdout=output,
+            stderr=subprocess.DEVNULL, env=env, timeout=timeout, preexec_fn=limits)
+        if result.returncode:
+            raise ValueError('full graph settings snapshot failed')
+        output.seek(0)
+        data = parse_registry(output.read(MAX_REGISTRY_BYTES + 1))
+    return observed_graph_settings(data, quantum, require_ready=require_ready)
+
+
+def wait_graph_settings(env, quantum):
+    deadline = time.monotonic() + 10
+    while True:
+        remaining = deadline - time.monotonic()
+        if remaining <= 0:
+            raise AssertionError('bounded graph settings startup wait expired')
+        value = full_graph_settings(env, quantum, timeout=min(2, remaining))
+        if value:
+            return value
+        time.sleep(min(.05, max(0, deadline - time.monotonic())))
+
 def observed_graph_callback(report, quantum):
     """A native callback observation supplements the daemon's settings."""
     native = report.get('native_playback')
@@ -534,15 +561,17 @@ def one_case(name, probe, config, parent, joc_input=None, failure_artifacts=None
             graph = {'requested_quantum': graph_quantum, 'rate': None, 'quantum': None, 'freewheel': False,
                      'base_config_sha256': hashlib.sha256(config_source).hexdigest(),
                      'effective_config_sha256': hashlib.sha256(effective_config).hexdigest(),
-                     'settings_observed': None, 'observed_callback_max_frames': None}
+                     'settings_before_playback': None, 'settings_after_capture': None,
+                     'settings_observation_scope': 'bounded full snapshots before playback and after capture; not continuous metadata',
+                     'observed_callback_max_frames': None}
             result['virtual_graph'] = graph
             daemon = subprocess.Popen(['pipewire', '-c', str(private_config)], env=env,
                                       stdin=subprocess.DEVNULL, stdout=daemon_log, stderr=daemon_log)
             wait_for(lambda: (runtime / 'pipewire-live-atmos').is_socket())
+            graph['settings_before_playback'] = wait_graph_settings(env, graph_quantum)
+            graph.update(rate=48000, quantum=graph_quantum)
             monitor = RegistryMonitor(env)
             monitor.start()
-            graph['settings_observed'] = wait_for(lambda: observed_graph_settings(monitor.snapshot(), graph_quantum))
-            graph.update(rate=48000, quantum=graph_quantum)
             if name == 'policy-target-loss':
                 wp = Path(env['XDG_CONFIG_HOME']) / 'wireplumber'
                 policy_version = run(['wireplumber', '--version'], env).decode().strip()
@@ -621,7 +650,6 @@ def one_case(name, probe, config, parent, joc_input=None, failure_artifacts=None
                 if capture_client is not None:
                     capture_client.poll(allow_source_end=capture_source_end_allowed(name, action))
                 data = monitor.snapshot()
-                observed_graph_settings(data, graph_quantum, require_ready=True)
                 if capture_client is not None:
                     capture_active = capture_links_active(data, sink_id, capture_node['id'], channels)
                     if not capture_source_end_allowed(name, action):
@@ -668,7 +696,6 @@ def one_case(name, probe, config, parent, joc_input=None, failure_artifacts=None
             assert report['physical_playback_observed'] is False
             wait_for(lambda: not nodes(monitor.snapshot(), 'rog-atmos-'), timeout=5)
             assert not list(private.glob('.atmos-live-*')), 'private child directory leaked'
-            observed_graph_settings(monitor.snapshot(), graph_quantum, require_ready=True)
             graph['observed_callback_max_frames'] = observed_graph_callback(report, graph_quantum)
             result.update(exit_code=code, playback_status=report['status'],
                           playback_report=report, unexpected_links=unexpected_links,
@@ -733,6 +760,7 @@ def one_case(name, probe, config, parent, joc_input=None, failure_artifacts=None
                     unexpected_links=unexpected_links, owned_nodes_removed=result['owned_nodes_removed'])
             if capture_client is not None and name in DESTRUCTIVE_CASES:
                 capture_client.finish(require_complete=not capture_source_end_allowed(name, action))
+            graph['settings_after_capture'] = full_graph_settings(env, graph_quantum, require_ready=True)
             result['status'] = 'passed'
         except Exception as exc:
             result['failure'] = type(exc).__name__ + ': ' + str(exc)

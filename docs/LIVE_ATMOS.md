@@ -315,9 +315,14 @@ The isolated harness and local wrapper accept `--graph-quantum 256|512|1024`;
 the default stays 256. This selects only the private test daemon's three
 `default.clock.quantum`, `min-quantum` and `max-quantum` values. Every other
 configuration byte is preserved, with base/effective config SHA-256 in the
-case receipt. Startup waits boundedly for published clock settings; observed
-rate/quantum/bounds and force overrides are checked at startup and every
-existing registry pump. Contradictory or later missing settings fail. The
+case receipt. Fresh full `pw-dump` snapshots check published clock settings
+before any capture/player starts and after playback/capture have stopped.
+Each query has a 2-second/4-MiB bound; initial publication retries share a
+10-second deadline, with the query timeout reduced to its remaining budget.
+Contradictory values or missing final settings fail. The persistent monitor's
+metadata events contain only changed entries and cannot prove complete settings
+or deleted-key absence, so they are not used for clock qualification. These
+before/after observations do not claim continuous clock-setting coverage. The
 native playback receipt separately records the largest callback request;
 when media was submitted it must match the selected test quantum. Without a
 playback callback, that observation remains unavailable rather than inferred
