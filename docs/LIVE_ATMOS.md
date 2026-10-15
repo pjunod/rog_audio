@@ -107,7 +107,12 @@ During streaming and drain it checks for disappearance, serial replacement,
 layout change, lost links and links to unrelated nodes. It fails and stops
 both children on a routing error. Polling is every 500 ms; the stream's
 native target properties additionally prevent fallback and reconnection
-between observations.
+between observations. A partial or missing route on a still-present playback
+node fails immediately during drain, even if the child exits successfully
+a moment later. Only complete playback-node disappearance can coincide with
+normal client teardown after its drain callback; the supervisor accepts that
+race only if the child exits successfully within 250 ms. Target disappearance,
+identity changes and wrong links still fail immediately.
 
 The native client sets `target.object`, `node.dont-fallback`,
 `node.dont-reconnect`, `node.dont-move`, `stream.dont-remix` and
@@ -191,7 +196,11 @@ Passing inherited offline receipts remain bound to their original sources.
 The manual-only `atmos-live` workflow lane accepts selection `units`,
 `integration` or `all`. Its `test_ids` input means exact full unittest IDs
 for `units` and exact case IDs for `integration`; the `all` selection takes
-no retries. It runs no legacy Atmos, speaker or laptop lane. The local
+no retry selectors or JOC input. At the local wrapper, `--test-id` alone
+defaults to `units`; `--case` or `--joc-input` alone defaults to `integration`.
+Mixing unit and integration retry selectors, or combining explicit `all`
+with a selector/input, fails before Git, image inspection or container work.
+It runs no legacy Atmos, speaker or laptop lane. The local
 container wrapper needs an already prepared pinned image and source checkout:
 
 ```bash
@@ -202,8 +211,8 @@ probes/atmos/live-ci.sh --image PRIVATE_PINNED_LIVE_IMAGE \
 
 The ordinary integration selection contains `success-stereo`, `success-714`,
 `success-seek`, `mismatch`, `cancel`, `target-loss` and `policy-target-loss`.
-The policy case uses a private WirePlumber 0.4/D-Bus session with hardware
-monitors disabled and an alternative sink available, to exercise native
+The policy case uses a private WirePlumber 0.4 or 0.5/D-Bus session, with
+version-matched private configuration and hardware monitors disabled and an alternative sink available, to exercise native
 no-fallback behavior. The other cases use explicit test-owned links.
 `success-joc` is a separate opt-in case requiring `--joc-input` with the
 [exact official 7.1.4 E-AC-3 vector](ATMOS_REFERENCE.md). It compares the

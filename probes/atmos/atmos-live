@@ -233,6 +233,31 @@ def checked_pcm(data):
         raise PlaybackError('producer-pcm-invalid')
 
 
+def wait_for_drain(player, target, stream_name, channels, env):
+    deadline = time.monotonic() + DRAIN_SECONDS
+    while player.poll() is None:
+        remaining = deadline - time.monotonic()
+        if remaining <= 0:
+            raise PlaybackError('pipewire-drain-timeout')
+        data = snapshot(env)
+        if not verify_links(data, target, stream_name, channels):
+            # A coherent snapshot of our still-present node with missing links
+            # is a broken route, even if pw-cat exits successfully just after it.
+            if any(item.get('type') == 'PipeWire:Interface:Node' and
+                   props(item).get('node.name') == stream_name for item in data):
+                raise PlaybackError('stream-links-lost')
+            # A drained pw-cat removes its entire node while exiting. Accept
+            # only that teardown race and require a bounded successful exit.
+            try:
+                player.wait(timeout=min(0.25, remaining))
+            except subprocess.TimeoutExpired as exc:
+                raise PlaybackError('stream-links-lost') from exc
+            break
+        time.sleep(0.05)
+    if player.returncode != 0:
+        raise PlaybackError('pipewire-player-failure')
+
+
 def transfer(producer, player, expected, target, stream_name, channels, env, report):
     frame_bytes = len(channels) * 4
     capacity = 4096 * frame_bytes
@@ -307,14 +332,7 @@ def transfer(producer, player, expected, target, stream_name, channels, env, rep
         raise PlaybackError('stream-links-unverified')
     player.stdin.close()
     player.stdin = None
-    drain_deadline = time.monotonic() + DRAIN_SECONDS
-    while player.poll() is None:
-        if time.monotonic() >= drain_deadline:
-            raise PlaybackError('pipewire-drain-timeout')
-        verify_links(snapshot(env), target, stream_name, channels)
-        time.sleep(0.05)
-    if player.returncode != 0:
-        raise PlaybackError('pipewire-player-failure')
+    wait_for_drain(player, target, stream_name, channels, env)
     # pw-cat's success means its stream drained, not that speakers were heard.
     report['drained_frames'] = submitted // frame_bytes
     report['pipewire_drain_completed'] = True

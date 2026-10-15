@@ -151,6 +151,7 @@ def one_case(name, probe, config, parent, joc_input=None):
         env.update(XDG_RUNTIME_DIR=str(runtime), PIPEWIRE_RUNTIME_DIR=str(runtime),
                    PIPEWIRE_REMOTE='pipewire-live-atmos')
         daemon = capture = player = manager = None
+        policy_version = None
         daemon_log = (private / 'daemon.log').open('xb')
         capture_handle = None
         try:
@@ -159,11 +160,31 @@ def one_case(name, probe, config, parent, joc_input=None):
             wait_for(lambda: (runtime / 'pipewire-live-atmos').is_socket())
             if name == 'policy-target-loss':
                 wp = Path(env['XDG_CONFIG_HOME']) / 'wireplumber'
-                (wp / 'main.lua.d').mkdir(parents=True)
-                (wp / 'bluetooth.lua.d').mkdir()
-                (wp / 'main.lua.d' / '80-disable-hardware.lua').write_text(
-                    'alsa_monitor.enabled = false\nv4l2_monitor.enabled = false\nlibcamera_monitor.enabled = false\n')
-                (wp / 'bluetooth.lua.d' / '80-disable-hardware.lua').write_text('bluez_monitor.enabled = false\n')
+                policy_version = run(['wireplumber', '--version'], env).decode().strip()
+                if 'libwireplumber 0.5.' in policy_version:
+                    # WirePlumber 0.5 replaced Lua configuration with SPA-JSON.
+                    # These feature names come from the 0.5.17 shipped profiles.
+                    (wp / 'wireplumber.conf.d').mkdir(parents=True)
+                    (wp / 'wireplumber.conf.d' / '80-disable-hardware.conf').write_text(
+                        'wireplumber.profiles = { main = {\n'
+                        '  hardware.audio = disabled\n'
+                        '  hardware.bluetooth = disabled\n'
+                        '  hardware.video-capture = disabled\n'
+                        '  monitor.alsa = disabled\n'
+                        '  monitor.alsa-midi = disabled\n'
+                        '  monitor.bluez = disabled\n'
+                        '  monitor.bluez-midi = disabled\n'
+                        '  monitor.v4l2 = disabled\n'
+                        '  monitor.libcamera = disabled\n'
+                        '} }\n')
+                elif 'libwireplumber 0.4.' in policy_version:
+                    (wp / 'main.lua.d').mkdir(parents=True)
+                    (wp / 'bluetooth.lua.d').mkdir()
+                    (wp / 'main.lua.d' / '80-disable-hardware.lua').write_text(
+                        'alsa_monitor.enabled = false\nv4l2_monitor.enabled = false\nlibcamera_monitor.enabled = false\n')
+                    (wp / 'bluetooth.lua.d' / '80-disable-hardware.lua').write_text('bluez_monitor.enabled = false\n')
+                else:
+                    raise AssertionError('unsupported WirePlumber configuration version')
                 manager = subprocess.Popen(['dbus-run-session', '--', 'wireplumber'],
                     stdin=subprocess.DEVNULL, stdout=daemon_log, stderr=daemon_log,
                     env=env, start_new_session=True)
@@ -252,7 +273,7 @@ def one_case(name, probe, config, parent, joc_input=None):
             result.update(exit_code=code, playback_status=report['status'],
                           playback_report=report, unexpected_links=unexpected_links,
                           stream_observed=observed_stream is not None, owned_nodes_removed=True,
-                          routing_policy='WirePlumber 0.4' if manager else 'manual scoped links; no policy-manager qualification',
+                          routing_policy=policy_version if manager else 'manual scoped links; no policy-manager qualification',
                           link_observation_interval_seconds=.05,
                           playback_wall_seconds=round(playback_seconds, 6),
                           waited_descendants_cpu_seconds=round((usage_after.ru_utime + usage_after.ru_stime) -
@@ -351,7 +372,7 @@ def main():
     args.config = args.config.resolve(strict=True)
     source_files = ('Program.cs', 'LiveStream.cs', 'OfflinePullRenderer.cs', 'ObjectFrameGuard.cs',
                     'atmos-live', 'atmos-probe', 'live_integration.py', 'live-pipewire.conf',
-                    'live-ci.sh', 'build.sh', 'source_manifest.json', 'Dockerfile', 'AtmosProbe.csproj',
+                    'live-ci.sh', 'live_ci_options.py', 'build.sh', 'source_manifest.json', 'Dockerfile', 'AtmosProbe.csproj',
                     'global.json', '../../tests/test_atmos_live.py', '../../scripts/validate_atmos_live.py')
     def bindings():
         items = {name: hashlib.sha256((Path(__file__).parent / name).read_bytes()).hexdigest()

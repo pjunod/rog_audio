@@ -161,3 +161,9 @@ acceptance. [Live playback](LIVE_ATMOS.md#acceptance--run-selected-methods-only-
 documents commands and evidence limits. Review and fix the complete source
 before the first method run; retry only failed or invalidated methods/cases.
 No push trigger, host sound device or desktop session socket is added.
+
+Local live-wrapper retries default `--test-id` to units and `--case` or
+`--joc-input` to integration. Mixed stage selectors and explicit `all` with
+retry selectors/input are rejected before external commands. The pure
+[`select_stage`](../probes/atmos/live_ci_options.py) helper is shared by the
+wrapper and its focused regression methods.

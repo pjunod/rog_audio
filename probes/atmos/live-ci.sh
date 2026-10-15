@@ -21,17 +21,18 @@ parser.add_argument('--test-id', action='append', default=[])
 parser.add_argument('--case', action='append', default=[])
 parser.add_argument('--joc-input', type=Path)
 args = parser.parse_args(sys.argv[2:])
+sys.path.insert(0, str(script.parent))
+from live_ci_options import select_stage
+try:
+    stage = select_stage(args.stage, args.test_id, args.case, args.joc_input)
+except ValueError as exc:
+    parser.error(str(exc))
 def interrupted(signum, frame):
     raise KeyboardInterrupt('interrupted signal ' + str(signum))
 for signum in (signal.SIGTERM, signal.SIGHUP):
     signal.signal(signum, interrupted)
-stage = args.stage or ('integration' if args.case or args.joc_input else 'all')
 if sys.platform != 'linux':
     parser.error('Linux container host required')
-if stage == 'units' and (args.case or args.joc_input):
-    parser.error('integration options cannot select a units-only run')
-if stage == 'integration' and args.test_id:
-    parser.error('unit methods cannot select an integration-only run')
 args.report = args.report.parent.resolve(strict=True) / args.report.name
 log_path = Path(str(args.report) + '.log')
 if any(os.path.lexists(path) for path in (args.report, log_path)):

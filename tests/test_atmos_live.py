@@ -19,6 +19,9 @@ loader = importlib.machinery.SourceFileLoader('atmos_live', str(ROOT / 'probes/a
 spec = importlib.util.spec_from_loader(loader.name, loader)
 live = importlib.util.module_from_spec(spec)
 loader.exec_module(live)
+ci_spec = importlib.util.spec_from_file_location('live_ci_options', ROOT / 'probes/atmos/live_ci_options.py')
+ci_options = importlib.util.module_from_spec(ci_spec)
+ci_spec.loader.exec_module(ci_options)
 BUILD = None
 BED = None
 
@@ -181,6 +184,77 @@ class LiveTests(unittest.TestCase):
         self.assertIsNotNone(child.returncode)
         self.assertTrue(child.stdin.closed)
         self.assertTrue(child.stdout.closed)
+
+    def test_drain_rejects_missing_links_while_player_survives(self):
+        for code in (None, 0):
+            player = mock.Mock(returncode=code)
+            player.poll.return_value = None
+            player.wait.return_value = code
+            with mock.patch.object(live, 'snapshot', return_value=registry()[:-1]), \
+                    self.assertRaisesRegex(live.PlaybackError, 'stream-links-lost'):
+                live.wait_for_drain(player, {'id': 42, 'serial': '142'}, 'stream-test', ['FL', 'FR'], {})
+            player.wait.assert_not_called()
+        player = mock.Mock()
+        player.poll.return_value = None
+        player.wait.side_effect = subprocess.TimeoutExpired('pw-cat', .25)
+        absent_node = [item for item in registry() if live.props(item).get('node.name') != 'stream-test']
+        with mock.patch.object(live, 'snapshot', return_value=absent_node), \
+                self.assertRaisesRegex(live.PlaybackError, 'stream-links-lost'):
+            live.wait_for_drain(player, {'id': 42, 'serial': '142'}, 'stream-test', ['FL', 'FR'], {})
+        player.wait.assert_called_once()
+        self.assertLessEqual(player.wait.call_args.kwargs['timeout'], .25)
+
+    def test_drain_teardown_race_requires_successful_exit_and_preserved_target(self):
+        absent_node = [item for item in registry() if live.props(item).get('node.name') != 'stream-test']
+        for code in (0, 2):
+            player = mock.Mock(returncode=code)
+            player.poll.return_value = None
+            player.wait.return_value = code
+            with mock.patch.object(live, 'snapshot', return_value=absent_node):
+                if code == 0:
+                    live.wait_for_drain(player, {'id': 42, 'serial': '142'}, 'stream-test', ['FL', 'FR'], {})
+                else:
+                    with self.assertRaisesRegex(live.PlaybackError, 'player-failure'):
+                        live.wait_for_drain(player, {'id': 42, 'serial': '142'}, 'stream-test', ['FL', 'FR'], {})
+        player = mock.Mock(returncode=0)
+        player.poll.return_value = None
+        with mock.patch.object(live, 'snapshot', return_value=registry()[1:]), \
+                self.assertRaisesRegex(live.PlaybackError, 'target-disappeared'):
+            live.wait_for_drain(player, {'id': 42, 'serial': '142'}, 'stream-test', ['FL', 'FR'], {})
+        player.wait.assert_not_called()
+
+    def test_ci_retry_defaults_select_only_the_requested_stage(self):
+        self.assertEqual(ci_options.select_stage(None, ['method'], [], None), 'units')
+        self.assertEqual(ci_options.select_stage(None, [], ['case'], None), 'integration')
+        self.assertEqual(ci_options.select_stage(None, [], [], Path('vector')), 'integration')
+        self.assertEqual(ci_options.select_stage(None, [], [], None), 'all')
+        self.assertEqual(ci_options.select_stage('units', ['method'], [], None), 'units')
+        self.assertEqual(ci_options.select_stage('integration', [], ['case'], None), 'integration')
+
+    def test_ci_invalid_retry_selection_fails_before_external_commands(self):
+        wrapper = ROOT / 'probes/atmos/live-ci.sh'
+        # Execute the wrapper's actual Python entry point with external calls
+        # forbidden, rather than testing a second copy of its selection logic.
+        source = wrapper.read_text().split("<<'PY'\n", 1)[1].rsplit('\nPY', 1)[0]
+        base = ['embedded-wrapper', str(wrapper), '--image', 'unused-image', '--source',
+                str(ROOT), '--report', str(self.root / 'report.json')]
+        invalid = [
+            ['--test-id', 'method', '--case', 'case'],
+            ['--test-id', 'method', '--joc-input', 'vector'],
+            ['--stage', 'all', '--test-id', 'method'],
+            ['--stage', 'all', '--case', 'case'],
+            ['--stage', 'all', '--joc-input', 'vector'],
+            ['--stage', 'units', '--case', 'case'],
+            ['--stage', 'integration', '--test-id', 'method']]
+        with mock.patch.object(subprocess, 'run', side_effect=AssertionError('unexpected process execution')), \
+                mock.patch.object(subprocess, 'check_output', side_effect=AssertionError('unexpected process execution')), \
+                contextlib.redirect_stderr(open(os.devnull, 'w')):
+            for selection in invalid:
+                with self.subTest(selection=selection), mock.patch.object(sys, 'argv', base + selection), \
+                        mock.patch.dict(sys.modules, {'live_ci_options': ci_options}), \
+                        self.assertRaises(SystemExit) as failure:
+                    exec(compile(source, str(wrapper), 'exec'), {})
+                self.assertEqual(failure.exception.code, 2)
 
     def test_signal_failure_report_is_private_and_exclusive(self):
         source = self.root / 'scene.json'
