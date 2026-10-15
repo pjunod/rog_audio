@@ -19,14 +19,17 @@ file-only Atmos API passed independent review and all 27 selected unit methods
 once. Fresh JOC rendering and four split continuity groups passed; the original
 combined sequence hit a process limit and remains recorded separately.
 Earlier laptop demo/hour passes remain exact-condition history. A later read-only
-ROG refresh finds physical and tuned stereo nodes present with all twelve
-protected files unchanged; its idle graph has no links. ThinkPad timed out once.
+ROG refresh found physical and tuned stereo nodes present with all twelve
+protected files unchanged; its idle graph had no links. A later bounded
+[connectivity refresh](../evidence/speaker-connectivity-refresh-2026-10-15.json)
+at 18:06 UTC timed out on both laptops, so their current running state is
+unknown. No remote inspection, playback or change ran during those attempts.
 Physical recording is deferred at the owner's request.
 
 | System | Last qualified software | Last qualified timing | Programme settings | October 15 observation / open evidence |
 |---|---|---|---|---|
-| ROG | +rog3, merged helper/unit backport | Graph 1024/48 kHz, 21.333 ms | −20 LUFS, cap 2.6475 dB | Later physical/tuned sink nodes present; twelve files unchanged; idle graph has zero links; active route/IR/period unverified |
-| ThinkPad | +rog3, merged helper/unit backport | Graph 256/48 kHz, 5.333 ms | −16 LUFS, cap 14.1375 dB | Single connection timeout; current boot/tuning state unknown |
+| ROG | +rog3, merged helper/unit backport | Graph 1024/48 kHz, 21.333 ms | −20 LUFS, cap 2.6475 dB | Earlier physical/tuned sink nodes and twelve unchanged files; 18:06 UTC connection timeout; current route/IR/period unknown |
+| ThinkPad | +rog3, merged helper/unit backport | Graph 256/48 kHz, 5.333 ms | −16 LUFS, cap 14.1375 dB | 18:06 UTC connection timeout; current boot/tuning state unknown |
 | M4 Air | Stock output in retained observation | HAL 512/48 kHz, 10.667 ms | Unchanged in retained observation | Prior files/browser staged; physical comparison pending |
 | Sonos | Deferred | Unmeasured | Unassessed | Internal-speaker acceptance first |
 
@@ -40,8 +43,8 @@ remain different software quantities, not physical latency or Mac parity.
 
 | Work | State | Next evidence |
 |---|---|---|
-| Hardware/session | Later ROG read-only refresh finds physical and tuned sink nodes with unchanged protected files; ThinkPad timed out once | Coordinated playback needed to observe full active route; refresh ThinkPad when reachable |
-| ASUS speaker tuning | Prior 1024 hour/demo accepted; new service/preset/control bindings present | Full post-login physical route, fresh IR load and negotiated period |
+| Hardware/session | Latest read-only connection attempts timed out on both; earlier ROG protected files were unchanged | Reachable read-only refresh, then coordinated playback to observe full active route |
+| ASUS speaker tuning | Prior 1024 hour/demo accepted; earlier service/preset/control bindings present; current host unreachable | Full post-login physical route, fresh IR load and negotiated period |
 | ThinkPad speaker tuning | Prior 256 hour/demo accepted at −16/cap 14.1375; current state unknown | Reachable read-only refresh; physical qualification |
 | Startup/stop | Reviewed helper, prior save/automatic-start checks and ROG service autostart evidence retained | End-to-end post-login routing; repeated boot/resume/hotplug separately |
 | Signed annotation analysis | Eleven reviewed methods passed once; signed bounds and provenance retained | Actual private annotations from the later recording session |
