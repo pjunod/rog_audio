@@ -1,14 +1,15 @@
 # Status — implementation and physical acceptance
 
-**Updated:** 2026-10-15 · **State:** thirty-seven distinct live unit methods and
+**Updated:** 2026-10-15 · **State:** thirty-eight distinct live unit methods and
 three existing dispatch smoke methods have passing source-bound receipts.
-The persistent-monitor harness now passes exact stereo, 12-channel and
-initial-seek PCM, layout rejection and policy-driven target loss. Cancellation
-and manual target removal stopped correctly but their fixed-delay actions
-fired during startup silence, before any media was submitted. Their positive
-media-count assertions remain failures. A bounded actual-media action barrier
-is being implemented for all three destructive cases; the four unaffected
-success/mismatch results are retained. Full live JOC acceptance remains pending.
+All seven ordinary integration cases are green through retained unaffected
+passes and reviewed corrections. The first full 73.504-second official JOC
+stream submitted and drained all 3,528,192 frames with the expected source PCM
+hash, but failed exact captured-output matching. Retained comparison evidence
+shows actual delivery gaps, including an early missing 256-frame block; the
+final audio remains present later. A bounded prefix diagnostic is separating
+producer batching from native feeding/scheduling before another correction.
+The live preview is not ready for publication or laptop playback yet.
 Signed manual annotations and the bounded
 file-only Atmos API passed independent review and all 27 selected unit methods
 once. Fresh JOC rendering and four split continuity groups passed; the original
@@ -41,7 +42,7 @@ remain different software quantities, not physical latency or Mac parity.
 | Startup/stop | Reviewed helper, prior save/automatic-start checks and ROG service autostart evidence retained | End-to-end post-login routing; repeated boot/resume/hotplug separately |
 | Signed annotation analysis | Eleven reviewed methods passed once; signed bounds and provenance retained | Actual private annotations from the later recording session |
 | Source-level chain latency | Accepted minimum-phase IR/preset audit found no justified removable fixed delay; no tuning change | Actual same-path physical recording |
-| Live Atmos prototype | 37 distinct units + 3 dispatch smokes passed; exact stereo, 12-channel and seek captures plus mismatch and policy target loss passed | Review actual-media barrier, check only affected destructive cases, then full live JOC; no laptop or Sonos playback |
+| Live Atmos prototype | 38 distinct units + 3 dispatch smokes passed; all seven ordinary cases green; full JOC submitted hash/count/drain correct but capture failed | Diagnose full-stream delivery gaps using a bounded prefix comparison, then review and retry only affected checks; no laptop or Sonos playback |
 | Host Atmos | Sixteen affected methods passed once; fresh full JOC render and four isolated timeline groups passed | Original long sequence resource failure retained; independent fidelity and later live integration |
 | Physical interaction timing | Emitter source/ten-method acceptance and earlier staging retained; no pilot/physical samples | Owner-ready coordinated same-keyboard/phone capture, still deferred |
 | Sonos Arc/eARC | Untouched and last | TV route and received-format qualification after internal audio |
@@ -50,6 +51,30 @@ Companion to [installation](SPEAKER_INSTALL.md), [review](REVIEW.md),
 [manual annotations](MANUAL_LATENCY_ANNOTATIONS.md) and
 [implementation](AUDIO_IMPLEMENTATION.md). Source, synthetic, read-only and
 physical evidence remain separate.
+
+## October 15 ordinary acceptance complete — full JOC delivery still fails
+
+The actual-media barrier cleared source review at `b14b1e8`. Its one new
+unit method and all three affected destructive cases passed. The four earlier
+success/mismatch cases remain accepted at `4f65188`; no unaffected test was
+repeated. Cancellation and target removal now happen after finite nonzero
+PCM reaches the controlled virtual sink, with positive submitted counts,
+no observed fallback and owned-node cleanup.
+
+The first full official 7.1.4 JOC live run then failed captured PCM comparison.
+The publisher MP4 and extracted elementary stream matched their pinned
+hashes. All 3,528,192 frames were rendered, submitted and drained, and the
+producer/submitted PCM matched the retained full-render reference. Captured
+output differed. Read-only comparison found a 256-frame missing block replaced
+by silence near media frame 24,346; the final 8,192 reference frames remain
+exact later, after accumulated delay. This is a failed live acceptance result,
+not a decoder/reference mismatch or a missing-tail success claim.
+
+The original capture and comparison receipts are retained. A short complete-
+syncframe prefix diagnostic will compare the managed producer with already
+retained reference PCM under the same graph/resource limits, recording batch
+and scheduling timing. No full offline reference rerender, blind full-vector
+retry, laptop playback or Sonos test is part of that diagnosis.
 
 ## October 15 persistent-monitor acceptance — exact 12-channel capture
 
