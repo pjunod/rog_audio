@@ -3,13 +3,12 @@
 **Updated:** 2026-10-15 · **State:** sixty-one distinct live unit methods and
 three existing dispatch smoke methods have passing source-bound results.
 Exact stereo, twelve-channel and initial-seek capture, cancellation and both
-target-removal cases pass. The full 73.504-second JOC attempt stopped early
-on a capture-clock discontinuity and did not reach full PCM comparison.
-A diagnostic-only retry confirmed a skipped observed graph cycle with both
-buffer timestamps matching their live snapshots. A bounded affinity retry is
-being prepared to investigate burst scheduling under the existing quota.
-Earlier failures remain distinct. The live preview is not ready
-to merge or publish until the remaining acceptance passes.
+target-removal cases pass. Full JOC remains incomplete: after two capture-clock
+failures, a two-CPU-affinity attempt completed all submitted/drained frames
+but captured one extra 256-frame block of silence at 47.392 seconds. Exact
+PCM therefore still fails despite zero current ring, clock and quota-throttle
+counters. A bounded graph-profiler diagnostic is being prepared. Historical
+failures remain distinct; the preview is not ready to merge or publish.
 Signed manual annotations and the bounded
 file-only Atmos API passed independent review and all 27 selected unit methods
 once. Fresh JOC rendering and four split continuity groups passed; the original
@@ -45,7 +44,7 @@ remain different software quantities, not physical latency or Mac parity.
 | Startup/stop | Reviewed helper, prior save/automatic-start checks and ROG service autostart evidence retained | End-to-end post-login routing; repeated boot/resume/hotplug separately |
 | Signed annotation analysis | Eleven reviewed methods passed once; signed bounds and provenance retained | Actual private annotations from the later recording session |
 | Source-level chain latency | Accepted minimum-phase IR/preset audit found no justified removable fixed delay; no tuning change | Actual same-path physical recording |
-| Live Atmos prototype | 61 distinct methods + 3 smokes passed; all six ordinary playback/removal cases pass | Diagnose full JOC capture-clock failure, then retry only the affected path |
+| Live Atmos prototype | 61 distinct methods + 3 smokes passed; all six ordinary playback/removal cases pass | Trace the remaining full JOC silent-quantum insertion; retain all prior passes |
 | Host Atmos | Sixteen affected methods passed once; fresh full JOC render and four isolated timeline groups passed | Original long sequence resource failure retained; independent fidelity and later live integration |
 | Physical interaction timing | Emitter source/ten-method acceptance and earlier staging retained; no pilot/physical samples | Owner-ready coordinated same-keyboard/phone capture, still deferred |
 | Sonos Arc/eARC | Untouched and last | TV route and received-format qualification after internal audio |
@@ -54,6 +53,28 @@ Companion to [installation](SPEAKER_INSTALL.md), [review](REVIEW.md),
 [manual annotations](MANUAL_LATENCY_ANNOTATIONS.md) and
 [implementation](AUDIO_IMPLEMENTATION.md). Source, synthetic, read-only and
 physical evidence remain separate.
+
+## October 15 affinity retry — full stream, one inserted silent quantum
+
+The independently reviewed launch restricted inherited affinity to logical
+CPUs 0 and 1 on distinct physical cores, retaining the existing two-CPU quota,
+6 GiB limit, 256-frame graph, source binaries and exact reference. All
+3,528,192 rendered/submitted/drained frames were reported complete and the
+submitted PCM hash matched. The captured payload hash did not match. Recorder
+clock/ring/writer errors, native ring underflows and quota throttling were
+all zero; these counters do not cover every node's graph deadline.
+
+Read-only byte comparison proved an exact 2,274,816-frame prefix, then one
+256-frame all-channel-zero insertion, then the entire remaining 1,253,376
+reference frames exactly at the shifted offset. There were no other numeric
+changes or deleted reference frames. The discrepancy begins at 47.392 seconds.
+All twenty-one attempt files and eight analysis files were independently
+hash-verified. This attempt remains a failure, not a timing-qualified pass.
+
+The next bounded diagnostic adds the native graph profiler under the same
+condition to observe playback, sink, capture and driver deadline evidence.
+It will rerun only the failed full JOC case. No laptop configuration or
+speaker tuning changed; Sonos remains untouched.
 
 ## October 15 clock diagnostics — skipped cycle; bounded affinity retry prepared
 
