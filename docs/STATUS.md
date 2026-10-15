@@ -1,47 +1,105 @@
 # Status — implementation and physical acceptance
 
-**Updated:** 2026-10-14 · **State:** both laptops now run +rog3 with the
-reviewed helper/unit backport, original speaker voicing and protection intact.
-ROG uses 1024/48000 with −20 LUFS/cap 2.6475 dB; ThinkPad uses 256/48000 with
-−16 LUFS/cap 14.1375 dB. Real helper/native stop, saved-state, two automatic
-starts, short checks and both final full-stereo software hours passed with
-no added driver errors. Both current generated demos are accepted. Physical
-recording is deferred to another coordinated window; measurements and broader
-media qualification remain open.
-**Evidence update:** both final hours completed 2026-10-14 00:12/00:16 UTC; v0.2.3 published/verified at 00:31/00:32 UTC. Dated receipts retain separate attempts.
+**Updated:** 2026-10-15 · **State:** signed manual-annotation analysis is
+implemented with review/acceptance pending; bounded file-only Atmos pull API
+is in development. Earlier demo/hour passes remain exact-condition history.
+ROG's +rog3 tuning service started after a new externally initiated boot, but
+the operator is not logged into the desktop seat. ThinkPad was unreachable
+once; its current state remains unknown. Physical recording is still deferred.
 
-| System | Deployed software | Timing term | Loudness | Current acceptance |
+| System | Last qualified software | Last qualified timing | Programme settings | October 15 observation / open evidence |
 |---|---|---|---|---|
-| ROG | +rog3, separately backported merged helper/unit | Graph 1024/48 kHz, 21.333 ms | −20 LUFS, cap 2.6475 dB | Full hour passed, no added errors; accepted demo, improved loudness; physical checks remain |
-| ThinkPad | +rog3, separately backported merged helper/unit | Graph 256/48 kHz, 5.333 ms | −16 LUFS, cap 14.1375 dB | Full hour passed, no added errors; accepted sound/loudness demo; physical checks remain |
-| M4 Air | Stock output; matched files staged | HAL 512/48 kHz, 10.667 ms | Unchanged | Actual browser/route/phone/keyboard pilot and physical comparison |
+| ROG | +rog3, merged helper/unit backport | Graph 1024/48 kHz, 21.333 ms | −20 LUFS, cap 2.6475 dB | Service/preset/native controls present after new boot; greeter owns sound devices; post-login full route/IR/period unverified |
+| ThinkPad | +rog3, merged helper/unit backport | Graph 256/48 kHz, 5.333 ms | −16 LUFS, cap 14.1375 dB | Single connection timeout; current boot/tuning state unknown |
+| M4 Air | Stock output in retained observation | HAL 512/48 kHz, 10.667 ms | Unchanged in retained observation | Prior files/browser staged; physical comparison pending |
 | Sonos | Deferred | Unmeasured | Unassessed | Internal-speaker acceptance first |
 
-Both actual laptop packages remain +rog3, ELF `3f110d6a`; the separate helper
-is `ba8c4a6a` with MIT notice `b6dfebc6`. +rog4 is the [published v0.2.3 packaging-only distribution](../evidence/speaker-runtime-v023-publication-2026-10-14.json),
-with required service companion and paired kits. It is not installed on the laptops. No new reboot,
-resume/hotplug, calibrated acoustics or physical speaker-delay pass is inferred.
-Graph periods and the HAL buffer are different software terms; final hours
-remain separate from the historical ThinkPad hour and intentionally shortened
-−20 observation. The ROG observer's two-compressor pre-start refusal was a
-procedure error, not an audio failure; only that observation was restarted.
+The completed hours and demos qualified the earlier running +rog3 invocations,
+ELF `3f110d6a`, helper `ba8c4a6a`, MIT notice `b6dfebc6`, kept IR/non-AutoGain
+voicing and final limiter. They do not prove current postboot hardware routing.
+The [published v0.2.3 distribution](../evidence/speaker-runtime-v023-publication-2026-10-14.json)
+is packaging-only +rog4 with unchanged native bytes, paired kits and required
+service companion; no laptop +rog4 deployment was performed. Graph/HAL terms
+remain different software quantities, not physical latency or Mac parity.
 
 | Work | State | Next evidence |
 |---|---|---|
-| Hardware inventory | Both laptops inspected read-only | Refresh during installation |
-| ASUS speaker tuning | +rog3, original voicing preserved; final 1024 hour and current demo passed | Broader media and physical checks |
-| ThinkPad speaker tuning | −16/cap 14.1375 installed; original voicing preserved; final 256 hour and current demo passed | Broader media and physical checks |
-| Laptop installation runtime | Both +rog3 with exact merged helper/unit backport; saved-state, automatic starts and final hours passed | Reboot/resume/hotplug separately |
-| Diagnostics and latency | Final ROG 1024/ThinkPad 256 hours passed without added errors; earlier failures/partial/old-runtime runs retained | Physical measurements |
-| Programme loudness | Reviewed corrected `+rog3` build accepted: 28 units passed once; both model graphs passed after failed-selector-only retry | Both deployments, final hours and current demos accepted; physical checks remain |
-| Host Atmos | Original 15 tests/CI cleanup retained; complete official 5.1.4/7.1.4 JOC vectors rendered in offline development diagnostics; four review fixes and 8 affected methods passed once | Independent fidelity, realtime/headphone and physical qualification |
-| macOS comparison | M4 Air getter/silent-running snapshots and Linux software observations retained; 16 summary tests passed in PR 5 | Physical comparison in a later coordinated window |
-| Physical interaction timing | Ten methods/local M3 unarmed smoke retained; matched files/browser prepared; ROG page unarmed; no physical samples | Deferred coordinated pilot and repeated same-track capture |
-| Sonos Arc/eARC | Deferred until internal audio work | TV route and actual received formats |
+| Hardware/session | ROG inspected read-only after new boot at greeter; ThinkPad unreachable once | Normal desktop login, bounded route/ACL check; refresh ThinkPad when reachable |
+| ASUS speaker tuning | Prior 1024 hour/demo accepted; new service/preset/control bindings present | Full post-login physical route, fresh IR load and negotiated period |
+| ThinkPad speaker tuning | Prior 256 hour/demo accepted at −16/cap 14.1375; current state unknown | Reachable read-only refresh; physical qualification |
+| Startup/stop | Reviewed helper, prior save/automatic-start checks and ROG service autostart evidence retained | End-to-end post-login routing; repeated boot/resume/hotplug separately |
+| Signed annotation analysis | New bounded offline tool/example/ten methods implemented; no units run | Combined adversarial review, then one focused acceptance pass |
+| Source-level chain latency | Accepted minimum-phase IR/preset audit found no justified removable fixed delay; no tuning change | Actual same-path physical recording |
+| Host Atmos | Prior full official vectors/eight-method acceptance retained; bounded file-only pull API in development | Review/selected API acceptance; independent fidelity and later live integration |
+| Physical interaction timing | Emitter source/ten-method acceptance and earlier staging retained; no pilot/physical samples | Owner-ready coordinated same-keyboard/phone capture, still deferred |
+| Sonos Arc/eARC | Untouched and last | TV route and received-format qualification after internal audio |
 
-Companion to [installation](SPEAKER_INSTALL.md), [review](REVIEW.md) and
-[implementation](AUDIO_IMPLEMENTATION.md). Source capability, synthetic results,
-installation and measured performance remain separate claims.
+Companion to [installation](SPEAKER_INSTALL.md), [review](REVIEW.md),
+[manual annotations](MANUAL_LATENCY_ANNOTATIONS.md) and
+[implementation](AUDIO_IMPLEMENTATION.md). Source, synthetic, read-only and
+physical evidence remain separate.
+
+## October 15 postboot refresh — service present, desktop route not yet ready
+
+[The exact observation](../evidence/speaker-postboot-observation-2026-10-15.json)
+records the ROG boot at 11:59:24 UTC and bounded inspection at 12:02:37 UTC.
+The enabled +rog3 service was active with no restarts in its new invocation;
+its selected preset, nine native AutoGain controls, helper/unit bindings and
+1024/48000 request match the retained conditions. Eleven of twelve protected
+file hashes match the prior gate; the main configuration changed only preset
+usage count/order. All inspected file bytes stayed stable during this check.
+ALSA cards and stock audio services were present, but physical PipeWire nodes
+were absent and observed nodes suspended. No fresh IR load, full stereo path
+or negotiated driver quantum was observed; zero idle counters are not timing.
+
+[The exact route diagnosis](../evidence/speaker-postboot-route-diagnosis-2026-10-15.json)
+identifies the stock user PipeWire core and installed ALSA plugin. The local
+seat belongs to the display-manager greeter, whose sound-device ACLs do not
+grant access to the remote operator/user-manager sessions. This unmet session
+precondition is not evidence of lost speaker tuning. A normal operator desktop
+login followed by read-only device/route verification is the proposed next
+step; restoration after login has not been tested. No group/ACL/configuration
+change, service restart, reboot, playback or microphone action was performed.
+The ThinkPad had one connection timeout and was not repeatedly polled.
+
+Both receipts are imported byte-for-byte at SHA256 `ce4c212e` and `ce07cdff`.
+They preserve prior hours as historical passes without claiming a new physical
+or repeated-reboot pass. User-attended recording remains deferred.
+
+## Signed annotations and bounded Atmos API — implementation in progress
+
+The [new annotation tool](MANUAL_LATENCY_ANNOTATIONS.md) keeps signed sample
+intervals, conservative onset ranges, unknown timebase/bias declarations,
+rejected attempts and recording/condition/block boundaries. Its optional
+explicit-file hashing proves bytes only, never physical validity. Strict
+private file handling and the generated example have proposed new tests;
+construction syntax has been checked, but independent review and units have
+not run. The old v1 analyser and its accepted tests remain unchanged.
+
+The separate Atmos lane is implementing a reusable bounded file-only pull API
+with sample-tick timestamps, seek/flush/EOS state and continuity checks.
+It has no accepted result yet and does not enable desktop/headphone playback.
+This work is being combined with the read-only receipts and source audit;
+there is no status-only PR or new physical measurement claim.
+
+## Accepted speaker-chain audit — no justified tuning change
+
+[The exact offline audit](../evidence/speaker-chain-algorithmic-delay-audit-2026-10-15.json),
+SHA256 `b4c35f9b`, binds the accepted native source, presets and IRs. Both
+4096-frame/48 kHz IRs begin and peak at frame zero; the pinned converter uses
+minimum-phase construction. Their 85.333 ms file support length is not an
+85.333 ms or half-length fixed playback delay. The 99.9% impulse-energy
+indices are ROG frame 12 and ThinkPad frames 88/81; these are filter metrics,
+not hardware latency or processing benchmarks.
+
+At the accepted power-of-two callback sizes, the inspected host adapter uses
+the direct callback path rather than its non-power-of-two FIFO. External Zita
+latency was not measured. The preserved limiter has 1 ms configured lookahead,
+with no fresh actual LSP latency-port observation. Bypassed compressor stages
+and 15-second AutoGain estimation history do not establish active lookahead
+or a 15-second audio delay. No removable fixed delay or safe improvement was
+justified; IRs, limiter and graph requests remain unchanged. There were no
+laptop calls, compiler runs, units or physical measurements in this audit.
 
 ## Official Atmos vectors — diagnostics and accepted software
 

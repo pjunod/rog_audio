@@ -127,9 +127,12 @@ physical measurement acceptance.
 ## 3. Preserve the tuned state and coordinate the capture window
 
 Complete software qualification before the coordinated recording session.
-Both laptops now run +rog3 with the separate reviewed helper/unit backport:
-ROG 1024/48000, target −20 LUFS/cap 2.6475 dB; ThinkPad 256/48000, target
-−16 LUFS/cap 14.1375 dB. Original IRs/non-AutoGain stages and final limiters
+The last qualified +rog3/helper-backport conditions were ROG 1024/48000,
+target −20 LUFS/cap 2.6475 dB, and ThinkPad 256/48000, target −16 LUFS/cap
+14.1375 dB. The [October 15 refresh](STATUS.md#october-15-postboot-refresh--service-present-desktop-route-not-yet-ready)
+finds the ROG at the greeter without operator sound-device access; normal
+desktop login and a read-only full-route check are still required. ThinkPad
+was unreachable once, so its current state is unknown. Original IRs/non-AutoGain stages and final limiters
 remain intact. Both [final settings-bound hours](STATUS.md#final-kept-settings-software-hours--2026-10-14) passed without added errors; current
 generated demos are accepted at the recorded conditions. Physical recording
 is deferred to another coordinated window; no page is to be armed or

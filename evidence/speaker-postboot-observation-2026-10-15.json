@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "kind": "authored-allowlisted-read-only-postboot-observation",
+  "date": "2026-10-15",
+  "method": "One bounded SSH inspection per host; ROG-only targeted read-only follow-ups explain a changed main configuration hash and absent physical PipeWire nodes. No setters, service actions, playback, microphone, reboot or repeated tests.",
+  "source_scripts": [
+    {
+      "name": "audio_postboot_readonly_82ab.py",
+      "sha256": "4612aef10226bbf7619e71a1337151dc87e1ac4aeff7f8c25860eaae744b4b78"
+    },
+    {
+      "name": "audio_postboot_delta_82ab.py",
+      "sha256": "9a51ae23f0a68713551e24fda9e94234456fde2bcc4ccc255ba1628ff57f1f57"
+    },
+    {
+      "name": "audio_postboot_binding_82ab.py",
+      "sha256": "ee5a1a8fd7656bd9d3aa26941ee3f3e5ab7adf193a1a8b075a118742317b9c62"
+    }
+  ],
+  "hosts": {
+    "lab5": {
+      "reachable": true,
+      "boot_utc": "2026-10-15T11:59:24+00:00",
+      "boot_is_after_previously_accepted_software_hours": true,
+      "observation_utc": "2026-10-15T12:02:37.028708+00:00",
+      "kernel_release": "7.3.0-rc5-nativehdr1",
+      "native_package": "8.2.8+rog3",
+      "native_binary_sha256": "3f110d6a2d1e2c743cc552b58930679acd0c00e45f5771a23d4b7702ca31206d",
+      "service": {
+        "active": true,
+        "enabled": true,
+        "restarts_in_current_invocation": 0,
+        "started_local": "Thu 2026-10-15 07:59:37 EDT",
+        "invocation_differs_from_accepted_hour": true,
+        "invocation_unchanged_during_inspection": true,
+        "login_link_matches_unit": true
+      },
+      "selected_preset": "rog-speaker-78dba4c0ea3a6e68",
+      "native_autogain_getters": {
+        "bypass": "false",
+        "inputGain": "0",
+        "outputGain": "0",
+        "maximumGain": "2.647500000006407",
+        "target": "-20",
+        "reference": "2",
+        "maximumHistory": "15",
+        "silenceThreshold": "-50",
+        "forceSilence": "false"
+      },
+      "protected_file_count": 12,
+      "protected_file_hashes_matching_prior_gate": 11,
+      "protected_file_hashes_unchanged_during_inspection": true,
+      "main_configuration_delta": "Only mostUsedPresets ordering and the selected preset usage count changed (1 to 4); plugin order, bound device/route and other main configuration lines unchanged. Existing bytes preserved.",
+      "latency_request": {
+        "frames": 1024,
+        "rate_hz": 48000,
+        "rule_sha256": "0c05468532fc4838dc01f9d051c4685f0899b27ddc323f9b421970afde2e20d8",
+        "matches_accepted_rule": true
+      },
+      "pipewire_and_wireplumber_active": true,
+      "alsa_hardware_cards_present": true,
+      "pipewire_physical_audio_nodes_present": false,
+      "pipewire_node_count": 9,
+      "all_observed_nodes_suspended": true,
+      "active_full_tuned_stereo_chain_observed": false,
+      "fresh_native_ir_load_observed": false,
+      "negotiated_quantum_observed": false,
+      "driver_snapshot_quantum_and_rate_zero_while_idle": true,
+      "result": "Current-boot tuned service configuration present; end-to-end physical route not ready in observed PipeWire graph. Requires separate diagnosis; no repair attempted.",
+      "private_receipt_sha256": {
+        "initial": "36dbb0676765feef47dc736fc088b606048d954d8041c0d334cde92dcecc2d87",
+        "main_config_delta": "f22589d25613d93a5723f9a87a59d609f073c2bf86fc3d974301fef7cd00032b",
+        "binding_inventory": "1f26f64354e6a3fd0af73e07a510b3ac5a25a39b5ca1fe831c973e98691a5c86"
+      }
+    },
+    "lab6": {
+      "reachable": false,
+      "attempts": 1,
+      "ssh_returncode": 255,
+      "reason": "Connection timed out",
+      "current_boot_or_tuning_state_observed": false,
+      "private_receipt_sha256": "8cccc3e1eea60d75cb5188a7f8d0e9d1e63fe7be7a26180949e720d7159ccb77"
+    }
+  },
+  "limits": [
+    "Evidence of one externally initiated current boot, not an agent-triggered reboot or repeated reboot qualification.",
+    "Configured preset/IR file hashes and native control getters are separate from fresh loaded IR, active full graph, negotiated period or acoustic acceptance.",
+    "Earlier listening/hour passes remain historical exact-condition receipts; no new physical latency, suspend/resume or hotplug qualification.",
+    "ThinkPad was not repeatedly polled; its current state remains unknown."
+  ],
+  "settings_or_service_changes": false,
+  "playback_or_microphone": false,
+  "sonos_changes": false
+}

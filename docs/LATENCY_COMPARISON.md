@@ -1,6 +1,6 @@
 # Latency comparison — tuned Linux laptops and the M4 Air
 
-**Status:** current +rog3/backport hours passed at ROG 1024 and ThinkPad 256;
+**Status:** historical +rog3/backport hours passed at ROG 1024 and ThinkPad 256;
 historical 256/512 failures retained; physical comparison deferred/unmeasured ·
 **Written:** 2026-10-13 · **Executes:** latency phase in
 [implementation](AUDIO_IMPLEMENTATION.md).
@@ -10,7 +10,7 @@ This document compares the actual installed speaker paths. Preserve the sound
 already accepted on the ROG and the separate Lenovo tuning on the ThinkPad.
 Sonos Atmos remains outside this phase.
 
-[The current deployed receipt](../evidence/programme-service-autoload-and-current-settings-v2-2026-10-13.json)
+[The October 13 deployment receipt](../evidence/programme-service-autoload-and-current-settings-v2-2026-10-13.json)
 records +rog3 on both laptops with the separate synchronous-stop backport.
 ROG's 20-second 1024/48000 check retained driver ERR 4; ThinkPad's 20-second
 256/48000 check retained ERR 0. Both produced eleven positive observations
@@ -18,8 +18,13 @@ with original IR/non-AutoGain/full stereo preserved. The [final hours](STATUS.md
 −20/cap 2.6475 and ThinkPad −16/cap 14.1375 passed without added errors,
 with unchanged tuning and verified owned cleanup. Physical recording is
 deferred to another coordinated window.
-These current conditions do not retroactively replace the failed or old-runtime
-intervals below, and none measures physical speaker delay.
+These accepted conditions do not retroactively replace failed or old-runtime
+intervals below, and none measures physical speaker delay. The
+[October 15 session diagnosis](../evidence/speaker-postboot-route-diagnosis-2026-10-15.json)
+finds the ROG at the greeter without operator sound-device access; its full
+route/IR/period need post-login read-only verification. The
+[ThinkPad refresh](../evidence/speaker-postboot-observation-2026-10-15.json)
+failed one connection, leaving its current state unknown.
 
 ## 1. Compare the same kind of evidence
 
@@ -302,3 +307,25 @@ passed a separate 20.162-second 256/48000 check, ERR 0 unchanged. Its independen
 256 request and original voicing are preserved. Fresh provisional-default
 hours follow the kept running settings, and do not establish everyday listening,
 physical delay, hotplug/resume, gaming load or power equivalence.
+
+
+## Accepted FIR and native-chain audit — 2026-10-15
+
+[The source-bound audit](../evidence/speaker-chain-algorithmic-delay-audit-2026-10-15.json)
+uses the exact accepted IR/preset/native hashes. The two-channel 4096-frame
+IRs have minimum-phase construction and begin/peak at frame zero. File
+support of 85.333 ms does not establish a fixed 85.333 ms or half-length
+latency. Their signed frequency-dependent group delay and impulse-energy
+statistics describe filter response; they do not measure speaker onset.
+
+For accepted 256/1024 power-of-two callbacks, the inspected native host path
+avoids its non-power-of-two FIFO; external convolution-library latency and
+callback deadlines were not measured. Both presets retain configured 1 ms
+limiter lookahead, bypassed multiband stages and AutoGain history used for
+level estimation. No fresh LSP latency value or removable fixed delay was
+established. The audit recommends keeping the exact voicing, limiter and
+requests, then measuring the actual path after route/session readiness.
+
+Use [signed manual annotations](MANUAL_LATENCY_ANNOTATIONS.md) for the later
+same-track click/chirp capture; implementation/review/acceptance state is in
+[status](STATUS.md). No physical recording or tuning change occurred here.
