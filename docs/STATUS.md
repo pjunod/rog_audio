@@ -9,8 +9,9 @@ captured-output identity despite exact produced/submitted PCM and counts.
 It skips 256 frames near 0.733 seconds; the exact final tail is present 6,144
 frames later. The first failed run and all diagnostics remain retained.
 Private runtime-concurrency and larger-player-pipe diagnostics also failed.
-A bounded native-profiler run now reproduces the mismatch with the canonical
-parameters; playback-versus-capture attribution is under analysis. The live preview is
+A bounded native-profiler run associates the first mismatch with playback
+deadline misses while capture/driver counters are still clean. A native
+playback helper is being prepared to remove blocking I/O from its callback. The live preview is
 not ready for publication or laptop playback yet.
 Signed manual annotations and the bounded
 file-only Atmos API passed independent review and all 27 selected unit methods
@@ -77,10 +78,24 @@ capture writes occur inside `pw-cat` processing callbacks in the pinned
 PipeWire source. Capture currently writes to a regular filesystem file, so
 playback and observer scheduling remain distinct possible causes. One bounded
 native-profiler run uses the canonical `528152b` source and parameters,
-without managed or feeder tracing. It reproduced the mismatch; native node
-counters and captured sample positions are being correlated before choosing
-a component to change. No passing unit or ordinary integration cases repeat.
-Speaker tuning, rollback, laptop sessions and Sonos remain untouched.
+without managed or feeder tracing. It reproduced the mismatch. A corrected alignment identifies the first 25
+nonzero source frames replaced by zeros. Nearby native playback xrun counts
+increase while capture and driver counters are still zero; later capture and
+driver xruns are separate. The profiler adds workload, and this correlation
+does not assign every earlier or later discrepancy to the same cause. All
+27 diagnostic evidence files were independently hash-verified.
+
+The next correction replaces native playback's blocking callback I/O with a
+preallocated ring and separate input thread. A fixed 4,096-frame ring and
+4,096-byte input pipe retain explicit bounds; for twelve channels the ring
+alone adds about 56.89 ms of capacity above the former pipe allocation.
+Callback-generated startup silence, submitted media, actual media underflow
+and native drain will be reported separately. This is a scheduling correction,
+not a measured latency reduction. A matching isolated native compiler loop
+must pass before C/build changes; completed implementation then receives
+independent adversarial review and affected-only validation. Decoder source,
+Cavern pins and unrelated passing tests remain unchanged. Speaker tuning,
+rollback, laptop sessions and Sonos remain untouched.
 
 ## October 15 reviewed batching/reserve correction — full JOC still fails
 
