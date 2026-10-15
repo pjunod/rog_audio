@@ -50,7 +50,11 @@ negative click-to-chirp intervals, rejected attempts and declared onset bounds
 without recording or inferring physical validity. The [accepted-filter audit](evidence/speaker-chain-algorithmic-delay-audit-2026-10-15.json)
 found no justified removable fixed delay; original filters/limiter stay intact.
 The [live player prototype](docs/LIVE_ATMOS.md) streams rendered PCM into
-an explicit PipeWire sink; review and isolated acceptance are recorded separately.
+an explicit PipeWire sink. Its [software acceptance](evidence/live-atmos-acceptance-2026-10-15.json)
+records 63 distinct live methods and a bit-exact full JOC media capture under
+the explicit 48-kHz/1024-frame, two-CPU/6-GiB isolated condition. Ordinary
+256-frame media receipts remain inherited; full JOC failures at 256 are retained.
+This does not qualify ThinkPad 256-frame playback or either laptop's live path.
 The [native playback helper contract](docs/LIVE_ATMOS_NATIVE.md) covers its
 callback, buffering, control and build boundaries.
 Independent fidelity, binaural/realtime support and physical qualification

@@ -3,10 +3,46 @@
 Companion to the [offline Atmos contract](../probes/atmos/README.md) and
 [reference vectors](ATMOS_REFERENCE.md). This document owns the small Linux
 player's invocation, routing contract and interpretation. It is an
-implementation prototype with source reviews and selected isolated receipts;
-full JOC continuity acceptance remains incomplete. Physical playback,
-independent Dolby fidelity and realtime qualification are
-unmeasured. Sonos Arc/eARC testing remains last.
+implementation prototype with reviewed software acceptance under the explicit
+conditions below. Physical playback, independent Dolby fidelity and realtime
+qualification remain unmeasured. Sonos Arc/eARC testing remains last.
+
+## Observed software acceptance (2026-10-15)
+
+The [source-bound acceptance receipt](../evidence/live-atmos-acceptance-2026-10-15.json)
+records 63 distinct live unit methods passed across reviewed revisions, with
+only failed or invalidated methods repeated after fixes. Three existing
+command-dispatch smoke results remain retained separately.
+
+The complete official JOC vector passed at source `312e9cf` through the actual
+native playback helper and independent native recorder: **3,528,192 media
+frames** (73.504 seconds) were rendered, submitted, drained and
+compared bit-exact with the retained Cavern reference. Producer, submitted and
+captured-media SHA-256 were all
+`4c97fef1e51add1e08ff4a5bbc5b9df81cbc5cc0eb0b65c8077d99ae701cef19`.
+The condition was an isolated nonrealtime PipeWire 1.6.8 graph at 48 kHz with
+**1024-frame quantum**, CPU affinity 0/1, a two-CPU quota and 6 GiB memory cap.
+Before/after full snapshots and the actual maximum callback request agreed
+on 1024. Final-buffer padding was 512 neutral transport frames, excluded from
+all media counts and hashes. Native ring-underflow and recorder clock-gap,
+overflow, writer-error and rejected-frame counters were zero; the scoped
+container receipt recorded no CPU throttling. These counters do not claim
+that all server/device deadlines or physical presentation were measured.
+
+Earlier ordinary 256-frame receipts cover generated stereo/7.1.4, exact initial
+seek/attenuation, cancellation, manual and policy target loss, plus retained
+pre-playback channel mismatch. They remain inherited media/route evidence,
+**not new passes of the before/after settings-snapshot contract**. Full JOC
+failures at 256 remain failures, including the recorded clock discontinuities
+and single-quantum insertion. The 1024 result does not establish reliable JOC
+at 256 or retroactively repair an earlier attempt.
+
+A 1024-frame graph period is 21.333 ms, not measured acoustic latency. This
+acceptance does not qualify either laptop, the ThinkPad's historical 256-frame
+condition, realtime scheduling, independent Dolby fidelity or Sonos reception.
+It compares output with the same pinned decoder/renderer, not an independent
+Dolby reference. Speaker tuning, default devices and laptop configuration were
+not changed.
 
 ## Run the player through your existing tuned sink
 

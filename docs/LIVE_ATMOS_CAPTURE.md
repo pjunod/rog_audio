@@ -134,12 +134,24 @@ artifact and linked ABI hashes. The current compiler requires GLIBC 2.38 and
 playback source, binary, managed renderer and runtime remain unchanged.
 The manual CI compiler phase invokes this recipe after the separate playback
 build; acceptance still runs in the unchanged runtime image under 2 CPUs,
-6 GiB and the existing 48-kHz/256-frame nonfreewheel private graph.
+6 GiB and an explicitly selected 48-kHz nonfreewheel private graph. The
+default remains 256 frames; the accepted full JOC condition used 1024 frames
+and CPU affinity 0/1, with before/after settings and actual callback evidence.
 
 Focused methods exercise concurrent ring ordering/overflow/limit, optional
 metadata and wraps, partial/error writes, real ARM/STOP/callback/quiescence,
 private-FD rejection and bounded client cleanup. Their source is reviewable
-before execution. The changed observer invalidates prior capture-path
-acceptance, including the historical native stereo pass. The six affected
-ordinary cases and separate full JOC capture must use this exact recorder;
-unchanged target-mismatch and production unit receipts remain retained.
+before execution. Replacing the observer invalidated the earlier capture
+path, including its historical native stereo pass. Reviewed ordinary cases
+then passed with this recorder at 256 frames; those remain inherited media
+receipts and do not acquire the later settings-snapshot qualification.
+
+The [final full JOC receipt](../evidence/live-atmos-acceptance-2026-10-15.json)
+compares all 3,528,192 captured media frames exactly at 48 kHz/1024 frames,
+with zero recorder clock-gap, overflow, writer-error or rejected-frame counters.
+The independently counted 512 final output-padding frames are outside that
+media comparison. The complete recording also contains startup/trailing audio;
+its total callback/write count is distinct from the compared media length.
+Earlier 256-frame JOC failures remain retained. A healthy recorder and exact
+virtual media capture do not qualify laptop presentation, ThinkPad 256-frame
+playback, general realtime reliability, independent Dolby fidelity or Sonos.

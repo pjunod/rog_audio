@@ -4,7 +4,10 @@ This document owns the native helper's transport, build and failure contract.
 The [live player](LIVE_ATMOS.md) owns user invocation and routing. Source
 implementation and compile receipts are separate from accepted virtual-sink
 PCM and physical playback; current acceptance is recorded in [status](STATUS.md).
-The new helper does not imply that prior failed JOC captures have passed.
+The [accepted full JOC capture](../evidence/live-atmos-acceptance-2026-10-15.json)
+used this helper at 48 kHz/1024 frames under the documented two-CPU condition.
+Prior failed 256-frame captures remain failed; software acceptance does not
+qualify realtime scheduling or physical presentation.
 
 ## Purpose and callback boundary
 
@@ -81,9 +84,12 @@ contract in pinned
 [PipeWire 1.6.8 audioconvert](https://github.com/PipeWire/pipewire/blob/1.6.8/spa/plugins/audioconvert/audioconvert.c).
 It changes neither media samples nor their count, and adds no sleep. For the
 observed 256-frame request, 247 media frames receive nine neutral suffix frames
-(0.1875 ms of transport audio). This is a source-supported correction candidate;
-the exact internal delay cause is not proven, and exact capture acceptance
-remains required. No complete extra quantum or DSP filter tail is generated.
+(0.1875 ms of transport audio). The corrected seek case captured all 95,223
+media frames exactly with nine separately counted padding frames. The accepted
+full JOC run at a 1024-frame request similarly counted 512 transport-padding
+frames outside its 3,528,192 media frames. The exact internal cause of the earlier
+adapter delay remains an inference. No complete extra quantum or DSP filter
+tail is generated.
 The capability description requires `final_buffer_policy: fill-request`; an
 older or incompatible colocated helper fails before playback. The Python client
 requires the separate nonnegative padding counter and bounds it below the
@@ -174,13 +180,15 @@ Cavern source at its pinned revision, and both upstream licence files. The
 runnable archive's per-file inventory should bind the actual managed, native,
 Python, runtime and notice bytes to the build and acceptance receipts. Test
 observers/executables belong in private acceptance artifacts, with their source
-retained separately. Publication remains pending full JOC acceptance and merge.
+retained separately. Any preview publication follows the recorded acceptance and merge.
 
 Focused core tests cover concurrent ring wrap/order, exact priming boundary,
 prefill, short final tail, native underflow, malformed input/control and
 control/cancellation while ring and pipe are full. Python tests cover helper
 capability/ACK/final-count failure and the unchanged route guards. Transport
-acceptance must run through the actual new helper before earlier synthetic
-or full JOC success can be claimed. The isolated harness uses an independent
+acceptance used the actual native helper. The final full-vector pass is
+limited to the documented 48-kHz/1024-frame condition; ordinary 256-frame
+receipts remain inherited, and full JOC failures at 256 are retained. The
+isolated harness uses an independent
 [native capture observer](LIVE_ATMOS_CAPTURE.md); its implementation and
 acceptance do not alter this production helper. No microphone/physical recording is added.

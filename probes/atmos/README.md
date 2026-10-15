@@ -197,7 +197,7 @@ pre-review receipts are historical, separate from this final qualification.
 | TrueHD Atmos | Unsupported here; Cavernize's inspected adapter invokes external `truehdd.exe` and downloads floating releases; no pinned Linux decoder supplied |
 | Binaural/headphones | Unsupported; no HRTF source/licence or fidelity qualification |
 | Dolby gst-home-audio | Alternate public contract; proprietary native libraries not supplied |
-| Realtime/desktop/PipeWire | Explicit-sink native live prototype; selected isolated receipts retained, full JOC continuity acceptance incomplete; realtime and physical behavior unqualified |
+| Realtime/desktop/PipeWire | Full JOC media captured exactly in the isolated 48-kHz/1024-frame condition; ordinary 256-frame receipts inherited; realtime and physical behavior unqualified |
 | Sonos Arc/eARC | Deferred to the final audio lane |
 
 ## Bounded pull API and file timelines (2026-10-15)
@@ -411,8 +411,13 @@ it is not a production dependency. The
 [operator contract](../../docs/LIVE_ATMOS.md) documents the 90-second raw
 E-AC-3 bound, initial seek, attenuation, tuned-sink selection and unmeasured
 physical/realtime limits. Source reviews and selected isolated tests have
-completed; full JOC continuity acceptance remains incomplete. The
-[status](../../docs/STATUS.md) retains current outcomes and earlier failures.
+completed. The [live acceptance receipt](../../evidence/live-atmos-acceptance-2026-10-15.json)
+records the complete 3,528,192-frame JOC media capture matching its retained
+same-engine reference at 48 kHz/1024 frames, under two-CPU/6-GiB limits and
+CPU affinity 0/1. Its 512 final padding frames are separate. Ordinary 256-frame
+receipts remain inherited; full JOC failures at 256 remain failures, and no
+laptop/ThinkPad-256, physical, realtime, independent Dolby or Sonos qualification
+is inferred. The [status](../../docs/STATUS.md) retains every scoped outcome.
 The [native contract](../../docs/LIVE_ATMOS_NATIVE.md#build-and-standalone-artifacts)
 lists the matching Linux ABI, private runtime layout and required notices.
 The offline `inspect`, `render` and `timeline` interfaces remain
