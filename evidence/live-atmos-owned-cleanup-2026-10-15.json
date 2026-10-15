@@ -1,0 +1,40 @@
+{
+  "schema": 1,
+  "kind": "sanitized-owned-live-atmos-build-cleanup",
+  "started_at": "2026-10-15T20:34:12.472545+00:00",
+  "finished_at": "2026-10-15T20:34:48.830097+00:00",
+  "scope": "Exact task-owned stopped containers, unshared build images and archived NUC workspace only.",
+  "stopped_containers_removed": 46,
+  "build_images_removed": 3,
+  "build_images_retained": 1,
+  "retained_image_reason": "A child image depends on the fourth candidate; shared images were outside deletion authorization.",
+  "archived_workspace_removed": true,
+  "pre_removal_verification": {
+    "initial_manifest_entries": 11009,
+    "final_manifest_entries": 11009,
+    "regular_file_hashes_verified": 9679,
+    "offhost_archive_bytes": 1011864260,
+    "offhost_archive_sha256": "965958b1bab59e16df0bd4aee4c577e57caa7bb8e2632bf949c0cf34da7bf848",
+    "offhost_verified_entries": 11009,
+    "offhost_verified_regular_files": 9679,
+    "offhost_hash_mismatches": 0,
+    "independent_archive_verification": true
+  },
+  "observed_available_space_increase_bytes": 8636252160,
+  "space_measurement_scope": "Filesystem available-space difference during concurrent host use; not precise attribution to this cleanup.",
+  "retained_material": [
+    "Verified private offhost evidence archive",
+    "Reviewed preview assets and manifests",
+    "Runtime/licence/source inputs",
+    "Rollback material"
+  ],
+  "private_archive_uploaded": false,
+  "laptop_configuration_changed": false,
+  "sonos_changed": false,
+  "independent_postcheck": {
+    "workspace_absent": true,
+    "containers_remaining": 0,
+    "preexisting_protected_image_preserved": true,
+    "dependency_image_retained": true
+  }
+}
