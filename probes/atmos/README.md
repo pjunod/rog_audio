@@ -1,4 +1,4 @@
-# Atmos probe — offline Cavern inspection and rendering
+# Atmos — offline Cavern inspection and explicit-sink playback
 
 **Status:** patched libraries/CLI compiled and all fifteen reviewed-source
 regressions passed on Linux x86_64 on 2026-10-12. Complete official JOC
@@ -7,9 +7,11 @@ eight affected methods passed once after four review fixes. Independent
 reference fidelity remains pending; complete-vector diagnostics retain their
 original pre-review source identities.
 
-This probe processes explicit files and writes new JSON/WAV outputs. It never
-opens a sound device, discovers personal media, registers with a desktop or
-changes routing. The [source manifest](source_manifest.json) pins Cavern,
+The offline `atmos-probe` commands process explicit files and write new JSON/WAV
+outputs without opening a sound device or changing routing. The separate
+[`atmos-live`](#live-player-prototype-2026-10-15) command creates a playback
+client for one explicit PipeWire sink. Neither discovers personal media or
+installs a desktop service. The [source manifest](source_manifest.json) pins Cavern,
 SDK/runtime and the build image. Cavern remains subject to its
 [upstream licence](https://github.com/VoidXH/Cavern/blob/7d85d1880666ca5ea323848cff47ce7f50b29f7d/LICENSE.md):
 no sale or advertisements; public/commercial use has attribution/permission
@@ -195,7 +197,7 @@ pre-review receipts are historical, separate from this final qualification.
 | TrueHD Atmos | Unsupported here; Cavernize's inspected adapter invokes external `truehdd.exe` and downloads floating releases; no pinned Linux decoder supplied |
 | Binaural/headphones | Unsupported; no HRTF source/licence or fidelity qualification |
 | Dolby gst-home-audio | Alternate public contract; proprietary native libraries not supplied |
-| Realtime/desktop/PipeWire | Explicit-sink live prototype implemented; review/isolated acceptance pending; realtime and physical behavior unqualified |
+| Realtime/desktop/PipeWire | Explicit-sink native live prototype; selected isolated receipts retained, full JOC continuity acceptance incomplete; realtime and physical behavior unqualified |
 | Sonos Arc/eARC | Deferred to the final audio lane |
 
 ## Bounded pull API and file timelines (2026-10-15)
@@ -400,12 +402,19 @@ claimed. The measurements describe the bounded build host, not laptop latency.
 
 ## Live player prototype (2026-10-15)
 
-[`atmos-live`](atmos-live) supervises a managed `stream` producer and native
-`pw-cat` with bounded backpressure, an explicit sink serial, exact channel
-links, cancellation and separate rendered/submitted/drained counters. The
+[`atmos-live`](atmos-live) supervises a managed `stream` producer and the
+colocated native `atmos-pw-playback` helper with bounded backpressure, an
+explicit sink serial, exact channel links, cancellation and separate
+rendered/submitted/drained counters. There is no `pw-cat` playback fallback.
+The independent harness uses a [native sink-monitor recorder](../../docs/LIVE_ATMOS_CAPTURE.md);
+it is not a production dependency. The
 [operator contract](../../docs/LIVE_ATMOS.md) documents the 90-second raw
 E-AC-3 bound, initial seek, attenuation, tuned-sink selection and unmeasured
-physical/realtime limits. Independent review and selective acceptance are
-pending. The offline `inspect`, `render` and `timeline` interfaces remain
+physical/realtime limits. Source reviews and selected isolated tests have
+completed; full JOC continuity acceptance remains incomplete. The
+[status](../../docs/STATUS.md) retains current outcomes and earlier failures.
+The [native contract](../../docs/LIVE_ATMOS_NATIVE.md#build-and-standalone-artifacts)
+lists the matching Linux ABI, private runtime layout and required notices.
+The offline `inspect`, `render` and `timeline` interfaces remain
 stable; `stream` is the private producer protocol, not a standalone device
 player. No dependency patch bytes changed.

@@ -126,6 +126,56 @@ recipe with build receipts. `native-tests` and `native-io-tests` are separate
 acceptance executables; the production helper has no test mode. Its bounded
 `--describe` capability probe does not connect to PipeWire.
 
+The smallest runnable layout is below. The complete pinned runtime version
+directory is retained rather than selecting individual framework assemblies.
+The executable apphost `AtmosProbe`, PDBs, SDK, regression executables,
+`pw_cat.py` and isolated capture tools are not needed by `atmos-live`.
+
+```text
+private-build/
+  atmos-live                       # executable Python launcher
+  registry_json.py
+  native_playback.py
+  atmos-pw-playback                 # executable native backend
+  AtmosProbe.dll
+  AtmosProbe.deps.json
+  AtmosProbe.runtimeconfig.json
+  Cavern.dll
+  Cavern.Format.dll
+  source_manifest.json
+  native-build.json
+  native-source.tar
+  PROJECT-LICENSE
+  PROJECT-LICENSES.md
+  CAVERN-LICENSE.md
+  CAVERN-NUGET-LICENCE.md
+  PIPEWIRE-EXAMPLE-LICENSE
+  runtime/                         # optional with --dotnet or a PATH runtime
+    dotnet
+    LICENSE.txt
+    ThirdPartyNotices.txt
+    host/fxr/8.0.20/libhostfxr.so
+    shared/Microsoft.NETCore.App/8.0.20/  # entire retained version directory
+```
+
+The package assembler must supply the project licence and current attribution
+index, the unmodified Cavern `LICENSE.md`, and its pinned
+`docs/NuGet Licence.md` variant under the labelled names above. These notices
+are not implied by a successful build or by the source manifest. Retain the
+original author/repository links, restrictive Cavern terms and the PipeWire
+example's complete MIT notice. The separate .NET runtime keeps both its licence
+and third-party notices. No system PipeWire library is bundled.
+
+`native-source.tar` covers the native helper, client, tests, recipe and notice;
+it is not the complete corresponding project/Cavern source. Any separate
+preview source archive should retain this repository's exact source revision,
+all three attributed Cavern patches and their manifests/hashes, the pristine
+Cavern source at its pinned revision, and both upstream licence files. The
+runnable archive's per-file inventory should bind the actual managed, native,
+Python, runtime and notice bytes to the build and acceptance receipts. Test
+observers/executables belong in private acceptance artifacts, with their source
+retained separately. Publication remains pending full JOC acceptance and merge.
+
 Focused core tests cover concurrent ring wrap/order, exact priming boundary,
 prefill, short final tail, native underflow, malformed input/control and
 control/cancellation while ring and pipe are full. Python tests cover helper

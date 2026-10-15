@@ -3,8 +3,9 @@
 Companion to the [offline Atmos contract](../probes/atmos/README.md) and
 [reference vectors](ATMOS_REFERENCE.md). This document owns the small Linux
 player's invocation, routing contract and interpretation. It is an
-implementation prototype awaiting independent review and selective acceptance;
-physical playback, independent Dolby fidelity and realtime qualification are
+implementation prototype with source reviews and selected isolated receipts;
+full JOC continuity acceptance remains incomplete. Physical playback,
+independent Dolby fidelity and realtime qualification are
 unmeasured. Sonos Arc/eARC testing remains last.
 
 ## Run the player through your existing tuned sink
