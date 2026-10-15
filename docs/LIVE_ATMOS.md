@@ -201,7 +201,10 @@ chain's filters loaded, or that Dolby reference output matched.
 | `physical_playback_observed` | Always false: no acoustic observation is performed |
 
 A failure may leave submitted frames greater than zero: cancellation cannot
-unplay bytes already delivered. No successful drain count is invented from a
+unplay bytes already delivered. A native stdin `BrokenPipeError` during
+media submission reports `pipewire-player-ended-early`, including the race
+between the process check and a write. It proves early input closure, not
+its cause. Other I/O errors keep the generic process/I/O failure status. No successful drain count is invented from a
 write count. Error reports preserve the received/submitted prefix and any
 available producer receipt, with upstream/private exception text suppressed.
 The report is prepared in a private same-filesystem directory, mode 0600,

@@ -512,6 +512,11 @@ def transfer(producer, player, expected, target, stream_name, channels, env, rep
                             written = os.write(player.stdin.fileno(), data)
                         except BlockingIOError:
                             continue
+                        except BrokenPipeError as exc:
+                            # The native child can close stdin between poll() and
+                            # write(). This is early input closure, not a claim
+                            # about why it exited or a classification of other I/O.
+                            raise PlaybackError('pipewire-player-ended-early') from exc
                         if not media_ready:
                             primed += written // frame_bytes
                             report['startup_priming_frames'] = primed

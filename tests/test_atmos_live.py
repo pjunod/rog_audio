@@ -1,5 +1,6 @@
 """Focused live-player contracts; no host PipeWire or audio devices are used."""
 import contextlib
+import errno
 import hashlib
 import importlib.machinery
 import importlib.util
@@ -515,6 +516,31 @@ class LiveTests(unittest.TestCase):
                                         (struct.pack('<2f', float('nan'), 0), 8, 'pcm-invalid')]:
             with self.subTest(message=message), self.assertRaisesRegex(live.PlaybackError, message):
                 self.transfer_case(data, expected=expected)
+
+    def test_player_epipe_after_partial_submission_preserves_other_io_failures(self):
+        original = os.write
+        payload = struct.pack('<f', .125) * 2 * 10001
+        for error, expected in ((BrokenPipeError(errno.EPIPE, 'Broken pipe'), live.PlaybackError),
+                                (OSError(errno.EIO, 'I/O error'), OSError)):
+            calls = 0
+            report = {'submitted_complete_frames': 0}
+            def interrupted_write(descriptor, data):
+                nonlocal calls
+                calls += 1
+                if calls == 1:
+                    return original(descriptor, data)
+                raise error
+            with self.subTest(error=type(error).__name__), \
+                    mock.patch.object(live.os, 'write', side_effect=interrupted_write):
+                with self.assertRaises(expected) as failure:
+                    self.transfer_case(payload, report=report)
+            if isinstance(error, BrokenPipeError):
+                self.assertEqual(str(failure.exception), 'pipewire-player-ended-early')
+            else:
+                self.assertIs(failure.exception, error)
+            self.assertGreater(report['submitted_complete_frames'], 0)
+            self.assertLess(report['submitted_complete_frames'], 10001)
+            self.assertFalse(report.get('pipewire_drain_completed', False))
 
     def test_stall_watchdog_and_child_cleanup(self):
         with mock.patch.object(live, 'STALL_SECONDS', .1):
