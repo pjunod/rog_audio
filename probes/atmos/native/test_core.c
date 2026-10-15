@@ -36,7 +36,11 @@ static void *writer(void *arg)
     float data[85 * 12];
     for (unsigned at = 0; at < 100000;) {
         unsigned n = 100000 - at; if (n > 85) n = 85;
-        while (rog_space(&core) < n) sched_yield();
+        unsigned space = rog_space(&core);
+        if (!space) { sched_yield(); continue; }
+        /* Fill the last 16 slots too: the consumer's real startup contract
+         * requires 4096 frames, not the largest 85-frame multiple, 4080. */
+        if (n > space) n = space;
         fill(data, at, n, 12);
         input(data, n * 48);
         at += n;
