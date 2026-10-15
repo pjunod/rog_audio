@@ -51,6 +51,32 @@ Companion to [installation](SPEAKER_INSTALL.md), [review](REVIEW.md),
 [implementation](AUDIO_IMPLEMENTATION.md). Source, synthetic, read-only and
 physical evidence remain separate.
 
+## October 15 remaining failures — native pipe closure and observer workload
+
+A private instrumented policy-loss run confirmed `BrokenPipeError(32)` at the
+player stdin write. The scoped fix `c2e63f7` maps only that exception to the
+existing early-player-termination status. It cleared focused adversarial
+review; its new partial-count/unrelated-I/O regression remains pending.
+
+A five-second generated twelve-channel diagnostic without repeated harness
+registry processes captured all PCM exactly with no media-period playback,
+capture or driver xruns. Its 237 startup playback xruns remain recorded.
+A separate ten-second diagnostic added the harness-equivalent 50 ms query
+workload: 122 native query processes, seven media-period playback xrun
+increments, one capture xrun and two CPU-throttled periods. Native cycle clocks
+correlate the reproduced missing 256-frame block and zero gaps with playback
+xruns; capture's later xrun has locally exact PCM. These are diagnostic
+observations under different workloads, not formal acceptance or proof of the
+cause of the original unprofiled failure.
+
+The harness correction uses one bounded native registry monitor at the same
+50 ms observation cadence. Exact PCM, channel/target/fallback checks, graph
+settings, two-CPU/6-GiB limits and runtime PCM pipe bounds remain unchanged.
+All seven harness cases will be checked once after source review because the
+observer implementation changed. Earlier outcomes stay in this ledger;
+no lighter observer workload is retroactively assigned to an earlier result.
+Full live JOC and preview packaging follow that acceptance.
+
 ## October 15 modern acceptance — five cases passed, two under diagnosis
 
 Reviewed source `5902c3c` built successfully on the pinned modern image under

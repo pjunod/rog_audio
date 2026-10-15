@@ -524,6 +524,7 @@ capture retention; the unconditional diagnostic tail cleared at `7730093`.
 | Guarded startup silence and all-active media start | `9e42453` | Only verified target/channel pairs receive bounded silence; actual media waits for every channel to be active and keeps its own frame/hash accounting |
 | Persistent route worker | `d1aa227` | Native query creation and bounded parsing leave the PCM feeder; one bounded sequence-checked response, watchdog and process-group cleanup |
 | Modern selected CI image | `5902c3c` | Pinned target PipeWire/WirePlumber stack and unchanged SDK/runtime; old offline/build stages and legacy diagnostics remain distinct |
+| Native stdin closure | `c2e63f7` | Only BrokenPipeError at the player write becomes early termination; committed-prefix counters remain, no drain or route-cause claim is added, and other I/O errors are unchanged |
 
 These clearances concern source correctness within each delta. They do not
 turn a failed sample comparison into a pass. Thirty-three distinct live unit
