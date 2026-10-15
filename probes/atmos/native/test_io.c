@@ -9,6 +9,19 @@
 #undef main
 #include <assert.h>
 #include <time.h>
+static struct pw_buffer *test_buffer;
+static int queue_result;
+struct pw_buffer *__wrap_pw_stream_dequeue_buffer(struct pw_stream *stream)
+{
+    (void)stream;
+    return test_buffer;
+}
+int __wrap_pw_stream_queue_buffer(struct pw_stream *stream, struct pw_buffer *buffer)
+{
+    (void)stream;
+    assert(buffer == test_buffer);
+    return queue_result;
+}
 int main(void)
 {
     int input_pipe[2], control[2];
@@ -20,12 +33,44 @@ int main(void)
     struct playback *p = calloc(1, sizeof(*p));
     assert(p && rog_init(&p->core, 12));
     atomic_init(&p->stop, false);
+    atomic_init(&p->queued_all, false);
     p->control = control[1];
     pw_init(NULL, NULL);
     p->main_loop = pw_main_loop_new(NULL); assert(p->main_loop);
     p->loop = pw_main_loop_get_loop(p->main_loop);
     p->event = pw_loop_add_event(p->loop, on_event, p); assert(p->event);
     p->wake = eventfd(0, EFD_CLOEXEC | EFD_NONBLOCK); assert(p->wake >= 0);
+    /* A previous/EOF event must not flush while the final callback has consumed
+     * its last partial frame but has not yet queued its output buffer. */
+    const unsigned char frame[48] = {0};
+    unsigned char output[256 * 48];
+    assert(rog_begin(&p->core, "BEGIN 1 0 1\n", 12));
+    assert(rog_input(&p->core, frame, sizeof(frame)) && rog_input_eof(&p->core));
+    assert(rog_render(&p->core, output, 256) == 1 && rog_consumed_all(&p->core));
+    on_event(p, 1);
+    assert(!p->draining && !atomic_load(&p->core.error));
+    struct spa_chunk chunk = {0};
+    struct spa_data data = { .data = output, .maxsize = sizeof(output), .chunk = &chunk };
+    struct spa_buffer buffer = { .n_datas = 1, .datas = &data };
+    struct pw_buffer pw_buffer = { .buffer = &buffer, .requested = 256 };
+    test_buffer = &pw_buffer;
+    /* Test the actual callback's queue result/publication, not a mirrored rule. */
+    for (unsigned attempt = 0; attempt < 3; attempt++) {
+        assert(rog_init(&p->core, 12)); atomic_store(&p->queued_all, false);
+        assert(rog_begin(&p->core, "BEGIN 1 0 1\n", 12));
+        assert(rog_input(&p->core, frame, sizeof(frame)) && rog_input_eof(&p->core));
+        queue_result = attempt == 0 ? -EIO : 0;
+        if (attempt == 2) assert(rog_render(&p->core, output, 256) == 1);
+        on_process(p);
+        if (attempt == 0) {
+            assert(atomic_load(&p->core.error) == ROG_PIPEWIRE && !atomic_load(&p->queued_all));
+        } else if (attempt == 1) {
+            assert(atomic_load(&p->queued_all) && chunk.size == 48 && pw_buffer.size == 1);
+        } else {
+            assert(!atomic_load(&p->queued_all) && chunk.size == 0 && pw_buffer.size == 0);
+        }
+    }
+    assert(rog_init(&p->core, 12)); atomic_store(&p->queued_all, false);
     assert(pthread_create(&p->reader, NULL, read_input, p) == 0);
     unsigned char zeros[4096] = {0};
     size_t remaining = ROG_RING_FRAMES * 48;

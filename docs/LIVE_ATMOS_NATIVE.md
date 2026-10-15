@@ -62,7 +62,9 @@ frame bytes, early EOF and EOF before BEGIN fail explicitly.
 
 Completion requires three distinct states: exact complete stdin EOF, all
 priming/media frames consumed from the ring, and PipeWire's drained event.
-A final bounded packet reports these states and counters before exit. Python
+A separate callback publication after `queue_buffer` prevents an EOF or
+older mainloop event from flushing before the final partial buffer is queued.
+A final bounded packet reports the completion states and counters before exit. Python
 requires exact agreement with its priming/submitted counts and zero native
 underflows before publishing a successful drain count. Native counters cover
 ring starvation, not every server/device deadline or hardware presentation.

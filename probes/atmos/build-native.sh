@@ -26,10 +26,11 @@ cc -std=c11 -O2 -Wall -Wextra -Werror -pthread \
 # shellcheck disable=SC2046
 cc -std=c11 -O2 -Wall -Wextra -Werror -pthread $(pkg-config --cflags libpipewire-0.3) \
     "$probe/native/test_io.c" "$probe/native/playback_core.c" \
-    $(pkg-config --libs libpipewire-0.3) -o "$scratch/native-io-tests"
+    $(pkg-config --libs libpipewire-0.3) \
+    -Wl,--wrap=pw_stream_dequeue_buffer,--wrap=pw_stream_queue_buffer -o "$scratch/native-io-tests"
 cp "$probe/native/PIPEWIRE-EXAMPLE-LICENSE" "$scratch/PIPEWIRE-EXAMPLE-LICENSE"
 cp "$probe/native_playback.py" "$scratch/native_playback.py"
-tar -cf "$scratch/native-source.tar" -C "$probe" \
+tar --sort=name --mtime=@0 --owner=0 --group=0 --numeric-owner -cf "$scratch/native-source.tar" -C "$probe" \
     native/playback.c native/playback_core.c native/playback_core.h \
     native/test_core.c native/test_io.c native/PIPEWIRE-EXAMPLE-LICENSE \
     native/compiler-packages.json native_playback.py build-native.sh

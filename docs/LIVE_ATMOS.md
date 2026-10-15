@@ -149,7 +149,7 @@ all its monitor links to become active before launching playback.
 During streaming and drain it checks for disappearance, serial replacement,
 layout change, lost links and links to unrelated nodes. It fails and stops
 the producer and player on a routing error. One persistent route worker is
-created before any startup silence or media. It performs native registry
+created before any stdin priming or media. It performs native registry
 queries, parses their bounded JSON and applies the same exact route checks
 outside the feeder. At most one request is in flight, with a 2-second
 response watchdog and 4-MiB native snapshot limit. A new observation starts

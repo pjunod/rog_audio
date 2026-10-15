@@ -29,7 +29,7 @@ struct playback {
     int control, wake;
     pthread_t reader;
     bool reader_started, draining, drained, connected;
-    atomic_bool stop;
+    atomic_bool stop, queued_all;
     struct spa_audio_info_raw format;
 };
 static void notify(struct playback *p) { pw_loop_signal_event(p->loop, p->event); }
@@ -73,7 +73,8 @@ static void on_event(void *opaque, uint64_t count)
     uint64_t wake = 1;
     if (write(p->wake, &wake, sizeof(wake)) < 0 && errno != EAGAIN) rog_fail(&p->core, ROG_IO);
     if (atomic_load(&p->core.error)) { pw_main_loop_quit(p->main_loop); return; }
-    if (!p->draining && atomic_load_explicit(&p->core.eof, memory_order_acquire) && rog_consumed_all(&p->core)) {
+    if (!p->draining && atomic_load_explicit(&p->queued_all, memory_order_acquire) &&
+            atomic_load_explicit(&p->core.eof, memory_order_acquire) && rog_consumed_all(&p->core)) {
         p->draining = true;
         if (pw_stream_flush(p->stream, true) < 0) {
             rog_fail(&p->core, ROG_PIPEWIRE); pw_main_loop_quit(p->main_loop);
@@ -99,7 +100,13 @@ static void on_process(void *opaque)
         data->chunk->size = frames * p->core.stride;
     }
     b->size = frames;
-    pw_stream_queue_buffer(p->stream, b);
+    bool final_media = frames > 0 && rog_consumed_all(&p->core);
+    int queued = pw_stream_queue_buffer(p->stream, b);
+    if (queued < 0) rog_fail(&p->core, ROG_PIPEWIRE);
+    /* Counters are visible before queue_buffer. Publish drain eligibility only
+     * after the final buffer has actually been queued, including partial tails. */
+    if (final_media && queued >= 0 && !atomic_load(&p->core.error))
+        atomic_store_explicit(&p->queued_all, true, memory_order_release);
     /* PipeWire's ring example uses this RT-safe event handoff. No file/socket
      * read/write, allocation, logging, mutex or condition wait occurs here. */
     notify(p);
@@ -107,7 +114,7 @@ static void on_process(void *opaque)
 static void on_drained(void *opaque)
 {
     struct playback *p = opaque;
-    if (!p->draining || !atomic_load(&p->core.eof) || !rog_consumed_all(&p->core)) {
+    if (!p->draining || !atomic_load(&p->queued_all) || !atomic_load(&p->core.eof) || !rog_consumed_all(&p->core)) {
         rog_fail(&p->core, ROG_PIPEWIRE);
     } else p->drained = true;
     pw_main_loop_quit(p->main_loop);
@@ -204,6 +211,7 @@ int main(int argc, char **argv)
     if (!p || !rog_init(&p->core, (uint32_t)atoi(argv[4]))) { free(p); return 2; }
     p->control = (int)fd; p->wake = -1;
     atomic_init(&p->stop, false);
+    atomic_init(&p->queued_all, false);
     if (fcntl(STDIN_FILENO, F_SETFL, fcntl(STDIN_FILENO, F_GETFL) | O_NONBLOCK) < 0) goto done;
     pw_init(NULL, NULL);
     p->main_loop = pw_main_loop_new(NULL);
