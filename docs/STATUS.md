@@ -1,5 +1,17 @@
 # Status — implementation and physical acceptance
 
+## November 2 follow-on SIGKILL investigation
+
+Whole-system windows for all seven historical kills contain no matching OOM,
+managed-stop timeout or RTKit watchdog action. The 200 ms realtime limit
+remains a hypothesis: fatal-signal logging is disabled, so missing watchdog
+messages cannot exclude it. The reviewed read-only UID/thread-group-leader signal probe passed all three
+silent privileged fixture methods once, including a real kernel realtime-limit
+kill. A bounded private transient capture is active; the current audio
+invocation and thirteen protected/runtime paths stayed unchanged. Historical
+senders remain unresolved pending a matching event. No speaker limits, tuning,
+rollback or Sonos settings changed. See [the diagnostic contract](SPEAKER_SIGKILL.md).
+
 ## November 2 speaker crash investigation
 
 The latest saved lab5 crash is a confirmed managed PipeWire shutdown ordering

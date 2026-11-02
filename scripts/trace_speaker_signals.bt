@@ -1,0 +1,26 @@
+#!/usr/bin/env bpftrace
+/* Read-only signal observation. Arguments: target UID, group-leader comm.
+ * Root/BTF required. Keep output private: kernel stacks and process IDs.
+ * The UID/name filter follows restarted processes and their renamed threads.
+ * SEND_SIG_NOINFO=0 and SEND_SIG_PRIV=1 are sentinels, not dereferenceable.
+ */
+BEGIN { printf("speaker-signal-trace-ready\n"); }
+rawtracepoint:vmlinux:signal_generate
+/args.sig == 9 || args.sig == 24/
+{
+  $task = args.task;
+  $leader = $task->group_leader;
+  if ($leader->cred->uid.val == $1 && str($leader->comm) == str($2)) {
+    $info = args.info;
+    $code = 0;
+    if ((uint64)$info == 1) {
+      $code = 128;
+    } else if ((uint64)$info != 0) {
+      $code = $info->si_code;
+    }
+    printf("signal mono_ns=%llu context_pid=%d context_tid=%d context_uid=%d target_pid=%d target_tid=%d sig=%d code=%d group=%d result=%d context_comm=%s\n",
+           nsecs, pid, tid, uid, $task->tgid, $task->pid,
+           args.sig, $code, args.group, args.result, comm);
+    printf("%s\n", kstack(20));
+  }
+}
