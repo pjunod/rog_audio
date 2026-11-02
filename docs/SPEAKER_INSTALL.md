@@ -152,6 +152,7 @@ install -D -m 0644 delivery/rog-audio-speaker.service \
   "$HOME/.config/systemd/user/rog-audio-speaker.service"
 systemctl --user daemon-reload
 systemctl --user enable rog-audio-speaker.service
+# Re-run enable after a unit update to add the PipeWire wants link.
 # Explicit activation only in the coordinated window, after file verification.
 systemctl --user start rog-audio-speaker.service
 systemctl --user is-enabled rog-audio-speaker.service
@@ -160,7 +161,8 @@ systemctl --user is-enabled rog-audio-speaker.service
 Verify native saved values, automatic model preset/IR/full stereo loading,
 actual driver period and preserved physical default/owner volume. A failed
 check requires the retained recovery procedure, not another blind launch.
-For bypass use `systemctl --user stop rog-audio-speaker.service` alone;
+For temporary bypass use `systemctl --user stop rog-audio-speaker.service` alone;
+it returns on the next PipeWire start. Use `disable --now` for persistent bypass;
 for removal use §4 with the matching new snapshot and an unused archive path.
 
 For an existing asynchronous `--quit` unit, apply the accepted reversible
@@ -401,6 +403,7 @@ install -D -m 0644 systemd/rog-audio-speaker.service \
 systemctl --user daemon-reload
 # Enable future login startup without interrupting an existing listening run.
 systemctl --user enable rog-audio-speaker.service
+# Re-run enable after a unit update to add the PipeWire wants link.
 systemctl --user is-enabled rog-audio-speaker.service
 ```
 
@@ -411,7 +414,9 @@ no reboot was performed for this configuration change. See
 [the startup receipt](../evidence/rog-speaker-startup-2026-10-12.json).
 The same checks are retained in the ThinkPad deployment receipt above.
 For a managed primary, immediate bypass is
-`systemctl --user stop rog-audio-speaker.service` alone. A known unmanaged
+`systemctl --user stop rog-audio-speaker.service` alone; it returns on the next
+PipeWire start. Persistent bypass uses `disable --now` to remove both enable
+links. A known unmanaged
 primary uses only the authenticated helper procedure in §4. Permanent startup
 rollback uses the disable/stop procedure above. Stock amplifier controls,
 physical default selection and operator volume are not set by this unit.
