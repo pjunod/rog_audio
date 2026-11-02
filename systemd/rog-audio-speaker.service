@@ -2,6 +2,8 @@
 Description=ROG Audio internal speaker tuning
 Wants=pipewire.service wireplumber.service
 After=pipewire.service wireplumber.service
+BindsTo=pipewire.service
+PartOf=pipewire.service
 
 [Service]
 Type=simple
@@ -15,4 +17,4 @@ RestartSec=3
 TimeoutStopSec=15
 
 [Install]
-WantedBy=default.target
+WantedBy=default.target pipewire.service

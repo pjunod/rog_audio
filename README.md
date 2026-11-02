@@ -102,7 +102,7 @@ Display work remains in [rog_hdr_dv](https://github.com/pjunod/rog_hdr_dv).
 - [Lenovo speaker preparation](docs/LENOVO_SPEAKER_PROFILE.md) — exact first-generation X1 Extreme source, identity and offline candidates.
 - [ASUS four-channel mapping](docs/ASUS_FOUR_CHANNEL.md) — why the investigated profile needs explicit rear-pair routing and stereo remains the working fallback.
 - [Speaker installation](docs/SPEAKER_INSTALL.md) — scoped runtime and reversible file kit.
-- [Speaker service shutdown](docs/SPEAKER_SERVICE.md) — authenticated quit, bounded exit wait and reversible unit backport.
+- [Speaker service shutdown](docs/SPEAKER_SERVICE.md) — authenticated quit, bounded exit wait, PipeWire lifetime ordering and reversible unit backport.
 - [Speaker autoload](docs/SPEAKER_AUTOLOAD.md) — native device-return fix, bounded build and unchanged-tuning runtime upgrade.
 - [Programme loudness](docs/PROGRAMME_LOUDNESS.md) — adjustable makeup, preserved voicing and selective acceptance.
 - [Latency build](docs/AUDIO_LATENCY_BUILD.md) — inspection, measurements and candidates.

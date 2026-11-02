@@ -1,0 +1,49 @@
+{
+  "date": "2026-11-02",
+  "host": "lab5",
+  "diagnosis": "Managed PipeWire shutdown preceded speaker-engine exit; core-error callback deliberately invoked fatal logging after connection error.",
+  "latest_saved_report": {
+    "date_local": "2026-11-01T18:01:19",
+    "signal": 6,
+    "pipewire_stopping_local": "18:01:19.784388",
+    "native_fatal_local": "18:01:19.814504",
+    "pipewire_stopped_local": "18:01:19.816308"
+  },
+  "runtime_sha256": "3f110d6a2d1e2c743cc552b58930679acd0c00e45f5771a23d4b7702ca31206d",
+  "private_receipts": {
+    "connected-triage-private.json": "3ccdcdf9c16e448f2d1cd34ea915cd906c41ba58ac82afecc2b6b69061cdb97e",
+    "crash-context-private.json": "2eb3ff0b59ca8b30727d122716db11c771ed730fa3da506680c345a13565402a",
+    "correlated-windows-private.json": "32698cf6200f134925b0b0aa87ae2d4650dd4fa0d236664cf57299345eab3aa1"
+  },
+  "limitations": [
+    "Seven older SIGKILL exits have no established sender.",
+    "No physical listening or latency measurement performed.",
+    "Unexpected backend death can still precede a managed stop."
+  ],
+  "changes": {
+    "native_dsp": false,
+    "tuning": false,
+    "sonos": false
+  },
+  "acceptance": "Independent adversarial review clear; all 11 affected Linux tests passed once; reversible live unit update verified without restarting audio.",
+  "tests": {
+    "methods": 11,
+    "failures": 0,
+    "skips": 0,
+    "receipt_sha256": "d91703e24c4641e380a8b008056129838f4c87d08a683c7b73e904d29ca8ba7f",
+    "coverage": [
+      "managed stop then separate start",
+      "managed restart",
+      "failed backend startup",
+      "eight existing synchronous stop-helper methods"
+    ]
+  },
+  "live_application": {
+    "receipt_sha256": "8ed7ba067ee8e18961d3652109192b8815e0613a4486ccdce2ca75a6c233c1da",
+    "unit_sha256": "a47dd7f1a7cfb7688b905b8d484bd0fceef9874f1fdb25d0c38274c796b7d182",
+    "protected_files_unchanged": 12,
+    "main_process_and_invocation_unchanged": true,
+    "audio_restart": false,
+    "rollback_preimage_retained": true
+  }
+}

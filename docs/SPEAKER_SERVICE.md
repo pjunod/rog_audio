@@ -1,7 +1,8 @@
 # Speaker service — quit the owned process and wait for saved state
 
-**Status:** independent review clear; eleven focused Linux methods passed once;
-actual helper-to-native integration passed once · **Updated:** 2026-10-14 ·
+**Status:** November 2 lifetime fix independently reviewed; eleven affected Linux
+methods passed once; live unit updated without restarting audio. Earlier native
+helper integration remains inherited evidence · **Updated:** 2026-11-02 ·
 **Executes:** the controlled-stop part of [speaker installation](SPEAKER_INSTALL.md).
 
 Companion to [native autoload](SPEAKER_AUTOLOAD.md), [programme loudness](PROGRAMME_LOUDNESS.md)
@@ -126,3 +127,45 @@ retained, not repeated. Live installation, owner listening, final-configuration
 hours, reboot/resume/hotplug and the [physical comparison](PHYSICAL_LATENCY_METHOD.md)
 remain distinct evidence. Neither a subsecond shutdown nor a software graph
 period measures physical speaker latency.
+
+## 5. Stop tuning before PipeWire disappears
+
+On 2026-11-01, lab5's managed logout stopped PipeWire at 18:01:19.784388
+local time. The native engine logged `No connection to PipeWire. Aborting!`
+at 18:01:19.814504 and exited with SIGABRT. The saved Apport report was
+subsequently presented on November 2. This is a confirmed lifetime-ordering
+failure, rather than evidence of a filter or IR failure. The retained native
+source's core-error callback invokes `util::fatal` on `connection error`;
+that function uses Qt's fatal logger.
+
+The unit now combines `BindsTo=pipewire.service` and
+`PartOf=pipewire.service` with its existing `After=pipewire.service`.
+Managed PipeWire stop/restart transactions therefore stop tuning first,
+using the existing synchronous save-and-exit helper. The install section
+also includes `WantedBy=pipewire.service`: enabling the updated unit adds a
+reverse wants link so a separate PipeWire start brings tuning back.
+[Systemd's dependency documentation](https://www.freedesktop.org/software/systemd/man/261/systemd.unit.html)
+defines these lifetime, ordering and install relationships.
+
+After installing the reviewed unit, run `systemctl --user enable
+rog-audio-speaker.service` again and `systemctl --user daemon-reload`.
+These commands do not restart the running engine. Preserve the original unit
+and exact enable-link inventory first. Verify the resolved dependencies and
+both `default.target.wants` and `pipewire.service.wants` links. Permanent
+bypass uses `systemctl --user disable --now rog-audio-speaker.service`, which
+removes both enable links; a temporary stop can be undone by the next
+PipeWire start. Rollback restores the retained unit and original link inventory,
+then reloads the user manager without restarting audio.
+
+The focused Linux lifecycle test uses UUID-owned fake services and Unix
+sockets on a build host. It exercises stop/start, restart and failed backend
+startup with the real stop helper and production unit relationships. It never
+opens sound devices or operates real audio services. Fixture event receipts
+remain outside Git. Unexpected backend process death can still precede a
+managed stop; this fix does not claim to eliminate every possible disconnect.
+Seven earlier SIGKILL exits have no established sender in the retained journal
+windows and remain a separate unresolved observation.
+
+The [November 2 receipt](../evidence/speaker-pipewire-lifecycle-diagnosis-2026-11-02.json)
+records eleven passing methods, unchanged live process/invocation and twelve
+unchanged protected files. No live shutdown or listening test was performed.

@@ -1,5 +1,22 @@
 # Status — implementation and physical acceptance
 
+## November 2 speaker crash investigation
+
+The latest saved lab5 crash is a confirmed managed PipeWire shutdown ordering
+failure: the native engine aborted after its server disappeared on November 1.
+The service fix binds their lifetimes, propagates stop/restart and enables
+startup when PipeWire returns, preserving the synchronous exit helper.
+Independent review passed, all eleven affected Linux methods passed once,
+and the reversible live unit update passed verification. The running PID and
+invocation stayed unchanged; all twelve protected tuning/runtime files matched
+their immediate preimages. Rollback material is retained on the host. Native DSP, preset/IR, gains and limiter are
+unchanged. Seven older SIGKILL exits remain unattributed. Sonos is untouched.
+The [source-bound receipt](../evidence/speaker-pipewire-lifecycle-diagnosis-2026-11-02.json)
+records the acceptance and remaining limits. See [the service diagnosis and lifecycle contract](SPEAKER_SERVICE.md#5-stop-tuning-before-pipewire-disappears).
+
+## October 15 acceptance history
+
+
 **Updated:** 2026-10-15 · **State:** the bounded live Atmos software batch has
 passed its selected acceptance. Sixty-three distinct live unit methods and
 three existing dispatch smoke methods have passing source-bound results.
