@@ -158,3 +158,63 @@ reported as incomplete evidence. The observer expires after seven days or
 on reboot and has no restart policy. Its stop command and receipts are
 retained privately. This merge delivers diagnosis and instrumentation, not
 a claim that the CPU overrun is repaired.
+
+## 7. Isolated reproduction and source audit
+
+The operator reports intermittent crash notifications, not audible dropouts.
+The only retained audio Apport report found in this inspection was from
+November 1, the separately fixed shutdown abort. That does not prove which
+notification the operator saw; it must not be relabelled as a new SIGKILL.
+
+[Five private diagnostic runs](../evidence/speaker-sigkill-isolated-observations-2026-11-03.json)
+used the exact accepted native engine, private PipeWire/D-Bus, generated PCM
+and a null sink. The sandbox could not access physical audio devices or the
+desktop buses. Each run had two-CPU, 2 GiB and 180-second bounds. Before input,
+only the copied engine's verified data thread was converted from direct-limit
+FIFO to RR20, retaining RESET_ON_FORK and the 200,000 us soft/hard limit.
+This matches the priority/limit values but differs from production RTKit
+acquisition. No production scheduler setting changed.
+
+| Diagnostic | Scope | Result |
+|---|---|---|
+| Full chain | Three cycles, twelve acknowledged 512/1024 quantum requests, quiet idle unlink | No kill in 43.736 s |
+| Empty chain | Same three-cycle sequence without preset plugins | No kill in 43.774 s |
+| Rapid quantum | One cycle, forty acknowledged quantum requests | No kill in 24.105 s |
+| Rate requests | Twenty acknowledged 44.1/48 kHz requests | No kill in 23.896 s; callback rates unmeasured |
+| Observed driver rates | Four requests and bounded `pw-top` snapshots | No kill in 23.985 s; private output driver observed at 44.1/48/44.1/48 kHz, quantum 1024 |
+
+Four setup failures are retained separately: file-size limit, socket-path
+length, session-manager readiness and direct-acquisition scheduling mismatch.
+They stopped before generated input and are not successful crash reproductions.
+Every completed diagnostic preserved the production invocation and thirteen
+protected paths. The private units stopped and ephemeral runtimes were removed.
+Graph/preset checks do not add independent IR, output-fidelity, physical latency
+or acoustic acceptance. A short negative case cannot exclude an intermittent
+failure. Rate cases deliberately exceed the observed production allowed-rate
+list of 48 kHz; hidden UI may bypass spectrum visualization. No diagnostic
+proved execution of that component's LV2 branch.
+
+**Source finding:** `Spectrum::ready` is a plain bool written by a worker
+under `data_mutex` but read by the realtime process without that lock. A
+queued rate-change job can publish readiness for an older request before a
+later job destroys/recreates the instance. Worker-job serialization does not
+serialize those jobs with the realtime callback. This is a concrete source
+hazard, not attribution of the captured CPU-timer kills. An atomic bool alone
+would not protect instance lifetime or reject stale publication. Limiter and
+multiband setup share the creation-before-lock pattern and require the same
+care if a future trace selects that path.
+
+The earlier quantum-recreation hypothesis was too broad:
+[`Lv2Wrapper::create_instance`](https://github.com/wwmm/easyeffects/blob/6d9b1220d3dcebb154ba759a05600662bc0af549/src/lv2_wrapper.cpp)
+already returns early for an existing instance at the same rate. No native
+patch was made on the strength of that mistaken assumption. Inspection of
+PipeWire 1.6.8's [filter callback](https://github.com/PipeWire/pipewire/blob/1.6.8/src/pipewire/filter.c),
+[node scheduling](https://github.com/PipeWire/pipewire/blob/1.6.8/src/pipewire/impl-node.c)
+and [support loop](https://github.com/PipeWire/pipewire/blob/1.6.8/spa/plugins/support/loop.c)
+found candidate retry/drain paths but no evidence selecting one as the cause.
+
+**Next evidence:** a matching enhanced live event or an actual reproducer
+must identify the userspace call before claiming a SIGKILL repair. The bounded
+observer remains available for normal-use recurrence. Keep its expiry/reboot
+limit in mind; a quiet or stopped observer is not a stability result. Speaker
+tuning, watchdog protection, rollback and Sonos stay unchanged.
