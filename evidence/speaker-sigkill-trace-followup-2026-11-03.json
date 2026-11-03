@@ -1,0 +1,113 @@
+{
+  "date": "2026-11-03",
+  "host": "lab5",
+  "observed_at_utc": "2026-11-03T20:36:13.110206+00:00",
+  "new_events": [
+    {
+      "service_exit_utc": "2026-11-02T21:19:18.931893+00:00",
+      "signal": 9,
+      "signal_info_code": 128,
+      "context_matches_target_thread": true,
+      "thread_role": "PipeWire data loop",
+      "kernel_stack_path": [
+        "__send_signal_locked",
+        "send_signal_locked",
+        "posix_cpu_timers_work",
+        "task_work_run",
+        "irqentry_exit"
+      ],
+      "signal_to_service_exit_ms": 18.562974,
+      "service_exit_status": "9/KILL",
+      "automatic_restart_observed": true
+    },
+    {
+      "service_exit_utc": "2026-11-02T21:22:16.568234+00:00",
+      "signal": 9,
+      "signal_info_code": 128,
+      "context_matches_target_thread": true,
+      "thread_role": "PipeWire data loop",
+      "kernel_stack_path": [
+        "__send_signal_locked",
+        "send_signal_locked",
+        "posix_cpu_timers_work",
+        "task_work_run",
+        "irqentry_exit"
+      ],
+      "signal_to_service_exit_ms": 16.898385,
+      "service_exit_status": "9/KILL",
+      "automatic_restart_observed": true
+    }
+  ],
+  "finding": "Two actual kernel CPU-timer SIGKILL events correlate with speaker-service exits. The 200 ms realtime watchdog is the leading explanation, but the original probe did not sample event-time limits or userspace stacks. The precise offending code path remains unresolved.",
+  "historical_seven_events": "Not retroactively attributed by these new observations.",
+  "current_snapshot": {
+    "speaker_active": true,
+    "automatic_restarts_since_original_observation": 2,
+    "native_sha256": "3f110d6a2d1e2c743cc552b58930679acd0c00e45f5771a23d4b7702ca31206d",
+    "rttime_soft_hard_us": 200000,
+    "cpu_limit": "unlimited",
+    "graph_rate_hz": 48000,
+    "graph_quantum_frames": 1024,
+    "protected_paths_unchanged_during_readback": 13,
+    "protected_paths_match_november2_preimage": 12,
+    "service_unit_matches_pr19": true,
+    "rollback_preimage_verified": true
+  },
+  "new_probe_purpose": "Collect event-time scheduler and CPU/RTTIME limits plus best-effort current-target userspace stack; do not weaken watchdog or change DSP.",
+  "validation": {
+    "review": "Independent adversarial review clear after atomic event framing and diagnostic orchestration timeout/receipt fixes.",
+    "methods": 3,
+    "failures": 0,
+    "skips": 0,
+    "attempts": 1,
+    "cases": [
+      "two userspace targets with distinct limits and strict record rejection",
+      "renamed worker and thread-directed signal",
+      "actual silent fixture hard realtime-limit kill with event-time limits and nonempty userspace stack"
+    ],
+    "source_sha256": {
+      "scripts/trace_speaker_signals.bt": "a475902349d45e3fa6d3bb2bf4b7235ac0733609182ec9ee1eb2e8166bb976ee",
+      "tests/speaker_signal_trace_integration.py": "a90cb4ef4c7c40a6f583d3fa7e2f98a14d321c5b0c6147cdcc89955a40633ed6"
+    },
+    "receipt_sha256": "dfdba1f2c92d81d378da99f390c0df006b0b62e77873b0896733f82ec4e8ba79",
+    "fixture_unit_collected": true,
+    "original_three_fixture_passes": "Retained November 2 source-bound history, not substituted for enhanced-source validation."
+  },
+  "private_receipt_sha256": {
+    "trace-readback-private.json": "30716247e063d38425bfcd393ddd2ec89ba808e3d3ac3bdfa5b8546b419e27b1",
+    "kill-context-private.json": "d39b219afd7eae9506662d47b0e0d600fac5cf4c0cb4cb5aff21ee91eb3e2a50",
+    "rollback-readback-private.json": "2c3d6c81fd2a7bd62d8dca011db252011a1f2fa6acca43b4447fed7e2d6018e8",
+    "probe-full-compile-private.json": "59501841006e5c6596c100dd6ebf6fe30091daa9881f34d5b49fec63ebb6d05d",
+    "probe-full-compile2-private.json": "92866fde10d27a954b0f6bd7d0f70daee82610efd2f476fa338d0806018611dc"
+  },
+  "not_performed": [
+    "audio restart",
+    "tuning modification",
+    "real-engine signalling",
+    "watchdog weakening",
+    "playback",
+    "Sonos testing"
+  ],
+  "enhanced_source_sha256": {
+    "scripts/trace_speaker_signals.bt": "a475902349d45e3fa6d3bb2bf4b7235ac0733609182ec9ee1eb2e8166bb976ee",
+    "tests/speaker_signal_trace_integration.py": "a90cb4ef4c7c40a6f583d3fa7e2f98a14d321c5b0c6147cdcc89955a40633ed6"
+  },
+  "observation_replacement": {
+    "ready": true,
+    "activated_at_utc": "2026-11-03T20:48:15.617832+00:00",
+    "source_sha256": "a475902349d45e3fa6d3bb2bf4b7235ac0733609182ec9ee1eb2e8166bb976ee",
+    "runtime_seconds": 604800,
+    "restart": "no",
+    "file_size_limit_bytes": 8388608,
+    "memory_max_bytes": 536870912,
+    "userspace_cpu_quota_percent": 10,
+    "old_probe_stopped_only_after_replacement_ready": true,
+    "old_trace_retained": true,
+    "old_trace_sha256": "9986d60e107c8d0b1d70651258e996e23fc9465aa45f0c16822e120d417a25cb",
+    "old_trace_bytes": 1143,
+    "speaker_process_invocation_and_restart_count_unchanged": true,
+    "protected_paths_unchanged": 13,
+    "receipt_sha256": "61ba89417492a8f1b5ace6ed179223514efbec88f66c9f3ff6797fa900f0b99c",
+    "no_native_fix_claimed": true
+  }
+}

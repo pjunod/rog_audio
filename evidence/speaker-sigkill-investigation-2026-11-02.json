@@ -1,0 +1,72 @@
+{
+  "date": "2026-11-02",
+  "host": "lab5",
+  "historical_events": {
+    "count": 7,
+    "signal": 9,
+    "dates": [
+      "2026-10-20",
+      "2026-10-21",
+      "2026-10-25",
+      "2026-10-25",
+      "2026-10-25",
+      "2026-10-27",
+      "2026-10-30"
+    ],
+    "attribution": "unresolved",
+    "whole_system_window_result": "No matching OOM action, managed-stop timeout or RTKit watchdog action in retained windows.",
+    "current_process_realtime_limit_us": 200000,
+    "current_kernel_print_fatal_signals": 0,
+    "caveat": "Current process/cgroup counters and settings do not prove historical conditions; missing fatal watchdog logs do not exclude a realtime-limit kill."
+  },
+  "review": "Independent adversarial review clear after execution-context labels and durable receipt storage fixes.",
+  "tests": {
+    "methods": 3,
+    "failures": 0,
+    "skips": 0,
+    "kernel": "7.3.0-nativehdr3",
+    "bpftrace": "0.25.0",
+    "cases": [
+      "userspace kill sender context",
+      "renamed worker thread and thread-directed signal",
+      "real kernel hard realtime-limit signal and CPU-timer stack"
+    ],
+    "receipt_sha256": "4349fd387ece3729c5b65d80dc283d5d31bd37cf9063086c77454df9f1b8b2a2"
+  },
+  "source_sha256": {
+    "scripts/trace_speaker_signals.bt": "12ccd87c37bec7d72697b71abfa0639171432024918a36b6fd97a264747eeeec",
+    "tests/speaker_signal_trace_integration.py": "2f0d89a74dee883596f45c6332177198fc5a83636c189a3987504722ac23fddc"
+  },
+  "observation": {
+    "ready": true,
+    "runtime_seconds": 604800,
+    "restart": "no",
+    "file_size_limit_bytes": 8388608,
+    "memory_max_bytes": 536870912,
+    "userspace_cpu_quota_percent": 10,
+    "service_invocation_unchanged": true,
+    "protected_runtime_paths_unchanged": 13,
+    "startup_receipt_sha256": "94ea7b93cd944c690f57df4a7201f8c65e130884df9a008fcda22a9cb7b204cc",
+    "scope": "UID and thread-group-leader name; runtime identity must be correlated before attribution.",
+    "caveat": "Bounded capture is an observation window, not a fix or a promise that all future signals will be retained."
+  },
+  "private_evidence_sha256": {
+    "extended-windows-private.json": "c9a9dd69a72c0c36dfabd01a9452a2a65ea495191c858290782b3302bf48489a",
+    "tracing-preflight-private.json": "9418aa1aee454cc9569109e895096c64e9a5aaa39a549d9a557842173346b26a",
+    "bpf-preflight-private.json": "389e4ee2b2106c8960ec11e5f98d345ad2558d8ab6b2e6e60df126a526b50bde"
+  },
+  "preserved": {
+    "native_dsp": true,
+    "preset_ir_gain_limiter": true,
+    "audio_invocation": true,
+    "realtime_oom_protection": true,
+    "pr19_rollback": true,
+    "sonos_untouched": true
+  },
+  "not_performed": [
+    "real-engine signalling",
+    "audio restart",
+    "playback",
+    "microphone capture"
+  ]
+}

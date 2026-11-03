@@ -92,6 +92,11 @@ IPC/save/exit integration; unchanged native/audio suites were retained.
 
 Display work remains in [rog_hdr_dv](https://github.com/pjunod/rog_hdr_dv).
 
+The [November 3 SIGKILL follow-up](docs/SPEAKER_SIGKILL.md#6-november-3-readback--two-real-cpu-timer-kills)
+correlates two captured kernel CPU-timer kills with speaker-service exits.
+Automatic restart recovered tuning; the exact offending code remains unresolved.
+The diagnostic extension preserves speaker settings and realtime protection.
+
 ## Documentation
 
 - [Audio quality](docs/AUDIO_QUALITY.md) — goals, source research and comparison methods.
@@ -103,6 +108,7 @@ Display work remains in [rog_hdr_dv](https://github.com/pjunod/rog_hdr_dv).
 - [ASUS four-channel mapping](docs/ASUS_FOUR_CHANNEL.md) — why the investigated profile needs explicit rear-pair routing and stereo remains the working fallback.
 - [Speaker installation](docs/SPEAKER_INSTALL.md) — scoped runtime and reversible file kit.
 - [Speaker service shutdown](docs/SPEAKER_SERVICE.md) — authenticated quit, bounded exit wait, PipeWire lifetime ordering and reversible unit backport.
+- [Speaker SIGKILL diagnosis](docs/SPEAKER_SIGKILL.md) — historical evidence limits and private sender tracing without audio changes.
 - [Speaker autoload](docs/SPEAKER_AUTOLOAD.md) — native device-return fix, bounded build and unchanged-tuning runtime upgrade.
 - [Programme loudness](docs/PROGRAMME_LOUDNESS.md) — adjustable makeup, preserved voicing and selective acceptance.
 - [Latency build](docs/AUDIO_LATENCY_BUILD.md) — inspection, measurements and candidates.

@@ -1,0 +1,44 @@
+#!/usr/bin/env bpftrace
+/* Read-only signal observation. Arguments: target UID, group-leader comm.
+ * Root/BTF required. Keep output private: stacks and process identifiers.
+ * User stacks are best-effort current-context unwinds, not remote unwinds.
+ * Linux rlimit indexes: CPU=0 (seconds), RTTIME=15 (microseconds).
+ * rt.timeout is a scheduler tick count, not microseconds.
+ * The UID/name filter follows restarted processes and their renamed threads.
+ * SEND_SIG_NOINFO=0 and SEND_SIG_PRIV=1 are sentinels, not dereferenceable.
+ */
+BEGIN { printf("speaker-signal-trace-ready\n"); }
+rawtracepoint:vmlinux:signal_generate
+/args.sig == 9 || args.sig == 24/
+{
+  $task = args.task;
+  $leader = $task->group_leader;
+  if ($leader->cred->uid.val == $1 && str($leader->comm) == str($2)) {
+    $info = args.info;
+    $code = 0;
+    if ((uint64)$info == 1) {
+      $code = 128;
+    } else if ((uint64)$info != 0) {
+      $code = $info->si_code;
+    }
+    $event_ns = nsecs;
+    // One printf per event keeps all fields and stacks in one output message.
+    if ($task->pid == tid) {
+      printf("signal mono_ns=%llu context_pid=%d context_tid=%d context_uid=%d target_pid=%d target_tid=%d sig=%d code=%d group=%d result=%d context_comm=%s\ntarget leader_comm=%s policy=%u rt_priority=%u rt_timeout_ticks=%llu rttime_soft_us=%llu rttime_hard_us=%llu cpu_soft_s=%llu cpu_hard_s=%llu\nkernel_stack\n%s\ntarget_ustack=best_effort_current\n%s\nsignal_end mono_ns=%llu target_pid=%d target_tid=%d\n",
+             $event_ns, pid, tid, uid, $task->tgid, $task->pid,
+             args.sig, $code, args.group, args.result, comm,
+             str($leader->comm), $task->policy, $task->rt_priority, $task->rt.timeout,
+             $task->signal->rlim[15].rlim_cur, $task->signal->rlim[15].rlim_max,
+             $task->signal->rlim[0].rlim_cur, $task->signal->rlim[0].rlim_max,
+             kstack(20), ustack(perf, 20), $event_ns, $task->tgid, $task->pid);
+    } else {
+      printf("signal mono_ns=%llu context_pid=%d context_tid=%d context_uid=%d target_pid=%d target_tid=%d sig=%d code=%d group=%d result=%d context_comm=%s\ntarget leader_comm=%s policy=%u rt_priority=%u rt_timeout_ticks=%llu rttime_soft_us=%llu rttime_hard_us=%llu cpu_soft_s=%llu cpu_hard_s=%llu\nkernel_stack\n%s\ntarget_ustack=unavailable_context_mismatch\nsignal_end mono_ns=%llu target_pid=%d target_tid=%d\n",
+             $event_ns, pid, tid, uid, $task->tgid, $task->pid,
+             args.sig, $code, args.group, args.result, comm,
+             str($leader->comm), $task->policy, $task->rt_priority, $task->rt.timeout,
+             $task->signal->rlim[15].rlim_cur, $task->signal->rlim[15].rlim_max,
+             $task->signal->rlim[0].rlim_cur, $task->signal->rlim[0].rlim_max,
+             kstack(20), $event_ns, $task->tgid, $task->pid);
+    }
+  }
+}
