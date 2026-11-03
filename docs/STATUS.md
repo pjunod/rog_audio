@@ -1,13 +1,34 @@
 # Status — implementation and physical acceptance
 
+## November 3 SIGKILL trace readback
+
+The bounded trace captured two real kernel CPU-timer SIGKILLs in the speaker
+engine's PipeWire data thread, correlated with automatic-recovered service
+exits on November 2. At the November 3 readback, tuning was active with two
+restarts and no later recorded exits. The 200 ms realtime watchdog is the
+leading explanation; event-time limits and the offending userspace code were
+not present in the original trace. The seven October kills remain separately
+unattributed. No native fix or long-term stability result is claimed.
+
+The next diagnostic revision captures scheduling/limit fields and a
+best-effort target userspace stack. Full codegen-only compilation passed;
+independent review cleared the framing and timeout corrections, all three
+affected silent fixture methods passed once, and the enhanced bounded
+diagnostic replaced the original after readiness. The speaker PID, invocation
+and restart count stayed unchanged during replacement. All thirteen protected paths stayed stable during inspection, the
+PR 19 unit and twelve deployment preimages match, and rollback is retained.
+No audio restart, tuning, watchdog or Sonos change was made. See the
+[follow-up receipt](../evidence/speaker-sigkill-trace-followup-2026-11-03.json)
+and [diagnostic interpretation](SPEAKER_SIGKILL.md#6-november-3-readback--two-real-cpu-timer-kills).
+
 ## November 2 follow-on SIGKILL investigation
 
 Whole-system windows for all seven historical kills contain no matching OOM,
 managed-stop timeout or RTKit watchdog action. The 200 ms realtime limit
 remains a hypothesis: fatal-signal logging is disabled, so missing watchdog
-messages cannot exclude it. The reviewed read-only UID/thread-group-leader signal probe passed all three
+messages cannot exclude it. At that November 2 checkpoint, the reviewed UID/thread-group-leader signal probe passed all three
 silent privileged fixture methods once, including a real kernel realtime-limit
-kill. A bounded private transient capture is active; the current audio
+kill. At that checkpoint a bounded private transient capture was active; the audio
 invocation and thirteen protected/runtime paths stayed unchanged. Historical
 senders remain unresolved pending a matching event. No speaker limits, tuning,
 rollback or Sonos settings changed. See [the diagnostic contract](SPEAKER_SIGKILL.md).

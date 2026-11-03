@@ -92,6 +92,11 @@ IPC/save/exit integration; unchanged native/audio suites were retained.
 
 Display work remains in [rog_hdr_dv](https://github.com/pjunod/rog_hdr_dv).
 
+The [November 3 SIGKILL follow-up](docs/SPEAKER_SIGKILL.md#6-november-3-readback--two-real-cpu-timer-kills)
+correlates two captured kernel CPU-timer kills with speaker-service exits.
+Automatic restart recovered tuning; the exact offending code remains unresolved.
+The diagnostic extension preserves speaker settings and realtime protection.
+
 ## Documentation
 
 - [Audio quality](docs/AUDIO_QUALITY.md) — goals, source research and comparison methods.

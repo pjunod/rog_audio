@@ -581,3 +581,22 @@ profile-manifest and JSON checker passed, as did Git whitespace validation.
 Gitleaks 8.30.1 scanned the 54-commit PR range with no leaks. These checks did
 not rerun unit tests or execute audio. The public receipt remains byte-bound
 to SHA256 `fecf23813457494f77b7b16c938283c958644665b3f931d9782f4b5a8c401737`.
+
+
+## November 3 SIGKILL follow-up
+
+Independent adversarial review covered PR 20 and its enhanced probe, fixtures,
+allowlisted crash summary and private replacement orchestration. Two findings
+were fixed before the three affected methods ran: multiple asynchronous
+fragments could mix event attribution, and setup timeouts could leave an
+unrecorded diagnostic unit. Each signal is now one complete output message
+with matching identity markers; replacement uses bounded calls, phase receipts
+and cleanup that preserves an observer if its predecessor has stopped.
+
+All three changed privileged fixture methods passed once on the reviewed
+source, with zero failures or skips. They cover distinct-limit userspace
+signals and malformed-record rejection, renamed target threads, and a real
+20 ms watchdog fixture with event-time fields and a nonempty userspace stack.
+The fixture unit was collected. The [follow-up receipt](../evidence/speaker-sigkill-trace-followup-2026-11-03.json)
+binds exact sources and records the diagnostic-only replacement. No native
+DSP, watchdog or tuning change was made; the offending code remains unresolved.

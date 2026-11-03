@@ -7,6 +7,7 @@ import ctypes
 import os
 from pathlib import Path
 import resource
+import re
 import select
 import signal
 import subprocess
@@ -23,6 +24,10 @@ def fixture(mode):
     libc = ctypes.CDLL(None, use_errno=True)
     if libc.prctl(15, NAME.encode(), 0, 0, 0):
         raise OSError(ctypes.get_errno(), 'set fixture name')
+    resource.setrlimit(resource.RLIMIT_CPU, (resource.RLIM_INFINITY, resource.RLIM_INFINITY))
+    resource.setrlimit(resource.RLIMIT_RTTIME, (resource.RLIM_INFINITY, resource.RLIM_INFINITY))
+    if mode == 'main-finite':
+        resource.setrlimit(resource.RLIMIT_RTTIME, (123456, 234567))
     if mode == 'rt':
         resource.setrlimit(resource.RLIMIT_RTTIME, (20000, 20000))
         class Param(ctypes.Structure):
@@ -86,18 +91,74 @@ class SignalTraceTests(unittest.TestCase):
         self.assertTrue(line.isdigit(), 'fixture failed: ' + line)
         return int(line)
 
+    def parse_event(self, output, pid):
+        headers = [match for match in re.finditer(r'^signal .*$', output, re.M)
+                   if f'target_pid={pid} ' in match.group()]
+        self.assertEqual(len(headers), 1, 'missing/duplicate event header')
+        start = headers[0].start()
+        line = headers[0].group()
+        identity = dict(re.findall(r'(\w+)=([^\s]+)', line))
+        marker = (f"signal_end mono_ns={identity['mono_ns']} "
+                  f"target_pid={pid} target_tid={identity['target_tid']}")
+        ends = list(re.finditer(r'^signal_end .*$', output[start:], re.M))
+        self.assertTrue(ends, 'incomplete event')
+        self.assertEqual(ends[0].group(), marker, 'mismatched event end')
+        self.assertEqual(sum(match.group() == marker for match in ends), 1,
+                         'duplicate event end')
+        record = output[start:start + ends[0].end()] + '\n'
+        self.assertEqual(len(re.findall(r'^signal ', record, re.M)), 1,
+                         'nested/interleaved event')
+        targets = re.findall(r'^target .*$', record, re.M)
+        self.assertEqual(len(targets), 1, 'missing/duplicate target fields')
+        fields = dict(re.findall(r'(\w+)=([^\s]+)', targets[0]))
+        self.assertEqual(fields['leader_comm'], NAME)
+        self.assertEqual(fields['cpu_soft_s'], str(2**64 - 1))
+        self.assertEqual(fields['cpu_hard_s'], str(2**64 - 1))
+        return line, fields, record
+
     def event(self, child):
         self.wait_text(f'target_pid={child.pid} ')
-        return next(line for line in self.output().splitlines()
-                    if line.startswith('signal ') and f'target_pid={child.pid} ' in line)
+        header = next(line for line in self.output().splitlines()
+                      if line.startswith('signal ') and f'target_pid={child.pid} ' in line)
+        identity = dict(re.findall(r'(\w+)=([^\s]+)', header))
+        self.wait_text(f"signal_end mono_ns={identity['mono_ns']} "
+                       f"target_pid={child.pid} target_tid={identity['target_tid']}")
+        return self.parse_event(self.output(), child.pid)
+
+    def assert_normal_target(self, fields, record, limits=None):
+        self.assertEqual(fields['policy'], '0')
+        self.assertEqual(fields['rt_priority'], '0')
+        self.assertEqual(fields['rt_timeout_ticks'], '0')
+        limits = limits or (2**64 - 1, 2**64 - 1)
+        self.assertEqual(fields['rttime_soft_us'], str(limits[0]))
+        self.assertEqual(fields['rttime_hard_us'], str(limits[1]))
+        self.assertIn('target_ustack=unavailable_context_mismatch', record)
+        self.assertNotIn('target_ustack=best_effort_current', record)
 
     def test_userspace_kill_sender_is_identified(self):
         child = self.start('main'); self.ready(child)
-        os.kill(child.pid, signal.SIGKILL); child.wait(timeout=3)
-        line = self.event(child)
-        self.assertIn(f'context_pid={os.getpid()} ', line)
-        self.assertIn('sig=9 code=0 ', line)
-        self.assertEqual(child.returncode, -signal.SIGKILL)
+        other = self.start('main-finite'); self.ready(other)
+        os.kill(child.pid, signal.SIGKILL)
+        os.kill(other.pid, signal.SIGKILL)
+        child.wait(timeout=3); other.wait(timeout=3)
+        records = []
+        for target, limits in ((child, None), (other, (123456, 234567))):
+            line, fields, record = self.event(target)
+            records.append(record)
+            self.assertIn(f'context_pid={os.getpid()} ', line)
+            self.assertIn('sig=9 code=0 ', line)
+            self.assertIn(f'target_tid={target.pid} ', line)
+            self.assert_normal_target(fields, record, limits)
+            self.assertEqual(target.returncode, -signal.SIGKILL)
+        # Exercise framing rejection inside this existing method, without
+        # additional probes or children: partial, duplicate and mixed records.
+        record = records[0]
+        end = record[record.index('signal_end '):]
+        for malformed in (record[:record.index('signal_end ')],
+                          record + end, record + record,
+                          record.replace(end, records[1][records[1].index('signal_end '):])):
+            with self.assertRaises(AssertionError):
+                self.parse_event(malformed, child.pid)
 
     def test_thread_target_resolves_group_leader(self):
         child = self.start('thread'); thread = self.ready(child)
@@ -106,23 +167,33 @@ class SignalTraceTests(unittest.TestCase):
         self.assertEqual(os.uname().machine, 'x86_64')
         self.assertEqual(libc.syscall(234, child.pid, thread, signal.SIGKILL), 0)
         child.wait(timeout=3)
-        line = self.event(child)
+        line, fields, record = self.event(child)
         self.assertIn(f'target_tid={thread} ', line)
         self.assertIn('sig=9 code=-6 ', line)
+        self.assertIn(f'context_pid={os.getpid()} ', line)
+        self.assert_normal_target(fields, record)
 
     def test_kernel_realtime_limit_is_distinguished(self):
         child = self.start('rt')
         child.wait(timeout=3)  # Cleanup also bounds a misbehaving fixture.
-        line = self.event(child)
+        line, fields, record = self.event(child)
         self.assertEqual(child.returncode, -signal.SIGKILL)
         self.assertIn('sig=9 code=128 ', line)
-        deadline = time.monotonic() + 3
-        while time.monotonic() < deadline:
-            if any(name in self.output() for name in ('check_thread_timers', 'run_posix_cpu_timers', 'posix_cpu_timers_work', 'check_rlimit')):
-                break
-            time.sleep(.02)
-        else:
-            self.fail('missing CPU-limit kernel stack: ' + self.output())
+        self.assertIn(f'context_tid={child.pid} ', line)
+        self.assertIn(f'target_tid={child.pid} ', line)
+        self.assertEqual(fields['policy'], '1')
+        self.assertEqual(fields['rt_priority'], '1')
+        self.assertGreater(int(fields['rt_timeout_ticks']), 0)
+        self.assertEqual(fields['rttime_soft_us'], '20000')
+        self.assertEqual(fields['rttime_hard_us'], '20000')
+        self.assertTrue(any(name in record for name in (
+            'check_thread_timers', 'run_posix_cpu_timers', 'posix_cpu_timers_work', 'check_rlimit')),
+            'missing CPU-limit kernel stack: ' + record)
+        self.assertNotIn('target_ustack=unavailable_context_mismatch', record)
+        stack = record.split('target_ustack=best_effort_current\n', 1)[1]
+        # At least one frame is required on this supported fixture/kernel pair;
+        # symbol names and unwind depth remain best effort, especially after exit.
+        self.assertRegex(stack, r'(?m)^\s+(?:0x)?[0-9a-fA-F]+\s+\S+')
 
     def cleanup(self):
         for child in self.children:
