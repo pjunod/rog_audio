@@ -1,5 +1,25 @@
 # Status — implementation and physical acceptance
 
+## November 3 silent reproduction attempts — unresolved
+
+The operator clarified that the symptom is an intermittent audio-crash
+notification, with no audible dropouts reported. Five isolated runs of the
+exact accepted engine completed without reproducing a kill: full and empty
+plugin chains, rapid quantum requests, rate requests, and a separate case
+with observed private-driver rate changes. These are short diagnostic
+observations, not a native fix or long-term stability acceptance.
+
+All five runs preserved the production invocation and thirteen protected
+paths. Their private units stopped, and no physical playback or recording
+occurred. The enhanced live trace still had no new matching event at the
+retained readback; the service was active with two historical restarts.
+A source-level instance-publication/lifetime hazard remains an unproven
+candidate for these SIGKILLs. The same-rate wrapper guard rules out the
+initial assumption that quantum changes necessarily recreate the instance.
+No speculative native patch was installed. See [the diagnostic results](
+../evidence/speaker-sigkill-isolated-observations-2026-11-03.json) and
+[scope and next evidence](SPEAKER_SIGKILL.md#7-isolated-reproduction-and-source-audit).
+
 ## November 3 SIGKILL trace readback
 
 The bounded trace captured two real kernel CPU-timer SIGKILLs in the speaker

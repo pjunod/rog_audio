@@ -96,6 +96,9 @@ The [November 3 SIGKILL follow-up](docs/SPEAKER_SIGKILL.md#6-november-3-readback
 correlates two captured kernel CPU-timer kills with speaker-service exits.
 Automatic restart recovered tuning; the exact offending code remains unresolved.
 The diagnostic extension preserves speaker settings and realtime protection.
+[Five isolated reproduction attempts](docs/SPEAKER_SIGKILL.md#7-isolated-reproduction-and-source-audit)
+completed without a kill; the offending code remains unresolved. The operator
+reports crash notifications, not audible dropouts.
 
 ## Documentation
 

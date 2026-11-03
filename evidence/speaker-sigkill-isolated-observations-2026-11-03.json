@@ -1,0 +1,140 @@
+{
+  "schema_version": 1,
+  "date": "2026-11-03",
+  "kind": "isolated-diagnostic-observations-not-native-fix",
+  "host": "lab5",
+  "reported_symptom": "Intermittent audio-crash notification; no audible dropouts reported.",
+  "native_binary_sha256": "3f110d6a2d1e2c743cc552b58930679acd0c00e45f5771a23d4b7702ca31206d",
+  "source_commit": "6d9b1220d3dcebb154ba759a05600662bc0af549",
+  "initial_owned_rt_condition": {
+    "policy": "SCHED_RR",
+    "priority": 20,
+    "rttime_soft_us": 200000,
+    "rttime_hard_us": 200000,
+    "reset_on_fork": true,
+    "acquisition": "private direct rlimits followed by owned-thread FIFO-to-RR conversion; production uses RTKit"
+  },
+  "isolation": {
+    "private_devices": true,
+    "private_network": true,
+    "desktop_buses_inaccessible": true,
+    "private_pipewire": true,
+    "private_dbus": true,
+    "generated_pcm_only": true,
+    "physical_playback": false,
+    "cpu_quota_percent": 200,
+    "memory_limit_gib": 2,
+    "unit_deadline_seconds": 180
+  },
+  "cases": [
+    {
+      "case": "full-chain",
+      "status": "completed_without_reproduction",
+      "private_receipt_sha256": "55baf687b289c4071489d53b711ba733bc1e9f298839ad7624648499c42025e9",
+      "harness_sha256": "6c15cf13b5a6ce10c0a0056ff616e4f031e8500c8b038fa20bd4180b8d7d269d",
+      "elapsed_seconds": 43.73647678998532,
+      "cycles": 3,
+      "acknowledged_quantum_requests": 12,
+      "acknowledged_rate_requests": 0,
+      "driver_observed_rates_hz": [],
+      "engine_running_before_owned_cleanup": true,
+      "protected_paths_unchanged": 13,
+      "production_invocation_unchanged": true,
+      "owned_unit_inactive_after": true
+    },
+    {
+      "case": "empty-chain",
+      "status": "completed_without_reproduction",
+      "private_receipt_sha256": "05c15a2f3dabcafda687bbfec71fa1d0400277a38ea2eefb180f6a101d910700",
+      "harness_sha256": "6c15cf13b5a6ce10c0a0056ff616e4f031e8500c8b038fa20bd4180b8d7d269d",
+      "elapsed_seconds": 43.773799378977856,
+      "cycles": 3,
+      "acknowledged_quantum_requests": 12,
+      "acknowledged_rate_requests": 0,
+      "driver_observed_rates_hz": [],
+      "engine_running_before_owned_cleanup": true,
+      "protected_paths_unchanged": 13,
+      "production_invocation_unchanged": true,
+      "owned_unit_inactive_after": true
+    },
+    {
+      "case": "rapid-quantum",
+      "status": "completed_without_reproduction",
+      "private_receipt_sha256": "4f346eed2936843498f7a0eebd4025b77248f3742fe19f748193e8f35d83e9f1",
+      "harness_sha256": "0eecada261207b4285cce97e60c09797afd348abb22423e3309d4444ca2fb119",
+      "elapsed_seconds": 24.104683572018985,
+      "cycles": 1,
+      "acknowledged_quantum_requests": 40,
+      "acknowledged_rate_requests": 0,
+      "driver_observed_rates_hz": [],
+      "engine_running_before_owned_cleanup": true,
+      "protected_paths_unchanged": 13,
+      "production_invocation_unchanged": true,
+      "owned_unit_inactive_after": true
+    },
+    {
+      "case": "rate-requests",
+      "status": "completed_without_reproduction",
+      "private_receipt_sha256": "14788fa93bc12888ab7c2569d39eddec4f3cd8fc44160027db3b31ad2f78b52b",
+      "harness_sha256": "f97fb9c0d0cf86d04c9a72c360fe703f88b0877071ec6f8d640a84d07e7bddeb",
+      "elapsed_seconds": 23.896348144015064,
+      "cycles": 1,
+      "acknowledged_quantum_requests": 0,
+      "acknowledged_rate_requests": 20,
+      "driver_observed_rates_hz": [],
+      "engine_running_before_owned_cleanup": true,
+      "protected_paths_unchanged": 13,
+      "production_invocation_unchanged": true,
+      "owned_unit_inactive_after": true
+    },
+    {
+      "case": "observed-driver-rates",
+      "status": "completed_without_reproduction",
+      "private_receipt_sha256": "5f396996ed89d689fba3ce0fd3f5587e4f6a122d8a3eb8555f8e4d36f91b92fe",
+      "harness_sha256": "74311295181bed3fe975965c3783ad85a3dceb7a0a0e8e3103429213b21ec2be",
+      "elapsed_seconds": 23.985358739009826,
+      "cycles": 1,
+      "acknowledged_quantum_requests": 0,
+      "acknowledged_rate_requests": 4,
+      "driver_observed_rates_hz": [
+        44100,
+        48000,
+        44100,
+        48000
+      ],
+      "engine_running_before_owned_cleanup": true,
+      "protected_paths_unchanged": 13,
+      "production_invocation_unchanged": true,
+      "owned_unit_inactive_after": true
+    }
+  ],
+  "precondition_failures_retained": [
+    "16 MiB per-file cap was smaller than the verified engine; raised to 32 MiB in private sandbox only",
+    "Private runtime socket path exceeded AF_UNIX length; moved into short PrivateTmp directory",
+    "WirePlumber default metadata not ready; now waits for metadata and stereo ports",
+    "Direct scheduling used FIFO with RESET_ON_FORK; now converts only owned data thread to RR and records acquisition difference"
+  ],
+  "enhanced_trace": {
+    "private_receipt_sha256": "77b9e754d560920ebc90501dc3749c3db666cd773b0081f4911faf401f7f463a",
+    "observed_unix": 1793743197.9812746,
+    "matching_events": 0,
+    "production_active": true,
+    "production_restart_count": 2
+  },
+  "source_findings": {
+    "same_rate_instance_guard": true,
+    "spectrum_ready_plain_bool_with_unsynchronized_reader": true,
+    "rate_transition_instance_lifetime_hazard": "feasible source interleaving, not reproduced or attributed to the captured SIGKILLs",
+    "native_changes": false
+  },
+  "limitations": [
+    "Short synthetic runs do not establish everyday or long-term stability.",
+    "Quantum and the first rate case record acknowledged requests, not measured callback transitions.",
+    "The final case observes the private output driver at 44100,48000,44100,48000 Hz with quantum1024; this is not per-plugin callback evidence.",
+    "Private rate-change cases broaden allowed rates; production observation allowed only48000 Hz.",
+    "Hidden QML may bypass spectrum visualization; its LV2 run branch was not independently observed.",
+    "Graph routing and selected preset were checked; these runs add no independent IR/output-fidelity or acoustic acceptance.",
+    "No new matching live event identified the offending userspace code.",
+    "Speaker tuning, realtime protection, rollback and Sonos remain unchanged."
+  ]
+}
