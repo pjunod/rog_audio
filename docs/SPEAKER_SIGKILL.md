@@ -222,9 +222,9 @@ tuning, watchdog protection, rollback and Sonos stay unchanged.
 
 ## 8. Runnable-loop diagnosis — distinguish ready work from one slow callback
 
-**Status:** implementation under corrective re-review as of November 4;
-fixture acceptance incomplete after one startup failure. No native
-repair or production runnable-loop observation is claimed here. The existing
+**Status:** independent review and five selected method passes complete as of
+November 4; one bounded live observation completed idle. No native repair or attribution
+of the production SIGKILLs is claimed. The existing
 signal observer is unchanged.
 
 The [source-bound kernel receipt](../evidence/speaker-runnable-kernel-accounting-2026-11-04.json)
@@ -341,8 +341,37 @@ compile summary checked stderr and missed those stdout warnings, so it was
 not a clean BPF compilation. The compile helper now checks both streams.
 
 Timestamp arithmetic is now explicitly unsigned and readiness uses the
-verified stderr protocol. Corrective review and warning-free codegen remain
-pending. The parser change invalidates its earlier pass; rerun that method,
-the failed blocking fixture and the two unrun fixtures only after review.
-The unchanged cleanup method's pass remains retained. No audio devices, production settings, playback,
-recording, native deployment or Sonos changes are part of these fixtures.
+verified stderr protocol. Independent corrective review cleared the source;
+strict C compilation and warning-free BPF codegen passed with both streams
+checked. The [allowlisted acceptance receipt](../evidence/speaker-runnable-diagnostic-acceptance-2026-11-04.json)
+records all five method passes: the cleanup pass is retained from `96d6124`,
+the changed parser and failed blocking method each passed once on `e649de2`,
+and ready/CPU fixtures each passed on their first execution. No unchanged
+cleanup rerun occurred.
+
+| Fixture | Sleeps | Ready poll returns | Maximum raw RTTIME ticks | Threshold stacks |
+|---|---:|---:|---:|---:|
+| Drained timerfd waits | 12 | 12 | 0 | 0 |
+| Undrained eventfd, actual nonleader worker | 0 | 222,063 | 115 | 1 |
+| Finite CPU work | 0 | 0 | 116 | 1 |
+
+All three target threads exited normally. This validates the observer's
+ability to distinguish these synthetic patterns; it does not select the
+actual speaker failure. Across the first failed attempt and accepted runs,
+all thirteen protected files, three rollback files, speaker identity/restart
+count and owned-unit cleanup checks remained stable.
+
+**Live observation:** the one-shot runner independently confirmed attachment,
+verified the selected live thread, and completed a 60.030 second window with
+`bounded_stop`, return code zero, no target signal and no reported missing
+coverage or boundary ambiguity. Every activity counter was zero: scheduler
+residency, sleep/preemption, wakeups, poll calls, samples, timeout ticks and
+stacks. This was an idle observation, with no DSP execution evidence or
+stability conclusion. The service identity/restart count, thirteen protected
+paths and three rollback files remained unchanged; the owned unit stopped.
+No offending callback or native SIGKILL repair is established. No audio devices, production settings,
+playback, recording, native deployment or Sonos changes are part of these
+fixtures.
+
+Raw receipts are archived privately; only verified redundant fixture copies
+were removed. Unique logs and the current compiler fixture remain retained.

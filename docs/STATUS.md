@@ -1,24 +1,27 @@
 # Status — implementation and physical acceptance
 
-## November 4 runnable-loop diagnostic — corrective review pending
+## November 4 runnable-loop diagnostic — selected acceptance passed
 
-The new read-only observer and one-shot runner verify one process/thread,
-distinguish sleep from runnable preemption, count/timestamp poll returns and
-retain thresholded stacks plus raw RTTIME ticks. Exact running-kernel
-accounting provenance is retained. On reviewed head `96d6124`, parser and
-cleanup methods each passed once. Blocking failed before its work gate was
-released; ready and CPU fixtures did not run. The failure exposed a wrong
-readiness text/stream assumption and signedness warnings in BPF stdout.
-Earlier codegen returned zero with warnings; its initial summary missed
-stdout diagnostics and must not be treated as clean compilation.
+[Five selected methods passed](../evidence/speaker-runnable-diagnostic-acceptance-2026-11-04.json)
+after independent review. The unchanged cleanup method retains its first pass
+on `96d6124`; changed parser and failed blocking methods passed once on
+`e649de2`, followed by first passes for ready-worker and finite-CPU fixtures.
+Strict C compilation and BPF codegen passed with both streams checked for
+warnings/errors. The initial warning-bearing codegen and blocking startup
+failure remain recorded; neither is relabelled as a clean pass.
 
-The correction shares one verified `Attached N probes` stderr readiness
-helper, keeps strict warning/loss handling and makes timestamp arithmetic
-unsigned. Corrective review and warning-free codegen are pending. The changed
-parser requires one rerun; the unchanged cleanup pass remains retained.
-Blocking needs a failed-only retry, followed by the two unrun fixtures. No
-native SIGKILL repair or production observation is claimed. See
-[the diagnostic contract](SPEAKER_SIGKILL.md#8-runnable-loop-diagnosis--distinguish-ready-work-from-one-slow-callback)
+Blocking recorded twelve sleeps and twelve ready polls with zero maximum
+RTTIME ticks. An actual nonleader ready worker recorded 222,063 ready polls,
+no sleeps and 115 ticks; finite CPU work recorded no polls, no sleeps and 116
+ticks. These synthetic distinctions qualify the observer, not the real kill
+cause. All attempts preserved thirteen protected paths, rollback files and
+speaker identity/restart count; every owned test unit stopped. A separately attached
+live observation completed its 60.030 second window and stopped only its
+tracer. All activity counters were zero, with no missing coverage reported;
+this idle window supplies no DSP or stability conclusion. Production identity,
+protected paths and rollback remained unchanged, and the owned unit stopped.
+No culprit or native SIGKILL repair is claimed.
+See [the diagnostic contract](SPEAKER_SIGKILL.md#8-runnable-loop-diagnosis--distinguish-ready-work-from-one-slow-callback)
 and [kernel provenance](../evidence/speaker-runnable-kernel-accounting-2026-11-04.json).
 
 ## November 3 silent reproduction attempts — unresolved
