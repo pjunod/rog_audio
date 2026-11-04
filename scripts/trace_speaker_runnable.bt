@@ -1,0 +1,112 @@
+#!/usr/bin/env bpftrace
+/* Read-only one-thread observer. Args: TGID TID warning_ticks deadline_s
+ * /proc/TGID/task/TID/stat starttime USER_HZ. USER_HZ is NOT CONFIG_HZ.
+ * Caller verifies identity before/after attachment and retains stderr/losses.
+ * Scalar maps only; stacks <=10/sec and <=60 total; external deadline required.
+ */
+BEGIN {
+  @deadline = nsecs + $4 * 1000000000;
+  printf("runnable-initialized pid=%d tid=%d warning_ticks=%llu deadline_s=%llu start_ticks=%llu user_hz=%llu\n", $1, $2, $3, $4, $5, $6);
+}
+rawtracepoint:vmlinux:sched_switch
+{
+  $p = args.prev;
+  $n = args.next;
+  if ($p->tgid == $1 && $p->pid == $2) {
+    $b = $p->start_boottime;
+    $ticks = ($b / 1000000000) * $6 + (($b % 1000000000) * $6 / 1000000000);
+    if ($ticks == $5) {
+      if (@running_since) { @running_ns = @running_ns + nsecs - @running_since; }
+      @running_since = 0;
+      if (args.preempt || args.prev_state == 0) { @runnable_out = @runnable_out + 1; }
+      else if (!@target_exit) { @sleep_out = @sleep_out + 1; }
+      if ($p->rt.timeout > @max_ticks) { @max_ticks = $p->rt.timeout; }
+    } else { @identity_error = 1; exit(); }
+  }
+  if ($n->tgid == $1 && $n->pid == $2) {
+    $b = $n->start_boottime;
+    $ticks = ($b / 1000000000) * $6 + (($b % 1000000000) * $6 / 1000000000);
+    if ($ticks == $5) { @running_since = nsecs; }
+    else { @identity_error = 1; exit(); }
+  }
+}
+rawtracepoint:vmlinux:sched_wakeup
+/args.p->tgid == $1 && args.p->pid == $2/
+{
+  $b = args.p->start_boottime;
+  $ticks = ($b / 1000000000) * $6 + (($b % 1000000000) * $6 / 1000000000);
+  if ($ticks == $5) { @wakeups = @wakeups + 1; }
+  else { @identity_error = 1; exit(); }
+}
+tracepoint:syscalls:sys_enter_epoll_wait,
+tracepoint:syscalls:sys_enter_epoll_pwait,
+tracepoint:syscalls:sys_enter_epoll_pwait2
+/pid == $1 && tid == $2/
+{
+  $b = curtask->start_boottime;
+  $ticks = ($b / 1000000000) * $6 + (($b % 1000000000) * $6 / 1000000000);
+  if ($ticks != $5) { @identity_error = 1; exit(); }
+  else { @poll_start = nsecs; @poll_enter = @poll_enter + 1; }
+}
+tracepoint:syscalls:sys_exit_epoll_wait,
+tracepoint:syscalls:sys_exit_epoll_pwait,
+tracepoint:syscalls:sys_exit_epoll_pwait2
+/pid == $1 && tid == $2/
+{
+  $b = curtask->start_boottime;
+  $ticks = ($b / 1000000000) * $6 + (($b % 1000000000) * $6 / 1000000000);
+  if ($ticks != $5) { @identity_error = 1; exit(); }
+  else if (@poll_start) {
+    $ns = nsecs - @poll_start;
+    @poll_ns = @poll_ns + $ns;
+    if ($ns > @poll_max_ns) { @poll_max_ns = $ns; }
+    if (args.ret > 0) { @poll_ready = @poll_ready + 1; }
+    else if (args.ret == 0) { @poll_zero = @poll_zero + 1; }
+    else { @poll_error = @poll_error + 1; }
+    @poll_start = 0;
+  } else if (@poll_enter == 0 && @initial_poll == 0) {
+    // Attaching to a live thread can start inside an existing poll syscall.
+    @initial_poll = 1;
+  } else { @unpaired_poll = @unpaired_poll + 1; }
+}
+profile:hz:99
+/pid == $1 && tid == $2/
+{
+  $task = curtask;
+  $b = $task->start_boottime;
+  $ticks = ($b / 1000000000) * $6 + (($b % 1000000000) * $6 / 1000000000);
+  if ($ticks != $5) { @identity_error = 1; exit(); }
+  else {
+    @samples = @samples + 1;
+    $rt = $task->rt.timeout;
+    if ($rt > @max_ticks) { @max_ticks = $rt; }
+    if ($rt >= $3 && @stacks < 60 && nsecs - @last_stack >= 100000000) {
+      @last_stack = nsecs;
+      @stacks = @stacks + 1;
+      $now = nsecs;
+      printf("runnable-stack mono_ns=%llu pid=%d tid=%d rt_timeout_ticks=%llu policy=%u rt_priority=%u\n%s\nrunnable-stack-end mono_ns=%llu pid=%d tid=%d\n", $now, pid, tid, $rt, $task->policy, $task->rt_priority, ustack(perf, 20), $now, pid, tid);
+    }
+  }
+}
+tracepoint:sched:sched_process_exit
+/pid == $1 && tid == $2/
+{
+  $b = curtask->start_boottime;
+  $ticks = ($b / 1000000000) * $6 + (($b % 1000000000) * $6 / 1000000000);
+  if ($ticks != $5) { @identity_error = 1; }
+  else {
+    if (@running_since) { @running_ns = @running_ns + nsecs - @running_since; }
+    @running_since = 0;
+    @target_exit = 1;
+  }
+  exit();
+}
+interval:s:1
+{
+  printf("runnable-summary mono_ns=%llu pid=%d tid=%d running_ns=%llu sleep_out=%llu runnable_out=%llu wakeups=%llu poll_enter=%llu poll_ready=%llu poll_zero=%llu poll_error=%llu poll_ns=%llu poll_max_ns=%llu unpaired_poll=%llu initial_poll=%llu samples=%llu max_ticks=%llu stacks=%llu\n", nsecs, $1, $2, @running_ns, @sleep_out, @runnable_out, @wakeups, @poll_enter, @poll_ready, @poll_zero, @poll_error, @poll_ns, @poll_max_ns, @unpaired_poll, @initial_poll, @samples, @max_ticks, @stacks);
+  if (nsecs >= @deadline) { @deadline_hit = 1; exit(); }
+}
+END {
+  printf("runnable-end pid=%d tid=%d target_exit=%llu deadline=%llu identity_error=%llu running_ns=%llu sleep_out=%llu runnable_out=%llu wakeups=%llu poll_enter=%llu poll_ready=%llu poll_zero=%llu poll_error=%llu poll_ns=%llu poll_max_ns=%llu unpaired_poll=%llu initial_poll=%llu samples=%llu max_ticks=%llu stacks=%llu\n", $1, $2, @target_exit, @deadline_hit, @identity_error, @running_ns, @sleep_out, @runnable_out, @wakeups, @poll_enter, @poll_ready, @poll_zero, @poll_error, @poll_ns, @poll_max_ns, @unpaired_poll, @initial_poll, @samples, @max_ticks, @stacks);
+  clear(@deadline); clear(@running_since); clear(@running_ns); clear(@sleep_out); clear(@runnable_out); clear(@wakeups); clear(@poll_start); clear(@poll_enter); clear(@poll_ready); clear(@poll_zero); clear(@poll_error); clear(@poll_ns); clear(@poll_max_ns); clear(@unpaired_poll); clear(@initial_poll); clear(@samples); clear(@max_ticks); clear(@last_stack); clear(@stacks); clear(@target_exit); clear(@deadline_hit); clear(@identity_error);
+}

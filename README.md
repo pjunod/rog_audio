@@ -100,6 +100,10 @@ The diagnostic extension preserves speaker settings and realtime protection.
 completed without a kill; the offending code remains unresolved. The operator
 reports crash notifications, not audible dropouts.
 
+The [bounded runnable-loop diagnostic](docs/SPEAKER_SIGKILL.md#8-runnable-loop-diagnosis--distinguish-ready-work-from-one-slow-callback)
+separates genuine sleep, ready poll work and thresholded stack evidence. Linux
+compile preflight passed; review and selected fixture acceptance remain pending.
+
 ## Documentation
 
 - [Audio quality](docs/AUDIO_QUALITY.md) — goals, source research and comparison methods.
@@ -111,7 +115,7 @@ reports crash notifications, not audible dropouts.
 - [ASUS four-channel mapping](docs/ASUS_FOUR_CHANNEL.md) — why the investigated profile needs explicit rear-pair routing and stereo remains the working fallback.
 - [Speaker installation](docs/SPEAKER_INSTALL.md) — scoped runtime and reversible file kit.
 - [Speaker service shutdown](docs/SPEAKER_SERVICE.md) — authenticated quit, bounded exit wait, PipeWire lifetime ordering and reversible unit backport.
-- [Speaker SIGKILL diagnosis](docs/SPEAKER_SIGKILL.md) — historical evidence limits and private sender tracing without audio changes.
+- [Speaker SIGKILL diagnosis](docs/SPEAKER_SIGKILL.md) — captured CPU-timer kills, private signal tracing and a bounded runnable-loop observer without audio changes.
 - [Speaker autoload](docs/SPEAKER_AUTOLOAD.md) — native device-return fix, bounded build and unchanged-tuning runtime upgrade.
 - [Programme loudness](docs/PROGRAMME_LOUDNESS.md) — adjustable makeup, preserved voicing and selective acceptance.
 - [Latency build](docs/AUDIO_LATENCY_BUILD.md) — inspection, measurements and candidates.

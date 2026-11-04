@@ -1,0 +1,52 @@
+{
+  "schema_version": 1,
+  "date": "2026-11-04",
+  "host": "lab5",
+  "running_kernel": "7.3.0-nativehdr3",
+  "running_build_id": "f634b4b72a42b8d78f30aa786a3e8ab9494255a0",
+  "running_config_sha256": "e5549a25597ca95da1ba38f8619a82d602e76162e6313342e78786916faa9f89",
+  "kernel_hz": 1000,
+  "user_hz_distinction": "/proc stat start times use USER_HZ, separately queried; never use that value for RTTIME scheduler ticks.",
+  "build_provenance": "https://github.com/pjunod/rog_hdr_dv/blob/663a0a221c804b7a8bdf3018498d960ae7437c11/evidence/kernel-7.3-rebase.json",
+  "source_package": {
+    "url": "http://us.archive.ubuntu.com/ubuntu/pool/main/l/linux/linux-source-7.3.0_7.3.0-10.10_all.deb",
+    "bytes": 198900518,
+    "sha256": "becefccd4560e96bcf9e7f0aba9ef830e2734a8db601c0a3f5c921582e1c726a",
+    "inner_archive_bytes": 201749850,
+    "inner_archive_sha256": "8dd4719d6c6ec541d15c3d2ec706796a29112476c3cb1dd2a6fec8f6a67c57cd",
+    "verification": "Both complete hashes matched retained deployed-kernel source provenance; only three accounting/trace source files retained, temporary archives removed. Display series does not modify these files."
+  },
+  "files": [
+    {
+      "path": "kernel/sched/rt.c",
+      "sha256": "b36ec6b58c10d3a30ab5e7ed889a9cf708c7ecfc392e33f2b9ff4e6b2d6722bc",
+      "facts": [
+        "enqueue_task_rt resets timeout when ENQUEUE_WAKEUP is set.",
+        "watchdog increments timeout at most once per jiffy and schedules the CPU timer check beyond the rounded threshold.",
+        "RR timeslice rotation and a nonblocking epoll return are not themselves reset conditions."
+      ]
+    },
+    {
+      "path": "kernel/time/posix-cpu-timers.c",
+      "sha256": "f66b3430f4c1c4ccbd25b6eb3c1bbd2f748bba0aa3c6a3d4e85aafa4d0f4af05",
+      "facts": [
+        "check_thread_timers converts raw timeout ticks with USEC_PER_SEC/HZ.",
+        "The hard-limit SIGKILL check precedes the soft-limit SIGXCPU check."
+      ]
+    },
+    {
+      "path": "include/trace/events/sched.h",
+      "sha256": "0c8509562b24979e268bc63b9a4288053a051f7dbfa077e26bab15e7b9a9cecf",
+      "facts": [
+        "Raw sched_switch exposes preempt and prev_state separately.",
+        "The formatted tracepoint maps preemption to TASK_REPORT_MAX, so nonzero formatted prev_state alone does not prove sleeping."
+      ]
+    }
+  ],
+  "interpretation": "A continuously runnable series of short callbacks can accumulate the RTTIME budget. Distinguishing that from one expensive callback requires scheduler, poll and stack evidence. This confirms accounting semantics, not the captured SIGKILLs offending userspace call.",
+  "limits": [
+    "No scheduler, watchdog, kernel, DSP or live configuration changes.",
+    "No native SIGKILL repair or long-term stability claim.",
+    "Source identity relies on the matching running build/config and retained build provenance, not newly rebuilt binaries."
+  ]
+}
