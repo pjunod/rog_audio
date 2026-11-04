@@ -7,7 +7,7 @@ thread, distinguish real sleep from runnable preemption, count/timestamp
 poll returns, and retain thresholded stacks plus raw RTTIME ticks. The exact
 running kernel accounting provenance is recorded separately. Strict Linux C
 compilation and BPF codegen-only compilation passed; independent adversarial
-review and the four selected fixture/parser methods remain pending. No new
+review and the five selected fixture/parser/cleanup methods remain pending. No new
 method has run and no native SIGKILL repair is claimed.
 
 The requested live window starts after confirmed attachment and identity

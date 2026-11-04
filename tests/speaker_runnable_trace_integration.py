@@ -16,6 +16,8 @@ import subprocess
 import sys
 import time
 import unittest
+from unittest import mock
+import tempfile
 import uuid
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -68,6 +70,44 @@ class RunnableEvidenceParserTests(unittest.TestCase):
             with self.subTest(stderr=stderr, rc=rc, text=bad):
                 with self.assertRaises(ValueError):
                     parse_output(bad, stderr, rc, 71)
+
+    def test_cleanup_failure_retains_private_receipt(self):
+        for mode in ('missing', 'timeout', 'signal-error', 'pidfd-error', 'hash-error'):
+            with self.subTest(mode=mode), tempfile.TemporaryDirectory(prefix='rog-runnable-cleanup-') as name:
+                directory = Path(name)
+                (directory / 'stdout.log').write_text('retained private evidence')
+                receipt = {'verdict': 'observed', 'missing_coverage': []}
+                tracer = mock.Mock(pid=800001, returncode=0)
+                tracer.poll.return_value = None
+                tracer.wait.return_value = 0
+                if mode == 'timeout':
+                    tracer.returncode = None
+                    tracer.wait.side_effect = subprocess.TimeoutExpired('owned-tracer', 2)
+                kill_error = ProcessLookupError('already exited') if mode == 'missing' else (
+                    PermissionError('owned cleanup denied') if mode == 'signal-error' else None)
+                close_error = OSError('pidfd close failed') if mode == 'pidfd-error' else None
+                with mock.patch.object(_OBSERVER.os, 'killpg', side_effect=kill_error) as kill, \
+                     mock.patch.object(_OBSERVER.os, 'close', side_effect=close_error) as close:
+                    if mode == 'hash-error':
+                        with mock.patch.object(_OBSERVER.hashlib, 'sha256', side_effect=OSError('read/hash failed')):
+                            _OBSERVER.finalize_observation(directory, receipt, tracer, 900001, time.monotonic())
+                    else:
+                        _OBSERVER.finalize_observation(directory, receipt, tracer, 900001, time.monotonic())
+                saved = json.loads((directory / 'receipt.json').read_text())
+                self.assertIn('finished_unix_ns', saved)
+                self.assertIn('elapsed_s', saved)
+                close.assert_called_once_with(900001)
+                self.assertTrue(all(call.args[0] == tracer.pid for call in kill.call_args_list))
+                if mode == 'missing':
+                    self.assertEqual(saved['verdict'], 'observed')
+                    self.assertTrue(saved['cleanup_races'])
+                    self.assertFalse(saved['missing_coverage'])
+                else:
+                    self.assertEqual(saved['verdict'], 'inconclusive')
+                    self.assertTrue(saved['missing_coverage'])
+                if mode == 'timeout':
+                    self.assertEqual(kill.call_count, 2)
+                    self.assertEqual(tracer.wait.call_count, 2)
 
 
 class RunnableTraceTests(unittest.TestCase):

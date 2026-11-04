@@ -102,6 +102,61 @@ def log_limits():
     resource.setrlimit(resource.RLIMIT_FSIZE, (8 * 1024 * 1024, 8 * 1024 * 1024))
 
 
+def finalize_observation(output, receipt, tracer, pidfd, started):
+    """Attempt owned-process cleanup and always attempt a durable final receipt."""
+    def failure(stage, error):
+        receipt['verdict'] = 'inconclusive'
+        receipt.setdefault('missing_coverage', []).append(f'{stage}: {type(error).__name__}: {error}')
+
+    try:
+        if tracer is not None:
+            try:
+                status = tracer.poll()
+            except Exception as error:
+                failure('cleanup poll', error)
+                status = None
+            if status is None:
+                receipt['observer_forced_stop'] = True
+                for signum in (signal.SIGINT, signal.SIGKILL):
+                    try:
+                        os.killpg(tracer.pid, signum)
+                    except ProcessLookupError:
+                        # The owned tracer can exit between poll and signal.
+                        receipt.setdefault('cleanup_races', []).append('tracer already exited')
+                    except Exception as error:
+                        failure('cleanup signal', error)
+                    try:
+                        tracer.wait(timeout=2)
+                        break
+                    except Exception as error:
+                        failure('cleanup wait', error)
+            receipt['observer_returncode'] = tracer.returncode
+    except Exception as error:
+        failure('cleanup', error)
+    finally:
+        try:
+            if pidfd is not None:
+                os.close(pidfd)
+        except Exception as error:
+            failure('pidfd close', error)
+        finally:
+            receipt['finished_unix_ns'] = time.time_ns()
+            receipt['elapsed_s'] = time.monotonic() - started
+            receipt['files'] = {}
+            try:
+                for path in output.iterdir():
+                    if path.is_file() and path.name != 'receipt.json':
+                        try:
+                            receipt['files'][path.name] = hashlib.sha256(path.read_bytes()).hexdigest()
+                        except Exception as error:
+                            failure('evidence hash ' + path.name, error)
+            except Exception as error:
+                failure('evidence listing', error)
+            finally:
+                # Cleanup/hash failures must not bypass this final write attempt.
+                (output / 'receipt.json').write_text(json.dumps(receipt, indent=2) + '\n')
+
+
 def observe(args):
     if sys.platform != 'linux' or os.geteuid() != 0:
         raise ValueError('explicit Linux root invocation required')
@@ -198,23 +253,7 @@ def observe(args):
     except Exception as error:
         receipt['missing_coverage'].append(str(error))
     finally:
-        if tracer is not None and tracer.poll() is None:
-            os.killpg(tracer.pid, signal.SIGINT)
-            try:
-                tracer.wait(timeout=2)
-            except subprocess.TimeoutExpired:
-                os.killpg(tracer.pid, signal.SIGKILL)
-                tracer.wait(timeout=2)
-            receipt['observer_forced_stop'] = True
-        if tracer is not None:
-            receipt['observer_returncode'] = tracer.returncode
-        if pidfd is not None:
-            os.close(pidfd)
-        receipt['finished_unix_ns'] = time.time_ns()
-        receipt['elapsed_s'] = time.monotonic() - started
-        receipt['files'] = {p.name: hashlib.sha256(p.read_bytes()).hexdigest()
-            for p in output.iterdir() if p.is_file()}
-        (output / 'receipt.json').write_text(json.dumps(receipt, indent=2) + '\n')
+        finalize_observation(output, receipt, tracer, pidfd, started)
     return 0 if receipt['verdict'] == 'observed' else 1
 
 

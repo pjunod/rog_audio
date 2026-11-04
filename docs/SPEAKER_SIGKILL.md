@@ -322,6 +322,10 @@ attachment gate alarm and a three second work alarm. The
 checks their distinct scheduler/poll/tick evidence and shares the live
 runner's strict parser. Independent malformed-evidence coverage includes
 distinct PID/TID, bounded stop, deadline, loss and incomplete records.
-Linux strict C and BPF codegen-only compilation have passed; these new test
+A separate mocked cleanup-failure method requires private receipt retention
+when the tracer disappears, cleanup times out, or cleanup/hash operations
+fail. Cleanup errors make the result inconclusive; a process-exit race is
+recorded separately. Linux strict C and BPF codegen-only compilation have
+passed; these five new test
 methods have not yet run. No audio devices, production settings, playback,
 recording, native deployment or Sonos changes are part of these fixtures.
