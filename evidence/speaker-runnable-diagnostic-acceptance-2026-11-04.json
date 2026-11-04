@@ -1,0 +1,242 @@
+{
+  "schema_version": 1,
+  "date": "2026-11-04",
+  "host": "lab5",
+  "scope": "Read-only runnable-loop instrumentation acceptance; no native repair or historical SIGKILL attribution.",
+  "accepted_source_commit": "e649de2e741029a6e6fb44c778066e5273fcb75a",
+  "kernel_accounting_evidence": "speaker-runnable-kernel-accounting-2026-11-04.json",
+  "source_sha256": {
+    "scripts/trace_speaker_runnable.bt": "bf27da740505944f650c94ea6d4919e15ae17fa42dcebbfbdce9db3cc82acf18",
+    "scripts/observe_speaker_runnable.py": "16df1a0f4d6d76aa423732a51425e6f8cde5788a128fbf2b308274f8b1805dd8",
+    "tests/speaker_runnable_fixture.c": "613aa28bb5eb719e03bbeb3dd68beb02e40125799f068ba6e7ec7551aec2a40e",
+    "tests/speaker_runnable_trace_integration.py": "568893bd0163d855223580309505a0fffc3eca12a202959b33e4b3799bed05bb"
+  },
+  "review_history": [
+    {
+      "stage": "initial independent adversarial review",
+      "result": "requested_changes",
+      "finding": "Cleanup exceptions could prevent final receipt writing."
+    },
+    {
+      "stage": "cleanup correction",
+      "commit": "96d61247a7039382330dcf26871fb2899c1cec60",
+      "result": "cleared_before_selected_execution"
+    },
+    {
+      "stage": "readiness and unsigned timestamp correction",
+      "commit": "e649de2e741029a6e6fb44c778066e5273fcb75a",
+      "result": "cleared_before_selected_execution"
+    }
+  ],
+  "preflight": {
+    "private_receipt_sha256": "45e3bac52be70a43304b70df6bad0bd085bfefbce0a653fec823d058a590c893",
+    "c": {
+      "returncode": 0,
+      "stdout_bytes": 0,
+      "stderr_bytes": 0,
+      "elapsed_s": 0.05753040313720703
+    },
+    "bpf_codegen_only": {
+      "returncode": 0,
+      "stderr_bytes": 0,
+      "elapsed_s": 0.3668081760406494,
+      "both_streams_checked_for_diagnostics": true
+    },
+    "clean": true,
+    "attachment": false
+  },
+  "validation_history": [
+    {
+      "source_commit": "96d61247a7039382330dcf26871fb2899c1cec60",
+      "private_receipt_sha256": "399784b347e0bd426e3ecc87f89944a7ecba67991232444e4b9eb2b809f3a136",
+      "methods": [
+        {
+          "method": "RunnableEvidenceParserTests.test_rejects_observation_gaps_and_mismatched_frames",
+          "result": "pass"
+        },
+        {
+          "method": "RunnableEvidenceParserTests.test_cleanup_failure_retains_private_receipt",
+          "result": "pass"
+        },
+        {
+          "method": "RunnableTraceTests.test_blocking_poll_resets_budget",
+          "result": "fail"
+        }
+      ],
+      "failure": "Blocking fixture input gate remained closed. Readiness expected the wrong message/stream; signedness warnings were emitted in stdout. Earlier codegen returned zero with warnings and the initial reporter missed stdout diagnostics.",
+      "ready_and_cpu_fixtures_run": false
+    },
+    {
+      "source_commit": "e649de2e741029a6e6fb44c778066e5273fcb75a",
+      "private_receipt_sha256": "488678d081a1a00fa7ae50e5cd840387a0abb1c07536086645ddd3205f34558f",
+      "methods": [
+        {
+          "method": "RunnableEvidenceParserTests.test_rejects_observation_gaps_and_mismatched_frames",
+          "result": "pass",
+          "executions": 1
+        },
+        {
+          "method": "RunnableTraceTests.test_blocking_poll_resets_budget",
+          "result": "pass",
+          "executions": 1
+        },
+        {
+          "method": "RunnableTraceTests.test_ready_poll_accumulates_budget",
+          "result": "pass",
+          "executions": 1
+        },
+        {
+          "method": "RunnableTraceTests.test_finite_cpu_work_has_no_poll_flood",
+          "result": "pass",
+          "executions": 1
+        }
+      ]
+    }
+  ],
+  "selected_acceptance": {
+    "distinct_methods": 5,
+    "passed": 5,
+    "failures_remaining": 0,
+    "cleanup_pass_retained_from": "96d61247a7039382330dcf26871fb2899c1cec60",
+    "rerun_policy": "Only changed parser and failed blocking method retried; ready/CPU methods ran for first time. Unchanged cleanup pass retained without rerun."
+  },
+  "fixture_conditions": {
+    "kernel_hz": 1000,
+    "warning_ticks": 20,
+    "policy": "SCHED_RR | SCHED_RESET_ON_FORK",
+    "rt_priority": 1,
+    "rttime_soft_us": 200000,
+    "rttime_hard_us": 200000,
+    "finite_work_target_ms": 120,
+    "audio_devices_or_buses": false
+  },
+  "fixtures": [
+    {
+      "case": "blocking",
+      "counters": {
+        "target_exit": 1,
+        "deadline": 0,
+        "identity_error": 0,
+        "running_ns": 249915,
+        "sleep_out": 12,
+        "runnable_out": 0,
+        "wakeups": 13,
+        "poll_enter": 12,
+        "poll_ready": 12,
+        "poll_zero": 0,
+        "poll_error": 0,
+        "poll_ns": 119917540,
+        "poll_max_ns": 10109643,
+        "unpaired_poll": 0,
+        "initial_poll": 0,
+        "samples": 0,
+        "max_ticks": 0,
+        "stacks": 0,
+        "worker_tid_distinct": false
+      }
+    },
+    {
+      "case": "busy",
+      "counters": {
+        "target_exit": 1,
+        "deadline": 0,
+        "identity_error": 0,
+        "running_ns": 120045295,
+        "sleep_out": 0,
+        "runnable_out": 0,
+        "wakeups": 1,
+        "poll_enter": 0,
+        "poll_ready": 0,
+        "poll_zero": 0,
+        "poll_error": 0,
+        "poll_ns": 0,
+        "poll_max_ns": 0,
+        "unpaired_poll": 0,
+        "initial_poll": 0,
+        "samples": 12,
+        "max_ticks": 116,
+        "stacks": 1,
+        "worker_tid_distinct": false
+      }
+    },
+    {
+      "case": "ready",
+      "counters": {
+        "target_exit": 1,
+        "deadline": 0,
+        "identity_error": 0,
+        "running_ns": 120076874,
+        "sleep_out": 0,
+        "runnable_out": 0,
+        "wakeups": 1,
+        "poll_enter": 222063,
+        "poll_ready": 222063,
+        "poll_zero": 0,
+        "poll_error": 0,
+        "poll_ns": 37034869,
+        "poll_max_ns": 8466,
+        "unpaired_poll": 0,
+        "initial_poll": 0,
+        "samples": 12,
+        "max_ticks": 115,
+        "stacks": 1,
+        "worker_tid_distinct": true
+      }
+    }
+  ],
+  "preservation": {
+    "protected_file_count": 13,
+    "rollback_file_count": 3,
+    "all_attempts_protected_and_rollback_unchanged": true,
+    "all_attempts_speaker_identity_and_restart_count_unchanged": true,
+    "all_owned_test_units_stopped": true
+  },
+  "live_observation": {
+    "status": "observed",
+    "private_receipt_sha256": "db325bdbdd32a63ef2bde13c4abfa033b18ac557bcb52d562764fab987dce202",
+    "requested_duration_s": 60,
+    "observed_window_s": 60.03020462501445,
+    "attachment_confirmed": true,
+    "observer_returncode": 0,
+    "end_reason": "bounded_stop",
+    "target_signalled": false,
+    "missing_coverage": [],
+    "boundary_ambiguity": [],
+    "counters": {
+      "target_exit": 0,
+      "deadline": 0,
+      "identity_error": 0,
+      "running_ns": 0,
+      "sleep_out": 0,
+      "runnable_out": 0,
+      "wakeups": 0,
+      "poll_enter": 0,
+      "poll_ready": 0,
+      "poll_zero": 0,
+      "poll_error": 0,
+      "poll_ns": 0,
+      "poll_max_ns": 0,
+      "unpaired_poll": 0,
+      "initial_poll": 0,
+      "samples": 0,
+      "max_ticks": 0,
+      "stacks": 0
+    },
+    "protected_and_rollback_unchanged": true,
+    "speaker_identity_and_restart_count_unchanged": true,
+    "owned_unit_stopped": true,
+    "interpretation": "All activity counters were zero during this idle observation. No DSP behavior, stability, offending callback or SIGKILL repair is established."
+  },
+  "limits": [
+    "Fixture results distinguish scheduler/poll patterns under stated synthetic conditions; they do not identify either real SIGKILL code path.",
+    "Scheduler residency includes interrupt time; poll durations are wall time; RTTIME values are raw scheduler ticks.",
+    "No speaker tuning, native engine, realtime protection, playback, recording, rollback or Sonos changes. Raw logs, addresses, process identifiers and mappings remain private."
+  ],
+  "private_evidence_retention": {
+    "verified_archive_files": 34,
+    "archive_sha256": "35f978fe1f941b3661a89cb922bd56ab6caa82495a262d66b93193f2e5f1698b",
+    "redundant_archived_fixture_executables_removed": 4,
+    "bytes_removed": 114304,
+    "unique_remote_logs_and_current_compiler_fixture_retained": true
+  }
+}

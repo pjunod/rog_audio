@@ -1,5 +1,29 @@
 # Status — implementation and physical acceptance
 
+## November 4 runnable-loop diagnostic — selected acceptance passed
+
+[Five selected methods passed](../evidence/speaker-runnable-diagnostic-acceptance-2026-11-04.json)
+after independent review. The unchanged cleanup method retains its first pass
+on `96d6124`; changed parser and failed blocking methods passed once on
+`e649de2`, followed by first passes for ready-worker and finite-CPU fixtures.
+Strict C compilation and BPF codegen passed with both streams checked for
+warnings/errors. The initial warning-bearing codegen and blocking startup
+failure remain recorded; neither is relabelled as a clean pass.
+
+Blocking recorded twelve sleeps and twelve ready polls with zero maximum
+RTTIME ticks. An actual nonleader ready worker recorded 222,063 ready polls,
+no sleeps and 115 ticks; finite CPU work recorded no polls, no sleeps and 116
+ticks. These synthetic distinctions qualify the observer, not the real kill
+cause. All attempts preserved thirteen protected paths, rollback files and
+speaker identity/restart count; every owned test unit stopped. A separately attached
+live observation completed its 60.030 second window and stopped only its
+tracer. All activity counters were zero, with no missing coverage reported;
+this idle window supplies no DSP or stability conclusion. Production identity,
+protected paths and rollback remained unchanged, and the owned unit stopped.
+No culprit or native SIGKILL repair is claimed.
+See [the diagnostic contract](SPEAKER_SIGKILL.md#8-runnable-loop-diagnosis--distinguish-ready-work-from-one-slow-callback)
+and [kernel provenance](../evidence/speaker-runnable-kernel-accounting-2026-11-04.json).
+
 ## November 3 silent reproduction attempts — unresolved
 
 The operator clarified that the symptom is an intermittent audio-crash

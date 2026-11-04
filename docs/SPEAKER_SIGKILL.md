@@ -1,7 +1,7 @@
 # Speaker SIGKILL diagnosis
 
 **Status:** two new CPU-timer kills captured; offending code path unresolved ·
-**Updated:** 2026-11-03 · **Related:** [speaker service](SPEAKER_SERVICE.md).
+**Updated:** 2026-11-04 · **Related:** [speaker service](SPEAKER_SERVICE.md).
 
 ## 1. Historical evidence
 
@@ -218,3 +218,160 @@ must identify the userspace call before claiming a SIGKILL repair. The bounded
 observer remains available for normal-use recurrence. Keep its expiry/reboot
 limit in mind; a quiet or stopped observer is not a stability result. Speaker
 tuning, watchdog protection, rollback and Sonos stay unchanged.
+
+
+## 8. Runnable-loop diagnosis — distinguish ready work from one slow callback
+
+**Status:** independent review and five selected method passes complete as of
+November 4; one bounded live observation completed idle. No native repair or attribution
+of the production SIGKILLs is claimed. The existing
+signal observer is unchanged.
+
+The [source-bound kernel receipt](../evidence/speaker-runnable-kernel-accounting-2026-11-04.json)
+records the running kernel provenance and exact accounting files. The RT
+scheduler resets `rt.timeout` on `ENQUEUE_WAKEUP`; RR timeslice rotation does
+not reset it. A poll syscall that returns immediately need not put the thread
+to sleep. Several cheap callbacks can therefore accumulate a realtime budget
+when the loop stays ready. This is a mechanism to distinguish, not proof that
+it caused either captured kill. PipeWire 1.6.8's
+[data loop](https://github.com/PipeWire/pipewire/blob/1.6.8/src/pipewire/data-loop.c)
+immediately iterates again, and its
+[invoke dispatcher](https://github.com/PipeWire/pipewire/blob/1.6.8/spa/plugins/support/loop.c)
+drains queued work until no item remains without an explicit time/item budget.
+
+**Run one bounded observation:** use the
+[one-shot runner](../scripts/observe_speaker_runnable.py) as root on the
+BTF-equipped Linux host with bpftrace 0.25. Obtain the actual process ID, data
+thread ID and accepted executable SHA-256 from your read-only service
+inspection. Supply the running kernel's `CONFIG_HZ`, not `getconf CLK_TCK`.
+Use an owned transient unit with the resource limits in §3, a hard runtime
+limit of the requested duration plus 30 seconds, and no restart/enable links.
+The output directory must be new; its parent must already exist.
+
+```bash
+sudo python3 scripts/observe_speaker_runnable.py \
+  --pid "$ENGINE_PID" --tid "$DATA_TID" \
+  --expected-exe-sha256 "$ACCEPTED_SHA256" \
+  --kernel-hz 1000 --duration 30 \
+  --output "$NEW_PRIVATE_OUTPUT"  # Creates a private directory; no target signal
+```
+
+The runner verifies leader/thread start times, thread-group membership and
+executable hash, opens a leader pidfd, captures private mappings, and checks
+identity again after attachment. The BPF program independently compares the
+selected thread's `start_boottime` against its `/proc` start tick value.
+Those start ticks use `USER_HZ` (`SC_CLK_TCK`), separately supplied to the
+probe; they are not scheduler RTTIME ticks. The probe stops on selected
+thread exit and rejects an identity mismatch. The runner never signals the
+target and stops only its owned tracer.
+
+**Readiness and completion:** bpftrace 0.25 runs `BEGIN` before ordinary
+probe attachment. The runner requires both its initialization record and the
+normal, nonquiet `Attached N probes` record on stderr. bpftrace's
+[attachment loop and notification](https://github.com/bpftrace/bpftrace/blob/v0.25.0/src/bpftrace.cpp#L665)
+call `attached_probes` after both attachment passes; its
+[text emitter](https://github.com/bpftrace/bpftrace/blob/v0.25.0/src/output/text.cpp#L569)
+writes that exact message to stderr. The installed 0.25.0 failed-run logs
+independently confirmed the stream and text. The shared readiness helper
+accepts one such stderr record and rejects duplicates, remaining stderr
+content, and warning/error/loss messages in stdout.
+A `BEGIN` marker alone announces initialization. This corrects the convention
+for new launches; it does not establish an unobserved historical gap in the
+existing long-running signal observer.
+
+The requested 1–300 second window starts after attachment and identity
+verification. A normal bounded stop sends SIGINT only to the tracer after
+that window and rechecks target identity. A natural target exit is an explicit
+shorter observation. The probe's duration-plus-20-second timer is backup;
+expiry, missing completion, observer failure, other stderr diagnostics, reported
+loss or unexpected unmatched syscall/stack records make the receipt
+inconclusive. A single initial poll exit before any observed entry is
+`initial_poll` boundary ambiguity: its entry may precede attachment, so its
+duration and return category are omitted. It is not itself evidence of loss. The
+runner also enforces attachment, exit-drain and shutdown deadlines.
+`receipt.json`, `stdout.log`, `stderr.log` and `maps.txt` remain private.
+Exit 0 means a completed observation, not a crash repair or stability pass.
+
+**How to read it:** counters are cumulative; each summary and each framed
+stack uses a single output record. Raw `max_ticks` and sampled
+`rt_timeout_ticks` require the exact kernel `CONFIG_HZ` for conversion. On the
+retained 1000 Hz kernel, the 20-tick warning is a nominal 20 ms budget, not a
+precise callback stopwatch. `running_ns` sums scheduler residency and includes
+interrupt time. `poll_ns` and `poll_max_ns` are syscall wall durations and can
+include descheduling. Raw scheduler `preempt` and `prev_state` distinguish
+runnable preemption from nonrunnable switch-out; wakeups are counted separately.
+
+| Evidence together | Interpretation to investigate |
+|---|---|
+| Many positive poll returns, growing ticks, little sleeping | Continuously ready event work; inspect sampled paths |
+| Negative poll returns with growing ticks | Error/retry loop candidate |
+| Few poll returns, growing ticks, DSP-heavy samples | Expensive callback candidate |
+| Few poll returns, growing ticks, invoke-dispatch samples | Queue-drain saturation candidate |
+
+These patterns support the next focused inspection; samples cannot prove a
+complete callback lifetime. The sampler runs at 99 Hz, emits stacks only at
+or above the warning threshold, limits stack output to ten per second and
+sixty total, and keeps scalar maps rather than an unbounded event history.
+An idle thread can produce no samples or poll activity during a valid window;
+that supplies no DSP conclusion. A quiet short run does not exclude the
+intermittent failure.
+
+**Acceptance scope:** the
+[silent compiled fixture](../tests/speaker_runnable_fixture.c) has three
+independent paths: drained 10 ms timerfd waits, an intentionally undrained
+always-ready eventfd, and finite CPU work with no epoll call. The ready case targets an actual
+worker TID distinct from its leader PID; the leader joins that worker. Each
+case announces only its owned target TID through a bounded private pipe and
+then waits at the attachment gate. Each uses only
+its owned process, RR1, the unchanged 200,000 us hard/soft limit, a 20 second
+attachment gate alarm and a three second work alarm. The
+[explicit integration runner](../tests/speaker_runnable_trace_integration.py)
+checks their distinct scheduler/poll/tick evidence and shares the live
+runner's strict parser. Independent malformed-evidence coverage includes
+distinct PID/TID, bounded stop, deadline, loss and incomplete records.
+A separate mocked cleanup-failure method requires private receipt retention
+when the tracer disappears, cleanup times out, or cleanup/hash operations
+fail. Cleanup errors make the result inconclusive; a process-exit race is
+recorded separately. On reviewed head `96d6124`, the parser and cleanup
+methods each passed once. The blocking fixture failed before its input gate
+was released: the readiness matcher expected the wrong text/stream, and BPF
+signedness warnings were retained in stdout. Ready and CPU fixtures did not
+run. Earlier BPF codegen returned zero but also emitted warnings; the initial
+compile summary checked stderr and missed those stdout warnings, so it was
+not a clean BPF compilation. The compile helper now checks both streams.
+
+Timestamp arithmetic is now explicitly unsigned and readiness uses the
+verified stderr protocol. Independent corrective review cleared the source;
+strict C compilation and warning-free BPF codegen passed with both streams
+checked. The [allowlisted acceptance receipt](../evidence/speaker-runnable-diagnostic-acceptance-2026-11-04.json)
+records all five method passes: the cleanup pass is retained from `96d6124`,
+the changed parser and failed blocking method each passed once on `e649de2`,
+and ready/CPU fixtures each passed on their first execution. No unchanged
+cleanup rerun occurred.
+
+| Fixture | Sleeps | Ready poll returns | Maximum raw RTTIME ticks | Threshold stacks |
+|---|---:|---:|---:|---:|
+| Drained timerfd waits | 12 | 12 | 0 | 0 |
+| Undrained eventfd, actual nonleader worker | 0 | 222,063 | 115 | 1 |
+| Finite CPU work | 0 | 0 | 116 | 1 |
+
+All three target threads exited normally. This validates the observer's
+ability to distinguish these synthetic patterns; it does not select the
+actual speaker failure. Across the first failed attempt and accepted runs,
+all thirteen protected files, three rollback files, speaker identity/restart
+count and owned-unit cleanup checks remained stable.
+
+**Live observation:** the one-shot runner independently confirmed attachment,
+verified the selected live thread, and completed a 60.030 second window with
+`bounded_stop`, return code zero, no target signal and no reported missing
+coverage or boundary ambiguity. Every activity counter was zero: scheduler
+residency, sleep/preemption, wakeups, poll calls, samples, timeout ticks and
+stacks. This was an idle observation, with no DSP execution evidence or
+stability conclusion. The service identity/restart count, thirteen protected
+paths and three rollback files remained unchanged; the owned unit stopped.
+No offending callback or native SIGKILL repair is established. No audio devices, production settings,
+playback, recording, native deployment or Sonos changes are part of these
+fixtures.
+
+Raw receipts are archived privately; only verified redundant fixture copies
+were removed. Unique logs and the current compiler fixture remain retained.
