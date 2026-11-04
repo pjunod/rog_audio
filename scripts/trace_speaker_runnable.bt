@@ -5,6 +5,12 @@
  * Scalar maps only; stacks <=10/sec and <=60 total; external deadline required.
  */
 BEGIN {
+  @running_ns = (uint64)0;
+  @running_since = (uint64)0;
+  @poll_ns = (uint64)0;
+  @poll_start = (uint64)0;
+  @poll_max_ns = (uint64)0;
+  @last_stack = (uint64)0;
   @deadline = nsecs + $4 * 1000000000;
   printf("runnable-initialized pid=%d tid=%d warning_ticks=%llu deadline_s=%llu start_ticks=%llu user_hz=%llu\n", $1, $2, $3, $4, $5, $6);
 }
@@ -16,8 +22,8 @@ rawtracepoint:vmlinux:sched_switch
     $b = $p->start_boottime;
     $ticks = ($b / 1000000000) * $6 + (($b % 1000000000) * $6 / 1000000000);
     if ($ticks == $5) {
-      if (@running_since) { @running_ns = @running_ns + nsecs - @running_since; }
-      @running_since = 0;
+      if (@running_since) { @running_ns = (uint64)@running_ns + nsecs - (uint64)@running_since; }
+      @running_since = (uint64)0;
       if (args.preempt || args.prev_state == 0) { @runnable_out = @runnable_out + 1; }
       else if (!@target_exit) { @sleep_out = @sleep_out + 1; }
       if ($p->rt.timeout > @max_ticks) { @max_ticks = $p->rt.timeout; }
@@ -58,12 +64,12 @@ tracepoint:syscalls:sys_exit_epoll_pwait2
   if ($ticks != $5) { @identity_error = 1; exit(); }
   else if (@poll_start) {
     $ns = nsecs - @poll_start;
-    @poll_ns = @poll_ns + $ns;
+    @poll_ns = (uint64)@poll_ns + $ns;
     if ($ns > @poll_max_ns) { @poll_max_ns = $ns; }
     if (args.ret > 0) { @poll_ready = @poll_ready + 1; }
     else if (args.ret == 0) { @poll_zero = @poll_zero + 1; }
     else { @poll_error = @poll_error + 1; }
-    @poll_start = 0;
+    @poll_start = (uint64)0;
   } else if (@poll_enter == 0 && @initial_poll == 0) {
     // Attaching to a live thread can start inside an existing poll syscall.
     @initial_poll = 1;
@@ -95,8 +101,8 @@ tracepoint:sched:sched_process_exit
   $ticks = ($b / 1000000000) * $6 + (($b % 1000000000) * $6 / 1000000000);
   if ($ticks != $5) { @identity_error = 1; }
   else {
-    if (@running_since) { @running_ns = @running_ns + nsecs - @running_since; }
-    @running_since = 0;
+    if (@running_since) { @running_ns = (uint64)@running_ns + nsecs - (uint64)@running_since; }
+    @running_since = (uint64)0;
     @target_exit = 1;
   }
   exit();

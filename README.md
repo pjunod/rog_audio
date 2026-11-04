@@ -101,8 +101,8 @@ completed without a kill; the offending code remains unresolved. The operator
 reports crash notifications, not audible dropouts.
 
 The [bounded runnable-loop diagnostic](docs/SPEAKER_SIGKILL.md#8-runnable-loop-diagnosis--distinguish-ready-work-from-one-slow-callback)
-separates genuine sleep, ready poll work and thresholded stack evidence. Linux
-compile preflight passed; review and selected fixture acceptance remain pending.
+separates genuine sleep, ready poll work and thresholded stack evidence. Strict C
+compilation passed; BPF warning cleanup and readiness re-review remain pending.
 
 ## Documentation
 

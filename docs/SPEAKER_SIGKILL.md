@@ -222,8 +222,8 @@ tuning, watchdog protection, rollback and Sonos stay unchanged.
 
 ## 8. Runnable-loop diagnosis — distinguish ready work from one slow callback
 
-**Status:** implementation and Linux compile preflight complete; independent
-review and selected fixture acceptance pending as of November 4. No native
+**Status:** implementation under corrective re-review as of November 4;
+fixture acceptance incomplete after one startup failure. No native
 repair or production runnable-loop observation is claimed here. The existing
 signal observer is unchanged.
 
@@ -267,7 +267,14 @@ target and stops only its owned tracer.
 
 **Readiness and completion:** bpftrace 0.25 runs `BEGIN` before ordinary
 probe attachment. The runner requires both its initialization record and the
-normal, nonquiet `Attaching N probes...` record, emitted after attachment.
+normal, nonquiet `Attached N probes` record on stderr. bpftrace's
+[attachment loop and notification](https://github.com/bpftrace/bpftrace/blob/v0.25.0/src/bpftrace.cpp#L665)
+call `attached_probes` after both attachment passes; its
+[text emitter](https://github.com/bpftrace/bpftrace/blob/v0.25.0/src/output/text.cpp#L569)
+writes that exact message to stderr. The installed 0.25.0 failed-run logs
+independently confirmed the stream and text. The shared readiness helper
+accepts one such stderr record and rejects duplicates, remaining stderr
+content, and warning/error/loss messages in stdout.
 A `BEGIN` marker alone announces initialization. This corrects the convention
 for new launches; it does not establish an unobserved historical gap in the
 existing long-running signal observer.
@@ -276,7 +283,7 @@ The requested 1–300 second window starts after attachment and identity
 verification. A normal bounded stop sends SIGINT only to the tracer after
 that window and rechecks target identity. A natural target exit is an explicit
 shorter observation. The probe's duration-plus-20-second timer is backup;
-expiry, missing completion, observer failure, stderr diagnostics, reported
+expiry, missing completion, observer failure, other stderr diagnostics, reported
 loss or unexpected unmatched syscall/stack records make the receipt
 inconclusive. A single initial poll exit before any observed entry is
 `initial_poll` boundary ambiguity: its entry may precede attachment, so its
@@ -325,7 +332,17 @@ distinct PID/TID, bounded stop, deadline, loss and incomplete records.
 A separate mocked cleanup-failure method requires private receipt retention
 when the tracer disappears, cleanup times out, or cleanup/hash operations
 fail. Cleanup errors make the result inconclusive; a process-exit race is
-recorded separately. Linux strict C and BPF codegen-only compilation have
-passed; these five new test
-methods have not yet run. No audio devices, production settings, playback,
+recorded separately. On reviewed head `96d6124`, the parser and cleanup
+methods each passed once. The blocking fixture failed before its input gate
+was released: the readiness matcher expected the wrong text/stream, and BPF
+signedness warnings were retained in stdout. Ready and CPU fixtures did not
+run. Earlier BPF codegen returned zero but also emitted warnings; the initial
+compile summary checked stderr and missed those stdout warnings, so it was
+not a clean BPF compilation. The compile helper now checks both streams.
+
+Timestamp arithmetic is now explicitly unsigned and readiness uses the
+verified stderr protocol. Corrective review and warning-free codegen remain
+pending. The parser change invalidates its earlier pass; rerun that method,
+the failed blocking fixture and the two unrun fixtures only after review.
+The unchanged cleanup method's pass remains retained. No audio devices, production settings, playback,
 recording, native deployment or Sonos changes are part of these fixtures.

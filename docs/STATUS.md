@@ -1,19 +1,24 @@
 # Status — implementation and physical acceptance
 
-## November 4 runnable-loop diagnostic — review pending
+## November 4 runnable-loop diagnostic — corrective review pending
 
-The new read-only observer and one-shot runner verify an explicit process and
-thread, distinguish real sleep from runnable preemption, count/timestamp
-poll returns, and retain thresholded stacks plus raw RTTIME ticks. The exact
-running kernel accounting provenance is recorded separately. Strict Linux C
-compilation and BPF codegen-only compilation passed; independent adversarial
-review and the five selected fixture/parser/cleanup methods remain pending. No new
-method has run and no native SIGKILL repair is claimed.
+The new read-only observer and one-shot runner verify one process/thread,
+distinguish sleep from runnable preemption, count/timestamp poll returns and
+retain thresholded stacks plus raw RTTIME ticks. Exact running-kernel
+accounting provenance is retained. On reviewed head `96d6124`, parser and
+cleanup methods each passed once. Blocking failed before its work gate was
+released; ready and CPU fixtures did not run. The failure exposed a wrong
+readiness text/stream assumption and signedness warnings in BPF stdout.
+Earlier codegen returned zero with warnings; its initial summary missed
+stdout diagnostics and must not be treated as clean compilation.
 
-The requested live window starts after confirmed attachment and identity
-verification; failures and lost/incomplete evidence produce an inconclusive
-private receipt. The existing signal observer and production audio settings
-are unchanged. See [the diagnostic contract](SPEAKER_SIGKILL.md#8-runnable-loop-diagnosis--distinguish-ready-work-from-one-slow-callback)
+The correction shares one verified `Attached N probes` stderr readiness
+helper, keeps strict warning/loss handling and makes timestamp arithmetic
+unsigned. Corrective review and warning-free codegen are pending. The changed
+parser requires one rerun; the unchanged cleanup pass remains retained.
+Blocking needs a failed-only retry, followed by the two unrun fixtures. No
+native SIGKILL repair or production observation is claimed. See
+[the diagnostic contract](SPEAKER_SIGKILL.md#8-runnable-loop-diagnosis--distinguish-ready-work-from-one-slow-callback)
 and [kernel provenance](../evidence/speaker-runnable-kernel-accounting-2026-11-04.json).
 
 ## November 3 silent reproduction attempts — unresolved

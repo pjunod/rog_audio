@@ -40,15 +40,24 @@ def proc_identity(pid, tid=None):
             'comm': (thread / 'comm').read_text().strip()}
 
 
+def attachment_ready(output, stderr):
+    """bpftrace0.25 confirms attachment on stderr; reject all other diagnostics."""
+    attached = re.findall(r'^Attached [1-9][0-9]* probes?$', stderr, re.M)
+    remainder = re.sub(r'^Attached [1-9][0-9]* probes?$', '', stderr, flags=re.M)
+    if remainder.strip() or re.search(r'(?i)\b(lost|error|warning|failed|unable)\b', output):
+        raise ValueError('observer diagnostics or loss; inspect both private logs')
+    if len(attached) > 1:
+        raise ValueError('duplicate after-attachment confirmation')
+    return len(attached) == 1 and 'runnable-initialized ' in output
+
+
 def parse_output(output, stderr, returncode, pid, tid=None, expected_end='target_exit'):
     """Fail closed: attachment, loss, identity, completion and framing matter."""
     tid = pid if tid is None else tid
-    if returncode != 0 or stderr.strip():
-        raise ValueError(f'observer failed or reported diagnostics: rc={returncode} {stderr}')
-    if re.search(r'(?i)\b(lost|error|warning|failed|unable)\b', output):
-        raise ValueError('observer loss/error output')
-    if len(re.findall(r'^Attaching [1-9][0-9]* probes?\.\.\.$', output, re.M)) != 1:
-        raise ValueError('missing/duplicate after-attachment confirmation')
+    if returncode != 0:
+        raise ValueError(f'observer failed: rc={returncode}')
+    if not attachment_ready(output, stderr):
+        raise ValueError('missing after-attachment confirmation or initialization')
     initialized = re.findall(r'^runnable-initialized .*$', output, re.M)
     if len(initialized) != 1:
         raise ValueError('missing/duplicate initialization')
@@ -200,9 +209,7 @@ def observe(args):
             while True:
                 stdout = (output / 'stdout.log').read_text()
                 stderr = (output / 'stderr.log').read_text()
-                if stderr.strip() or re.search(r'(?i)\b(lost|error|warning|failed|unable)\b', stdout):
-                    raise ValueError('observer reported error/loss; inspect private logs')
-                if re.search(r'^Attaching [1-9][0-9]* probes?\.\.\.$', stdout, re.M) and 'runnable-initialized ' in stdout:
+                if attachment_ready(stdout, stderr):
                     break
                 if tracer.poll() is not None or time.monotonic() >= attach_until:
                     raise ValueError('missing after-attachment confirmation')
@@ -221,8 +228,7 @@ def observe(args):
             while tracer.poll() is None:
                 stdout = (output / 'stdout.log').read_text()
                 stderr = (output / 'stderr.log').read_text()
-                if stderr.strip() or re.search(r'(?i)\b(lost|error|warning|failed|unable)\b', stdout):
-                    raise ValueError('observer reported error/loss; inspect private logs')
+                attachment_ready(stdout, stderr)  # Also rejects later loss/errors.
                 if select.select([pidfd], [], [], 0)[0] or not Path(f'/proc/{args.pid}/task/{args.tid}').exists():
                     exit_seen = exit_seen or time.monotonic()
                     if time.monotonic() - exit_seen > 1:

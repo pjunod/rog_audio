@@ -34,32 +34,37 @@ parse_output = _OBSERVER.parse_output
 
 class RunnableEvidenceParserTests(unittest.TestCase):
     def test_rejects_observation_gaps_and_mismatched_frames(self):
-        good = ("Attaching 13 probes...\n"
-                "runnable-initialized pid=71 tid=71\n"
+        attached = "Attached 13 probes\n"
+        good = ("runnable-initialized pid=71 tid=71\n"
                 "runnable-stack mono_ns=10 pid=71 tid=71 rt_timeout_ticks=20\n"
                 "    abc finite_cpu_work+1\n"
                 "runnable-stack-end mono_ns=10 pid=71 tid=71\n"
                 "runnable-end pid=71 tid=71 target_exit=1 deadline=0 identity_error=0 running_ns=1 sleep_out=0 runnable_out=0 wakeups=1 poll_enter=0 poll_ready=0 poll_zero=0 poll_error=0 poll_ns=0 poll_max_ns=0 unpaired_poll=0 initial_poll=0 samples=1 max_ticks=20 stacks=1\n")
-        self.assertEqual(parse_output(good, '', 0, 71)['stacks'], 1)
+        self.assertEqual(parse_output(good, attached, 0, 71)['stacks'], 1)
+        with self.assertRaises(ValueError):
+            parse_output(good, '', 0, 71)
+        with self.assertRaises(ValueError):
+            parse_output('Attached 13 probes\n' + good, '', 0, 71)
         boundary = good.replace('initial_poll=0', 'initial_poll=1')
-        self.assertEqual(parse_output(boundary, '', 0, 71)['initial_poll'], 1)
+        self.assertEqual(parse_output(boundary, attached, 0, 71)['initial_poll'], 1)
         thread = good.replace('tid=71', 'tid=72')
-        self.assertEqual(parse_output(thread, '', 0, 71, 72)['tid'], 72)
+        self.assertEqual(parse_output(thread, attached, 0, 71, 72)['tid'], 72)
         deadline = thread.replace('target_exit=1 deadline=0', 'target_exit=0 deadline=1')
-        self.assertEqual(parse_output(deadline, '', 0, 71, 72, expected_end='deadline')['deadline'], 1)
+        self.assertEqual(parse_output(deadline, attached, 0, 71, 72, expected_end='deadline')['deadline'], 1)
         stopped = thread.replace('target_exit=1 deadline=0', 'target_exit=0 deadline=0')
-        self.assertEqual(parse_output(stopped, '', 0, 71, 72, expected_end='bounded_stop')['target_exit'], 0)
+        self.assertEqual(parse_output(stopped, attached, 0, 71, 72, expected_end='bounded_stop')['target_exit'], 0)
         with self.assertRaises(ValueError):
-            parse_output(stopped, '', 0, 71, 72)
+            parse_output(stopped, attached, 0, 71, 72)
         with self.assertRaises(ValueError):
-            parse_output(thread, '', 0, 71, 73)
+            parse_output(thread, attached, 0, 71, 73)
         with self.assertRaises(ValueError):
             proc_identity(0, 0)
         for bad, stderr, rc in (
-            (good, 'Lost 1 events', 0), (good + 'Lost 1 events\n', '', 0),
+            (good, 'Lost 1 events', 0), (good, 'WARNING: diagnostic', 0),
+            (good + 'WARNING: diagnostic\n', '', 0), (good + 'Lost 1 events\n', '', 0),
             (good, '', 1), (good.replace('mono_ns=10 pid=71 tid=71 rt_timeout_ticks', 'pid=71 tid=71 rt_timeout_ticks'), '', 0),
             (good.replace('stacks=1', 'stacks=1 stacks=1'), '', 0),
-            (good.replace(' running_ns=1', ''), '', 0), (good.replace('Attaching 13 probes...\n', ''), '', 0),
+            (good.replace(' running_ns=1', ''), '', 0), (good, attached + attached, 0),
             (good.replace('target_exit=1', 'target_exit=0'), '', 0),
             (good.replace('deadline=0', 'deadline=1'), '', 0),
             (good.replace('identity_error=0', 'identity_error=1'), '', 0),
@@ -69,7 +74,7 @@ class RunnableEvidenceParserTests(unittest.TestCase):
             (good + good[good.index('runnable-end'):], '', 0)):
             with self.subTest(stderr=stderr, rc=rc, text=bad):
                 with self.assertRaises(ValueError):
-                    parse_output(bad, stderr, rc, 71)
+                    parse_output(bad, attached + stderr, rc, 71)
 
     def test_cleanup_failure_retains_private_receipt(self):
         for mode in ('missing', 'timeout', 'signal-error', 'pidfd-error', 'hash-error'):
@@ -161,16 +166,16 @@ class RunnableTraceTests(unittest.TestCase):
                 until = time.monotonic() + 15
                 while True:
                     output = (case / 'trace.log').read_text()
-                    # bpftrace0.25 emits this normal output AFTER attaching probes.
+                    # bpftrace0.25 emits Attached N probes on stderr AFTER attachment.
                     # BEGIN alone runs before attachment and is insufficient.
-                    if re.search(r'^Attaching [1-9][0-9]* probes?\.\.\.$', output, re.M) and 'runnable-initialized ' in output:
+                    if _OBSERVER.attachment_ready(output, (case / 'trace.stderr').read_text()):
                         break
                     if tracer.poll() is not None or child.poll() is not None or time.monotonic() >= until:
                         self.fail('observer not attached: ' + output + (case / 'trace.stderr').read_text())
                     time.sleep(.02)
                 self.assertFalse(select.select([pidfd], [], [], 0)[0], 'fixture exited during attachment')
                 self.assertEqual(proc_identity(child.pid, target_tid), identity, 'fixture identity changed')
-                self.assertFalse((case / 'trace.stderr').read_text().strip(), 'attachment diagnostics')
+                self.assertTrue(_OBSERVER.attachment_ready(output, (case / 'trace.stderr').read_text()))
                 child.stdin.write(b'G'); child.stdin.flush(); child.stdin.close()
                 self.assertEqual(child.wait(timeout=5), 0, 'fixture did not finish cleanly')
                 self.assertEqual(tracer.wait(timeout=5), 0, 'observer did not stop on target exit')
